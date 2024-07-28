@@ -38,12 +38,25 @@
         }
         .masthead img {
             border-radius: 50%;
+            max-width: 150px;
+            width: 100%;
         }
         .masthead .content {
             text-align: left;
             position: absolute;
             top: 10px;
             left: 10px;
+        }
+        @media (max-width: 768px) {
+            .masthead {
+                padding-top: 100px;
+                padding-bottom: 100px;
+            }
+            .masthead .content {
+                text-align: center;
+                position: static;
+                margin-top: 20px;
+            }
         }
     </style>
 </head>
