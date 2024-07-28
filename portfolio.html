@@ -5,6 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <title>Staff Portfolio - MIS Operator</title>
+    <style>
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+        .horizontal-section {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .horizontal-section > div {
+            flex: 1;
+            margin: 10px;
+        }
+        .horizontal-section h3 {
+            margin-top: 0;
+        }
+        .details p, .details ul {
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -13,29 +33,36 @@
             <h2>National Identity Card and Registration Branch</h2>
             <h2>MIS Operator</h2>
         </header>
-            <p>Started: 2079-09-11 BS</p>
-            <p>Current: Till the date</p>
-        </section>
+        <p>Started: 2079-09-11 BS</p>
+        <p>Current: Till the date</p>
         <section class="details">
-            <h3>Work Experience</h3>
-            <div class="container">
-            <p>Detail the work experience, roles, and responsibilities here.
-            1.Registration of Personal Event
-            2.Enter the data who receive Social Security Allowances
-            3.Correct the Error of related activities 
-            4.Collect Forward feed
-            5.Sent Social security allowances through EFT
-            6.Help to ward secretary
-            7.Organize the Training Programme for Capacity Buildup Of Ward staff
-            8.Data Management</p>
-            <h3>Projects</h3>
-                <div class="container">
-            <p>Detail the projects worked on, achievements, and contributions here.
-            ° oraganized training for ward staff
-            ° Correct the data sent by ward staff
-            ° Sent Social security Allowances
-            ° Technically helped to the ward staff
-            ° Data Management</p>
+            <div class="horizontal-section">
+                <div>
+                    <h3>Work Experience</h3>
+                    <p>Detail the work experience, roles, and responsibilities here.</p>
+                    <ul>
+                        <li>Registration of Personal Event</li>
+                        <li>Enter the data who receive Social Security Allowances</li>
+                        <li>Correct the Error of related activities</li>
+                        <li>Collect Forward feed</li>
+                        <li>Sent Social security allowances through EFT</li>
+                        <li>Help to ward secretary</li>
+                        <li>Organize the Training Programme for Capacity Buildup Of Ward staff</li>
+                        <li>Data Management</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Projects</h3>
+                    <p>Detail the projects worked on, achievements, and contributions here.</p>
+                    <ul>
+                        <li>Organized training for ward staff</li>
+                        <li>Correct the data sent by ward staff</li>
+                        <li>Sent Social Security Allowances</li>
+                        <li>Technically helped the ward staff</li>
+                        <li>Data Management</li>
+                    </ul>
+                </div>
+            </div>
             <h3>Skills</h3>
             <ul>
                 <li>Data Management</li>
