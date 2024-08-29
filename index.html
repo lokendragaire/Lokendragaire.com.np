@@ -5,17 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Lokendra Gaire - Personal website</title>
     <meta name="description" content="Welcome to my websie" />
-     <meta name="keywords" content="Lokendra Gaire, Lokendra, Gaire, personal website, projects, contact">
+    <meta name="keywords" content="Lokendra Gaire, Lokendra, Gaire, personal website, projects, contact">
     <link rel="canonical" href="https://lokendragaire.com.np/">
-    <!-- Favicon--
+    <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
     <!-- Font Awesome icons (free version)-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/kTc8Hj6xXLX4v5d3KnKeXj2t+Z4tH6Fct2Q0r0e2L4sR6+fFJbcLTj4lHiG+RQIBF8ew3ak5oZlZw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Google fonts-->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Lato:wght@400;700;400italic;700italic&display=swap" rel="stylesheet" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="css/styles.css" rel="stylesheet" />
     <style>
+        /* Custom Background Colors */
+        .bg-about {
+            background-color: #28a745; /* Green for About Section */
+        }
+        .bg-portfolio {
+            background-color: #6c757d; /* Gray for Portfolio Section */
+        }
+        .bg-contact {
+            background-color: #007bff; /* Blue for Contact Section */
+        }
+        
+        /* Additional Styles */
         .masthead {
             position: relative;
         }
@@ -71,13 +83,14 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="contact.html">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                 </ul>
             </div>
         </div>
     </nav>
+    
     <!-- Masthead-->
     <header class="masthead bg-primary text-white text-center">
         <div class="dash-bar"></div>
@@ -100,16 +113,17 @@
             
         </div>
     </header>
+    
     <!-- About Section-->
-    <section class="page-section bg-light" id="about">
+    <section class="page-section bg-about text-white" id="about">
         <div class="container">
             <div class="text-center">
                 <h2 class="section-heading text-uppercase">About</h2>
-                <h3 class="section-subheading text-muted">Learn more about Lokendra Gaire.</h3>
+                <h3 class="section-subheading text-white">Learn more about Lokendra Gaire.</h3>
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <p>Lokendra Gaire is the President of the Free Student Union (FSU) at Galkot Multiple Campus in Galkot, Baglung, Nepal. I am dedicated to the welfare of students and is actively involved in various social and educational activities. I honestly want to say that I am more loyal then required.
+                    <p>Lokendra Gaire is the President of the Free Student Union (FSU) at Galkot Multiple Campus in Galkot, Baglung, Nepal. I am dedicated to the welfare of students and is actively involved in various social and educational activities. I honestly want to say that I am more loyal than required.</p>
                     <p><strong>Grand Father Name:</strong> Purna Prasad Gaire</p>
                     <p><strong>Grand Mother Name:</strong> Durga Devi Gaire</p>
                     <p><strong>Father Name:</strong> Punakhar Gaire</p>
@@ -121,12 +135,13 @@
             </div>
         </div>
     </section>
+    
     <!-- Portfolio Section-->
-    <section class="page-section" id="portfolio">
+    <section class="page-section bg-portfolio text-white" id="portfolio">
         <div class="container">
             <div class="text-center">
                 <h2 class="section-heading text-uppercase">Portfolio</h2>
-                <h3 class="section-subheading text-muted">A showcase of my work and accomplishments.</h3>
+                <h3 class="section-subheading text-white">A showcase of my work and accomplishments.</h3>
             </div>
             <div class="row">
                 <!-- Portfolio item 1-->
@@ -137,7 +152,7 @@
                 </div>
                 <!-- Portfolio item 2-->
                 <div class="col-md-4 col-sm-6 portfolio-item">
-                    <a class="portfolio-link" href="Teacher at Sambuddha Educational Academy, Galkot-6">
+                    <a class="portfolio-link" href="#">
                         <img class="img-fluid" src="assets/img/portfolio/2.jpg" alt="Project 2" />
                     </a>
                 </div>
@@ -150,8 +165,9 @@
             </div>
         </div>
     </section>
+    
     <!-- Contact Section-->
-    <section class="page-section" id="Contact">
+    <section class="page-section bg-contact text-white" id="contact">
         <div class="container">
             <div class="text-center">
                 <h2 class="section-heading text-uppercase">Contact</h2>
@@ -161,6 +177,24 @@
             </section>
             <!-- Contact Modal -->
             <div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                    <p><strong>Name:</strong> Lokendra Gaire</p>
+                                    <p><strong>Phone No.:</strong> +977 9869065252</p>
+                                    <p><strong>Email:</strong> lokendra.gaire.70@gmail.com</p>
+                                    <p><strong>Address:</strong> Galkot Municipality-2, Baglung</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Privacy Policy Modal -->
+            <div class="modal fade" id="privacyPolicyModal" tabindex="-1" role="dialog" aria-labelledby="privacyPolicyModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -206,24 +240,15 @@
     <!-- Core theme JS-->
     <script src="js/scripts.js"></script>
 
-         <div class="col-lg-4 text-center">
-    <header class="masthead bg-primary text-white text-center">
-        <div class="container d-flex align-items-center flex-column">
-            <p>&copy; copyright 2024 Lokendra Gaire</p>
-            <a href="mailto:copyright Copyright@2024LokendraGaire">
-                <i class="fab fa-copyright"></i>
-            </a>
-        </div>
-    </header>
-</div>
-
-<style>
-    .masthead {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-    }
-    .masthead p, .masthead a {
-        text-align: center;}
+    <div class="col-lg-4 text-center">
+        <header class="masthead bg-primary text-white text-center">
+            <div class="container d-flex align-items-center flex-column">
+                <p>&copy; copyright 2024 Lokendra Gaire</p>
+                <a href="mailto:copyright Copyright@2024LokendraGaire">
+                    <i class="fab fa-copyright"></i>
+                </a>
+            </div>
+        </header>
+    </div>
+</body>
+</html>
