@@ -252,3 +252,11 @@
     </div>
 </body>
 </html>
+                    <script>
+    // Automatically redirects if the site is accessed with a specific keyword
+    window.onload = function () {
+        // Check if the user is coming from a specific keyword link
+        let params = new URLSearchParams(window.location.search);
+        if (params.get('keyword') === 'lokendra') {
+            window.location.href = "https://lokendragaire.com.np/";
+        }
