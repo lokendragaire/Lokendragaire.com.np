@@ -3,82 +3,38 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Lokendra Gaire - Personal website</title>
+    <title>Lokendra Gaire - Personal Website</title>
     <meta name="description" content="Welcome to my website" />
-    <meta name="keywords" content="Lokendra Gaire, Lokendra, Gaire, personal website, projects, contact">
-    <link rel="canonical" href="https://lokendragaire.com.np/">
+    <meta name="keywords" content="Lokendra Gaire, personal website, projects, contact">
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-    <!-- Font Awesome icons (free version)-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Google fonts-->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Lato:wght@400;700;400italic;700italic&display=swap" rel="stylesheet" />
-    <!-- Core theme CSS (includes Bootstrap)-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Lato:wght@400;700;display=swap" rel="stylesheet" />
     <link href="css/styles.css" rel="stylesheet" />
-    <style>
-        /* Custom Background Colors */
-        .bg-about {
-            background-color: #28a745; /* rainbow for About Section */
-        }
-        .bg-portfolio {
-            background-color: #6c757d; /* green for Portfolio Section */
-        }
-        .bg-contact {
-            background-color:#ADD8E6 /* rgb for Contact Section */
-        }
-        
-        /* Additional Styles */
-        .masthead {
-            position: relative;
-        }
-        .dash-bar {
-            width: 100%;
-            height: 10px;
-            background-color: #007bff;
-            position: absolute;
-            top: 20%;
-            left: 0;
-            transform: translateY(-50%);
-        }
-        .masthead .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-        .masthead img {
-            border-radius: 50%;
-            max-width: 150px;
-            width: 100%;
-        }
-        .masthead .content {
-            text-align: left;
-            position: absolute;
-            top: 10px;
-            left: 10px;
-        }
-        @media (max-width: 768px) {
-            .masthead {
-                padding-top: 100px;
-                padding-bottom: 100px;
-            }
-            .masthead .content {
-                text-align: center;
-                position: static;
-                margin-top: 20px;
-            }
-        }
-    </style>
+   <style>
+    /* Existing styles */
+    .bg-about { background-color: #28a745; }
+    .bg-portfolio { background-color: #6c757d; }
+    .bg-contact { background-color: #ADD8E6; }
+    .masthead { position: relative; }
+    .dash-bar { width: 100%; height: 10px; background-color: #007bff; position: absolute; top: 20%; left: 0; transform: translateY(-50%); }
+    .masthead .container { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; }
+
+    /* Updated image style */
+    .masthead img {
+        border-radius: 50%;
+        width: 100%; /* Full width for responsiveness */
+        max-width: 250px; /* Limit maximum size for larger screens */
+        height: auto; /* Maintain aspect ratio */
+    }
+</style>
+
 </head>
 <body id="page-top">
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
         <div class="container">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                Menu
-                <i class="fas fa-bars"></i>
+                Menu <i class="fas fa-bars"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
@@ -87,24 +43,16 @@
                     <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                 </ul>
             </div>
+        </div>
     </nav>
     <!-- Masthead-->
     <header class="masthead bg-primary text-white text-center">
         <div class="dash-bar"></div>
         <div class="container d-flex align-items-center flex-column">
-             <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <link rel="stylesheet" href="styles.css">
-    <title>Responsive Rectangle Image</title>
-</head>
-<body>
-    <img class="masthead-avatar" src="brp.jpg.jpg" alt="Lokendra Gaire" />
-</body>
-            <h1 class="masthead-heading text-uppercase mb-0">Lokendra Gaire</h1> 
-          <h2><u></u>President </h2> </U>
- <h3> Free Student Union (FSU) <br>
-                Galkot Multiple Campus <br>
-                Galkot, Baglung, Nepal </br> </h3>
-            </p>
+            <img class="masthead-avatar" src="brp.jpg.jpg" alt="Lokendra Gaire" />
+            <h1 class="masthead-heading text-uppercase mb-0">Lokendra Gaire</h1>
+            <h2>President</h2>
+            <h3>Free Student Union (FSU), Galkot Multiple Campus, Galkot, Baglung, Nepal</h3>
             <h2>Follow Me on Social Media</h2>
             <a href="https://www.youtube.com/@hamrogalkot5013" target="_blank" class="btn btn-danger">
                 <i class="fab fa-youtube"></i> Subscribe on YouTube
@@ -112,31 +60,19 @@
             <a href="https://www.facebook.com/lokendra.gaire.7" target="_blank" class="btn btn-primary">
                 <i class="fab fa-facebook-f"></i> Follow on Facebook
             </a>
-            
         </div>
     </header>
-    
+
     <!-- About Section-->
     <section class="page-section bg-about text-white" id="about">
         <div class="container">
             <div class="text-center">
                 <h3 class="section-subheading text-white">Learn more about Lokendra Gaire.</h3>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <p>Lokendra Gaire is the President of the Free Student Union (FSU) at Galkot Multiple Campus in Galkot, Baglung, Nepal. I am dedicated to the welfare of students and is actively involved in various social and educational activities. I honestly want to say that I am more loyal than required.</p>
-                    <p><strong>Grand Father Name:</strong> Purna Prasad Gaire</p>
-                    <p><strong>Grand Mother Name:</strong> Durga Devi Gaire</p>
-                    <p><strong>Father Name:</strong> Punakhar Gaire</p>
-                    <p><strong>Mother Name:</strong> Ishwori Gaire</p>
-                    <p><strong>Brother Name:</strong> Tomendra Gaire</p>
-                    <p><strong>Birth Place:</strong> Galkot Municipality-2, Thana, Baglung</p>
-                    <p><strong>Qualification:</strong> Bachelor Degree Of Business Study</p>
-                </div>
-            </div>
+            <p>Lokendra Gaire is the President of the Free Student Union at Galkot Multiple Campus in Galkot, Baglung, Nepal. He is dedicated to student welfare and is involved in social and educational activities.</p>
         </div>
     </section>
-    
+
     <!-- Portfolio Section-->
     <section class="page-section bg-portfolio text-white" id="portfolio">
         <div class="container">
@@ -144,68 +80,43 @@
                 <h3 class="section-subheading text-white uppercase">A showcase of my work and accomplishments.</h3>
             </div>
             <div class="row">
-                <!-- Portfolio item 1-->
                 <div class="col-md-4 col-sm-6 portfolio-item">
-                    <a class="portfolio-link" herf="https://lokendragaire.com.np" href="portfolio.html"> 
-                        <h4>MIS Operator</h4>
-                    </a>
+                    <a class="portfolio-link" href="portfolio.html">MIS Operator</a>
                 </div>
-                <!-- Portfolio item 2-->
                 <div class="col-md-4 col-sm-6 portfolio-item">
-                    <a class="portfolio-link" href="sami.html">
-                         <h4>Financial Literacy Facilator(FLF)</h4>
-                    </a>
+                    <a class="portfolio-link" href="sami.html">Financial Literacy Facilitator</a>
                 </div>
-                  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" /> 
-                <!-- Portfolio item 3-->
                 <div class="col-md-4 col-sm-6 portfolio-item">
-                    <a class="portfolio-link" href="teaching.html">
-                     <h4>Teacher</h4>
-                    </a>
+                    <a class="portfolio-link" href="teaching.html">Teacher</a>
                 </div>
+            </div>
+        </div>
     </section>
+
     <!-- Contact Section-->
     <section class="page-section bg-contact text-white" id="contact">
-        <div class="container">
-            <div class="text-center">
-            </div>
-            <section class="page-section bg-light" id="Contact">
-                <h3><a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#contactModal">Contact Details</a></h3>
-            </section>
-            <!-- Contact Modal -->
-            <div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                        </div>
-                        <div class="modal-body">
-                            <div class="container">
-                                    <p><strong>Name:</strong> Lokendra Gaire</p>
-                                    <p><strong>Phone No.:</strong> +977 9869065252</p>
-                                    <p><strong>Email:</strong> lokendra.gaire.70@gmail.com</p>
-                                    <p><strong>Address:</strong> Galkot Municipality-2, Baglung</p>
+        <div class="container text-center">
+            <h3><a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#contactModal">Contact Details</a></h3>
+        </div>
+    </section>
 
-            </div>
-            <!-- Privacy Policy Modal -->
-            <div class="modal fade" id="privacyPolicyModal" tabindex="-1" role="dialog" aria-labelledby="privacyPolicyModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-        
-    <!-- Privacy Policy Modal -->
-    <div class="modal fade" id="privacyPolicyModal" tabindex="-1" role="dialog" aria-labelledby="privacyPolicyModalLabel" aria-shown="true">
+    <!-- Contact Modal -->
+    <div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                       <div class="col-lg-4 text-center">
-    <header class="masthead bg-primary text-white text-center">
-        <div class="container d-flex align-items-center flex-column">
-                    <h3 class="modal-title" id="privacyPolicyModalLabel"> <u>Privacy Policy</u></h3>
                 <div class="modal-body">
-                    यस वेबसाइटमा राखिएका विषयबस्तु दूरुस्त कसैले पनी साभार गर्न पाइने छैन ।
-                 <h3 class="modal-title" id="Terms of UsesModalLabel"> <u>Terms of Uses</u></h3>
-                <div class="modal-body">
-                    यहाँ राखिएका विषयबस्तु साभार गर्नुपरेमा अनिवार्य अनुमति लिनुपर्ने छ ।
-                <div class="modal-footer">
-                <p>&copy; copyright 2024 Lokendra Gaire</p>
-                <a href="mailto:copyright Copyright@2024LokendraGaire">
-                    <i class="fab fa-copyright"></i></a>
+                    <p><strong>Name:</strong> Lokendra Gaire</p>
+                    <p><strong>Phone No.:</strong> +977 9869065252</p>
+                    <p><strong>Email:</strong> lokendra.gaire.70@gmail.com</p>
+                    <p><strong>Address:</strong> Galkot Municipality-2, Baglung</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Lokendra Gaire</p>
+    </footer>
+</body>
+</html>
