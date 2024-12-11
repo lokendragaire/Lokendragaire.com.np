@@ -195,4 +195,16 @@
     <br> password:
     <input type="Lokendr@29">
     </body>
+                function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (username === 'Lokendra' && password === 'Lokendr@29') {
+                errorMessage.style.display = 'none';
+                alert('Login Successful!');
+            } else {
+                errorMessage.style.display = 'block';
+            }
+        }
 </html>
