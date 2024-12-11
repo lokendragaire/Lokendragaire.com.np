@@ -4,52 +4,53 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Lokendra Gaire - Personal Website</title>
-    <meta name="description" content="Welcome to my website" />
-    <meta name="keywords" content="Lokendra Gaire, Lokendra, Gaire, personal website, projects, contact" />
-    <link rel="canonical" href="https://lokendragaire.com.np/" />
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Lato:wght@400;700;400italic;700italic&display=swap" rel="stylesheet" />
-    <link href="css/styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" />
     <style>
-        /* Custom Background Colors */
-        .bg-about { background-color: #28a745; }
-        .bg-portfolio { background-color: #6c757d; }
-        .bg-contact { background-color: #ADD8E6; }
-
-        /* Additional Styles */
         .hidden { display: none; }
-        .masthead img { border-radius: 50%; max-width: 150px; width: 100%; }
-        @media (max-width: 768px) {
-            .masthead { padding-top: 100px; padding-bottom: 100px; }
-        }
     </style>
 </head>
 <body id="page-top">
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
         <div class="container">
-            <button class="navbar-toggler" type="button" onclick="toggleMenu()" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                Menu
-                <i class="fas fa-bars"></i>
+            <button class="navbar-toggler" type="button" onclick="toggleMenu()">
+                Menu <i class="fas fa-bars"></i>
             </button>
             <div id="navbarResponsive" class="hidden">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="About" onclick="showSection('about')">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Portfolio" onclick="showSection('portfolio')">Portfolio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contat" onclick="showSection('contact')">Contact</a></li>
                 </ul>
             </div>
         </div>
-    </nav>
-
-    <!-- Masthead-->
+    </nav>     <!-- Masthead-->
     <header class="masthead bg-primary text-white text-center">
+        <div class="dash-bar"></div>
         <div class="container d-flex align-items-center flex-column">
             <img class="masthead-avatar" src="brp.jpg" alt="Lokendra Gaire" />
             <h1 class="masthead-heading text-uppercase mb-0">Lokendra Gaire</h1>
             <h2><u>Mis Operator</u></h2>
-            <h3>Social Security and Registration Department<br>Galkot Municipality Office<br>Galkot, Baglung, Nepal</h3>
+            <h3>Social seurity and registration department  <br> Galkot Municipality Offie <br> Galkot, Baglung, Nepal</h3>
+            <h2>Follow Me on Social Media</h2>
+            <a href="https://www.youtube.com/@hamrogalkot5013" target="_blank" class="btn btn-danger">
+                <i class="fab fa-youtube"></i> Subscribe on YouTube
+            </a>
+            <a href="https://www.facebook.com/lokendra.gaire.7" target="_blank" class="btn btn-primary">
+                <i class="fab fa-facebook-f"></i> Follow on Facebook
+            </a>
+            <a href="https://tiktok.com/@mr.gairelokendra" target="_blank" class="btn btn-primary">
+                <i class="fab fa-tiktok"></i> Follow on TikTok
+            </a>
+        </div>
+    </header>    <!-- Masthead-->
+    <header class="masthead bg-primary text-white text-center">
+        <div class="dash-bar"></div>
+        <div class="container d-flex align-items-center flex-column">
+            <img class="masthead-avatar" src="brp.jpg" alt="Lokendra Gaire" />
+            <h1 class="masthead-heading text-uppercase mb-0">Lokendra Gaire</h1>
+            <h2><u>Mis Operator</u></h2>
+            <h3>Social seurity and registration department  <br> Galkot Municipality Offie <br> Galkot, Baglung, Nepal</h3>
             <h2>Follow Me on Social Media</h2>
             <a href="https://www.youtube.com/@hamrogalkot5013" target="_blank" class="btn btn-danger">
                 <i class="fab fa-youtube"></i> Subscribe on YouTube
@@ -63,48 +64,61 @@
         </div>
     </header>
 
-    <!-- About Section-->
-    <section class="page-section bg-about text-white hidden" id="about">
-        <div class="container">
-            <h3 class="section-subheading text-center text-white">Learn more about Lokendra Gaire.</h3>
-            <p>Lokendra Gaire is the President of the Free Student Union (FSU) at Galkot Multiple Campus in Galkot, Baglung, Nepal...</p>
-        </div>
+    <!-- About Section -->
+    <section id="about" class="hidden">
+        <h3>About Lokendra Gaire</h3>
+        <p>Details about Lokendra Gaire.</p>
     </section>
 
-    <!-- Portfolio Section-->
-    <section class="page-section bg-portfolio text-white hidden" id="portfolio">
-        <div class="container">
-            <h3 class="section-subheading text-center text-white">A showcase of my work and accomplishments.</h3>
-        </div>
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="hidden">
+        <h3>Portfolio</h3>
+        <p>Details about portfolio.</p>
     </section>
 
-    <!-- Contact Section-->
-    <section class="page-section bg-contact text-white hidden" id="contact">
-        <div class="container text-center">
-            <h3><a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#contactModal">Contact Details</a></h3>
-        </div>
+    <!-- Contact Section -->
+    <section id="contact" class="hidden">
+        <h3>Contact</h3>
+        <p>Details about contact.</p>
     </section>
-
-    <!-- Footer -->
-    <footer class="text-center py-3">
-        <p>&copy; 2024 Lokendra Gaire. All Rights Reserved.</p>
-    </footer>
 
     <!-- Login Section -->
     <div class="text-center my-4">
         <label for="username">Username:</label>
-        <input type="text" id="username" name="Lokendra">
+        <input type="text" id="username" name="username">
         <br>
         <label for="password">Password:</label>
-        <input type="password" id="password" name="Lokendra9">
+        <input type="password" id="password" name="password">
         <br>
-        <button class="btn btn-success mt-2">Login</button>
+        <button class="btn btn-success mt-2" onclick="login()">Login</button>
+        <p id="errorMessage" style="color: red; display: none;">Username or Password is incorrect!</p>
     </div>
 
     <script>
         function toggleMenu() {
             const menu = document.getElementById('navbarResponsive');
             menu.classList.toggle('hidden');
+        }
+
+        function showSection(sectionId) {
+            const sections = ['about', 'portfolio', 'contact'];
+            sections.forEach(sec => {
+                document.getElementById(sec).classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (username === 'Lokendra' && password === 'Lokendr@29') {
+                errorMessage.style.display = 'none';
+                alert('Login Successful!');
+            } else {
+                errorMessage.style.display = 'block';
+            }
         }
     </script>
 </body>
