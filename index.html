@@ -12,6 +12,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Lato:wght@400;700;400italic;700italic&display=swap" rel="stylesheet" />
     <link href="css/styles.css" rel="stylesheet" />
     <style>
+         function redirectToWebsite() {
+            const searchQuery = document.getElementById('searchBox').value.trim().toLowerCase();
+
+            // Keywords for redirection
+            const keywords = ["lokendra gaire", "लोकेन्द्र गैरे"];
+
+            // Check if the search query matches any keyword
+            if (keywords.includes(searchQuery)) {
+                window.location.href = "https://lokendragaire.com.np/";
+            } else {
+                alert("No matching result found. Try searching for 'Lokendra Gaire' or 'लोकेन्द्र गैरे'.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Search for Lokendra Gaire</h1>
+    <input type="text" id="searchBox" placeholder="Type your search here...">
+    <button onclick="redirectToWebsite()">Search</button>
+</body>
         /* Custom Background Colors */
         .bg-about {
             background-color: #28a745; /* About Section */
