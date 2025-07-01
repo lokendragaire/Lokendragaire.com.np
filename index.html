@@ -20,9 +20,9 @@
     <style>
         /* Custom styles for social buttons and background colors not directly in Tailwind */
         .btn-social {
-            /* Increased size: w-12 h-12 (48px) changed to w-24 h-24 (96px) */
-            /* Increased icon font size: text-xl (1.25rem) changed to text-4xl (2.25rem) */
-            @apply inline-flex items-center justify-center w-24 h-24 rounded-full text-white text-4xl mx-1 transition-all duration-300 ease-in-out;
+            /* Increased size: w-24 h-24 (96px) changed to w-70 h-70 (265px) */
+            /* Increased icon font size: text-4xl (2.25rem) changed to text-5xl (3rem) */
+            @apply inline-flex items-center justify-center w-32 h-32 rounded-full text-white text-5xl mx-1 transition-all duration-300 ease-in-out;
         }
         .btn-youtube { background-color: #FF0000; }
         .btn-youtube:hover { background-color: #cc0000; transform: scale(1.1); }
@@ -253,27 +253,27 @@
                 <h2 class="text-center mb-12">दैनिक प्रयोगका लागि महत्वपूर्ण लिङ्कहरू</h2>
                 <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <li class="bg-green-100 p-4 rounded-lg shadow-md flex items-center justify-between">
-                        <span>आवश्यक पोर्टलहरू:</span>
+                        <span><i class="fas fa-briefcase mr-2 text-blue-600"></i>आवश्यक पोर्टलहरू:</span>
                         <a href="link.html" class="text-green-700 hover:underline">यहाँ क्लिक गर्नुहोस्</a>
                     </li>
                     <li class="bg-green-100 p-4 rounded-lg shadow-md flex items-center justify-between">
-                        <span>शिक्षा सम्बन्धित पोर्टलहरू:</span>
+                        <span><i class="fas fa-book mr-2 text-yellow-600"></i>शिक्षा सम्बन्धित पोर्टलहरू:</span>
                         <a href="edu.html" class="text-green-700 hover:underline">यहाँ क्लिक गर्नुहोस्</a>
                     </li>
                     <li class="bg-green-100 p-4 rounded-lg shadow-md flex items-center justify-between">
-                        <span>वित्तीय सेवाहरू:</span>
+                        <span><i class="fas fa-coins mr-2 text-orange-600"></i>वित्तीय सेवाहरू:</span>
                         <a href="finance.html" class="text-green-700 hover:underline">यहाँ क्लिक गर्नुहोस्</a>
                     </li>
                     <li class="bg-green-100 p-4 rounded-lg shadow-md flex items-center justify-between">
-                        <span>स्वास्थ्य सम्बन्धित पोर्टलहरू:</span>
+                        <span><i class="fas fa-plus-circle mr-2 text-red-600"></i>स्वास्थ्य सम्बन्धित पोर्टलहरू:</span>
                         <a href="health.html" class="text-green-700 hover:underline">यहाँ क्लिक गर्नुहोस्</a>
                     </li>
                     <li class="bg-green-100 p-4 rounded-lg shadow-md flex items-center justify-between">
-                        <span>शिक्षक कर्मचारी पोर्टल:</span>
+                        <span><i class="fas fa-user-tie mr-2 text-purple-600"></i>शिक्षक कर्मचारी पोर्टल:</span>
                         <a href="karmachari.html" class="text-green-700 hover:underline">यहाँ क्लिक गर्नुहोस्</a>
                     </li>
                     <li class="bg-green-100 p-4 rounded-lg shadow-md flex items-center justify-between">
-                        <span>बैँक, विमा कम्पनी तथा पुनर्विमा कम्पनीहरु:</span>
+                        <span><i class="fas fa-building mr-2 text-indigo-600"></i>बैँक, विमा कम्पनी तथा पुनर्विमा कम्पनीहरु:</span>
                         <a href="bi.html" class="text-green-700 hover:underline">यहाँ क्लिक गर्नुहोस्</a>
                     </li>
                 </ul>
@@ -286,9 +286,9 @@
                 <h2 class="text-center mb-6 text-2xl">Direct Contact</h2>
                 <div class="text-center">
                     <p class="lead text-base text-gray-700 mb-2">
-                        <i class="fas fa-phone mr-2 text-2xl"></i><strong>Phone:</strong> <a href="tel:+9779869065252" class="text-gray-700 hover:underline">+977 9869065252</a><br>
-                        <i class="fas fa-envelope mr-2 text-2xl"></i><strong>Email:</strong> <a href="mailto:lokendra.gaire.70@gmail.com" class="text-green-600 hover:underline">lokendra.gaire.70@gmail.com</a><br>
-                        <i class="fas fa-map-marker-alt mr-2 text-2xl"></i><strong>Address:</strong> <a href="https://maps.google.com/?q=Galkot+Municipality-2,+Baglung,+Nepal" target="_blank" class="text-gray-700 hover:underline">Galkot Municipality-2, Baglung</a>
+                        <i class="fas fa-phone mr-2 text-2xl text-green-500"></i><strong>Phone:</strong> <a href="tel:+9779869065252" class="text-gray-700 hover:underline">+977 9869065252</a><br>
+                        <i class="fas fa-envelope mr-2 text-2xl text-red-500"></i><strong>Email:</strong> <a href="mailto:lokendra.gaire.70@gmail.com" class="text-green-600 hover:underline">lokendra.gaire.70@gmail.com</a><br>
+                        <i class="fas fa-map-marker-alt mr-2 text-2xl text-blue-500"></i><strong>Address:</strong> <a href="https://maps.google.com/?q=Galkot+Municipality-2,+Baglung,+Nepal" target="_blank" class="text-gray-700 hover:underline">Galkot Municipality-2, Baglung</a>
                     </p>
                 </div>
             </div>
