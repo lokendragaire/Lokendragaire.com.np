@@ -1,11 +1,9 @@
 /*!
-* Start Bootstrap - Freelancer v7.0.3 (https://startbootstrap.com/theme/freelancer)
-* Copyright 2013-2021 Start Bootstrap
-* Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-freelancer/blob/master/LICENSE)
-*/
-//
-// Scripts
-// 
+    * Start Bootstrap - Freelancer v7.0.7 (https://startbootstrap.com/theme/freelancer)
+    * Copyright 2013-2023 Start Bootstrap
+    * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-freelancer/blob/master/LICENSE)
+    */
+    // This script is adapted from the provided Bootstrap theme.
 
 window.addEventListener('DOMContentLoaded', event => {
 
@@ -23,7 +21,7 @@ window.addEventListener('DOMContentLoaded', event => {
 
     };
 
-    // Shrink the navbar 
+    // Shrink the navbar when page is loaded
     navbarShrink();
 
     // Shrink the navbar when page is scrolled
@@ -34,7 +32,7 @@ window.addEventListener('DOMContentLoaded', event => {
     if (mainNav) {
         new bootstrap.ScrollSpy(document.body, {
             target: '#mainNav',
-            offset: 72,
+            rootMargin: '0px 0px -40%',
         });
     };
 
@@ -50,5 +48,21 @@ window.addEventListener('DOMContentLoaded', event => {
             }
         });
     });
+
+    // --- Added from your provided code ---
+    // This is the function you had for redirection.
+    // I've removed the search bar from the main HTML for a cleaner design.
+    // If you still want it, you can add it back and use this function.
+    function redirectToWebsite() {
+        // This function is currently not used in the clean HTML,
+        // but you can integrate it if you add a search input.
+        const searchQuery = document.getElementById('lokendra-gaire-search').value.trim().toLowerCase();
+        const keywords = ["Lokendra Gaire", "लोकेन्द्र गैरे"];
+        if (keywords.includes(searchQuery)) {
+            window.location.href = "https://lokendragaire.com.np"; // Corrected URL
+        } else {
+            alert("No matching result found. Try searching for 'Lokendra Gaire' or 'लोकेन्द्र गैरे'.");
+        }
+    }
 
 });
