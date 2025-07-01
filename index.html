@@ -1,121 +1,937 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lokendra Gaire - Personal Website</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Arial', sans-serif;
-      background: #f0f0f0;
-      color: #333;
-    }
-    header {
-      background-color: #333;
-      color: white;
-      padding: 20px 0;
-      text-align: center;
-    }
-    nav {
-      background-color: #444;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      padding: 10px 0;
-    }
-    nav a {
-      color: white;
-      padding: 10px 20px;
-      text-decoration: none;
-      transition: background 0.3s;
-    }
-    nav a:hover {
-      background-color: #555;
-    }
-    .tabs {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      padding: 40px;
-      background-color: white;
-    }
-    .tab {
-      background-color: #fafafa;
-      padding: 20px;
-      text-align: center;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .tab i {
-      font-size: 36px;
-      color: #007BFF;
-    }
-    .tab h3 {
-      margin-top: 10px;
-      font-size: 20px;
-    }
-    .tab p {
-      margin-top: 10px;
-      font-size: 16px;
-    }
-    footer {
-      background-color: #222;
-      color: white;
-      text-align: center;
-      padding: 15px 0;
-    }
-    .social-icons a {
-      font-size: 28px;
-      margin: 0 10px;
-      color: inherit;
-      transition: color 0.3s;
-    }
-    .social-icons a:hover {
-      opacity: 0.8;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lokendra Gaire - Personal Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- For social media icons -->
+    <style>
+        /* Define CSS Variables for easier color management */
+        :root {
+            --bg-dark: #1a1a1a; /* Dark background like the image */
+            --bg-section-dark: #222; /* Slightly lighter dark for sections */
+            --text-light: #ffffff; /* White text */
+            --text-grey: #cccccc; /* Light grey text */
+            --highlight-pink: #ff0055; /* Pink color for highlight */
+            --header-height: 70px;
+        }
+
+        /* Smooth scrolling for anchor links */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif; /* Use a standard clean font */
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        .container {
+            max-width: 1200px; /* Limit content width */
+            margin: 0 auto; /* Center the container */
+            padding: 0 20px; /* Add some padding on sides */
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--bg-dark); /* Same as body background */
+            height: var(--header-height);
+            display: flex;
+            justify-content: space-between; /* Space out logo and nav */
+            align-items: center;
+            padding: 0 40px; /* Padding on left/right */
+            position: fixed; /* Fixed header */
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000; /* Stay on top */
+            box-sizing: border-box; /* Include padding in width */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: Add a subtle shadow */
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin-left: 20px; /* Space between nav items */
+        }
+
+        nav ul li a {
+            color: var(--text-grey); /* Lighter color for nav links */
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            padding: 5px 0; /* Add padding for hover area */
+            position: relative; /* For underline effect */
+        }
+
+        nav ul li a:hover {
+            color: var(--text-light); /* White on hover */
+        }
+
+        /* Optional: Add a simple underline on hover/active */
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--highlight-pink);
+            transition: width 0.3s ease;
+        }
+
+         nav ul li a:hover::after {
+             width: 100%;
+         }
+         /* Add a class for active link if needed */
+        /* nav ul li a.active::after { width: 100%; } */
+
+
+        .hire-button { /* Changed class name */
+            background-color: var(--highlight-pink);
+            color: var(--text-light);
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-left: 30px; /* Space from last nav item */
+        }
+
+        .hire-button:hover {
+            background-color: #cc0044; /* Darker pink on hover */
+        }
+
+        /* Hero Section Styles */
+        .hero {
+            display: flex;
+            align-items: center; /* Vertically center content */
+            padding-top: var(--header-height); /* Push content down below header */
+            min-height: calc(100vh - var(--header-height)); /* Full height minus header */
+            position: relative;
+            overflow: hidden; /* Hide overflowing parts of the image */
+        }
+
+        .hero-container { /* Added container specifically for hero layout */
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px; /* Match overall container */
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+
+        .hero-content {
+            flex: 1; /* Take up available space */
+            padding-right: 40px; /* Space between text and image */
+            z-index: 1; /* Ensure text is above image if overlap */
+        }
+
+        .hero-image {
+             flex: 1; /* Take up available space */
+             display: flex; /* Use flex to position image */
+             justify-content: flex-end; /* Align image to the right */
+             align-items: flex-end; /* Align image to the bottom */
+             height: calc(100vh - var(--header-height)); /* Give image container height */
+             position: relative; /* Needed for absolute positioning */
+        }
+
+        .hero-image img {
+            max-width: 100%; /* Ensure image fits container */
+            height: 100%; /* Make image take full height of its container */
+            object-fit: cover; /* Cover the container without distortion */
+            object-position: center; /* Center the image */
+            display: block; /* Remove extra space below image */
+        }
+
+
+        .welcome-text {
+            font-size: 1rem;
+            color: var(--text-grey);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .name-heading {
+            font-size: 3.5rem; /* Large font size */
+            margin: 0 0 10px 0;
+            color: var(--text-light);
+        }
+
+        .name-heading span {
+            color: var(--highlight-pink); /* Pink color for the name */
+        }
+
+        .title-text {
+            font-size: 3.5rem; /* Large font size */
+            margin: 0;
+            color: var(--text-light);
+            position: relative; /* Needed for cursor */
+            display: inline-block; /* Needed for cursor positioning */
+        }
+
+        /* Blinking cursor effect */
+        .title-text::after {
+            content: '|'; /* Cursor character */
+            color: var(--highlight-pink); /* Cursor color */
+            animation: blink 1s step-end infinite; /* Blinking animation */
+            display: inline-block; /* Ensure cursor is visible */
+            margin-left: 5px;
+            font-weight: normal; /* Make cursor weight normal */
+        }
+
+        @keyframes blink {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .description-text {
+            font-size: 1.1rem;
+            color: var(--text-grey);
+            margin-top: 20px;
+            max-width: 500px; /* Limit width of paragraph */
+        }
+
+        /* General Section Styles */
+        section {
+            padding: 80px 0; /* Vertical padding for each section */
+            background-color: var(--bg-dark); /* Default background */
+        }
+
+        section:nth-child(even) { /* Alternate background for better separation */
+             background-color: var(--bg-section-dark);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--text-light);
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+         .section-title::after {
+             content: '';
+             display: block;
+             width: 80px;
+             height: 3px;
+             background-color: var(--highlight-pink);
+             margin: 20px auto 0; /* Center the underline */
+         }
+
+
+        /* About Section */
+        .about .about-content {
+            display: flex;
+            flex-wrap: wrap; /* Allow stacking on small screens */
+            gap: 40px; /* Space between flex items */
+            align-items: center;
+        }
+
+        .about .about-text, .about .about-details {
+             flex: 1; /* Take equal space */
+             min-width: 300px; /* Minimum width before wrapping */
+        }
+
+        .about .about-text h3 {
+            color: var(--text-light);
+            font-size: 1.8rem;
+            margin-top: 0;
+        }
+
+        .about .about-text p, .about .about-details p {
+            color: var(--text-grey);
+            margin-bottom: 15px;
+        }
+
+         .about .about-details strong {
+             color: var(--text-light); /* Make strong text stand out */
+         }
+
+        /* Portfolio Section */
+        .portfolio .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+            gap: 30px; /* Space between grid items */
+        }
+
+        .portfolio-item {
+            background-color: #2a2a2a; /* Background for item */
+            border-radius: 8px;
+            overflow: hidden; /* Hide overflowing image parts */
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-10px); /* Lift effect on hover */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 200px; /* Fixed height for portfolio images */
+            object-fit: cover; /* Cover the area */
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+         .portfolio-item:hover img {
+             transform: scale(1.05); /* Slight zoom on image */
+         }
+
+        .portfolio-info {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .portfolio-info h4 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            color: var(--text-light);
+        }
+
+        .portfolio-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-grey);
+        }
+
+
+        /* Blog Section */
+        .blog .blog-posts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .blog-post {
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex; /* Use flex for image and content */
+            flex-direction: column;
+        }
+         .blog-post:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+         }
+
+        .blog-post img {
+            width: 100%;
+            height: 180px; /* Fixed height for blog image */
+            object-fit: cover;
+            display: block;
+        }
+
+        .blog-content {
+            padding: 20px;
+            flex-grow: 1; /* Allow content to take space */
+        }
+
+        .blog-content h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+        .blog-content p {
+            font-size: 0.95rem;
+            color: var(--text-grey);
+            margin-bottom: 15px;
+        }
+        .blog-content a {
+            color: var(--highlight-pink);
+            text-decoration: none;
+            font-weight: bold;
+        }
+         .blog-content a:hover {
+             text-decoration: underline;
+         }
+
+
+        /* Contact Section */
+        .contact .contact-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+        .contact .contact-info,
+        .contact .contact-form {
+            flex: 1;
+            min-width: 300px; /* Minimum width before wrapping */
+        }
+
+         .contact .contact-info h3 {
+             color: var(--text-light);
+             font-size: 1.8rem;
+             margin-top: 0;
+             margin-bottom: 20px;
+         }
+
+        .contact .contact-info p {
+             color: var(--text-grey);
+             margin-bottom: 15px;
+         }
+
+         .contact .contact-info a {
+             color: var(--text-grey);
+             text-decoration: none;
+         }
+          .contact .contact-info a:hover {
+              color: var(--text-light);
+          }
+
+         .contact-form form label {
+             display: block;
+             margin-bottom: 5px;
+             color: var(--text-light);
+             font-weight: bold;
+         }
+         .contact-form form input[type="text"],
+         .contact-form form input[type="email"],
+         .contact-form form textarea {
+             width: 100%;
+             padding: 15px;
+             margin-bottom: 20px;
+             background-color: #333; /* Darker input background */
+             border: none;
+             border-radius: 5px;
+             color: var(--text-light);
+             font-size: 1rem;
+             box-sizing: border-box; /* Include padding in width */
+         }
+
+          .contact-form form input[type="text"]::placeholder,
+          .contact-form form input[type="email"]::placeholder,
+          .contact-form form textarea::placeholder {
+              color: #888; /* Placeholder text color */
+          }
+
+
+         .contact-form form button {
+             background-color: var(--highlight-pink);
+             color: var(--text-light);
+             padding: 12px 25px;
+             border: none;
+             border-radius: 5px;
+             cursor: pointer;
+             font-size: 1rem;
+             font-weight: bold;
+             transition: background-color 0.3s ease;
+         }
+          .contact-form form button:hover {
+              background-color: #cc0044;
+          }
+
+
+         /* Login Section (Basic Placeholder) */
+         .login .login-form {
+             max-width: 400px; /* Limit width of login form */
+             margin: 0 auto; /* Center the form */
+             background-color: #2a2a2a;
+             padding: 30px;
+             border-radius: 8px;
+             text-align: center; /* Center form content */
+         }
+
+         .login .login-form h3 {
+             margin-top: 0;
+             color: var(--text-light);
+             margin-bottom: 25px;
+         }
+
+          .login-form input[type="text"],
+          .login-form input[type="password"] {
+              width: 100%;
+              padding: 12px;
+              margin-bottom: 15px;
+              background-color: #333;
+              border: none;
+              border-radius: 5px;
+              color: var(--text-light);
+              font-size: 1rem;
+              box-sizing: border-box;
+          }
+
+          .login-form button {
+               background-color: var(--highlight-pink);
+               color: var(--text-light);
+               padding: 10px 20px;
+               border: none;
+               border-radius: 5px;
+               cursor: pointer;
+               font-size: 1rem;
+               font-weight: bold;
+               transition: background-color 0.3s ease;
+           }
+           .login-form button:hover {
+               background-color: #cc0044;
+           }
+
+
+        /* Bottom Skills/Social Section (Kept from previous, maybe move before footer) */
+        .bottom-section {
+            background-color: var(--bg-dark); /* Match body or footer background */
+            padding: 40px 40px; /* Reduced padding */
+            border-top: 1px solid #333; /* Separator line */
+            display: flex;
+            justify-content: space-between; /* Space out social and skills */
+            align-items: flex-start; /* Align items to the top */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+
+        .find-with-me, .best-skill-on {
+            width: 48%; /* Allocate width, adjust as needed */
+        }
+
+        .find-with-me h3, .best-skill-on h3 {
+            font-size: 1rem;
+            color: var(--text-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .social-icons, .skill-icons {
+            display: flex;
+            gap: 15px; /* Space between icons */
+        }
+
+        .icon-box {
+            width: 40px;
+            height: 40px;
+            background-color: #2a2a2a; /* Slightly lighter dark for icon background */
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            color: var(--text-grey);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            cursor: pointer; /* Indicate clickable */
+        }
+
+        .icon-box:hover {
+            background-color: var(--highlight-pink);
+            color: var(--text-light);
+        }
+
+         /* Footer (Optional but good practice) */
+         footer {
+             background-color: #111; /* Even darker background */
+             color: var(--text-grey);
+             text-align: center;
+             padding: 30px 0;
+             font-size: 0.9rem;
+         }
+
+
+        /* Scroll to top button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--highlight-pink);
+            color: var(--text-light);
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+            z-index: 999;
+        }
+
+        .scroll-to-top:hover {
+            opacity: 1;
+        }
+
+        /* Basic Responsiveness (adjust breakpoints as needed) */
+        @media (max-width: 992px) {
+             header {
+                 padding: 0 20px;
+             }
+             nav ul li {
+                 margin-left: 15px;
+             }
+              .hire-button {
+                  margin-left: 20px;
+              }
+
+            .hero-container {
+                flex-direction: column; /* Stack content on smaller screens */
+                text-align: center; /* Center text */
+                padding-top: 20px; /* Add extra space */
+                min-height: auto; /* Don't force full height */
+            }
+
+            .hero-content {
+                padding-right: 0;
+                margin-bottom: 40px; /* Space below text */
+                max-width: 90%; /* Limit text width */
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+             .hero-image {
+                 justify-content: center; /* Center image */
+                 align-items: center;
+                 height: auto; /* Auto height on small screens */
+             }
+
+            .hero-image img {
+                max-height: 60vh; /* Limit image height on smaller screens */
+                 height: auto; /* Use auto height */
+                object-fit: contain; /* Contain might look better than cover if aspect ratio changes */
+                object-position: center;
+            }
+
+
+            .name-heading, .title-text {
+                font-size: 2.5rem; /* Reduce font size */
+            }
+
+             section {
+                 padding: 60px 0; /* Reduce section padding */
+             }
+             .section-title {
+                 font-size: 2rem; /* Reduce section title size */
+                 margin-bottom: 40px;
+             }
+
+             .about .about-content,
+             .contact .contact-content {
+                 flex-direction: column; /* Stack about/contact content */
+                 gap: 30px;
+             }
+
+            .about .about-text, .about .about-details,
+            .contact .contact-info, .contact .contact-form {
+                 min-width: 100%; /* Full width on small screens */
+            }
+
+             .portfolio .portfolio-grid,
+             .blog .blog-posts {
+                 grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjust grid item size */
+             }
+
+
+             .bottom-section {
+                flex-direction: column; /* Stack bottom sections */
+                align-items: center;
+                padding: 30px 20px; /* Adjust padding */
+            }
+
+            .find-with-me, .best-skill-on {
+                width: 100%; /* Full width */
+                margin-bottom: 30px; /* Space between stacked sections */
+                text-align: center;
+            }
+
+             .social-icons, .skill-icons {
+                justify-content: center; /* Center icons */
+                gap: 10px;
+            }
+        }
+
+         @media (max-width: 576px) {
+             .name-heading, .title-text {
+                font-size: 2rem; /* Further reduce font size */
+            }
+
+             .description-text {
+                font-size: 1rem;
+            }
+             .section-title {
+                font-size: 1.8rem;
+                margin-bottom: 30px;
+             }
+
+             nav {
+                 display: none; /* Hide nav links on smallest screens - typically a hamburger menu needed */
+             }
+             .hire-button {
+                 margin-left: 0; /* No space needed if nav is hidden */
+             }
+
+             /* Adjust padding on very small screens */
+             header { padding: 0 15px; }
+             .container { padding: 0 15px; }
+              .bottom-section { padding: 20px 15px; }
+         }
+
+
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Lokendra Gaire</h1>
-    <p>Personal Portfolio Website</p>
-  </header>
 
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#feature">Feature</a>
-    <a href="#portfolio">Portfolio</a>
-    <a href="#resume">Resume</a>
-    <a href="#client">Client</a>
-    <a href="#blog">Blog</a>
-    <a href="#contact">Contact</a>
-  </nav>
+    <header>
+        <a href="#hero" class="logo">LOKENDRA GAIRE</a>
+        <nav>
+            <ul>
+                <li><a href="#hero">HOME</a></li>
+                <li><a href="#about">ABOUT</a></li>
+                <li><a href="#portfolio">PORTFOLIO</a></li>
+                <li><a href="#blog">BLOG</a></li>
+                <li><a href="#contact">CONTACT</a></li>
+                <!-- Login as a link in the main nav -->
+                <li><a href="#login">LOGIN</a></li>
+                 <!-- Original links kept if needed, adjust or remove as per preference -->
+                <!-- <li><a href="#">FEATURES</a></li> -->
+                <!-- <li><a href="#">RESUME</a></li> -->
+                <!-- <li><a href="#">CLIENTS</a></li> -->
+                <!-- <li><a href="#">PRICING</a></li> -->
+            </ul>
+        </nav>
+        <a href="#contact" class="hire-button">HIRE ME</a> <!-- Button linking to Contact -->
+    </header>
 
-  <section class="tabs">
-    <div class="tab">
-      <i class="fas fa-share-alt"></i>
-      <h3>Find with Me</h3>
-      <div class="social-icons">
-        <a href="https://facebook.com/lokendra.gaire.7" target="_blank" style="color:#1877f2;"><i class="fab fa-facebook"></i></a>
-        <a href="https://youtube.com/@hamrogalkot5013" target="_blank" style="color:#ff0000;"><i class="fab fa-youtube"></i></a>
-        <a href="https://tiktok.com/@mr.gairelokendra" target="_blank" style="color:#000;"><i class="fab fa-tiktok"></i></a>
-      </div>
-    </div>
-    <div class="tab">
-      <i class="fas fa-code"></i>
-      <h3>Best Skill On</h3>
-      <p>HTML, CSS, Graphic Design</p>
-    </div>
-  </section>
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <p class="welcome-text">WELCOME TO MY WORLD</p>
+                <h1 class="name-heading">Hi, I'm <span>Lokendra Gaire</span></h1>
+                <p class="title-text">a Developer.</p> <!-- Assuming developer as in the image -->
+                <p class="description-text">
+                   Lokendra is known for being a diligent and resourceful individual. With a passion for technology and continuous learning, Lokendra has made significant contributions in their field. Their expertise and dedication are highly regarded by peers and colleagues alike.
+                   <!-- You can add more detail here if needed, but keep it concise for the hero section -->
+                </p>
+            </div>
+            <div class="hero-image">
+                <!-- Replace with an image of Lokendra Gaire -->
+                <img src="https://via.placeholder.com/600x800?text=Lokendra+Gaire+Image" alt="Lokendra Gaire">
+                <!-- Note: Use an actual photo of Lokendra Gaire here for the final website -->
+            </div>
+        </div>
+    </section>
 
-  <footer>
-    &copy; 2025 Lokendra Gaire. All rights reserved.
-  </footer>
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">ABOUT ME</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Why Choose Me?</h3>
+                    <p>Here you can write a more detailed description about yourself, your passion, your journey, and what makes you unique. Mention your work ethic, dedication, and how you can add value to clients or projects.</p>
+                    <p>Include details about your background, what you specialize in, and your future goals.</p>
+                </div>
+                <div class="about-details">
+                    <h3>Personal Details</h3>
+                     <!-- Include details you provided previously -->
+                    <p><strong>Name:</strong> Lokendra Gaire</p>
+                    <p><strong>Mobile No:</strong> +977-9869065252</p>
+                    <p><strong>E-mail:</strong> <a href="mailto:lokendra.gaire.70@gmail.com">lokendra.gaire.70@gmail.com</a></p>
+                    <p><strong>Grand Father:</strong> Purna prasad Gaire</p>
+                    <p><strong>Grand Mother:</strong> Durga Devi Gaire</p>
+                    <p><strong>Father:</strong> Punakhar Gaire</p>
+                    <p><strong>Mother:</strong> Ishwori Gaire</p>
+                    <p><strong>Brother:</strong> Tomendra Gaire</p>
+                    <p><strong>Birth Place:</strong> Galkot Municipality-2, Thana, Baglung</p>
+                    <p><strong>Qualification:</strong> Bachelor Degree In Business Study</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <h2 class="section-title">MY PORTFOLIO</h2>
+            <div class="portfolio-grid">
+                <!-- Example Portfolio Item 1 -->
+                <div class="portfolio-item">
+                    <img src="https://via.placeholder.com/400x300?text=Project+1" alt="Portfolio Project 1">
+                    <div class="portfolio-info">
+                        <h4>Project Title 1</h4>
+                        <p>Category (e.g., Web Design)</p>
+                    </div>
+                </div>
+                 <!-- Example Portfolio Item 2 -->
+                <div class="portfolio-item">
+                    <img src="https://via.placeholder.com/400x300?text=Project+2" alt="Portfolio Project 2">
+                    <div class="portfolio-info">
+                        <h4>Project Title 2</h4>
+                        <p>Category (e.g., Mobile App)</p>
+                    </div>
+                </div>
+                 <!-- Example Portfolio Item 3 -->
+                <div class="portfolio-item">
+                    <img src="https://via.placeholder.com/400x300?text=Project+3" alt="Portfolio Project 3">
+                    <div class="portfolio-info">
+                        <h4>Project Title 3</h4>
+                        <p>Category (e.g., Branding)</p>
+                    </div>
+                </div>
+                 <!-- Add more portfolio items as needed -->
+                 <div class="portfolio-item">
+                    <img src="https://via.placeholder.com/400x300?text=Project+4" alt="Portfolio Project 4">
+                    <div class="portfolio-info">
+                        <h4>Project Title 4</h4>
+                        <p>Category (e.g., Frontend)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section id="blog" class="blog">
+        <div class="container">
+             <h2 class="section-title">LATEST BLOG POSTS</h2>
+             <div class="blog-posts">
+                 <!-- Example Blog Post 1 -->
+                 <div class="blog-post">
+                     <img src="https://via.placeholder.com/500x300?text=Blog+Post+1" alt="Blog Post 1 Image">
+                     <div class="blog-content">
+                         <h4>Title of Blog Post 1</h4>
+                         <p>A short excerpt of the blog post content. Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                         <a href="#">Read More</a>
+                     </div>
+                 </div>
+                  <!-- Example Blog Post 2 -->
+                 <div class="blog-post">
+                     <img src="https://via.placeholder.com/500x300?text=Blog+Post+2" alt="Blog Post 2 Image">
+                     <div class="blog-content">
+                         <h4>Title of Blog Post 2</h4>
+                         <p>Another excerpt from a different blog post. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...</p>
+                         <a href="#">Read More</a>
+                     </div>
+                 </div>
+                  <!-- Example Blog Post 3 -->
+                 <div class="blog-post">
+                     <img src="https://via.placeholder.com/500x300?text=Blog+Post+3" alt="Blog Post 3 Image">
+                     <div class="blog-content">
+                         <h4>Title of Blog Post 3</h4>
+                         <p>Yet another blog post excerpt. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
+                         <a href="#">Read More</a>
+                     </div>
+                 </div>
+                 <!-- Add more blog posts as needed -->
+             </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+             <h2 class="section-title">GET IN TOUCH</h2>
+             <div class="contact-content">
+                 <div class="contact-info">
+                     <h3>Contact Information</h3>
+                     <p><i class="fas fa-phone-alt"></i> <strong>Phone:</strong> +977-9869065252</p>
+                     <p><i class="fas fa-envelope"></i> <strong>Email:</strong> <a href="mailto:lokendra.gaire.70@gmail.com">lokendra.gaire.70@gmail.com</a></p>
+                     <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> Galkot Municipality-2, Thana, Baglung</p>
+                     <!-- Add other contact details like social links again if desired -->
+                 </div>
+                 <div class="contact-form">
+                     <h3>Send Me a Message</h3>
+                     <form action="#" method="post"> <!-- Action and Method needed for form submission -->
+                         <div>
+                             <label for="name">Name:</label>
+                             <input type="text" id="name" name="name" required>
+                         </div>
+                          <div>
+                             <label for="email">Email:</label>
+                             <input type="email" id="email" name="email" required>
+                         </div>
+                          <div>
+                             <label for="message">Message:</label>
+                             <textarea id="message" name="message" rows="6" required></textarea>
+                         </div>
+                         <button type="submit">Send Message</button>
+                     </form>
+                 </div>
+             </div>
+        </div>
+    </section>
+
+    <!-- Login Section (Basic Placeholder - This would usually be on a separate page or a modal) -->
+     <section id="login" class="login">
+         <div class="container">
+              <h2 class="section-title">LOGIN</h2>
+              <div class="login-form">
+                  <h3>Access Your Account</h3>
+                  <form action="#" method="post"> <!-- Form submission logic needed -->
+                      <div>
+                          <label for="username">Username:</label>
+                          <input type="text" id="username" name="username" required>
+                      </div>
+                      <div>
+                           <label for="password">Password:</label>
+                          <input type="password" id="password" name="password" required>
+                      </div>
+                       <button type="submit">Login</button>
+                  </form>
+              </div>
+         </div>
+     </section>
+
+
+     <!-- Bottom Section - Social/Skills -->
+    <section class="bottom-section">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;"> <!-- Added flex properties directly or use a div inside -->
+            <div class="find-with-me">
+               <h3>FIND WITH ME</h3>
+               <div class="social-icons">
+                   <!-- Replace # with actual links -->
+                   <a href="#" class="icon-box"><i class="fab fa-facebook-f"></i></a>
+                   <a href="#" class="icon-box"><i class="fab fa-instagram"></i></a>
+                   <a href="#" class="icon-box"><i class="fab fa-linkedin-in"></i></a>
+                   <!-- Add more social icons as needed -->
+               </div>
+            </div>
+            <div class="best-skill-on">
+                <h3>BEST SKILL ON</h3>
+                <div class="skill-icons">
+                   <!-- Use icons or logos for skills (e.g., HTML, CSS, JS, Python, etc.) -->
+                    <div class="icon-box"><i class="fab fa-html5"></i></div>
+                    <div class="icon-box"><i class="fab fa-css3-alt"></i></div>
+                    <div class="icon-box"><i class="fab fa-js"></i></div>
+                    <div class="icon-box"><i class="fab fa-python"></i></div>
+                    <!-- Add more skill icons -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+     <!-- Footer -->
+     <footer>
+         <div class="container">
+             <p>© 2023 Lokendra Gaire. All Rights Reserved.</p>
+             <!-- You can add more links or info here -->
+         </div>
+     </footer>
+
+
+    <!-- Scroll to top button -->
+    <a href="#hero" class="scroll-to-top"><i class="fas fa-arrow-up"></i></a>
+
 </body>
 </html>
