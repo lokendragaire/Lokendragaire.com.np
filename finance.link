@@ -43,7 +43,7 @@
         </a>
 
         <div id="financial-services-section" class="max-w-6xl mx-auto bg-white p-6 sm:p-8 rounded-xl shadow-lg mt-8 hidden">
-            <h2 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-8">महत्वपूर्ण लिङ्कहरू</h2>
+            <h2 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-8">important link</h2>
 
             <a href="https://www.nrb.org.np/" target="_blank" rel="noopener noreferrer" class="link-card flex items-center p-4 bg-green-100 hover:bg-green-200 shadow-md">
                 <div class="icon-bg mr-4">
