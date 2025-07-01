@@ -1,273 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Lokendra Gaire - Personal Website</title>
-    <link rel="icon" href="brp.jpg" type="image/x-icon" />
+<!-- Tabs Section -->
+<section class="page-section bg-about" id="about">
+  <div class="container">
+    <h3 class="text-center section-subheading">About Me</h3>
     
-    <!-- Bootstrap CSS CDN for responsiveness -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    
-    <!-- FontAwesome for social icons -->
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-      rel="stylesheet"
-    />
-    
-    <style>
-      body {
-        font-family: 'Montserrat', Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding-top: 56px; /* navbar height */
-      }
-      /* Navbar */
-      nav.navbar {
-        background-color: #222;
-      }
-      nav.navbar .navbar-brand,
-      nav.navbar .nav-link {
-        color: #fff;
-      }
-      nav.navbar .nav-link:hover {
-        color: #ff2c6d;
-      }
-      nav.navbar .btn-buy {
-        background-color: #ff2c6d;
-        color: white;
-        border-radius: 20px;
-        padding: 5px 15px;
-        border: none;
-      }
-      nav.navbar .btn-buy:hover {
-        background-color: #e0215a;
-      }
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs justify-content-center mb-4" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="about-tab" data-bs-toggle="tab" data-bs-target="#aboutTabPane" type="button" role="tab">About</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="family-tab" data-bs-toggle="tab" data-bs-target="#familyTabPane" type="button" role="tab">Family Status</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contactTabPane" type="button" role="tab">Contact</button>
+      </li>
+    </ul>
 
-      /* Header (masthead) */
-      header.masthead {
-        background-color: #222;
-        color: white;
-        padding: 60px 15px;
-        text-align: center;
-      }
-      header.masthead img {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin-bottom: 15px;
-        border: 3px solid #ff2c6d;
-      }
-      header.masthead h1 {
-        font-weight: 700;
-        font-size: 2.8rem;
-        margin-bottom: 0.3rem;
-      }
-      header.masthead h2 {
-        font-weight: 400;
-        font-style: italic;
-        color: #ff2c6d;
-        margin-bottom: 0.3rem;
-      }
-      header.masthead h3 {
-        font-weight: 400;
-        margin-bottom: 1.5rem;
-      }
-      header.masthead .btn-social {
-        margin: 5px;
-        font-size: 1.2rem;
-        padding: 10px 15px;
-        border-radius: 30px;
-        color: white;
-        display: inline-block;
-        transition: background-color 0.3s ease;
-      }
-      header.masthead .btn-social.youtube {
-        background-color: #ff0000;
-      }
-      header.masthead .btn-social.facebook {
-        background-color: #1877f2;
-      }
-      header.masthead .btn-social.tiktok {
-        background-color: black;
-      }
-      header.masthead .btn-social:hover {
-        opacity: 0.8;
-      }
-
-      /* Sections */
-      section.page-section {
-        padding: 50px 15px;
-      }
-      /* About Section */
-      .bg-about {
-        background-color: #28a745;
-        color: white;
-      }
-      /* Portfolio Section */
-      .bg-portfolio {
-        background-color: #6c757d;
-        color: white;
-      }
-      /* Contact Section */
-      .bg-contact {
-        background-color: #add8e6;
-        color: #222;
-      }
-
-      /* Section Titles */
-      h3.section-subheading {
-        margin-bottom: 30px;
-        font-weight: 700;
-      }
-      a.section-link {
-        color: inherit;
-        text-decoration: none;
-      }
-      a.section-link:hover {
-        text-decoration: underline;
-      }
-
-      /* Portfolio Items */
-      .portfolio-item {
-        background: #fff;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 20px;
-        text-align: center;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        transition: transform 0.3s ease;
-      }
-      .portfolio-item:hover {
-        transform: translateY(-5px);
-      }
-      .portfolio-item a {
-        text-decoration: none;
-        color: #222;
-        font-weight: 600;
-        font-size: 1.2rem;
-      }
-
-      /* Contact modal styles */
-      .modal-header, .modal-footer {
-        border: none;
-      }
-      .modal-body p {
-        font-size: 1.1rem;
-      }
-
-      /* Responsive adjustments */
-      @media (max-width: 576px) {
-        header.masthead h1 {
-          font-size: 2rem;
-        }
-        header.masthead h2 {
-          font-size: 1.2rem;
-        }
-        header.masthead h3 {
-          font-size: 1rem;
-        }
-      }
-    </style>
-</head>
-<body>
-
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="#">INBIO</a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarResponsive"
-        aria-controls="navbarResponsive"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
+    <!-- Tab contents -->
+    <div class="tab-content" id="myTabContent">
       
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
-          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-          <li class="nav-item"><button class="btn btn-buy ms-3">Buy Now</button></li>
-        </ul>
+      <!-- About Tab -->
+      <div class="tab-pane fade show active" id="aboutTabPane" role="tabpanel">
+        <p class="text-center">
+          Lokendra is known for being a diligent and resourceful individual. With a passion for technology and continuous learning, Lokendra has made significant contributions in their field. Their expertise and dedication are highly regarded by peers and colleagues alike.
+        </p>
       </div>
-    </div>
-  </nav>
 
-  <!-- Header -->
-  <header class="masthead">
-    <img src="brp.jpg" alt="Lokendra Gaire" />
-    <h1>Lokendra Gaire</h1>
-    <h2><u>Mis Operator</u></h2>
-    <h3>Social Security and Registration Department<br>Galkot Municipality Office<br>Galkot, Baglung, Nepal</h3>
-    <div class="social-links">
-      <a href="https://www.youtube.com/@hamrogalkot5013" target="_blank" class="btn-social youtube" title="YouTube">
-        <i class="fab fa-youtube"></i>
-      </a>
-      <a href="https://www.facebook.com/lokendra.gaire.7" target="_blank" class="btn-social facebook" title="Facebook">
-        <i class="fab fa-facebook-f"></i>
-      </a>
-      <a href="https://tiktok.com/@mr.gairelokendra" target="_blank" class="btn-social tiktok" title="TikTok">
-        <i class="fab fa-tiktok"></i>
-      </a>
-    </div>
-  </header>
-
-  <!-- About Section -->
-  <section class="page-section bg-about" id="about">
-    <div class="container text-center">
-      <h3 class="section-subheading">1. Learn more about Lokendra Gaire</h3>
-      <div class="row justify-content-center">
-        <div class="col-md-8 text-start">
-          <p><strong>Name:</strong> Lokendra Gaire</p>
-          <p><strong>Mobile No:</strong> +977-9869065252</p>
-          <p><strong>E-mail:</strong> <a href="mailto:lokendra.gaire.70@gmail.com" class="section-link">lokendra.gaire.70@gmail.com</a></p>
-          <p>Lokendra is known for being a diligent and resourceful individual. With a passion for technology and continuous learning, Lokendra has made significant contributions in their field. Their expertise and dedication are highly regarded by peers and colleagues alike.</p>
-          <p><strong>Grandfather:</strong> Purna Prasad Gaire</p>
-          <p><strong>Grandmother:</strong> Durga Devi Gaire</p>
-          <p><strong>Father:</strong> Punakhar Gaire</p>
-          <p><strong>Mother:</strong> Ishwori Gaire</p>
-          <p><strong>Brother:</strong> Tomendra Gaire</p>
-          <p><strong>Birth Place:</strong> Galkot Municipality-2, Thana, Baglung</p>
-          <p><strong>Qualification:</strong> Bachelor Degree in Business Study</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Portfolio Section -->
-  <section class="page-section bg-portfolio" id="portfolio">
-    <div class="container text-center">
-      <h3 class="section-subheading">2. A showcase of my work and accomplishments</h3>
-      <div class="row justify-content-center">
-        <div class="col-md-4">
-          <div class="portfolio-item">
-            <a href="mis.html">MIS Operator</a>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="portfolio-item">
-            <a href="sami.html">Financial Literacy Facilitator (FLF)</a>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="portfolio-item">
-            <a href="teaching.html">Teacher</a>
+      <!-- Family Status Tab -->
+      <div class="tab-pane fade" id="familyTabPane" role="tabpanel">
+        <div class="row justify-content-center">
+          <div class="col-md-8">
+            <p><strong>Name:</strong> Lokendra Gaire</p>
+            <p><strong>Grandfather:</strong> Purna Prasad Gaire</p>
+            <p><strong>Grandmother:</strong> Durga Devi Gaire</p>
+            <p><strong>Father:</strong> Punakhar Gaire</p>
+            <p><strong>Mother:</strong> Ishwori Gaire</p>
+            <p><strong>Brother:</strong> Tomendra Gaire</p>
+            <p><strong>Birth Place:</strong> Galkot Municipality-2, Thana, Baglung</p>
+            <p><strong>Qualification:</strong> Bachelor Degree in Business Study</p>
           </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- Contact Section -->
-  <section class="page-section bg-contact" id="contact">
-    <div class="container text-center">
-      <h3 class="section-subheading">3. Contact Details</h3>
-      <p><strong>Name:</strong> Lokendra Gaire</p>
-      <p><strong>Phone No.
+      <!-- Contact Tab -->
+      <div class="tab-pane fade" id="contactTabPane" role="tabpanel">
+        <div class="text-center">
+          <p>
+            <i class="fas fa-phone-alt me-2"></i>
+            <a href="tel:+9779869065252">+977-9869065252</a>
+          </p>
+          <p>
+            <i class="fas fa-envelope me-2"></i>
+            <a href="mailto:lokendra.gaire.70@gmail.com">lokendra.gaire.70@gmail.com</a>
+          </p>
+          <p>
+            <a href="https://www.youtube.com/@hamrogalkot5013" class="btn-social youtube" target="_blank">
+              <i class="fab fa-youtube"></i>
+            </a>
+            <a href="https://www.facebook.com/lokendra.gaire.7" class="btn-social facebook" target="_blank">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://tiktok.com/@mr.gairelokendra" class="btn-social tiktok" target="_blank">
+              <i class="fab fa-tiktok"></i>
+            </a>
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
