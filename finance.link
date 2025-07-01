@@ -1,0 +1,68 @@
+<!-- Link for Nepal Rastra Bank -->
+            <a href="https://www.nrb.org.np/" target="_blank" rel="noopener noreferrer" class="link-card flex items-center p-4 bg-green-100 hover:bg-green-200 shadow-md">
+                <div class="icon-bg mr-4">
+                    <i class="fas fa-bank"></i> <!-- Icon for bank -->
+                </div>
+                <span class="text-lg font-medium text-gray-800">नेपाल राष्ट्र बैंक</span>
+            </a>
+
+            <!-- Link for National Investigation Department -->
+            <a href="https://nia.gov.np/" target="_blank" rel="noopener noreferrer" class="link-card flex items-center p-4 bg-gray-100 hover:bg-gray-200 shadow-md">
+                <div class="icon-bg mr-4">
+                    <i class="fas fa-user-secret"></i> <!-- Icon for investigation/secret -->
+                </div>
+                <span class="text-lg font-medium text-gray-800">राष्ट्रिय अनुसन्धान विभाग</span>
+            </a>
+
+            <!-- Link for Ministry of Finance -->
+            <a href="https://mof.gov.np/" target="_blank" rel="noopener noreferrer" class="link-card flex items-center p-4 bg-teal-100 hover:bg-teal-200 shadow-md">
+                <div class="icon-bg mr-4">
+                    <i class="fas fa-chart-line"></i> <!-- Icon for finance/charts -->
+                </div>
+                <span class="text-lg font-medium text-gray-800">अर्थ मन्त्रालय</span>
+            </a>
+
+            <!-- Link for Employees Provident Fund -->
+            <a href="https://epf.org.np/np/" target="_blank" rel="noopener noreferrer" class="link-card flex items-center p-4 bg-yellow-100 hover:bg-yellow-200 shadow-md">
+                <div class="icon-bg mr-4">
+                    <i class="fas fa-hand-holding-usd"></i> <!-- Icon for provident fund/money -->
+                </div>
+                <span class="text-lg font-medium text-gray-800">कर्मचारी सञ्चय कोष</span>
+            </a>
+
+            <!-- Link for National Land Commission -->
+            <a href="https://www.nlk.org.np/" target="_blank" rel="noopener noreferrer" class="link-card flex items-center p-4 bg-lime-100 hover:bg-lime-200 shadow-md">
+                <div class="icon-bg mr-4">
+                    <i class="fas fa-map-marked-alt"></i> <!-- Icon for land/map -->
+                </div>
+                <span class="text-lg font-medium text-gray-800">राष्ट्रिय भूमि आयोग</span>
+            </a>
+
+            <!-- Link for Nimbace Capital SIP Calculator -->
+            <a href="https://www.nimbacecapital.com/sip-calculator/" target="_blank" rel="noopener noreferrer" class="link-card flex items-center p-4 bg-orange-100 hover:bg-orange-200 shadow-md">
+                <div class="icon-bg mr-4">
+                    <i class="fas fa-calculator"></i> <!-- Icon for calculator -->
+                </div>
+                <span class="text-lg font-medium text-gray-800">निम्बेस क्यापिटल SIP क्याल्कुलेटर</span>
+            </a>
+
+            <!-- Link for Public Procurement Monitoring Office Date Converter -->
+            <a href="https://www.bolpatra.gov.np/egp/openDateConverter" target="_blank" rel="noopener noreferrer" class="link-card flex items-center p-4 bg-indigo-100 hover:bg-indigo-200 shadow-md">
+                <div class="icon-bg mr-4">
+                    <i class="fas fa-calendar-alt"></i> <!-- Icon for calendar/date -->
+                </div>
+                <span class="text-lg font-medium text-gray-800">सार्वजनिक खरिद अनुगमन कार्यालय (मिति परिवर्तक)</span>
+            </a>
+
+            <!-- Link for ClearTax Simple & Compound Interest Calculator -->
+            <a href="https://cleartax.in/s/simple-compound-interest-calculator" target="_blank" rel="noopener noreferrer" class="link-card flex items-center p-4 bg-pink-100 hover:bg-pink-200 shadow-md">
+                <div class="icon-bg mr-4">
+                    <i class="fas fa-calculator"></i> <!-- Icon for calculator -->
+                </div>
+                <span class="text-lg font-medium text-gray-800">ClearTax ब्याज क्याल्कुलेटर</span>
+            </a>
+        </div>
+    </section>
+
+</body>
+</html>
