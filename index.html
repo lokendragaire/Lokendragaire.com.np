@@ -191,18 +191,41 @@
             font-size: 0.8rem; /* Slightly smaller font */
         }
         
-        /* Removed media query for collapsed menu as per user request */
-        /* The menu will now always be horizontal */
+        @media (max-width: 768px) {
+            header.masthead {
+                padding: 4rem 0 2rem;
+            }
+            .masthead-heading {
+                font-size: 2.5rem;
+            }
+            .masthead-subheading {
+                font-size: 1.25rem;
+            }
+            /* Ensure collapsed menu has a background and padding */
+            #navbarResponsive.collapse:not(.show) {
+                display: none; /* Hide when not shown */
+            }
+            #navbarResponsive.collapse.show {
+                background-color: #FFFFFF; /* White background for expanded menu */
+                border-radius: 0 0 8px 8px; /* Optional: rounded corners for expanded menu */
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Optional: shadow for expanded menu */
+            }
+            #navbarResponsive .navbar-nav {
+                padding: 1rem; /* Add padding inside the expanded menu */
+            }
+        }
     </style>
 </head>
 <body id="page-top">
     <!-- Navigation-->
-    <nav class="navbar fixed-top py-3" id="mainNav"> <!-- Removed navbar-expand-lg -->
+    <nav class="navbar navbar-expand-lg fixed-top py-3" id="mainNav"> <!-- Re-added navbar-expand-lg -->
         <div class="container mx-auto px-4 flex justify-between items-center">
             <a class="navbar-brand text-2xl font-bold" href="#page-top">Lokendra Gaire</a>
-            <!-- Removed the navbar-toggler button as per user request -->
-            <div class="flex items-center w-auto" id="navbarResponsive"> <!-- Removed collapse and navbar-collapse -->
-                <ul class="navbar-nav flex space-x-4 ml-auto"> <!-- Changed lg:flex to flex for always horizontal -->
+            <button class="navbar-toggler lg:hidden focus:outline-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars text-gray-700"></i>
+            </button>
+            <div class="collapse navbar-collapse lg:flex lg:items-center lg:w-auto" id="navbarResponsive"> <!-- Re-added collapse and navbar-collapse, changed flex to lg:flex -->
+                <ul class="navbar-nav lg:flex lg:space-x-4 ml-auto"> <!-- Re-added lg:flex -->
                     <li class="nav-item"><a class="nav-link py-2 px-3 block" href="About.html">About</a></li>
                     <li class="nav-item"><a class="nav-link py-2 px-3 block" href="portfolio.html">Portfolio</a></li>
                     <li class="nav-item"><a class="nav-link py-2 px-3 block" href="politicaleng.html">Social Engagement</a></li>
