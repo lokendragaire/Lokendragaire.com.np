@@ -1,26 +1,121 @@
-<section class="tabs">
-  <div class="tab">
-    <i class="fas fa-share-alt"></i>
-    <h3>Find with Me</h3>
-    <div style="display: flex; justify-content: center; gap: 15px; margin-top: 10px; font-size: 28px;">
-      <!-- Facebook -->
-      <a href="https://facebook.com/lokendragaire" target="_blank" title="Facebook" style="color: #1877f2;">
-        <i class="fab fa-facebook"></i>
-      </a>
-      <!-- YouTube -->
-      <a href="https://youtube.com/@lokendragaire" target="_blank" title="YouTube" style="color: #ff0000;">
-        <i class="fab fa-youtube"></i>
-      </a>
-      <!-- TikTok -->
-      <a href="https://tiktok.com/@lokendragaire" target="_blank" title="TikTok" style="color: #000;">
-        <i class="fab fa-tiktok"></i>
-      </a>
-    </div>
-  </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lokendra Gaire - Personal Website</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f0f0f0;
+      color: #333;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+    }
+    nav {
+      background-color: #444;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 10px 0;
+    }
+    nav a {
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+    nav a:hover {
+      background-color: #555;
+    }
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 40px;
+      background-color: white;
+    }
+    .tab {
+      background-color: #fafafa;
+      padding: 20px;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .tab i {
+      font-size: 36px;
+      color: #007BFF;
+    }
+    .tab h3 {
+      margin-top: 10px;
+      font-size: 20px;
+    }
+    .tab p {
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    footer {
+      background-color: #222;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+    }
+    .social-icons a {
+      font-size: 28px;
+      margin: 0 10px;
+      color: inherit;
+      transition: color 0.3s;
+    }
+    .social-icons a:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Lokendra Gaire</h1>
+    <p>Personal Portfolio Website</p>
+  </header>
 
-  <div class="tab">
-    <i class="fas fa-code"></i>
-    <h3>Best Skill On</h3>
-    <p>HTML, CSS, Graphic Design</p>
-  </div>
-</section>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#feature">Feature</a>
+    <a href="#portfolio">Portfolio</a>
+    <a href="#resume">Resume</a>
+    <a href="#client">Client</a>
+    <a href="#blog">Blog</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <section class="tabs">
+    <div class="tab">
+      <i class="fas fa-share-alt"></i>
+      <h3>Find with Me</h3>
+      <div class="social-icons">
+        <a href="https://facebook.com/lokendra.gaire.7" target="_blank" style="color:#1877f2;"><i class="fab fa-facebook"></i></a>
+        <a href="https://youtube.com/@hamrogalkot5013" target="_blank" style="color:#ff0000;"><i class="fab fa-youtube"></i></a>
+        <a href="https://tiktok.com/@mr.gairelokendra" target="_blank" style="color:#000;"><i class="fab fa-tiktok"></i></a>
+      </div>
+    </div>
+    <div class="tab">
+      <i class="fas fa-code"></i>
+      <h3>Best Skill On</h3>
+      <p>HTML, CSS, Graphic Design</p>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 Lokendra Gaire. All rights reserved.
+  </footer>
+</body>
+</html>
