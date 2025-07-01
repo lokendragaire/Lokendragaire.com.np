@@ -1,95 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Lokendra Gaire - Developer Portfolio</title>
-    <meta name="description" content="Welcome to Lokendra Gaire's official website." />
-    <meta name="keywords" content="Lokendra Gaire, Developer, Portfolio, MIS Operator" />
-    <link rel="icon" type="image/x-icon" href="brp.jpg" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lokendra Gaire - Developer Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0e0e0e;
+      color: white;
+    }
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    header {
+      background-color: #121212;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #333;
+    }
 
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
 
-    <!-- Style -->
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: #121212;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            text-align: center;
-            padding: 20px;
-        }
-        .container {
-            max-width: 900px;
-            background-color: #1e1e1e;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-        img {
-            border-radius: 50%;
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            margin-bottom: 20px;
-        }
-        h1 span {
-            color: #f9004d;
-        }
-        h2 {
-            font-weight: normal;
-            margin-bottom: 10px;
-        }
-        .social-icons a {
-            margin: 0 10px;
-            color: white;
-            font-size: 24px;
-            transition: color 0.3s;
-        }
-        .social-icons a:hover {
-            color: #f9004d;
-        }
-        .info p {
-            margin: 10px 0;
-        }
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
-        }
-    </style>
+    nav a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #ff3366;
+    }
+
+    .hero {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+    }
+
+    .hero h1 span {
+      color: #ff3366;
+    }
+
+    .hero p {
+      color: #ccc;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 40px 0;
+    }
+
+    .tab {
+      background-color: #1e1e1e;
+      color: white;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 10px;
+      min-width: 200px;
+      text-align: center;
+    }
+
+    .tab i {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 30px;
+      color: #777;
+      border-top: 1px solid #333;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <img src="brp.jpg" alt="Lokendra Gaire">
-        <h1>Hi, I'm <span>Lokendra Gaire</span></h1>
-        <h2>MIS Operator</h2>
-        <p>Social Security and Registration Department,</p>
-        <p><br>Galkot Municipality Office, Baglung, Nepal</p>
-        <div class="social-icons">
-            <a href="https://www.youtube.com/@hamrogalkot9" target="_blank"><i class="fab fa-youtube"></i></a>
-            <a href="https://www.facebook.com/lokendra.gaire.7" target="_blank"><i class="fab fa-facebook"></i></a>
-            <a href="https://tiktok.com/@mr.gairelokendra" target="_blank"><i class="fab fa-tiktok"></i></a>
-        </div>
-        <div class="info">
-            <p><strong>Phone:</strong> +977-9869065252</p>
-            <p><strong>Email:</strong> lokendra.gaire.70@gmail.com</p>
-            <p><strong>Address:</strong> Galkot Municipality-2, Baglung</p>
-        </div>
+  <header>
+    <div class="logo">Lokendra Gaire</div>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#features">Features</a>
+      <a href="#portfolio">Portfolio</a>
+      <a href="#resume">Resume</a>
+      <a href="#clients">Clients</a>
+      <a href="#blog">Blog</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="home">
+    <h1>Hi, I'm <span>Lokendra</span> Gaire<br />a <span>Developer</span>.</h1>
+    <p>I use animation as a third dimension to simplify experiences and build interactions that feel alive and purposeful.</p>
+  </section>
+
+  <section class="tabs">
+    <div class="tab">
+      <i class="fas fa-share-alt"></i>
+      <h3>Find with Me</h3>
+      <p>Facebook, TikTok, YouTube</p>
     </div>
+    <div class="tab">
+      <i class="fas fa-code"></i>
+      <h3>Best Skill On</h3>
+      <p>HTML, CSS, Graphic Design</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>&copy; 2025 Lokendra Gaire. All Rights Reserved.</p>
+  </footer>
 </body>
 </html>
