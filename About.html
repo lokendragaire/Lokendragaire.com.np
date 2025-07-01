@@ -1,145 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lokendra Gaire | Developer Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0d1117;
-            color: #ffffff;
-            line-height: 1.6;
-        }
-
-        header {
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            background-color: #0d1117;
-        }
-
-        header h1 {
-            font-size: 36px;
-            color: #fff;
-        }
-
-        header h1 span {
-            color: #e91e63;
-        }
-
-        header h2 {
-            font-size: 24px;
-            color: #ffffffcc;
-            margin-top: 10px;
-        }
-
-        header p {
-            color: #ccc;
-            max-width: 600px;
-            margin-top: 20px;
-        }
-
-        .profile-img {
-            margin-top: 30px;
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid #e91e63;
-        }
-
-        .profile-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .container {
-            background-color: #161b22;
-            margin: 40px auto;
-            padding: 20px;
-            max-width: 700px;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
-        }
-
-        .container h3 {
-            margin-bottom: 10px;
-            color: #e91e63;
-            font-size: 20px;
-        }
-
-        .info p {
-            margin-bottom: 10px;
-            color: #ccc;
-        }
-
-        .info strong {
-            color: #ffffff;
-        }
-
-        a {
-            color: #e91e63;
-            text-decoration: none;
-        }
-
-        @media (max-width: 600px) {
-            header h1 {
-                font-size: 28px;
-            }
-            header h2 {
-                font-size: 20px;
-            }
-            .container {
-                margin: 20px;
-                padding: 15px;
-            }
-        }
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Me - Lokendra Gaire</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <header>
-        <div class="profile-img">
-            <img src="profile.jpg" alt="Lokendra Gaire">
+    <header class="site-header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">L</div>
+                <span class="logo-text">Lokendra</span>
+            </a>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link active">About</a>
+                <a href="portfolio.html" class="nav-link">Portfolio</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </nav>
         </div>
-        <h1>Hi, I'm <span>Lokendra Gaire</span></h1>
-        <h2>a Developer</h2>
-        <p>I use modern tools and creative designs to make digital experiences smoother, meaningful and fast — for everyone.</p>
     </header>
 
-    <div class="container">
-        <h3>Contact Information</h3>
-        <div class="info">
-            <p><strong>Mobile No:</strong> +977-9869065252</p>
-            <p><strong>Email:</strong> <a href="mailto:lokendra.gaire.70@gmail.com">lokendra.gaire.70@gmail.com</a></p>
-        </div>
+    <main>
+        <section class="page-section">
+            <div class="container">
+                <h2 class="section-title">About Me</h2>
+                <div class="card about-card">
+                    <div class="about-grid">
+                        <div class="about-item">
+                             <h4 class="about-item-title">Family Details</h4>
+                             <ul class="about-list">
+                                <li><strong>Grand Father:</strong> Purna prasad Gaire</li>
+                                <li><strong>Grand Mother:</strong> Durga Devi Gaire</li>
+                                <li><strong>Father:</strong> Punakhar Gaire</li>
+                                <li><strong>Mother:</strong> Ishwori Gaire</li>
+                                <li><strong>Brother:</strong> Tomendra Gaire</li>
+                            </ul>
+                        </div>
+                        <div class="about-item-group">
+                            <div class="about-item">
+                                <h4 class="about-item-title">Qualification</h4>
+                                <p>Bachelor Degree In Business Study</p>
+                            </div>
+                            <div class="about-item">
+                                <h4 class="about-item-title">Birth Place</h4>
+                                <p>Galkot Municipality-2, Thana, Baglung</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-        <h3>Family Details</h3>
-        <div class="info">
-            <p><strong>Grandfather:</strong> Purna Prasad Gaire</p>
-            <p><strong>Grandmother:</strong> Durga Devi Gaire</p>
-            <p><strong>Father:</strong> Punakhar Gaire</p>
-            <p><strong>Mother:</strong> Ishwori Gaire</p>
-            <p><strong>Brother:</strong> Tomendra Gaire</p>
+    <footer class="site-footer-main">
+        <div class="container">
+            <p>© 2024 Lokendra Gaire. All Rights Reserved.</p>
         </div>
-
-        <h3>Personal Details</h3>
-        <div class="info">
-            <p><strong>Birth Place:</strong> Galkot Municipality-2, Thana, Baglung</p>
-            <p><strong>Qualification:</strong> Bachelor's Degree in Business Studies</p>
-        </div>
-    </div>
-
+    </footer>
 </body>
 </html>
