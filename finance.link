@@ -3,21 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>महत्वपूर्ण लिङ्कहरू</title>
+    <title>Important portal for education related work</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom styles for link cards */
         .link-card {
             margin-bottom: 1rem;
             border-radius: 0.5rem;
-            /* Added 'transform' to the transition for smoother hover effect */
-            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         .link-card:hover {
             transform: translateY(-2px);
-            /* Added a slightly more pronounced shadow on hover for better visual feedback */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Adjusted shadow for better hover effect */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         .icon-bg {
             display: flex;
