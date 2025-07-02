@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>नेपालको वित्तीय सेवा नेभिगेसन (हेडिङ स्टाइल)</title>
+    <title>नेपालको वित्तीय सेवा नेभिगेसन (पूर्ण कार्यशील)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Nepali:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* सामान्य स्टाइलिंग */
         body {
@@ -11,6 +12,7 @@
             margin: 0;
             background-color: #f4f4f4;
             color: #333;
+            line-height: 1.6;
         }
 
         /* नेभिगेसन बारको स्टाइलिंग */
@@ -18,20 +20,20 @@
             background-color: #2c3e50; /* गाढा नीलो */
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            position: relative;
-            z-index: 1000;
+            position: relative; /* ड्रपडाउन पोजिसनिङको लागि */
+            z-index: 1000; /* नेभिगेसन बारलाई माथि राख्न */
         }
 
         .navbar ul {
             list-style-type: none;
             margin: 0;
             padding: 0;
-            display: flex;
+            display: flex; /* आइटमहरूलाई एक लाइनमा राख्न */
             justify-content: flex-start;
         }
 
         .navbar ul li {
-            position: relative;
+            position: relative; /* ड्रपडाउन पोजिसनिङको लागि */
         }
 
         .navbar ul li a {
@@ -49,10 +51,10 @@
             color: #ecf0f1; /* हल्का सेतो */
         }
 
-        /* 'वालेट' मुख्य हेडिङ स्टाइल */
+        /* 'वालेट' मुख्य हेडिङ स्टाइल (Heading 1 Level) */
         .dropbtn {
             font-size: 1.2em; /* अलि ठूलो फन्ट */
-            font-weight: bold; /* बोल्ड */
+            font-weight: 700; /* बोल्ड */
         }
 
         /* मुख्य ड्रपडाउन स्टाइलिंग (वालेट) */
@@ -62,7 +64,7 @@
             background-color: #ffffff;
             min-width: 250px; /* चौडाई बढाइयो */
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.25);
-            z-index: 1;
+            z-index: 1; /* नेभिगेसन बार भन्दा तल, सब-ड्रपडाउन भन्दा तल */
             border-top: 4px solid #3498db; /* नीलो एक्सन्ट */
             border-radius: 0 0 5px 5px;
             padding: 5px 0;
@@ -70,18 +72,21 @@
 
         /* ड्रपडाउन भित्रका हेडिङ २ स्तरका आइटमहरू (वाणिज्य बैँक, विकास बैँक आदि) */
         .dropdown-content .sub-dropdown-trigger {
-            font-weight: bold; /* बोल्ड गरियो */
+            font-weight: 600; /* सेमी-बोल्ड */
             padding: 12px 18px;
             font-size: 1.05em; /* अलि ठूलो फन्ट */
             color: #2c3e50; /* गाढा रङ */
             border-bottom: 1px solid #f0f0f0; /* तल हल्का लाइन */
         }
         .dropdown-content .sub-dropdown-trigger:last-of-type {
-            border-bottom: none;
+            border-bottom: none; /* अन्तिम आइटममा लाइन नराख्ने */
+        }
+        .dropdown-content .sub-dropdown-trigger:hover {
+            background-color: #f0f0f0; /* होभर गर्दा हल्का पृष्ठभूमि */
         }
 
-
-        .dropdown-content a {
+        /* सामान्य ड्रपडाउन आइटम (जस्तै वालेट सेवा, कनेक्ट आईपीएस) */
+        .dropdown-content > a:not(.sub-dropdown-trigger) {
             float: none;
             color: #333;
             padding: 12px 18px;
@@ -91,19 +96,19 @@
             font-size: 1em;
         }
 
-        .dropdown-content a:hover {
+        .dropdown-content > a:not(.sub-dropdown-trigger):hover {
             background-color: #f0f0f0;
             color: #2c3e50;
         }
 
-        /* मुख्य ड्रपडाउन देखाउने */
+        /* मुख्य ड्रपडाउन देखाउने (होभरमा) */
         .navbar ul li.dropdown:hover .dropdown-content {
             display: block;
         }
 
         /* सब-ड्रपडाउन स्टाइलिंग */
         .sub-dropdown-content {
-            display: none;
+            display: none; /* लुकाइएको */
             position: absolute;
             left: 100%; /* अभिभावक आइटमको दायाँमा */
             top: 0;
@@ -133,12 +138,13 @@
             border-bottom: none;
         }
 
-        /* बैंकको नाम (सब-हेडिङ १) स्टाइल */
+        /* बैंकको नाम (Sub-heading 1 Level) स्टाइल */
         .sub-dropdown-content ul li strong {
             display: block;
             margin-bottom: 5px;
             color: #34495e;
             font-size: 1.15em; /* अलि ठूलो फन्ट */
+            font-weight: 700; /* बोल्ड */
         }
 
         .sub-dropdown-content ul li a {
@@ -158,11 +164,7 @@
             color: #2980b9;
         }
 
-        /* सब-ड्रपडाउन देखाउने */
-        .sub-dropdown-trigger {
-            position: relative;
-        }
-
+        /* सब-ड्रपडाउन देखाउने (होभरमा) */
         .sub-dropdown-trigger:hover .sub-dropdown-content {
             display: block;
         }
@@ -175,15 +177,47 @@
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            line-height: 1.6;
         }
 
         .content h2 {
             color: #2c3e50;
             margin-bottom: 15px;
         }
+
+        /* मोबाइल रेस्पोन्सिभनेसका लागि मिडिया क्वेरी */
+        @media (max-width: 768px) {
+            .navbar ul {
+                flex-direction: column; /* सानो स्क्रिनमा ठाडो राखियो */
+            }
+            .navbar ul li {
+                width: 100%;
+                text-align: left;
+            }
+            .dropdown-content {
+                position: static; /* मोबाइलमा स्थिर पोजिसनिङ */
+                width: 100%;
+                box-shadow: none;
+                border-top: none;
+                border-radius: 0;
+                padding-left: 20px; /* इन्डेन्टेशन */
+            }
+            .sub-dropdown-content {
+                position: static; /* मोबाइलमा स्थिर पोजिसनिङ */
+                width: 100%;
+                box-shadow: none;
+                border-left: none;
+                border-radius: 0;
+                padding-left: 40px; /* थप इन्डेन्टेशन */
+            }
+            /* मोबाइलमा ड्रपडाउनहरू क्लिकमा देखाउन JavaScript आवश्यक पर्छ */
+            .navbar ul li.dropdown:hover .dropdown-content {
+                display: none; /* मोबाइलमा होभरले काम नगर्ने */
+            }
+            .sub-dropdown-trigger:hover .sub-dropdown-content {
+                display: none; /* मोबाइलमा होभरले काम नगर्ने */
+            }
+        }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Nepali:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -192,7 +226,7 @@
             <li><a href="#">गृहपृष्ठ</a></li>
             <li><a href="#">सेवाहरू</a></li>
             <li class="dropdown">
-                <a href="#" class="dropbtn">वालेट ▼</a>
+                <a href="#" class="dropbtn" id="wallet-dropbtn">वालेट ▼</a>
                 <div class="dropdown-content">
                     <a href="#" class="sub-dropdown-trigger" data-category="commercial-banks">वाणिज्य बैँक
                         <div class="sub-dropdown-content" id="commercial-banks-content">
@@ -416,7 +450,7 @@
     </div>
 
     <script>
-        // JavaScript for managing dropdowns (Improved for better UX, especially with nested hover/click)
+        // JavaScript for managing dropdowns (Improved for better UX)
         document.addEventListener('DOMContentLoaded', () => {
             const dropdowns = document.querySelectorAll('.dropdown');
 
@@ -424,93 +458,101 @@
                 const dropbtn = dropdown.querySelector('.dropbtn');
                 const dropdownContent = dropdown.querySelector('.dropdown-content');
 
-                // Toggle main dropdown on click (good for touch devices)
+                // Main dropdown toggle on click (for mobile/touch devices primarily)
                 dropbtn.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    event.stopPropagation(); // Prevent document click from closing it immediately
+                    event.preventDefault(); // Prevent default link behavior
+                    event.stopPropagation(); // Stop click from propagating to document
 
                     const isCurrentlyOpen = dropdownContent.style.display === 'block';
 
-                    // Close all other main dropdowns
+                    // Close all other main dropdowns and their sub-dropdowns
                     document.querySelectorAll('.dropdown-content').forEach(content => {
                         content.style.display = 'none';
                     });
                     document.querySelectorAll('.sub-dropdown-content').forEach(content => {
-                        content.style.display = 'none'; // Also close any open sub-dropdowns
+                        content.style.display = 'none';
                     });
 
-                    // Open/close the clicked main dropdown
+                    // Toggle current main dropdown
                     dropdownContent.style.display = isCurrentlyOpen ? 'none' : 'block';
                 });
 
-                // Handle hover for main dropdown (CSS also handles this)
+                // Main dropdown hover logic (for desktop)
                 dropdown.addEventListener('mouseenter', () => {
-                    dropdownContent.style.display = 'block';
+                    if (window.innerWidth > 768) { // Only for larger screens
+                        dropdownContent.style.display = 'block';
+                    }
                 });
 
                 dropdown.addEventListener('mouseleave', () => {
-                    // Only hide if mouse leaves the whole dropdown area (including its content)
-                    setTimeout(() => { // Small delay to allow moving to sub-dropdown
-                        if (!dropdown.querySelector(':hover')) {
-                            dropdownContent.style.display = 'none';
-                        }
-                    }, 50);
+                    if (window.innerWidth > 768) { // Only for larger screens
+                        setTimeout(() => {
+                            if (!dropdown.querySelector(':hover')) {
+                                dropdownContent.style.display = 'none';
+                            }
+                        }, 50); // Small delay
+                    }
                 });
 
 
-                // Sub-dropdown logic (primarily hover driven by CSS, but JS for robustness)
+                // Sub-dropdown logic (mostly hover for desktop, click for mobile if enabled)
                 const subDropdownTriggers = dropdownContent.querySelectorAll('.sub-dropdown-trigger');
 
                 subDropdownTriggers.forEach(trigger => {
                     const subDropdownContent = trigger.querySelector('.sub-dropdown-content');
 
                     if (subDropdownContent) {
-                        // Hover for sub-dropdowns
+                        // Sub-dropdown hover logic (for desktop)
                         trigger.addEventListener('mouseenter', () => {
-                            // Close other sub-dropdowns in the same main dropdown category
+                            if (window.innerWidth > 768) { // Only for larger screens
+                                // Close other sub-dropdowns in the same main dropdown category
+                                subDropdownTriggers.forEach(otherTrigger => {
+                                    const otherSubContent = otherTrigger.querySelector('.sub-dropdown-content');
+                                    if (otherSubContent && otherTrigger !== trigger) {
+                                        otherSubContent.style.display = 'none';
+                                    }
+                                });
+                                subDropdownContent.style.display = 'block';
+                            }
+                        });
+
+                        trigger.addEventListener('mouseleave', (event) => {
+                            if (window.innerWidth > 768) { // Only for larger screens
+                                if (!subDropdownContent.contains(event.relatedTarget) && !trigger.contains(event.relatedTarget)) {
+                                    subDropdownContent.style.display = 'none';
+                                }
+                            }
+                        });
+
+                        // Keep sub-dropdown open if mouse enters its content
+                        subDropdownContent.addEventListener('mouseenter', () => {
+                            if (window.innerWidth > 768) {
+                                subDropdownContent.style.display = 'block';
+                            }
+                        });
+
+                        // Hide sub-dropdown if mouse leaves its content
+                        subDropdownContent.addEventListener('mouseleave', () => {
+                            if (window.innerWidth > 768) {
+                                subDropdownContent.style.display = 'none';
+                            }
+                        });
+
+                        // Optional: Sub-dropdown toggle on click (for mobile/tablet)
+                        trigger.addEventListener('click', function(event) {
+                            event.preventDefault();
+                            event.stopPropagation(); // Prevent click from bubbling to main dropdown
+                            const isSubCurrentlyOpen = subDropdownContent.style.display === 'block';
+
+                            // Close other sub-dropdowns in this main dropdown
                             subDropdownTriggers.forEach(otherTrigger => {
                                 const otherSubContent = otherTrigger.querySelector('.sub-dropdown-content');
                                 if (otherSubContent && otherTrigger !== trigger) {
                                     otherSubContent.style.display = 'none';
                                 }
                             });
-                            subDropdownContent.style.display = 'block';
+                            subDropdownContent.style.display = isSubCurrentlyOpen ? 'none' : 'block';
                         });
-
-                        // Mouse leaving the trigger or its content
-                        trigger.addEventListener('mouseleave', (event) => {
-                            // Check if the mouse is leaving the trigger and not entering the sub-content
-                            // or if it's leaving the sub-content itself
-                            if (!subDropdownContent.contains(event.relatedTarget) && !trigger.contains(event.relatedTarget)) {
-                                subDropdownContent.style.display = 'none';
-                            }
-                        });
-
-                        // Keep sub-dropdown open if mouse enters its content
-                        subDropdownContent.addEventListener('mouseenter', () => {
-                            subDropdownContent.style.display = 'block';
-                        });
-
-                        // Hide sub-dropdown if mouse leaves its content
-                        subDropdownContent.addEventListener('mouseleave', () => {
-                            subDropdownContent.style.display = 'none';
-                        });
-
-                        // Optional: Click behavior for sub-dropdowns (if you prefer click over hover)
-                        // trigger.addEventListener('click', function(event) {
-                        //     event.preventDefault();
-                        //     event.stopPropagation(); // Stop click from bubbling up to close main dropdown
-                        //     const isSubCurrentlyOpen = subDropdownContent.style.display === 'block';
-
-                        //     // Close other sub-dropdowns in this main dropdown
-                        //     subDropdownTriggers.forEach(otherTrigger => {
-                        //         const otherSubContent = otherTrigger.querySelector('.sub-dropdown-content');
-                        //         if (otherSubContent && otherTrigger !== trigger) {
-                        //             otherSubContent.style.display = 'none';
-                        //         }
-                        //     });
-                        //     subDropdownContent.style.display = isSubCurrentlyOpen ? 'none' : 'block';
-                        // });
                     }
                 });
             });
@@ -525,6 +567,14 @@
                         content.style.display = 'none';
                     });
                 }
+            });
+
+            // Handle window resize (for responsive behavior)
+            window.addEventListener('resize', () => {
+                // Hide all dropdowns when resizing, let the CSS/JS re-evaluate on next hover/click
+                document.querySelectorAll('.dropdown-content, .sub-dropdown-content').forEach(content => {
+                    content.style.display = 'none';
+                });
             });
         });
     </script>
