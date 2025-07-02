@@ -353,9 +353,10 @@
                     <!-- Second Column of Dropdowns -->
                     <ul class="navbar-nav flex lg:space-x-4 lg:ml-auto">
                         <!-- Wallet Dropdown -->
-                       <li class="nav-item relative group">
-    <a href="wallet.html" class="nav-link py-2 px-3 block">Wallet <i class="fas fa-caret-down ml-1"></i></a>
-    </li>
+                        <li class="nav-item relative group">
+                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('walletDropdown')">Wallet <i class="fas fa-caret-down ml-1"></i></a>
+                            <div id="walletDropdown" class="dropdown-menu hidden">
+                               <a href="wallet.html" class="flex items-center"><i class="fas fa-user-tie mr-2 text-purple-600"></i></a>
 
                             </div>
                         </li>
