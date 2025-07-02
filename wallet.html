@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>नेपालको वित्तीय सेवा नेभिगेसन</title>
+    <title>नेपालको वित्तीय सेवा नेभिगेसन (हेडिङ स्टाइल)</title>
     <style>
         /* सामान्य स्टाइलिंग */
         body {
-            font-family: 'Noto Sans Nepali', sans-serif; /* नेपाली फन्टको लागि */
+            font-family: 'Noto Sans Nepali', Arial, sans-serif; /* नेपाली फन्टको लागि */
             margin: 0;
             background-color: #f4f4f4;
             color: #333;
@@ -49,18 +49,37 @@
             color: #ecf0f1; /* हल्का सेतो */
         }
 
+        /* 'वालेट' मुख्य हेडिङ स्टाइल */
+        .dropbtn {
+            font-size: 1.2em; /* अलि ठूलो फन्ट */
+            font-weight: bold; /* बोल्ड */
+        }
+
         /* मुख्य ड्रपडाउन स्टाइलिंग (वालेट) */
         .dropdown-content {
             display: none;
             position: absolute;
             background-color: #ffffff;
-            min-width: 220px; /* चौडाई बढाइयो */
+            min-width: 250px; /* चौडाई बढाइयो */
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.25);
             z-index: 1;
             border-top: 4px solid #3498db; /* नीलो एक्सन्ट */
             border-radius: 0 0 5px 5px;
             padding: 5px 0;
         }
+
+        /* ड्रपडाउन भित्रका हेडिङ २ स्तरका आइटमहरू (वाणिज्य बैँक, विकास बैँक आदि) */
+        .dropdown-content .sub-dropdown-trigger {
+            font-weight: bold; /* बोल्ड गरियो */
+            padding: 12px 18px;
+            font-size: 1.05em; /* अलि ठूलो फन्ट */
+            color: #2c3e50; /* गाढा रङ */
+            border-bottom: 1px solid #f0f0f0; /* तल हल्का लाइन */
+        }
+        .dropdown-content .sub-dropdown-trigger:last-of-type {
+            border-bottom: none;
+        }
+
 
         .dropdown-content a {
             float: none;
@@ -89,7 +108,7 @@
             left: 100%; /* अभिभावक आइटमको दायाँमा */
             top: 0;
             background-color: #ffffff;
-            min-width: 300px; /* बैंक विवरणका लागि चौडाई बढाइयो */
+            min-width: 320px; /* बैंक विवरणका लागि चौडाई बढाइयो */
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.25);
             z-index: 2; /* मुख्य ड्रपडाउन भन्दा माथि */
             border-left: 4px solid #2ecc71; /* हरियो एक्सन्ट */
@@ -114,11 +133,12 @@
             border-bottom: none;
         }
 
+        /* बैंकको नाम (सब-हेडिङ १) स्टाइल */
         .sub-dropdown-content ul li strong {
             display: block;
             margin-bottom: 5px;
             color: #34495e;
-            font-size: 1.1em;
+            font-size: 1.15em; /* अलि ठूलो फन्ट */
         }
 
         .sub-dropdown-content ul li a {
@@ -163,7 +183,7 @@
             margin-bottom: 15px;
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Nepali:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Nepali:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -194,6 +214,12 @@
                                     <a href="https://www.rbb.com.np/services/mobile-banking" target="_blank">मोबाइल बैंकिङ</a> |
                                     <a href="https://www.rbb.com.np/services/atm-card" target="_blank">एटीएम स्टेशन</a> |
                                     <a href="https://www.rbb.com.np/" target="_blank">वेबसाइट</a>
+                                </li>
+                                <li>
+                                    <strong>प्रभु बैंक लि.</strong><br>
+                                    <a href="https://www.prabhubank.com/digital-banking/prabhu-mobile-banking/" target="_blank">मोबाइल बैंकिङ</a> |
+                                    <a href="https://www.prabhubank.com/network/atm-locations/" target="_blank">एटीएम स्टेशन</a> |
+                                    <a href="https://www.prabhubank.com/" target="_blank">वेबसाइट</a>
                                 </li>
                                 <li>
                                     <strong>एभरेष्ट बैंक लि.</strong><br>
@@ -319,7 +345,7 @@
                                 </li>
                                 <li>
                                     <strong>नेपाल बहुउद्देश्यीय केन्द्रीय सहकारी संघ लि. (NCCF)</strong><br>
-                                    <a href="#" target="_blank">मोबाइल बैंकिङ (जानकारी छैन)</a> |
+                                    <a href="https://play.google.com/store/apps/details?id=com.smartchoice.mobilebanking.coop" target="_blank">मोबाइल बैंकिङ (स्मार्टच्वाइस)</a> |
                                     <a href="#" target="_blank">एटीएम स्टेशन (जानकारी छैन)</a> |
                                     <a href="https://www.nccf.org.np/" target="_blank">वेबसाइट</a>
                                 </li>
@@ -330,7 +356,7 @@
                         </div>
                     </a>
 
-                    <a href="#" target="_blank" data-category="wallet-services">वालेट सेवा
+                    <a href="#" class="sub-dropdown-trigger" data-category="wallet-services">वालेट सेवा
                         <div class="sub-dropdown-content" id="wallet-services-content">
                             <ul class="service-list">
                                 <li>
@@ -361,7 +387,7 @@
                         </div>
                     </a>
 
-                    <a href="#" target="_blank" data-category="connect-ips">कनेक्ट आईपीएस
+                    <a href="#" class="sub-dropdown-trigger" data-category="connect-ips">कनेक्ट आईपीएस
                         <div class="sub-dropdown-content" id="connect-ips-content">
                             <ul class="service-list">
                                 <li>
