@@ -417,9 +417,27 @@
     </header>
 
     <main>
-        <section class="page-section text-center py-0">
+        <!-- Social Media Links Section -->
+        <section class="page-section text-center py-8">
             <div class="container mx-auto px-4">
-                <!-- Content for social engagement or other sections can go here -->
+                <h2 class="text-3xl font-bold mb-6 text-gray-800">Find me on social media</h2>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a class="btn-social btn-youtube" href="https://www.youtube.com/@lokendragaire70" target="_blank" aria-label="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a class="btn-social btn-facebook" href="https://www.facebook.com/lokendragaire70" target="_blank" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="btn-social btn-tiktok" href="https://www.tiktok.com/@lokendragaire70" target="_blank" aria-label="TikTok">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    <a class="btn-social btn-linkedin" href="https://www.linkedin.com/in/lokendra-gaire-70b1b1275/" target="_blank" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a class="btn-social btn-telegram" href="https://t.me/lokendragaire70" target="_blank" aria-label="Telegram">
+                        <i class="fab fa-telegram-plane"></i>
+                    </a>
+                </div>
             </div>
         </section>
     </main>
@@ -579,8 +597,17 @@
                 const dropdownMenu = navItem.querySelector('.dropdown-menu');
                 let navItemMatched = false;
 
-                // Check if nav link text matches (use textContent for robustness)
-                if (navLink && navLink.textContent.match(regex)) {
+                // Get only the text content of the navLink, excluding child elements like the icon
+                let navLinkText = '';
+                if (navLink) {
+                    for (let child of navLink.childNodes) {
+                        if (child.nodeType === Node.TEXT_NODE) {
+                            navLinkText += child.nodeValue;
+                        }
+                    }
+                }
+
+                if (navLinkText.match(regex)) {
                     navLink.classList.add('nav-item-highlight');
                     navItemMatched = true;
                 }
@@ -602,6 +629,18 @@
                 }
             });
 
+            // Highlight the social media section links (only the remaining ones)
+            const socialLinksSection = document.querySelector('main .page-section .flex.flex-wrap');
+            if (socialLinksSection) {
+                const socialLinks = socialLinksSection.querySelectorAll('a');
+                socialLinks.forEach(link => {
+                    if (link.textContent.match(regex) || (link.getAttribute('aria-label') && link.getAttribute('aria-label').match(regex))) {
+                        link.classList.add('highlight'); // Use general highlight for these buttons
+                    }
+                });
+            }
+
+
             setTimeout(() => {
                 hideSpinner();
             }, 50); // Small delay to show spinner
@@ -612,6 +651,8 @@
             searchInput.value = '';
             removeTextHighlights();
             removeNavHighlights(); // Clear nav and dropdown highlights
+            // Also remove highlights from social media section
+            document.querySelectorAll('main .page-section .flex.flex-wrap .highlight').forEach(el => el.classList.remove('highlight'));
             clearSearchIcon.classList.add('hidden');
             searchIcon.classList.remove('hidden');
         }
@@ -642,6 +683,8 @@
                 clearSearchIcon.classList.add('hidden');
                 removeTextHighlights(); // Also remove highlights when input is cleared manually
                 removeNavHighlights(); // Clear nav and dropdown highlights when input is cleared
+                // Also remove highlights from social media section when input is cleared
+                document.querySelectorAll('main .page-section .flex.flex-wrap .highlight').forEach(el => el.classList.remove('highlight'));
             }
         });
 
