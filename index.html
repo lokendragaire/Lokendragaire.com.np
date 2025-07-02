@@ -17,8 +17,8 @@
     <style>
         /* Custom styles for social buttons and background colors not directly in Tailwind */
         .btn-social {
-            /* Increased size: w-24 h-24 (96px) changed to w-70 h-70 (265px) */
-            /* Increased icon font size: text-4xl (2.25rem) changed to text-5xl (3rem) */
+            /* Increased size: w-32 h-32 (96px) */
+            /* Increased icon font size: text-5xl (3rem) */
             @apply inline-flex items-center justify-center w-32 h-32 rounded-full text-white text-5xl mx-1 transition-all duration-300 ease-in-out;
         }
         .btn-youtube { background-color: #FF0000; }
@@ -105,7 +105,6 @@
         .masthead-heading,
         .masthead-subheading,
         .masthead-bio,
-        .social-links h3,
         .masthead-content h2 { /* Targeting all text elements in masthead */
             color: #FFFFFF; /* Ensure all text within masthead is white */
         }
@@ -192,20 +191,106 @@
         
         /* Removed all media queries related to navbar collapse/expand */
         /* Navbar will now always be horizontal */
+
+        /* Custom styles for dropdown */
+        .dropdown-menu {
+            position: absolute;
+            background-color: #FFC0CB; /* Same as navbar background */
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 8px;
+            padding: 0.5rem 0;
+            margin-top: 0.5rem; /* Space below the main nav item */
+            left: 50%; /* Center dropdown relative to parent li */
+            transform: translateX(-50%); /* Adjust for perfect centering */
+        }
+        .dropdown-menu a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            transition: background-color 0.3s ease;
+        }
+        .dropdown-menu a:hover {
+            background-color: #e0e0e0; /* Lighter shade on hover */
+            color: #228B22; /* Forest Green Accent */
+        }
     </style>
 </head>
 <body id="page-top">
     <!-- Navigation-->
     <nav class="navbar fixed-top py-3" id="mainNav"> 
         <div class="container mx-auto px-4 flex justify-between items-center">
-            <a class="navbar-brand text-2xl font-bold" href="#page-top">Lokendra Gaire</a>
+            <a class="navbar-brand text-2xl font-bold" href="#page-top">You Can Visit</a>
             <div class="flex items-center w-auto" id="navbarResponsive"> 
                 <ul class="navbar-nav flex space-x-4 ml-auto"> 
                     <li class="nav-item"><a class="nav-link py-2 px-3 block" href="About.html">About</a></li>
-                    <li class="nav-item"><a class="nav-link py-2 px-3 block" href="portfolio.html">Portfolio</a></li>
-                    <li class="nav-item"><a class="nav-link py-2 px-3 block" href="politicaleng.html">Social Engagement</a></li>
-                    <li class="nav-item"><a class="nav-link py-2 px-3 block" href="link.html">Important Links</a></li>
-                    <li class="nav-item"><a class="nav-link py-2 px-3 block" href="#direct-contact">Direct Contact</a></li>
+                    
+                    <!-- First Column of Dropdowns -->
+                    <ul class="navbar-nav flex space-x-4 ml-auto">
+                        <!-- Portfolio Dropdown -->
+                        <li class="nav-item relative group">
+                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('portfolioDropdown')">Portfolio <i class="fas fa-caret-down ml-1"></i></a>
+                            <div id="portfolioDropdown" class="dropdown-menu hidden">
+                                <a href="portfolio.html" class="flex items-center"><i class="fas fa-folder-open mr-2 text-purple-600"></i>My Portfolio</a>
+                            </div>
+                        </li>
+
+                        <!-- Social Engagement Dropdown -->
+                        <li class="nav-item relative group">
+                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('socialEngagementDropdown')">Social Engagement <i class="fas fa-caret-down ml-1"></i></a>
+                            <div id="socialEngagementDropdown" class="dropdown-menu hidden">
+                                <a href="politicaleng.html" class="flex items-center"><i class="fas fa-handshake mr-2 text-green-600"></i>My Social Engagement</a>
+                            </div>
+                        </li>
+                        
+                        <!-- Trading Dropdown -->
+                        <li class="nav-item relative group">
+                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('tradingDropdown')">Trading <i class="fas fa-caret-down ml-1"></i></a>
+                            <div id="tradingDropdown" class="dropdown-menu hidden">
+                                <a href="https://meroshare.cdsc.com.np/" target="_blank" class="flex items-center"><i class="fas fa-chart-line mr-2 text-green-600"></i>MeroShare</a>
+                                <a href="https://www.nepalstock.com.np/" target="_blank" class="flex items-center"><i class="fas fa-chart-area mr-2 text-red-600"></i>NEPSE</a>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- Second Column of Dropdowns -->
+                    <ul class="navbar-nav flex space-x-4 ml-auto">
+                        <!-- Wallet Dropdown -->
+                        <li class="nav-item relative group">
+                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('walletDropdown')">Wallet <i class="fas fa-caret-down ml-1"></i></a>
+                            <div id="walletDropdown" class="dropdown-menu hidden">
+                                <a href="https://esewa.com.np/" target="_blank" class="flex items-center"><i class="fas fa-wallet mr-2 text-blue-600"></i>eSewa</a>
+                                <a href="https://khalti.com/" target="_blank" class="flex items-center"><i class="fas fa-wallet mr-2 text-purple-600"></i>Khalti</a>
+                                <a href="https://www.imepay.com.np/" target="_blank" class="flex items-center"><i class="fas fa-wallet mr-2 text-orange-600"></i>IME Pay</a>
+                            </div>
+                        </li>
+
+                        <!-- Important Links Dropdown -->
+                        <li class="nav-item relative group">
+                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('importantLinksDropdown')">Important Links <i class="fas fa-caret-down ml-1"></i></a>
+                            <div id="importantLinksDropdown" class="dropdown-menu hidden">
+                                <a href="link.html" class="flex items-center"><i class="fas fa-briefcase mr-2 text-blue-600"></i>आवश्यक पोर्टलहरू</a>
+                                <a href="edu.html" class="flex items-center"><i class="fas fa-book mr-2 text-yellow-600"></i>शिक्षा सम्बन्धित पोर्टलहरू</a>
+                                <a href="finance.html" class="flex items-center"><i class="fas fa-coins mr-2 text-orange-600"></i>वित्तीय सेवाहरू</a>
+                                <a href="health.html" class="flex items-center"><i class="fas fa-plus-circle mr-2 text-red-600"></i>स्वास्थ्य सम्बन्धित पोर्टलहरू</a>
+                                <a href="karmachari.html" class="flex items-center"><i class="fas fa-user-tie mr-2 text-purple-600"></i>शिक्षक कर्मचारी पोर्टल</a>
+                                <a href="bi.html" class="flex items-center"><i class="fas fa-building mr-2 text-indigo-600"></i>बैँक, विमा कम्पनी तथा पुनर्विमा कम्पनीहरु</a>
+                            </div>
+                        </li>
+                        
+                        <!-- Direct Contact Dropdown -->
+                        <li class="nav-item relative group">
+                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('directContactDropdown')">Direct Contact <i class="fas fa-caret-down ml-1"></i></a>
+                            <div id="directContactDropdown" class="dropdown-menu hidden">
+                                <a href="tel:+9779869065252" class="flex items-center"><i class="fas fa-phone mr-2 text-green-500"></i>+977 9869065252</a>
+                                <a href="mailto:lokendra.gaire.70@gmail.com" class="flex items-center"><i class="fas fa-envelope mr-2 text-red-500"></i>lokendra.gaire.70@gmail.com</a>
+                                <a href="https://maps.google.com/?q=Galkot+Municipality-2,+Baglung,+Nepal" target="_blank" class="flex items-center"><i class="fas fa-map-marker-alt mr-2 text-blue-500"></i>Galkot Municipality-2, Baglung</a>
+                            </div>
+                        </li>
+                    </ul>
                 </ul>
             </div>
         </div>
@@ -222,55 +307,26 @@
                 <p class="masthead-bio mt-4 text-white">
                     Social Security and Vital Registration Department <br> Galkot Municipality Office <br> Galkot, Baglung, Nepal
                 </p>
-                
-                <div class="social-links mt-16 text-left"> 
-                    <h3 class="text-lg font-semibold mb-4">Follow Me on Social Media</h3>
-                    <a href="https://www.youtube.com/channel/hamrogalkot9" target="_blank" class="btn btn-social btn-youtube"><i class="fab fa-youtube"></i></a>
-                    <a href="https://www.facebook.com/lokendra.gaire.7" target="_blank" class="btn btn-social btn-facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://tiktok.com/@mr.gairelokendra" target="_blank" class="btn btn-social btn-tiktok"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://www.linkedin.com/in/lokendra-gaire-45892523b/" target="_blank" class="btn btn-social btn-linkedin"><i class="fab fa-linkedin"></i></a>
-                    <a href="https://t.me/lokendragaire" target="_blank" class="btn btn-social btn-telegram"><i class="fab fa-telegram"></i></a>
-                    <a href="https://meroshare.cdsc.com.np/" target="_blank" class="btn btn-social btn-meroshare" title="MeroShare"><i class="fas fa-chart-line"></i></a>
-                    <a href="https://www.nepalstock.com.np/" target="_blank" class="btn btn-social btn-nepse" title="NEPSE"><i class="fas fa-chart-area"></i></a>
-                </div>
             </div>
         </div>
     </header>
 
-    <main class="min-h-screen">
-        <section class="page-section" id="important-links">
-            <div class="container mx-auto px-4">
-                <h2 class="text-center mb-12">दैनिक प्रयोगका लागि महत्वपूर्ण लिङ्कहरू</h2>
-                <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <li class="bg-green-100 p-4 rounded-lg shadow-md flex items-center justify-between">
-                        <span><i class="fas fa-briefcase mr-2 text-blue-600"></i>आवश्यक पोर्टलहरू:</span>
-                        <a href="link.html" class="text-green-700 hover:underline">यहाँ क्लिक गर्नुहोस्</a>
-                    </li>
-                    <li class="bg-green-100 p-4 rounded-lg shadow-md flex items-center justify-between">
-                        <span><i class="fas fa-book mr-2 text-yellow-600"></i>शिक्षा सम्बन्धित पोर्टलहरू:</span>
-                        <a href="edu.html" class="text-green-700 hover:underline">यहाँ क्लिक गर्नुहोस्</a>
-                    </li>
-                    <li class="bg-green-100 p-4 rounded-lg shadow-md flex items-center justify-between">
-                        <span><i class="fas fa-coins mr-2 text-orange-600"></i>वित्तीय सेवाहरू:</span>
-                        <a href="finance.html" class="text-green-700 hover:underline">यहाँ क्लिक गर्नुहोस्</a>
-                    </li>
-                    <li class="bg-green-100 p-4 rounded-lg shadow-md flex items-center justify-between">
-                        <span><i class="fas fa-plus-circle mr-2 text-red-600"></i>स्वास्थ्य सम्बन्धित पोर्टलहरू:</span>
-                        <a href="health.html" class="text-green-700 hover:underline">यहाँ क्लिक गर्नुहोस्</a>
-                    </li>
-                    <li class="bg-green-100 p-4 rounded-lg shadow-md flex items-center justify-between">
-                        <span><i class="fas fa-user-tie mr-2 text-purple-600"></i>शिक्षक कर्मचारी पोर्टल:</span>
-                        <a href="karmachari.html" class="text-green-700 hover:underline">यहाँ क्लिक गर्नुहोस्</a>
-                    </li>
-                    <li class="bg-green-100 p-4 rounded-lg shadow-md flex items-center justify-between">
-                        <span><i class="fas fa-building mr-2 text-indigo-600"></i>बैँक, विमा कम्पनी तथा पुनर्विमा कम्पनीहरु:</span>
-                        <a href="bi.html" class="text-green-700 hover:underline">यहाँ क्लिक गर्नुहोस्</a>
-                    </li>
-                </ul>
+    <!-- Social Media Links Section - Moved outside Masthead -->
+    <section class="page-section text-left" id="social-media-links" style="padding-top: 2rem; padding-bottom: 0;">
+        <div class="container mx-auto px-4">
+            <h3 class="text-lg font-semibold mb-4" style="color: #333;">Follow Me on Social Media</h3>
+            <div class="flex flex-wrap justify-start gap-2"> <!-- Added gap for spacing between buttons -->
+                <a href="https://www.youtube.com/channel/hamrogalkot9" target="_blank" class="btn btn-social btn-youtube"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.facebook.com/lokendra.gaire.7" target="_blank" class="btn btn-social btn-facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://tiktok.com/@mr.gairelokendra" target="_blank" class="btn btn-social btn-tiktok"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.linkedin.com/in/lokendra-gaire-45892523b/" target="_blank" class="btn btn-social btn-linkedin"><i class="fab fa-linkedin"></i></a>
+                <a href="https://t.me/lokendragaire" target="_blank" class="btn btn-social btn-telegram"><i class="fab fa-telegram"></i></a>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="page-section bg-gray-100 text-gray-800" id="direct-contact">
+    <main> <!-- Removed min-h-screen from main tag -->
+        <section class="page-section bg-gray-100 text-gray-800" id="direct-contact" style="padding-top: 0; padding-bottom: 4rem;">
             <div class="container mx-auto px-4 py-4">
                 <h2 class="text-center mb-6 text-2xl">Direct Contact</h2>
                 <div class="text-center">
@@ -314,5 +370,37 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // JavaScript for toggling the dropdown menu
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            const allDropdowns = document.getElementsByClassName("dropdown-menu");
+
+            // Close all other dropdowns
+            for (let i = 0; i < allDropdowns.length; i++) {
+                let openDropdown = allDropdowns[i];
+                if (openDropdown.id !== dropdownId && !openDropdown.classList.contains('hidden')) {
+                    openDropdown.classList.add('hidden');
+                }
+            }
+
+            // Toggle the clicked dropdown
+            dropdown.classList.toggle("hidden");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function(event) {
+            // Check if the click is outside any nav-link or dropdown-menu
+            if (!event.target.matches('.nav-link') && !event.target.closest('.dropdown-menu')) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (!openDropdown.classList.contains('hidden')) {
+                        openDropdown.classList.add('hidden');
+                    }
+                }
+            }
+        }
+    </script>
 </body>
 </html>
