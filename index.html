@@ -79,7 +79,7 @@
             background-position: center;
             background-repeat: no-repeat;
             
-            padding: 8rem 0 6rem;
+            padding: 8rem 0 0; /* Changed padding-bottom to 0 */
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -349,13 +349,10 @@
         </div>
     </header>
 
-    <main class="min-h-screen">
-        <!-- This page now serves as a landing page for social engagement with the masthead -->
-        <section class="page-section text-center py-12">
+    <main> <!-- Removed min-h-screen from main tag -->
+        <section class="page-section text-center py-0"> <!-- Changed padding-top to 0 and py-12 to py-0 -->
             <div class="container mx-auto px-4">
-                <h2 class="text-3xl font-bold text-gray-800">मेरो सामाजिक संलग्नता</h2>
-                <p class="text-lg text-gray-600 mt-4">विभिन्न संघसंस्थाहरूमा मेरो भूमिका र योगदान यहाँ पाउन सक्नुहुन्छ।</p>
-                <p class="text-lg text-gray-600 mt-2">नेभिगेसन बारमा रहेको "Social Engagement" ड्रपडाउनमा क्लिक गरेर विस्तृत जानकारी हेर्नुहोस्।</p>
+                <!-- Removed the h2 and p tags from here -->
             </div>
         </section>
     </main>
