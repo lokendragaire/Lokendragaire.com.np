@@ -189,9 +189,6 @@
             font-size: 0.8rem; /* Slightly smaller font */
         }
         
-        /* Removed all media queries related to navbar collapse/expand */
-        /* Navbar will now always be horizontal */
-
         /* Custom styles for dropdown */
         .dropdown-menu {
             position: absolute;
@@ -217,6 +214,51 @@
             background-color: #e0e0e0; /* Lighter shade on hover */
             color: #228B22; /* Forest Green Accent */
         }
+
+        /* Responsive adjustments */
+        @media (max-width: 1023px) { /* For screens smaller than lg (1024px) */
+            #mainNav .navbar-brand {
+                margin-right: auto; /* Push brand to left */
+            }
+            #navbarResponsive {
+                width: 100%; /* Full width when collapsed */
+                flex-basis: 100%; /* Take full width */
+                flex-grow: 1;
+                align-items: flex-start; /* Align items to start */
+            }
+            #navbarResponsive ul {
+                flex-direction: column; /* Stack items vertically */
+                width: 100%; /* Full width for columns */
+                margin-left: 0; /* Remove auto margin */
+            }
+            #navbarResponsive ul li {
+                width: 100%; /* Full width for list items */
+                text-align: left; /* Align text to left */
+            }
+            .dropdown-menu {
+                position: static; /* Remove absolute positioning */
+                transform: none; /* Remove transform */
+                width: 100%; /* Make it full width */
+                box-shadow: none; /* Remove shadow for cleaner look */
+                border-radius: 0; /* Remove border-radius */
+                margin-top: 0; /* Remove margin-top */
+                background-color: #f0f0f0; /* Slightly different background for nested items */
+            }
+            .dropdown-menu a {
+                padding-left: 2.5rem; /* Indent nested items */
+            }
+            .navbar-toggler {
+                display: block; /* Show hamburger button on small screens */
+            }
+        }
+        @media (min-width: 1024px) { /* For large screens (lg) and up */
+            .navbar-toggler {
+                display: none; /* Hide hamburger button on large screens */
+            }
+            #navbarResponsive {
+                display: flex !important; /* Ensure it's flex on large screens */
+            }
+        }
     </style>
 </head>
 <body id="page-top">
@@ -224,12 +266,18 @@
     <nav class="navbar fixed-top py-3" id="mainNav"> 
         <div class="container mx-auto px-4 flex justify-between items-center">
             <a class="navbar-brand text-2xl font-bold" href="#page-top">You Can Visit</a>
-            <div class="flex items-center w-auto" id="navbarResponsive"> 
+            
+            <!-- Navbar Toggler for mobile -->
+            <button class="navbar-toggler lg:hidden focus:outline-none" type="button" onclick="toggleNavbar()">
+                <i class="fas fa-bars text-3xl text-gray-700"></i>
+            </button>
+
+            <div class="hidden lg:flex items-center w-auto" id="navbarResponsive"> 
                 <ul class="navbar-nav flex space-x-4 ml-auto"> 
                     <li class="nav-item"><a class="nav-link py-2 px-3 block" href="About.html">About</a></li>
                     
                     <!-- First Column of Dropdowns -->
-                    <ul class="navbar-nav flex space-x-4 ml-auto">
+                    <ul class="navbar-nav flex lg:space-x-4 lg:ml-auto">
                         <!-- Portfolio Dropdown -->
                         <li class="nav-item relative group">
                             <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('portfolioDropdown')">Portfolio <i class="fas fa-caret-down ml-1"></i></a>
@@ -257,7 +305,7 @@
                     </ul>
 
                     <!-- Second Column of Dropdowns -->
-                    <ul class="navbar-nav flex space-x-4 ml-auto">
+                    <ul class="navbar-nav flex lg:space-x-4 lg:ml-auto">
                         <!-- Wallet Dropdown -->
                         <li class="nav-item relative group">
                             <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('walletDropdown')">Wallet <i class="fas fa-caret-down ml-1"></i></a>
@@ -265,6 +313,16 @@
                                 <a href="https://esewa.com.np/" target="_blank" class="flex items-center"><i class="fas fa-wallet mr-2 text-blue-600"></i>eSewa</a>
                                 <a href="https://khalti.com/" target="_blank" class="flex items-center"><i class="fas fa-wallet mr-2 text-purple-600"></i>Khalti</a>
                                 <a href="https://www.imepay.com.np/" target="_blank" class="flex items-center"><i class="fas fa-wallet mr-2 text-orange-600"></i>IME Pay</a>
+                            </div>
+                        </li>
+
+                        <!-- Government Uses sites Dropdown -->
+                        <li class="nav-item relative group">
+                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('governmentSitesDropdown')">Government Uses sites <i class="fas fa-caret-down ml-1"></i></a>
+                            <div id="governmentSitesDropdown" class="dropdown-menu hidden">
+                                <a href="https://sutra.fcgo.gov.np/newpamsv2" target="_blank" class="flex items-center"><i class="fas fa-globe mr-2 text-indigo-600"></i>सूत्र (Sutra)</a>
+                                <a href="https://ipfms.fcgo.gov.np" target="_blank" class="flex items-center"><i class="fas fa-building mr-2 text-green-600"></i>IPFMS</a>
+                                <a href="https://newpams.fcgo.gov.np/#/Login" target="_blank" class="flex items-center"><i class="fas fa-sign-in-alt mr-2 text-blue-500"></i>New PAMS Login</a>
                             </div>
                         </li>
 
@@ -388,9 +446,17 @@
             dropdown.classList.toggle("hidden");
         }
 
-        // Close the dropdown if the user clicks outside of it
+        // JavaScript for toggling the main navbar on mobile
+        function toggleNavbar() {
+            const navbar = document.getElementById("navbarResponsive");
+            navbar.classList.toggle("hidden");
+            navbar.classList.toggle("flex"); // Toggle flex to show/hide
+            navbar.classList.toggle("flex-col"); // Ensure vertical stacking when open
+        }
+
+        // Close dropdowns and navbar if the user clicks outside of them
         window.onclick = function(event) {
-            // Check if the click is outside any nav-link or dropdown-menu
+            // Close dropdowns
             if (!event.target.matches('.nav-link') && !event.target.closest('.dropdown-menu')) {
                 const dropdowns = document.getElementsByClassName("dropdown-menu");
                 for (let i = 0; i < dropdowns.length; i++) {
@@ -398,6 +464,18 @@
                     if (!openDropdown.classList.contains('hidden')) {
                         openDropdown.classList.add('hidden');
                     }
+                }
+            }
+
+            // Close navbar if click is outside navbar and it's open
+            const navbar = document.getElementById("mainNav");
+            const navbarResponsive = document.getElementById("navbarResponsive");
+            const navbarToggler = document.querySelector('.navbar-toggler');
+
+            if (!navbar.contains(event.target) && !navbarToggler.contains(event.target)) {
+                if (!navbarResponsive.classList.contains('hidden')) {
+                    navbarResponsive.classList.add('hidden');
+                    navbarResponsive.classList.remove('flex', 'flex-col');
                 }
             }
         }
