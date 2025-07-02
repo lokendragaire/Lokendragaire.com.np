@@ -35,6 +35,10 @@
             color: #4a5568; /* Darker gray for text */
             font-size: 1.1rem; /* Slightly larger font */
             font-weight: 500;
+            justify-content: space-between; /* To push arrow to right */
+        }
+         .wallet-sub-menu-item.no-arrow { /* For digital wallets, connectips etc. */
+            justify-content: flex-start;
         }
 
         .wallet-sub-menu-item:hover {
@@ -47,9 +51,16 @@
             margin-right: 1rem;
             color: #d81b60; /* Pink/red color for icons, inspired by image */
         }
+        .wallet-sub-menu-item .fa-chevron-right { /* Smaller arrow for sub-menus */
+            font-size: 0.9rem;
+            color: #4a5568;
+            margin-left: auto; /* Push to the right */
+            margin-right: 0;
+        }
 
-        /* Nested dropdown for bank lists */
-        .bank-list-dropdown {
+
+        /* Nested dropdown for bank lists (e.g., Nabil Bank details) */
+        .bank-details-dropdown {
             position: absolute;
             top: 0;
             left: 100%; /* Position to the right of the parent menu item */
@@ -66,24 +77,32 @@
             border: 1px solid #e2e8f0;
         }
 
-        .bank-list-dropdown a {
+        .bank-details-dropdown .bank-name {
+            font-weight: bold;
+            color: #2d3748;
+            padding: 0.5rem 0.75rem;
+            display: block;
+        }
+
+        .bank-details-dropdown a {
             display: flex;
             align-items: center;
             padding: 0.5rem 0.75rem;
             border-radius: 0.375rem;
             transition: background-color 0.2s ease-in-out;
-            color: #2d3748;
-            font-size: 1rem;
+            color: #4c51bf; /* Blue for bank specific links */
+            font-size: 0.95rem; /* Slightly smaller for detailed links */
+            margin-left: 1.5rem; /* Indent for sub-links */
         }
 
-        .bank-list-dropdown a:hover {
+        .bank-details-dropdown a:hover {
             background-color: #edf2f7; /* Light gray on hover */
         }
 
-        .bank-list-dropdown a i {
-            font-size: 1.2rem;
+        .bank-details-dropdown a i {
+            font-size: 1rem;
             margin-right: 0.75rem;
-            color: #4c51bf; /* Blue for bank specific icons */
+            color: #4c51bf;
         }
     </style>
 </head>
@@ -102,56 +121,137 @@
                         
                         <div class="relative group">
                             <button class="wallet-sub-menu-item w-full text-left" id="commercialBankBtn">
-                                <i class="fas fa-building"></i> वाणिज्य बैँक
+                                <i class="fas fa-building"></i> वाणिज्य बैँक <i class="fas fa-chevron-right"></i>
                             </button>
-                            <div id="commercialBankMenu" class="bank-list-dropdown hidden">
-                                <a href="https://www.nabilbank.com/locate-us/" target="_blank"><i class="fas fa-map-marker-alt"></i> नबिल बैंक</a>
-                                <a href="https://www.globalimebank.com/atm-branch-locator" target="_blank"><i class="fas fa-map-marker-alt"></i> ग्लोबल आईएमई बैंक</a>
-                                <a href="https://www.nicaasiabank.com/network" target="_blank"><i class="fas fa-map-marker-alt"></i> एनआईसी एशिया बैंक</a>
-                                <a href="https://www.siddharthabank.com/location" target="_blank"><i class="fas fa-map-marker-alt"></i> सिद्धार्थ बैंक</a>
-                                <a href="https://www.nibl.com.np/network/branch-atm-network" target="_blank"><i class="fas fa-map-marker-alt"></i> नेपाल इन्भेष्टमेन्ट मेगा बैंक</a>
+                            <div id="commercialBankMenu" class="bank-details-dropdown hidden">
+                                <span class="bank-name">नबिल बैंक (Nabil Bank)</span>
+                                <a href="https://www.nabilbank.com/personal/digital-banking/nabil-smartbank" target="_blank"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                                <a href="https://www.nabilbank.com/locate-us/" target="_blank"><i class="fas fa-map-marker-alt"></i> बैंक लोकेसन</a>
+                                <a href="https://www.nabilbank.com/locate-us/" target="_blank"><i class="fas fa-money-check-alt"></i> एटीएम लोकेसन</a>
+                                <hr class="my-2 border-gray-200">
+
+                                <span class="bank-name">ग्लोबल आईएमई बैंक (Global IME Bank)</span>
+                                <a href="https://www.globalimebank.com/mobile-banking" target="_blank"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                                <a href="https://www.globalimebank.com/atm-branch-locator" target="_blank"><i class="fas fa-map-marker-alt"></i> बैंक लोकेसन</a>
+                                <a href="https://www.globalimebank.com/atm-branch-locator" target="_blank"><i class="fas fa-money-check-alt"></i> एटीएम लोकेसन</a>
+                                <hr class="my-2 border-gray-200">
+
+                                <span class="bank-name">एनआईसी एशिया बैंक (NIC Asia Bank)</span>
+                                <a href="https://www.nicaasiabank.com/digital-banking" target="_blank"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                                <a href="https://www.nicaasiabank.com/network" target="_blank"><i class="fas fa-map-marker-alt"></i> बैंक लोकेसन</a>
+                                <a href="https://www.nicaasiabank.com/network" target="_blank"><i class="fas fa-money-check-alt"></i> एटीएम लोकेसन</a>
+                                <hr class="my-2 border-gray-200">
+                                
+                                <span class="bank-name">सिद्धार्थ बैंक (Siddhartha Bank)</span>
+                                <a href="https://www.siddharthabank.com/digital-banking/siddhartha-smart" target="_blank"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                                <a href="https://www.siddharthabank.com/location" target="_blank"><i class="fas fa-map-marker-alt"></i> बैंक लोकेसन</a>
+                                <a href="https://www.siddharthabank.com/location" target="_blank"><i class="fas fa-money-check-alt"></i> एटीएम लोकेसन</a>
+                                <hr class="my-2 border-gray-200">
+
+                                <span class="bank-name">नेपाल इन्भेष्टमेन्ट मेगा बैंक (Nepal Investment Mega Bank)</span>
+                                <a href="https://www.nibl.com.np/individual/banking/digital-banking" target="_blank"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                                <a href="https://www.nibl.com.np/network/branch-atm-network" target="_blank"><i class="fas fa-map-marker-alt"></i> बैंक लोकेसन</a>
+                                <a href="https://www.nibl.com.np/network/branch-atm-network" target="_blank"><i class="fas fa-money-check-alt"></i> एटीएम लोकेसन</a>
                                 </div>
                         </div>
 
                         <div class="relative group">
                             <button class="wallet-sub-menu-item w-full text-left" id="governmentBankBtn">
-                                <i class="fas fa-gavel"></i> सरकारी बैँक
+                                <i class="fas fa-gavel"></i> सरकारी बैँक <i class="fas fa-chevron-right"></i>
                             </button>
-                            <div id="governmentBankMenu" class="bank-list-dropdown hidden">
-                                <a href="https://www.rbb.com.np/network" target="_blank"><i class="fas fa-map-marker-alt"></i> राष्ट्रिय वाणिज्य बैंक</a>
-                                <a href="https://www.adbl.gov.np/branch-network" target="_blank"><i class="fas fa-map-marker-alt"></i> कृषि विकास बैंक</a>
+                            <div id="governmentBankMenu" class="bank-details-dropdown hidden">
+                                <span class="bank-name">राष्ट्रिय वाणिज्य बैंक (Rastriya Banijya Bank)</span>
+                                <a href="https://www.rbb.com.np/digital-banking/mobile-banking" target="_blank"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                                <a href="https://www.rbb.com.np/network" target="_blank"><i class="fas fa-map-marker-alt"></i> बैंक लोकेसन</a>
+                                <a href="https://www.rbb.com.np/network" target="_blank"><i class="fas fa-money-check-alt"></i> एटीएम लोकेसन</a>
+                                <hr class="my-2 border-gray-200">
+
+                                <span class="bank-name">कृषि विकास बैंक (ADBL)</span>
+                                <a href="https://www.adbl.gov.np/mobile-banking" target="_blank"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                                <a href="https://www.adbl.gov.np/branch-network" target="_blank"><i class="fas fa-map-marker-alt"></i> बैंक लोकेसन</a>
+                                <a href="https://www.adbl.gov.np/branch-network" target="_blank"><i class="fas fa-money-check-alt"></i> एटीएम लोकेसन</a>
                                 </div>
                         </div>
                         
                         <div class="relative group">
                             <button class="wallet-sub-menu-item w-full text-left" id="developmentBankBtn">
-                                <i class="fas fa-chart-line"></i> विकास बैँक
+                                <i class="fas fa-chart-line"></i> विकास बैँक <i class="fas fa-chevron-right"></i>
                             </button>
-                            <div id="developmentBankMenu" class="bank-list-dropdown hidden">
-                                <a href="https://www.muktinathbank.com.np/Branches-ATMs/" target="_blank"><i class="fas fa-map-marker-alt"></i> मुक्तिनाथ विकास बैंक</a>
-                                <a href="https://www.garimabank.com.np/location" target="_blank"><i class="fas fa-map-marker-alt"></i> गरिमा विकास बैंक</a>
-                                <a href="https://www.jyotibikasbank.com/network/branch-atm-network" target="_blank"><i class="fas fa-map-marker-alt"></i> ज्योति विकास बैंक</a>
+                            <div id="developmentBankMenu" class="bank-details-dropdown hidden">
+                                <span class="bank-name">मुक्तिनाथ विकास बैंक (Muktinath Bikas Bank)</span>
+                                <a href="https://www.muktinathbank.com.np/digital-banking/" target="_blank"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                                <a href="https://www.muktinathbank.com.np/Branches-ATMs/" target="_blank"><i class="fas fa-map-marker-alt"></i> बैंक लोकेसन</a>
+                                <a href="https://www.muktinathbank.com.np/Branches-ATMs/" target="_blank"><i class="fas fa-money-check-alt"></i> एटीएम लोकेसन</a>
+                                <hr class="my-2 border-gray-200">
+
+                                <span class="bank-name">गरिमा विकास बैंक (Garima Bikas Bank)</span>
+                                <a href="https://www.garimabank.com.np/digital-banking" target="_blank"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                                <a href="https://www.garimabank.com.np/location" target="_blank"><i class="fas fa-map-marker-alt"></i> बैंक लोकेसन</a>
+                                <a href="https://www.garimabank.com.np/location" target="_blank"><i class="fas fa-money-check-alt"></i> एटीएम लोकेसन</a>
+                                <hr class="my-2 border-gray-200">
+
+                                <span class="bank-name">ज्योति विकास बैंक (Jyoti Bikas Bank)</span>
+                                <a href="https://www.jyotibikasbank.com/digital-banking/mobile-banking" target="_blank"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                                <a href="https://www.jyotibikasbank.com/network/branch-atm-network" target="_blank"><i class="fas fa-map-marker-alt"></i> बैंक लोकेसन</a>
+                                <a href="https://www.jyotibikasbank.com/network/branch-atm-network" target="_blank"><i class="fas fa-money-check-alt"></i> एटीएम लोकेसन</a>
                                 </div>
                         </div>
 
                         <div class="relative group">
                             <button class="wallet-sub-menu-item w-full text-left" id="cooperativeBankBtn">
-                                <i class="fas fa-handshake"></i> सहकारी बैँक
+                                <i class="fas fa-handshake"></i> सहकारी बैँक <i class="fas fa-chevron-right"></i>
                             </button>
-                            <div id="cooperativeBankMenu" class="bank-list-dropdown hidden">
-                                <a href="https://www.nccbl.coop/branches" target="_blank"><i class="fas fa-map-marker-alt"></i> राष्ट्रिय सहकारी बैंक</a>
-                                <a href="https://nefscun.org.np/" target="_blank"><i class="fas fa-info-circle"></i> NEFSCUN (जानकारी)</a>
+                            <div id="cooperativeBankMenu" class="bank-details-dropdown hidden">
+                                <span class="bank-name">राष्ट्रिय सहकारी बैंक (National Co-operative Bank)</span>
+                                <a href="https://www.nccbl.coop/mobile-banking" target="_blank"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                                <a href="https://www.nccbl.coop/branches" target="_blank"><i class="fas fa-map-marker-alt"></i> बैंक लोकेसन</a>
+                                <a href="https://www.nccbl.coop/branches" target="_blank"><i class="fas fa-money-check-alt"></i> एटीएम लोकेसन (उपलब्ध नहुन सक्छ)</a>
+                                <hr class="my-2 border-gray-200">
+
+                                <span class="bank-name">नेपाल बचत तथा ऋण केन्द्रीय सहकारी संघ लि. (NEFSCUN)</span>
+                                <a href="https://nefscun.org.np/" target="_blank"><i class="fas fa-info-circle"></i> आधिकारिक वेबसाइट</a>
+                                <span class="text-sm text-gray-500 pl-8 pt-1"> (मोबाइल बैंकिङ/एटीएमका लागि सम्बन्धित साकोसको जानकारी लिनुहोस्)</span>
                                 </div>
                         </div>
 
                         <hr class="border-gray-300 my-2">
 
-                        <a href="#" class="wallet-sub-menu-item">
-                            <i class="fas fa-wallet"></i> डिजिटल वालेटहरू
-                        </a>
-                        <a href="https://connectips.com/" target="_blank" class="wallet-sub-menu-item">
-                            <i class="fas fa-exchange-alt"></i> ConnectIPS
-                        </a>
+                        <div class="relative group">
+                            <button class="wallet-sub-menu-item w-full text-left no-arrow" id="digitalWalletBtn">
+                                <i class="fas fa-wallet"></i> डिजिटल वालेटहरू <i class="fas fa-chevron-right"></i>
+                            </button>
+                             <div id="digitalWalletMenu" class="bank-details-dropdown hidden">
+                                <span class="bank-name">ई-सेवा (eSewa)</span>
+                                <a href="https://esewa.com.np/blog/download-esewa-app/" target="_blank"><i class="fas fa-download"></i> एप डाउनलोड</a>
+                                <a href="https://esewa.com.np/" target="_blank"><i class="fas fa-globe"></i> वेबसाइट</a>
+                                <a href="https://blog.esewa.com.np/esewa-cash-point/" target="_blank"><i class="fas fa-map-marker-alt"></i> एजेन्ट लोकेटर</a>
+                                <hr class="my-2 border-gray-200">
+
+                                <span class="bank-name">खल्ती (Khalti)</span>
+                                <a href="https://khalti.com/pages/download/" target="_blank"><i class="fas fa-download"></i> एप डाउनलोड</a>
+                                <a href="https://khalti.com/" target="_blank"><i class="fas fa-globe"></i> वेबसाइट</a>
+                                <a href="https://khalti.com/pages/khalti-pasals" target="_blank"><i class="fas fa-map-marker-alt"></i> एजेन्ट लोकेटर</a>
+                                <hr class="my-2 border-gray-200">
+
+                                <span class="bank-name">आईएमई पे (IME Pay)</span>
+                                <a href="https://www.imepay.com.np/download-app/" target="_blank"><i class="fas fa-download"></i> एप डाउनलोड</a>
+                                <a href="https://www.imepay.com.np/" target="_blank"><i class="fas fa-globe"></i> वेबसाइट</a>
+                                <a href="https://www.imepay.com.np/ime-pay-agents/" target="_blank"><i class="fas fa-map-marker-alt"></i> एजेन्ट लोकेटर</a>
+                                </div>
+                        </div>
+
+                        <div class="relative group">
+                            <button class="wallet-sub-menu-item w-full text-left no-arrow" id="connectIpsBtn">
+                                <i class="fas fa-exchange-alt"></i> ConnectIPS <i class="fas fa-chevron-right"></i>
+                            </button>
+                             <div id="connectIpsMenu" class="bank-details-dropdown hidden">
+                                <span class="bank-name">ConnectIPS (एनसीएचएल)</span>
+                                <a href="https://connectips.com/" target="_blank"><i class="fas fa-globe"></i> आधिकारिक वेबसाइट</a>
+                                <a href="https://connectips.com/faq" target="_blank"><i class="fas fa-info-circle"></i> जानकारी</a>
+                                <span class="text-sm text-gray-500 pl-8 pt-1"> (प्रायः सबै बैंकहरूमा ConnectIPS उपलब्ध छ)</span>
+                                </div>
+                        </div>
+
                     </div>
                 </li>
                 <li><a href="#" class="text-white hover:text-blue-200">सम्पर्क</a></li>
@@ -161,7 +261,7 @@
 
     <main class="container mx-auto p-4">
         <h1 class="text-3xl font-bold text-center mt-8">तपाईंको मुख्य सामग्री यहाँ राखिनेछ।</h1>
-        <p class="text-center mt-4 text-gray-600">माथि नेभिगेसन बारमा रहेको "Wallet" मेनुमा क्लिक गर्नुहोस् र नयाँ स्टाइल हेर्नुहोस्।</p>
+        <p class="text-center mt-4 text-gray-600">माथि नेभिगेसन बारमा रहेको "Wallet" मेनुमा क्लिक गर्नुहोस् र नयाँ स्टाइल तथा विस्तृत लिङ्कहरू हेर्नुहोस्।</p>
     </main>
 
     <script>
@@ -169,96 +269,75 @@
             const walletDropdownBtn = document.getElementById('walletDropdownBtn');
             const walletDropdownMenu = document.getElementById('walletDropdownMenu');
             
-            const commercialBankBtn = document.getElementById('commercialBankBtn');
-            const commercialBankMenu = document.getElementById('commercialBankMenu');
-            
-            const governmentBankBtn = document.getElementById('governmentBankBtn');
-            const governmentBankMenu = document.getElementById('governmentBankMenu');
+            // Get all primary bank category buttons and their corresponding menus
+            const categoryButtons = {
+                commercialBank: { btn: document.getElementById('commercialBankBtn'), menu: document.getElementById('commercialBankMenu') },
+                governmentBank: { btn: document.getElementById('governmentBankBtn'), menu: document.getElementById('governmentBankMenu') },
+                developmentBank: { btn: document.getElementById('developmentBankBtn'), menu: document.getElementById('developmentBankMenu') },
+                cooperativeBank: { btn: document.getElementById('cooperativeBankBtn'), menu: document.getElementById('cooperativeBankMenu') },
+                digitalWallet: { btn: document.getElementById('digitalWalletBtn'), menu: document.getElementById('digitalWalletMenu') },
+                connectIps: { btn: document.getElementById('connectIpsBtn'), menu: document.getElementById('connectIpsMenu') }
+            };
 
-            const developmentBankBtn = document.getElementById('developmentBankBtn');
-            const developmentBankMenu = document.getElementById('developmentBankMenu');
-            
-            const cooperativeBankBtn = document.getElementById('cooperativeBankBtn');
-            const cooperativeBankMenu = document.getElementById('cooperativeBankMenu');
+            // Function to hide all sub-dropdowns (bank details, digital wallets, connectips)
+            function hideAllBankDetailsDropdowns() {
+                for (const key in categoryButtons) {
+                    if (categoryButtons[key].menu) {
+                        categoryButtons[key].menu.classList.add('hidden');
+                    }
+                }
+            }
 
-            // Function to hide all dropdowns
+            // Function to hide the main Wallet dropdown and all sub-dropdowns
             function hideAllDropdowns() {
                 walletDropdownMenu.classList.add('hidden');
-                commercialBankMenu.classList.add('hidden');
-                governmentBankMenu.classList.add('hidden');
-                developmentBankMenu.classList.add('hidden');
-                cooperativeBankMenu.classList.add('hidden');
+                hideAllBankDetailsDropdowns();
             }
 
             // Toggle Wallet dropdown (main menu)
             walletDropdownBtn.addEventListener('click', function (event) {
                 event.stopPropagation(); // Prevent document click from closing it immediately
                 const isHidden = walletDropdownMenu.classList.contains('hidden');
-                hideAllDropdowns(); // Hide others before opening this one
+                hideAllDropdowns(); // Hide all before opening
                 if (isHidden) {
                     walletDropdownMenu.classList.remove('hidden');
                 }
             });
 
-            // General function to toggle sub-dropdowns and hide others
-            function toggleSubDropdown(targetMenu, allSubMenus) {
-                const isHidden = targetMenu.classList.contains('hidden');
-                allSubMenus.forEach(menu => {
-                    if (menu !== targetMenu) {
-                        menu.classList.add('hidden'); // Hide other sub-menus
-                    }
-                });
-                if (isHidden) {
-                    targetMenu.classList.remove('hidden');
-                } else {
-                    targetMenu.classList.add('hidden');
+            // Add click listeners for each category button
+            for (const key in categoryButtons) {
+                const { btn, menu } = categoryButtons[key];
+                if (btn && menu) {
+                    btn.addEventListener('click', function (event) {
+                        event.stopPropagation();
+                        const isHidden = menu.classList.contains('hidden');
+                        hideAllBankDetailsDropdowns(); // Hide other bank detail menus
+                        if (isHidden) {
+                            menu.classList.remove('hidden');
+                        }
+                    });
                 }
             }
-
-            const allBankSubMenus = [
-                commercialBankMenu,
-                governmentBankMenu,
-                developmentBankMenu,
-                cooperativeBankMenu
-            ];
-
-            // Toggle Commercial Bank sub-dropdown
-            commercialBankBtn.addEventListener('click', function (event) {
-                event.stopPropagation();
-                toggleSubDropdown(commercialBankMenu, allBankSubMenus);
-            });
-
-            // Toggle Government Bank sub-dropdown
-            governmentBankBtn.addEventListener('click', function (event) {
-                event.stopPropagation();
-                toggleSubDropdown(governmentBankMenu, allBankSubMenus);
-            });
-
-            // Toggle Development Bank sub-dropdown
-            developmentBankBtn.addEventListener('click', function (event) {
-                event.stopPropagation();
-                toggleSubDropdown(developmentBankMenu, allBankSubMenus);
-            });
-
-            // Toggle Cooperative Bank sub-dropdown
-            cooperativeBankBtn.addEventListener('click', function (event) {
-                event.stopPropagation();
-                toggleSubDropdown(cooperativeBankMenu, allBankSubMenus);
-            });
-
+            
             // Close dropdowns when clicking outside
             document.addEventListener('click', function (event) {
-                // Check if the click is outside the wallet button and its menu
+                // Check if the click is outside the wallet button and its main menu
                 if (!walletDropdownBtn.contains(event.target) && !walletDropdownMenu.contains(event.target)) {
                     hideAllDropdowns();
-                }
-                // Also close bank sub-menus if click is outside them, but inside the main wallet menu
-                allBankSubMenus.forEach(menu => {
-                    const parentButton = menu.closest('.group').querySelector('button'); // Get the button that triggers this sub-menu
-                    if (!menu.contains(event.target) && !parentButton.contains(event.target) && !walletDropdownMenu.contains(event.target)) {
-                         menu.classList.add('hidden');
+                } else if (walletDropdownMenu.contains(event.target)) {
+                    // If clicked inside the main wallet menu, but not on a sub-menu button or a sub-menu itself
+                    let clickedOnSubMenu = false;
+                    for (const key in categoryButtons) {
+                        const { btn, menu } = categoryButtons[key];
+                        if (menu && (menu.contains(event.target) || btn.contains(event.target))) {
+                            clickedOnSubMenu = true;
+                            break;
+                        }
                     }
-                });
+                    if (!clickedOnSubMenu) {
+                        hideAllBankDetailsDropdowns(); // Only hide bank details if clicked on main wallet area but not a sub-menu
+                    }
+                }
             });
         });
     </script>
