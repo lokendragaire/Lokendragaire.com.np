@@ -1,264 +1,87 @@
 <!DOCTYPE html>
 <html lang="ne">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wallet Details</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="UTF-8">
+  <title>नेपालका Mobile Wallet हरु</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    .wallet {
+      border-radius: 15px;
+      padding: 20px;
+      color: white;
+      margin: 15px 0;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .esewa { background-color: #4CAF50; }
+    .imepay { background-color: #f44336; }
+    .khalti { background-color: #6a1b9a; }
+    .prabhupay { background-color: #283593; }
+    .connectips { background-color: #00838f; }
+    .fonepay { background-color: #d84315; }
+    .cellpay { background-color: #0277bd; }
+    .login-link {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .login-link:hover {
+      background: rgba(255,255,255,0.4);
+    }
+  </style>
 </head>
-<body class="p-4">
+<body>
 
-    <div id="tab-content-commercialBanks" class="tab-pane">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bank-card bg-blue-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">नबिल बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.nabilbank.com/individual/e-banking/mobile-banking/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.nabilbank.com/atms/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.nabilbank.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-green-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">राष्ट्रिय वाणिज्य बैंक</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.rbb.com.np/services/mobile-banking" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.rbb.com.np/services/atm-card" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.rbb.com.np/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-purple-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">नेपाल इन्भेष्टमेन्ट मेगा बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.nibl.com.np/digital-banking/mobile-banking" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.nibl.com.np/locations" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.nibl.com.np/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-red-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">प्रभु बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.prabhubank.com/digital-banking/prabhu-mobile-banking/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.prabhubank.com/network/atm-locations/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.prabhubank.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-yellow-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">एभरेष्ट बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.everestbankltd.com/ebl-touch-2/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.everestbankltd.com/network/atm-network/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.everestbankltd.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-indigo-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">हिमालयन बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.himalayanbank.com/products/e-banking/mobile-banking" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.himalayanbank.com/network/atm-locations" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.himalayanbank.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-orange-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">सिद्धार्थ बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://siddharthabank.com/digital-banking/mobile-banking" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://siddharthabank.com/branches-atm" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://siddharthabank.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-teal-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">ग्लोबल आईएमई बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://globalimebank.com/digital-banking/mobile-banking" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://globalimebank.com/network/atm-locations" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://globalimebank.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-pink-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">एनआईसी एशिया बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.nicasianbank.com/digital-banking/nic-asia-mo-bank" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.nicasianbank.com/network/atm-locations" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.nicasianbank.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-gray-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">प्राइम कमर्सियल बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.primebank.com.np/digital-banking/mobile-banking" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.primebank.com.np/network/atm-locations" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.primebank.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-cyan-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">लक्ष्मी सन्राइज बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.laxmisunrisebank.com/individual/digital-banking/mobile-banking" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.laxmisunrisebank.com/network/atm-locations" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.laxmisunrisebank.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-lime-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">सानिमा बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.sanimabank.com/product/e-banking/sanima-mobile-banking" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.sanimabank.com/network/atm-locations" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.sanimabank.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-fuchsia-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">माछापुच्छ्रे बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.machhapuchhrebank.com/digital-banking/mobile-banking" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.machhapuchhrebank.com/network/atm-locations" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.machhapuchhrebank.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-rose-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">कुमारी बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.kumaribank.com/digital-banking/kumarismart-mobile-banking/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.kumaribank.com/network/atm-locations/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.kumaribank.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-violet-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">एनएमबी बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.nmb.com.np/digital-banking/mobile-banking" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.nmb.com.np/network/atm-locations" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.nmb.com.np/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-emerald-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">नेपाल बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.nepalbank.com.np/services/nbl-mobile-banking" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.nepalbank.com.np/network/atm" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.nepalbank.com.np/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-        </div>
-    </div>
+  <h1>नेपालका Mobile Wallet हरु</h1>
 
-    <div id="tab-content-developmentBanks" class="tab-pane">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bank-card bg-blue-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">मुक्तिनाथ विकास बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.muktinathbank.com.np/mobile-banking" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.muktinathbank.com.np/branches-atms" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.muktinathbank.com.np/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-green-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">गरिमा विकास बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.garimabank.com.np/digital-banking/mobile-banking/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.garimabank.com.np/branches-atms/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.garimabank.com.np/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-purple-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">ज्योति विकास बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.jyotibank.com/digital-banking/jyoti-mobile-banking/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.jyotibank.com/network/atm-locations/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.jyotibank.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-red-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">महालक्ष्मी विकास बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.mahalaxmibank.com/digital-banking/mobile-banking/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.mahalaxmibank.com/network/atms/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.mahalaxmibank.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-yellow-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">कामना सेवा विकास बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.kamanasewabank.com/digital-banking/mobile-banking/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.kamanasewabank.com/network/atm-locations/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम/शाखा</a> |
-                    <a href="https://www.kamanasewabank.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-        </div>
-    </div>
+  <div class="wallet esewa">
+    <h2>eSewa</h2>
+    <p>नेपालको अग्रणी डिजिटल वालेट</p>
+    <a class="login-link" href="https://login.esewa.com.np" target="_blank">Login गर्नुहोस्</a>
+  </div>
 
-    <div id="tab-content-cooperativeBanks" class="tab-pane">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bank-card bg-blue-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">राष्ट्रिय सहकारी बैंक लि.</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://www.nccbank.com.np/services/mobile-banking/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ</a> |
-                    <a href="https://www.nccbank.com.np/network/atms/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एटीएम स्टेशन (सीमित)</a> |
-                    <a href="https://www.nccbank.com.np/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-            <div class="bank-card bg-green-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">नेपाल बहुउद्देश्यीय केन्द्रीय सहकारी संघ लि. (NCCF)</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://play.google.com/store/apps/details?id=com.smartchoice.mobilebanking.coop" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">मोबाइल बैंकिङ (स्मार्टच्वाइस)</a> |
-                    <span class="text-gray-500 mr-2">एटीएम स्टेशन (जानकारी छैन)</span> |
-                    <a href="https://www.nccf.org.np/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">वेबसाइट</a>
-                </div>
-            </div>
-        </div>
-        <p class="mt-4 text-xs text-gray-600">नोट: अधिकांश सहकारी संस्थाहरूको आफ्नै मोबाइल बैंकिङ र ATM सेवा नहुन सक्छ।</p>
-    </div>
+  <div class="wallet imepay">
+    <h2>IME Pay</h2>
+    <p>IME समूहद्वारा सञ्चालित मोबाइल वालेट</p>
+    <a class="login-link" href="https://web.imepay.com.np" target="_blank">Login गर्नुहोस्</a>
+  </div>
 
-    <div id="tab-content-digitalWallets" class="tab-pane">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bank-card bg-purple-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">ई-सेवा (eSewa)</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://esewa.com.np/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">वेबसाइट</a> |
-                    <a href="https://play.google.com/store/apps/details?id=com.esewa.android" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एन्ड्रोइड एप</a> |
-                    <a href="https://apps.apple.com/np/app/esewa/id974610738" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">आईओएस एप</a>
-                </div>
-            </div>
-            <div class="bank-card bg-red-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">खल्ती (Khalti)</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://khalti.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">वेबसाइट</a> |
-                    <a href="https://play.google.com/store/apps/details?id=com.khalti.khalti" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एन्ड्रोइड एप</a> |
-                    <a href="https://apps.apple.com/np/app/khalti-digital-wallet/id1200115598" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">आईओएस एप</a>
-                </div>
-            </div>
-            <div class="bank-card bg-yellow-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">आईएमई पे (IME Pay)</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://imepay.com.np/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">वेबसाइट</a> |
-                    <a href="https://play.google.com/store/apps/details?id=com.ime.pay" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एन्ड्रोइड एप</a> |
-                    <a href="https://apps.apple.com/np/app/ime-pay/id1231464319" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">आईओएस एप</a>
-                </div>
-            </div>
-            <div class="bank-card bg-indigo-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">प्रभु पे (Prabhu Pay)</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://prabhupay.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">वेबसाइट</a> |
-                    <a href="https://play.google.com/store/apps/details?id=com.prabhu.pay.wallet" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एन्ड्रोइड एप</a> |
-                    <a href="https://apps.apple.com/np/app/prabhupay/id1396347101" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">आईओएस एप</a>
-                </div>
-            </div>
-        </div>
-    </div>
+  <div class="wallet khalti">
+    <h2>Khalti</h2>
+    <p>स्मार्ट डिजिटल वालेट</p>
+    <a class="login-link" href="https://khalti.com/login" target="_blank">Login गर्नुहोस्</a>
+  </div>
 
-    <div id="tab-content-connectIPS" class="tab-pane">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bank-card bg-orange-50 p-4 shadow-sm rounded">
-                <strong class="block text-gray-800 text-base mb-1">ConnectIPS</strong>
-                <div class="flex flex-wrap text-sm">
-                    <a href="https://connectips.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">आधिकारिक वेबसाइट</a> |
-                    <a href="https://play.google.com/store/apps/details?id=com.nchl.connectips.mobile" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mr-2">एन्ड्रोइड एप</a> |
-                    <a href="https://apps.apple.com/np/app/connectips/id1459063236" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">आईओएस एप</a>
-                </div>
-            </div>
-        </div>
-        <p class="mt-4 text-xs text-gray-600">ConnectIPS नेपाल क्लियरिङ्ग हाउस लिमिटेड (NCHL) द्वारा सञ्चालित एक भुक्तानी प्रणाली हो।</p>
-    </div>
+  <div class="wallet prabhupay">
+    <h2>PrabhuPay</h2>
+    <p>प्रभु ग्रुपको मोबाइल वालेट</p>
+    <a class="login-link" href="https://www.prabhupay.com/#/login" target="_blank">Login गर्नुहोस्</a>
+  </div>
+
+  <div class="wallet connectips">
+    <h2>ConnectIPS</h2>
+    <p>नेपाल क्लियरिङ्ग हाउसद्वारा सञ्चालित</p>
+    <a class="login-link" href="https://login.connectips.com" target="_blank">Login गर्नुहोस्</a>
+  </div>
+
+  <div class="wallet fonepay">
+    <h2>Fonepay</h2>
+    <p>QR आधारित भुक्तानी सेवा</p>
+    <a class="login-link" href="https://fonepay.com" target="_blank">Website हेर्नुहोस्</a>
+  </div>
+
+  <div class="wallet cellpay">
+    <h2>CellPay</h2>
+    <p>सिधा बैंक खाता बाट भुक्तानी</p>
+    <a class="login-link" href="https://www.cellpay.com.np/#/login" target="_blank">Login गर्नुहोस्</a>
+  </div>
 
 </body>
 </html>
