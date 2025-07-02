@@ -1,583 +1,426 @@
 <!DOCTYPE html>
 <html lang="ne">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>नेपालको वित्तीय सेवा नेभिगेसन (पूर्ण कार्यशील)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Nepali:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>बैंकिङ र वालेट सेवाहरू</title>
+    <meta name="description" content="नेपालका विभिन्न बैंकहरू र डिजिटल वालेट सेवाहरूको सूची, मोबाइल बैंकिङ, एटीएम, र वेबसाइट लिङ्क सहित।" />
+    <meta name="keywords" content="नेपाल बैंक, मोबाइल बैंकिङ, एटीएम, वालेट, eSewa, Khalti, ConnectIPS, वाणिज्य बैंक, विकास बैंक, सहकारी बैंक" />
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome CSS CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts - Noto Sans Nepali for clean Nepali typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Nepali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* सामान्य स्टाइलिंग */
         body {
-            font-family: 'Noto Sans Nepali', Arial, sans-serif; /* नेपाली फन्टको लागि */
-            margin: 0;
-            background-color: #f4f4f4;
-            color: #333;
+            font-family: 'Noto Sans Nepali', sans-serif;
+            background-color: #f0f2f5; /* Light gray background */
             line-height: 1.6;
         }
-
-        /* नेभिगेसन बारको स्टाइलिंग */
-        .navbar {
-            background-color: #2c3e50; /* गाढा नीलो */
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            position: relative; /* ड्रपडाउन पोजिसनिङको लागि */
-            z-index: 1000; /* नेभिगेसन बारलाई माथि राख्न */
+        .section-title {
+            color: #2c3e50; /* Dark blue-gray for titles */
+            border-bottom: 2px solid #3498db; /* Blue accent under titles */
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+            display: inline-block; /* To make border-bottom only under text */
         }
-
-        .navbar ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            display: flex; /* आइटमहरूलाई एक लाइनमा राख्न */
-            justify-content: flex-start;
+        .bank-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border-radius: 0.75rem; /* Rounded corners */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Push content to top, links to bottom */
+            height: 100%; /* Ensure cards are same height in a row */
         }
-
-        .navbar ul li {
-            position: relative; /* ड्रपडाउन पोजिसनिङको लागि */
+        .bank-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
         }
-
-        .navbar ul li a {
-            display: block;
-            color: white;
-            text-align: center;
-            padding: 15px 20px;
+        .bank-card-header {
+            font-size: 1.5rem; /* Larger font for bank names */
+            font-weight: 700;
+            color: #34495e; /* Slightly lighter dark blue-gray */
+            margin-bottom: 1rem;
+        }
+        .bank-card-links a {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            color: #3498db; /* Blue for links */
             text-decoration: none;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            font-size: 1.05em;
+            transition: color 0.2s ease;
         }
-
-        .navbar ul li a:hover {
-            background-color: #34495e; /* अलिक हल्का गाढा नीलो */
-            color: #ecf0f1; /* हल्का सेतो */
-        }
-
-        /* 'वालेट' मुख्य हेडिङ स्टाइल (Heading 1 Level) */
-        .dropbtn {
-            font-size: 1.2em; /* अलि ठूलो फन्ट */
-            font-weight: 700; /* बोल्ड */
-        }
-
-        /* मुख्य ड्रपडाउन स्टाइलिंग (वालेट) */
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #ffffff;
-            min-width: 250px; /* चौडाई बढाइयो */
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.25);
-            z-index: 1; /* नेभिगेसन बार भन्दा तल, सब-ड्रपडाउन भन्दा तल */
-            border-top: 4px solid #3498db; /* नीलो एक्सन्ट */
-            border-radius: 0 0 5px 5px;
-            padding: 5px 0;
-        }
-
-        /* ड्रपडाउन भित्रका हेडिङ २ स्तरका आइटमहरू (वाणिज्य बैँक, विकास बैँक आदि) */
-        .dropdown-content .sub-dropdown-trigger {
-            font-weight: 600; /* सेमी-बोल्ड */
-            padding: 12px 18px;
-            font-size: 1.05em; /* अलि ठूलो फन्ट */
-            color: #2c3e50; /* गाढा रङ */
-            border-bottom: 1px solid #f0f0f0; /* तल हल्का लाइन */
-        }
-        .dropdown-content .sub-dropdown-trigger:last-of-type {
-            border-bottom: none; /* अन्तिम आइटममा लाइन नराख्ने */
-        }
-        .dropdown-content .sub-dropdown-trigger:hover {
-            background-color: #f0f0f0; /* होभर गर्दा हल्का पृष्ठभूमि */
-        }
-
-        /* सामान्य ड्रपडाउन आइटम (जस्तै वालेट सेवा, कनेक्ट आईपीएस) */
-        .dropdown-content > a:not(.sub-dropdown-trigger) {
-            float: none;
-            color: #333;
-            padding: 12px 18px;
-            text-decoration: none;
-            display: block;
-            text-align: left;
-            font-size: 1em;
-        }
-
-        .dropdown-content > a:not(.sub-dropdown-trigger):hover {
-            background-color: #f0f0f0;
-            color: #2c3e50;
-        }
-
-        /* मुख्य ड्रपडाउन देखाउने (होभरमा) */
-        .navbar ul li.dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        /* सब-ड्रपडाउन स्टाइलिंग */
-        .sub-dropdown-content {
-            display: none; /* लुकाइएको */
-            position: absolute;
-            left: 100%; /* अभिभावक आइटमको दायाँमा */
-            top: 0;
-            background-color: #ffffff;
-            min-width: 320px; /* बैंक विवरणका लागि चौडाई बढाइयो */
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.25);
-            z-index: 2; /* मुख्य ड्रपडाउन भन्दा माथि */
-            border-left: 4px solid #2ecc71; /* हरियो एक्सन्ट */
-            border-radius: 0 5px 5px 0;
-            padding: 15px;
-            max-height: 400px; /* उचाई सीमित गरियो */
-            overflow-y: auto; /* सामग्री धेरै भए स्क्रोल बार */
-        }
-
-        .sub-dropdown-content ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sub-dropdown-content ul li {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .sub-dropdown-content ul li:last-child {
-            border-bottom: none;
-        }
-
-        /* बैंकको नाम (Sub-heading 1 Level) स्टाइल */
-        .sub-dropdown-content ul li strong {
-            display: block;
-            margin-bottom: 5px;
-            color: #34495e;
-            font-size: 1.15em; /* अलि ठूलो फन्ट */
-            font-weight: 700; /* बोल्ड */
-        }
-
-        .sub-dropdown-content ul li a {
-            display: inline-block;
-            padding: 3px 8px;
-            color: #3498db;
-            text-decoration: none;
-            font-size: 0.9em;
-            margin-right: 5px;
-            border-radius: 3px;
-            transition: background-color 0.2s ease, color 0.2s ease;
-        }
-
-        .sub-dropdown-content ul li a:hover {
+        .bank-card-links a:hover {
+            color: #2980b9; /* Darker blue on hover */
             text-decoration: underline;
-            background-color: #eaf6ff;
-            color: #2980b9;
         }
-
-        /* सब-ड्रपडाउन देखाउने (होभरमा) */
-        .sub-dropdown-trigger:hover .sub-dropdown-content {
-            display: block;
+        .bank-card-links a i {
+            width: 1.5rem; /* Fixed width for icons */
+            text-align: center;
+            margin-right: 0.75rem;
+            color: #2ecc71; /* Green for link icons */
         }
-
-        /* सामग्री क्षेत्रको स्टाइलिंग */
-        .content {
-            padding: 20px;
-            max-width: 960px;
-            margin: 20px auto;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .content h2 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-
-        /* मोबाइल रेस्पोन्सिभनेसका लागि मिडिया क्वेरी */
-        @media (max-width: 768px) {
-            .navbar ul {
-                flex-direction: column; /* सानो स्क्रिनमा ठाडो राखियो */
-            }
-            .navbar ul li {
-                width: 100%;
-                text-align: left;
-            }
-            .dropdown-content {
-                position: static; /* मोबाइलमा स्थिर पोजिसनिङ */
-                width: 100%;
-                box-shadow: none;
-                border-top: none;
-                border-radius: 0;
-                padding-left: 20px; /* इन्डेन्टेशन */
-            }
-            .sub-dropdown-content {
-                position: static; /* मोबाइलमा स्थिर पोजिसनिङ */
-                width: 100%;
-                box-shadow: none;
-                border-left: none;
-                border-radius: 0;
-                padding-left: 40px; /* थप इन्डेन्टेशन */
-            }
-            /* मोबाइलमा ड्रपडाउनहरू क्लिकमा देखाउन JavaScript आवश्यक पर्छ */
-            .navbar ul li.dropdown:hover .dropdown-content {
-                display: none; /* मोबाइलमा होभरले काम नगर्ने */
-            }
-            .sub-dropdown-trigger:hover .sub-dropdown-content {
-                display: none; /* मोबाइलमा होभरले काम नगर्ने */
-            }
+        .bank-card-note {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 1rem;
+            padding-top: 0.5rem;
+            border-top: 1px dashed #e0e0e0;
         }
     </style>
 </head>
-<body>
+<body class="p-4 sm:p-8">
+    <section class="max-w-7xl mx-auto bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+        <h1 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-10">नेपालका बैंकिङ र वालेट सेवाहरू</h1>
 
-    <nav class="navbar">
-        <ul>
-            <li><a href="#">गृहपृष्ठ</a></li>
-            <li><a href="#">सेवाहरू</a></li>
-            <li class="dropdown">
-                <a href="#" class="dropbtn" id="wallet-dropbtn">वालेट ▼</a>
-                <div class="dropdown-content">
-                    <a href="#" class="sub-dropdown-trigger" data-category="commercial-banks">वाणिज्य बैँक
-                        <div class="sub-dropdown-content" id="commercial-banks-content">
-                            <ul class="bank-list">
-                                <li>
-                                    <strong>नेपाल इन्भेष्टमेन्ट मेगा बैंक लि.</strong><br>
-                                    <a href="https://www.nibl.com.np/digital-banking/mobile-banking" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.nibl.com.np/locations" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.nibl.com.np/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>नबिल बैंक लि.</strong><br>
-                                    <a href="https://www.nabilbank.com/individual/e-banking/mobile-banking/" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.nabilbank.com/atms/" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.nabilbank.com/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>राष्ट्रिय वाणिज्य बैंक</strong><br>
-                                    <a href="https://www.rbb.com.np/services/mobile-banking" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.rbb.com.np/services/atm-card" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.rbb.com.np/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>प्रभु बैंक लि.</strong><br>
-                                    <a href="https://www.prabhubank.com/digital-banking/prabhu-mobile-banking/" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.prabhubank.com/network/atm-locations/" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.prabhubank.com/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>एभरेष्ट बैंक लि.</strong><br>
-                                    <a href="https://www.everestbankltd.com/ebl-touch-2/" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.everestbankltd.com/network/atm-network/" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.everestbankltd.com/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>हिमालयन बैंक लि.</strong><br>
-                                    <a href="https://www.himalayanbank.com/products/e-banking/mobile-banking" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.himalayanbank.com/network/atm-locations" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.himalayanbank.com/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>सिद्धार्थ बैंक लि.</strong><br>
-                                    <a href="https://siddharthabank.com/digital-banking/mobile-banking" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://siddharthabank.com/branches-atm" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://siddharthabank.com/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>ग्लोबल आईएमई बैंक लि.</strong><br>
-                                    <a href="https://globalimebank.com/digital-banking/mobile-banking" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://globalimebank.com/network/atm-locations" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://globalimebank.com/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>एनआईसी एशिया बैंक लि.</strong><br>
-                                    <a href="https://www.nicasianbank.com/digital-banking/nic-asia-mo-bank" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.nicasianbank.com/network/atm-locations" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.nicasianbank.com/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>प्राइम कमर्सियल बैंक लि.</strong><br>
-                                    <a href="https://www.primebank.com.np/digital-banking/mobile-banking" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.primebank.com.np/network/atm-locations" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.primebank.com.np/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>लक्ष्मी सन्राइज बैंक लि.</strong><br>
-                                    <a href="https://www.laxmisunrisebank.com/individual/digital-banking/mobile-banking" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.laxmisunrisebank.com/network/atm-locations" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.laxmisunrisebank.com/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>सानिमा बैंक लि.</strong><br>
-                                    <a href="https://www.sanimabank.com/product/e-banking/sanima-mobile-banking" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.sanimabank.com/network/atm-locations" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.sanimabank.com/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>माछापुच्छ्रे बैंक लि.</strong><br>
-                                    <a href="https://www.machhapuchhrebank.com/digital-banking/mobile-banking" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.machhapuchhrebank.com/network/atm-locations" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.machhapuchhrebank.com/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>कुमारी बैंक लि.</strong><br>
-                                    <a href="https://www.kumaribank.com/digital-banking/kumarismart-mobile-banking/" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.kumaribank.com/network/atm-locations/" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.kumaribank.com/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>एनएमबी बैंक लि.</strong><br>
-                                    <a href="https://www.nmb.com.np/digital-banking/mobile-banking" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.nmb.com.np/network/atm-locations" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.nmb.com.np/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>नेपाल बैंक लि.</strong><br>
-                                    <a href="https://www.nepalbank.com.np/services/nbl-mobile-banking" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.nepalbank.com.np/network/atm" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.nepalbank.com.np/" target="_blank">वेबसाइट</a>
-                                </li>
-                            </ul>
+        <!-- वाणिज्य बैँक Section -->
+        <div class="mb-12">
+            <h2 class="text-2xl sm:text-3xl font-bold section-title mb-8">वाणिज्य बैँकहरू</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Nabil Bank -->
+                <div class="bank-card bg-blue-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">नबिल बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.nabilbank.com/individual/e-banking/mobile-banking/" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.nabilbank.com/atms/" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.nabilbank.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
                         </div>
-                    </a>
-
-                    <a href="#" class="sub-dropdown-trigger" data-category="development-banks">विकास बैँक
-                        <div class="sub-dropdown-content" id="development-banks-content">
-                            <ul class="bank-list">
-                                <li>
-                                    <strong>मुक्तिनाथ विकास बैंक लि.</strong><br>
-                                    <a href="https://www.muktinathbank.com.np/mobile-banking" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.muktinathbank.com.np/branches-atms" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.muktinathbank.com.np/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>गरिमा विकास बैंक लि.</strong><br>
-                                    <a href="https://www.garimabank.com.np/digital-banking/mobile-banking/" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.garimabank.com.np/branches-atms/" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.garimabank.com.np/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>ज्योति विकास बैंक लि.</strong><br>
-                                    <a href="https://www.jyotibank.com/digital-banking/jyoti-mobile-banking/" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.jyotibank.com/network/atm-locations/" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.jyotibank.com/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>महालक्ष्मी विकास बैंक लि.</strong><br>
-                                    <a href="https://www.mahalaxmibank.com/digital-banking/mobile-banking/" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.mahalaxmibank.com/network/atms/" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.mahalaxmibank.com/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>कामना सेवा विकास बैंक लि.</strong><br>
-                                    <a href="https://www.kamanasewabank.com/digital-banking/mobile-banking/" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.kamanasewabank.com/network/atm-locations/" target="_blank">एटीएम स्टेशन</a> |
-                                    <a href="https://www.kamanasewabank.com/" target="_blank">वेबसाइट</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </a>
-
-                    <a href="#" class="sub-dropdown-trigger" data-category="cooperative-banks">सहकारी बैँक
-                        <div class="sub-dropdown-content" id="cooperative-banks-content">
-                            <ul class="bank-list">
-                                <li>
-                                    <strong>राष्ट्रिय सहकारी बैंक लि.</strong><br>
-                                    <a href="https://www.nccbank.com.np/services/mobile-banking/" target="_blank">मोबाइल बैंकिङ</a> |
-                                    <a href="https://www.nccbank.com.np/network/atms/" target="_blank">एटीएम स्टेशन (सीमित)</a> |
-                                    <a href="https://www.nccbank.com.np/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <strong>नेपाल बहुउद्देश्यीय केन्द्रीय सहकारी संघ लि. (NCCF)</strong><br>
-                                    <a href="https://play.google.com/store/apps/details?id=com.smartchoice.mobilebanking.coop" target="_blank">मोबाइल बैंकिङ (स्मार्टच्वाइस)</a> |
-                                    <a href="#" target="_blank">एटीएम स्टेशन (जानकारी छैन)</a> |
-                                    <a href="https://www.nccf.org.np/" target="_blank">वेबसाइट</a>
-                                </li>
-                                <li>
-                                    <p style="font-size: 0.9em; color: #555;">नोट: अधिकांश सहकारी संस्थाहरूको आफ्नै मोबाइल बैंकिङ र ATM सेवा नहुन सक्छ। उनीहरूले अन्य बैंकको एजेन्ट वा वालेट सेवा प्रयोग गर्न सक्छन्।</p>
-                                </li>
-                            </ul>
-                        </div>
-                    </a>
-
-                    <a href="#" class="sub-dropdown-trigger" data-category="wallet-services">वालेट सेवा
-                        <div class="sub-dropdown-content" id="wallet-services-content">
-                            <ul class="service-list">
-                                <li>
-                                    <strong>ई-सेवा (eSewa)</strong><br>
-                                    <a href="https://esewa.com.np/" target="_blank">वेबसाइट</a> |
-                                    <a href="https://play.google.com/store/apps/details?id=com.esewa.android" target="_blank">एन्ड्रोइड एप</a> |
-                                    <a href="https://apps.apple.com/np/app/esewa/id974610738" target="_blank">आईओएस एप</a>
-                                </li>
-                                <li>
-                                    <strong>खल्ती (Khalti)</strong><br>
-                                    <a href="https://khalti.com/" target="_blank">वेबसाइट</a> |
-                                    <a href="https://play.google.com/store/apps/details?id=com.khalti.khalti" target="_blank">एन्ड्रोइड एप</a> |
-                                    <a href="https://apps.apple.com/np/app/khalti-digital-wallet/id1200115598" target="_blank">आईओएस एप</a>
-                                </li>
-                                <li>
-                                    <strong>आईएमई पे (IME Pay)</strong><br>
-                                    <a href="https://imepay.com.np/" target="_blank">वेबसाइट</a> |
-                                    <a href="https://play.google.com/store/apps/details?id=com.ime.pay" target="_blank">एन्ड्रोइड एप</a> |
-                                    <a href="https://apps.apple.com/np/app/ime-pay/id1231464319" target="_blank">आईओएस एप</a>
-                                </li>
-                                <li>
-                                    <strong>प्रभु पे (Prabhu Pay)</strong><br>
-                                    <a href="https://prabhupay.com/" target="_blank">वेबसाइट</a> |
-                                    <a href="https://play.google.com/store/apps/details?id=com.prabhu.pay.wallet" target="_blank">एन्ड्रोइड एप</a> |
-                                    <a href="https://apps.apple.com/np/app/prabhupay/id1396347101" target="_blank">आईओएस एप</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </a>
-
-                    <a href="#" class="sub-dropdown-trigger" data-category="connect-ips">कनेक्ट आईपीएस
-                        <div class="sub-dropdown-content" id="connect-ips-content">
-                            <ul class="service-list">
-                                <li>
-                                    <strong>ConnectIPS</strong><br>
-                                    <a href="https://connectips.com/" target="_blank">आधिकारिक वेबसाइट</a> |
-                                    <a href="https://play.google.com/store/apps/details?id=com.nchl.connectips.mobile" target="_blank">एन्ड्रोइड एप</a> |
-                                    <a href="https://apps.apple.com/np/app/connectips/id1459063236" target="_blank">आईओएस एप</a>
-                                </li>
-                                <li>
-                                    <p style="font-size: 0.9em; color: #555;">ConnectIPS नेपाल क्लियरिङ्ग हाउस लिमिटेड (NCHL) द्वारा सञ्चालित एक भुक्तानी प्रणाली हो।</p>
-                                </li>
-                            </ul>
-                        </div>
-                    </a>
+                    </div>
                 </div>
-            </li>
-            <li><a href="#">हामीबारे</a></li>
-            <li><a href="#">सम्पर्क</a></li>
-        </ul>
-    </nav>
+                <!-- Rastriya Banijya Bank -->
+                <div class="bank-card bg-green-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">राष्ट्रिय वाणिज्य बैंक</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.rbb.com.np/services/mobile-banking" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.rbb.com.np/services/atm-card" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.rbb.com.np/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Nepal Investment Mega Bank -->
+                <div class="bank-card bg-purple-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">नेपाल इन्भेष्टमेन्ट मेगा बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.nibl.com.np/digital-banking/mobile-banking" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.nibl.com.np/locations" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.nibl.com.np/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Prabhu Bank -->
+                <div class="bank-card bg-red-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">प्रभु बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.prabhubank.com/digital-banking/prabhu-mobile-banking/" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.prabhubank.com/network/atm-locations/" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.prabhubank.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Everest Bank -->
+                <div class="bank-card bg-yellow-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">एभरेष्ट बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.everestbankltd.com/ebl-touch-2/" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.everestbankltd.com/network/atm-network/" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.everestbankltd.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Himalayan Bank -->
+                <div class="bank-card bg-indigo-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">हिमालयन बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.himalayanbank.com/products/e-banking/mobile-banking" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.himalayanbank.com/network/atm-locations" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.himalayanbank.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Siddhartha Bank -->
+                <div class="bank-card bg-orange-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">सिद्धार्थ बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://siddharthabank.com/digital-banking/mobile-banking" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://siddharthabank.com/branches-atm" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://siddharthabank.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Global IME Bank -->
+                <div class="bank-card bg-teal-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">ग्लोबल आईएमई बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://globalimebank.com/digital-banking/mobile-banking" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://globalimebank.com/network/atm-locations" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://globalimebank.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- NIC Asia Bank -->
+                <div class="bank-card bg-pink-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">एनआईसी एशिया बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.nicasianbank.com/digital-banking/nic-asia-mo-bank" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.nicasianbank.com/network/atm-locations" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.nicasianbank.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Prime Commercial Bank -->
+                <div class="bank-card bg-gray-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">प्राइम कमर्सियल बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.primebank.com.np/digital-banking/mobile-banking" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.primebank.com.np/network/atm-locations" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.primebank.com.np/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Laxmi Sunrise Bank -->
+                <div class="bank-card bg-cyan-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">लक्ष्मी सन्राइज बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.laxmisunrisebank.com/individual/digital-banking/mobile-banking" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.laxmisunrisebank.com/network/atm-locations" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.laxmisunrisebank.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sanima Bank -->
+                <div class="bank-card bg-lime-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">सानिमा बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.sanimabank.com/product/e-banking/sanima-mobile-banking" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.sanimabank.com/network/atm-locations" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.sanimabank.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Machhapuchhre Bank -->
+                <div class="bank-card bg-fuchsia-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">माछापुच्छ्रे बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.machhapuchhrebank.com/digital-banking/mobile-banking" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.machhapuchhrebank.com/network/atm-locations" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.machhapuchhrebank.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Kumari Bank -->
+                <div class="bank-card bg-rose-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">कुमारी बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.kumaribank.com/digital-banking/kumarismart-mobile-banking/" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.kumaribank.com/network/atm-locations/" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.kumaribank.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- NMB Bank -->
+                <div class="bank-card bg-violet-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">एनएमबी बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.nmb.com.np/digital-banking/mobile-banking" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.nmb.com.np/network/atm-locations" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.nmb.com.np/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Nepal Bank -->
+                <div class="bank-card bg-emerald-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">नेपाल बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.nepalbank.com.np/services/nbl-mobile-banking" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.nepalbank.com.np/network/atm" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.nepalbank.com.np/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div class="content">
-        <h2>नेपालमा वित्तीय सेवाहरूको सहज पहुँच</h2>
-        <p>यो नेभिगेसन बारले तपाईंलाई नेपालमा उपलब्ध विभिन्न वाणिज्य बैंकहरू, विकास बैंकहरू, सहकारी बैंकहरू, वालेट सेवाहरू, र कनेक्ट आईपीएस जस्ता वित्तीय संस्थाहरू र सेवाहरूको बारेमा जानकारी र तिनीहरूको सम्बन्धित लिङ्कहरू प्रदान गर्दछ। तपाईंले माथि रहेको 'वालेट' मेनुमा होभर गरेर यसको प्रयोग गर्न सक्नुहुन्छ। प्रत्येक बैंक वा सेवाको नाममा होभर गर्दा (वा क्लिक गर्दा), तपाईंले त्यसको मोबाइल बैंकिङ, एटीएम स्टेशन, र आधिकारिक वेबसाइटको लिङ्कहरू पाउनुहुनेछ।</p>
-        <p><strong>नोट:</strong> दिइएका लिङ्कहरूले सामान्यतया काम गर्नुपर्छ, तर बैंक वा सेवा प्रदायकहरूले आफ्नो वेबसाइट संरचना परिवर्तन गर्न सक्ने हुनाले, कहिलेकाहीँ लिङ्कहरू अद्यावधिक नहुन सक्छन्। नवीनतम जानकारीका लागि सम्बन्धित संस्थाको आधिकारिक वेबसाइट भ्रमण गर्न सल्लाह दिइन्छ।</p>
-    </div>
+        <!-- विकास बैँक Section -->
+        <div class="mb-12">
+            <h2 class="text-2xl sm:text-3xl font-bold section-title mb-8">विकास बैँकहरू</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Muktinath Bikas Bank -->
+                <div class="bank-card bg-blue-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">मुक्तिनाथ विकास बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.muktinathbank.com.np/mobile-banking" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.muktinathbank.com.np/branches-atms" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.muktinathbank.com.np/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Garima Bikas Bank -->
+                <div class="bank-card bg-green-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">गरिमा विकास बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.garimabank.com.np/digital-banking/mobile-banking/" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.garimabank.com.np/branches-atms/" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.garimabank.com.np/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Jyoti Bikas Bank -->
+                <div class="bank-card bg-purple-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">ज्योति विकास बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.jyotibank.com/digital-banking/jyoti-mobile-banking/" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.jyotibank.com/network/atm-locations/" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.jyotibank.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Mahalaxmi Bikas Bank -->
+                <div class="bank-card bg-red-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">महालक्ष्मी विकास बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.mahalaxmibank.com/digital-banking/mobile-banking/" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.mahalaxmibank.com/network/atms/" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.mahalaxmibank.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Kamana Sewa Bikas Bank -->
+                <div class="bank-card bg-yellow-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">कामना सेवा विकास बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.kamanasewabank.com/digital-banking/mobile-banking/" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.kamanasewabank.com/network/atm-locations/" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम/शाखा लोकेसन</a>
+                            <a href="https://www.kamanasewabank.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <script>
-        // JavaScript for managing dropdowns (Improved for better UX)
-        document.addEventListener('DOMContentLoaded', () => {
-            const dropdowns = document.querySelectorAll('.dropdown');
+        <!-- सहकारी बैँक Section -->
+        <div class="mb-12">
+            <h2 class="text-2xl sm:text-3xl font-bold section-title mb-8">सहकारी बैँकहरू</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Rastriya Sahakari Bank -->
+                <div class="bank-card bg-blue-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">राष्ट्रिय सहकारी बैंक लि.</h3>
+                        <div class="bank-card-links">
+                            <a href="https://www.nccbank.com.np/services/mobile-banking/" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ</a>
+                            <a href="https://www.nccbank.com.np/network/atms/" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> एटीएम स्टेशन (सीमित)</a>
+                            <a href="https://www.nccbank.com.np/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                        <p class="bank-card-note">नोट: यस बैंकको एटीएम नेटवर्क सीमित हुन सक्छ।</p>
+                    </div>
+                </div>
+                <!-- Nepal Central Cooperative Federation (NCCF) -->
+                <div class="bank-card bg-green-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">नेपाल बहुउद्देश्यीय केन्द्रीय सहकारी संघ लि. (NCCF)</h3>
+                        <div class="bank-card-links">
+                            <a href="https://play.google.com/store/apps/details?id=com.smartchoice.mobilebanking.coop" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i> मोबाइल बैंकिङ (स्मार्टच्वाइस)</a>
+                            <a href="#" class="text-gray-500 cursor-not-allowed"><i class="fas fa-map-marker-alt"></i> एटीएम स्टेशन (जानकारी छैन)</a>
+                            <a href="https://www.nccf.org.np/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                        </div>
+                        <p class="bank-card-note">नोट: अधिकांश सहकारी संस्थाहरूको आफ्नै मोबाइल बैंकिङ र ATM सेवा नहुन सक्छ।</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            dropdowns.forEach(dropdown => {
-                const dropbtn = dropdown.querySelector('.dropbtn');
-                const dropdownContent = dropdown.querySelector('.dropdown-content');
+        <!-- डिजिटल वालेटहरू Section -->
+        <div class="mb-12">
+            <h2 class="text-2xl sm:text-3xl font-bold section-title mb-8">डिजिटल वालेटहरू</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- eSewa -->
+                <div class="bank-card bg-purple-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">ई-सेवा (eSewa)</h3>
+                        <div class="bank-card-links">
+                            <a href="https://esewa.com.np/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                            <a href="https://play.google.com/store/apps/details?id=com.esewa.android" target="_blank" rel="noopener noreferrer"><i class="fab fa-android"></i> एन्ड्रोइड एप</a>
+                            <a href="https://apps.apple.com/np/app/esewa/id974610738" target="_blank" rel="noopener noreferrer"><i class="fab fa-apple"></i> आईओएस एप</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Khalti -->
+                <div class="bank-card bg-red-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">खल्ती (Khalti)</h3>
+                        <div class="bank-card-links">
+                            <a href="https://khalti.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                            <a href="https://play.google.com/store/apps/details?id=com.khalti.khalti" target="_blank" rel="noopener noreferrer"><i class="fab fa-android"></i> एन्ड्रोइड एप</a>
+                            <a href="https://apps.apple.com/np/app/khalti-digital-wallet/id1200115598" target="_blank" rel="noopener noreferrer"><i class="fab fa-apple"></i> आईओएस एप</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- IME Pay -->
+                <div class="bank-card bg-yellow-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">आईएमई पे (IME Pay)</h3>
+                        <div class="bank-card-links">
+                            <a href="https://imepay.com.np/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                            <a href="https://play.google.com/store/apps/details?id=com.ime.pay" target="_blank" rel="noopener noreferrer"><i class="fab fa-android"></i> एन्ड्रोइड एप</a>
+                            <a href="https://apps.apple.com/np/app/ime-pay/id1231464319" target="_blank" rel="noopener noreferrer"><i class="fab fa-apple"></i> आईओएस एप</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Prabhu Pay -->
+                <div class="bank-card bg-indigo-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">प्रभु पे (Prabhu Pay)</h3>
+                        <div class="bank-card-links">
+                            <a href="https://prabhupay.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> वेबसाइट</a>
+                            <a href="https://play.google.com/store/apps/details?id=com.prabhu.pay.wallet" target="_blank" rel="noopener noreferrer"><i class="fab fa-android"></i> एन्ड्रोइड एप</a>
+                            <a href="https://apps.apple.com/np/app/prabhupay/id1396347101" target="_blank" rel="noopener noreferrer"><i class="fab fa-apple"></i> आईओएस एप</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                // Main dropdown toggle on click (for mobile/touch devices primarily)
-                dropbtn.addEventListener('click', function(event) {
-                    event.preventDefault(); // Prevent default link behavior
-                    event.stopPropagation(); // Stop click from propagating to document
-
-                    const isCurrentlyOpen = dropdownContent.style.display === 'block';
-
-                    // Close all other main dropdowns and their sub-dropdowns
-                    document.querySelectorAll('.dropdown-content').forEach(content => {
-                        content.style.display = 'none';
-                    });
-                    document.querySelectorAll('.sub-dropdown-content').forEach(content => {
-                        content.style.display = 'none';
-                    });
-
-                    // Toggle current main dropdown
-                    dropdownContent.style.display = isCurrentlyOpen ? 'none' : 'block';
-                });
-
-                // Main dropdown hover logic (for desktop)
-                dropdown.addEventListener('mouseenter', () => {
-                    if (window.innerWidth > 768) { // Only for larger screens
-                        dropdownContent.style.display = 'block';
-                    }
-                });
-
-                dropdown.addEventListener('mouseleave', () => {
-                    if (window.innerWidth > 768) { // Only for larger screens
-                        setTimeout(() => {
-                            if (!dropdown.querySelector(':hover')) {
-                                dropdownContent.style.display = 'none';
-                            }
-                        }, 50); // Small delay
-                    }
-                });
-
-
-                // Sub-dropdown logic (mostly hover for desktop, click for mobile if enabled)
-                const subDropdownTriggers = dropdownContent.querySelectorAll('.sub-dropdown-trigger');
-
-                subDropdownTriggers.forEach(trigger => {
-                    const subDropdownContent = trigger.querySelector('.sub-dropdown-content');
-
-                    if (subDropdownContent) {
-                        // Sub-dropdown hover logic (for desktop)
-                        trigger.addEventListener('mouseenter', () => {
-                            if (window.innerWidth > 768) { // Only for larger screens
-                                // Close other sub-dropdowns in the same main dropdown category
-                                subDropdownTriggers.forEach(otherTrigger => {
-                                    const otherSubContent = otherTrigger.querySelector('.sub-dropdown-content');
-                                    if (otherSubContent && otherTrigger !== trigger) {
-                                        otherSubContent.style.display = 'none';
-                                    }
-                                });
-                                subDropdownContent.style.display = 'block';
-                            }
-                        });
-
-                        trigger.addEventListener('mouseleave', (event) => {
-                            if (window.innerWidth > 768) { // Only for larger screens
-                                if (!subDropdownContent.contains(event.relatedTarget) && !trigger.contains(event.relatedTarget)) {
-                                    subDropdownContent.style.display = 'none';
-                                }
-                            }
-                        });
-
-                        // Keep sub-dropdown open if mouse enters its content
-                        subDropdownContent.addEventListener('mouseenter', () => {
-                            if (window.innerWidth > 768) {
-                                subDropdownContent.style.display = 'block';
-                            }
-                        });
-
-                        // Hide sub-dropdown if mouse leaves its content
-                        subDropdownContent.addEventListener('mouseleave', () => {
-                            if (window.innerWidth > 768) {
-                                subDropdownContent.style.display = 'none';
-                            }
-                        });
-
-                        // Optional: Sub-dropdown toggle on click (for mobile/tablet)
-                        trigger.addEventListener('click', function(event) {
-                            event.preventDefault();
-                            event.stopPropagation(); // Prevent click from bubbling to main dropdown
-                            const isSubCurrentlyOpen = subDropdownContent.style.display === 'block';
-
-                            // Close other sub-dropdowns in this main dropdown
-                            subDropdownTriggers.forEach(otherTrigger => {
-                                const otherSubContent = otherTrigger.querySelector('.sub-dropdown-content');
-                                if (otherSubContent && otherTrigger !== trigger) {
-                                    otherSubContent.style.display = 'none';
-                                }
-                            });
-                            subDropdownContent.style.display = isSubCurrentlyOpen ? 'none' : 'block';
-                        });
-                    }
-                });
-            });
-
-            // Close all dropdowns if click anywhere outside the navbar
-            document.addEventListener('click', (event) => {
-                if (!event.target.closest('.navbar')) {
-                    document.querySelectorAll('.dropdown-content').forEach(content => {
-                        content.style.display = 'none';
-                    });
-                    document.querySelectorAll('.sub-dropdown-content').forEach(content => {
-                        content.style.display = 'none';
-                    });
-                }
-            });
-
-            // Handle window resize (for responsive behavior)
-            window.addEventListener('resize', () => {
-                // Hide all dropdowns when resizing, let the CSS/JS re-evaluate on next hover/click
-                document.querySelectorAll('.dropdown-content, .sub-dropdown-content').forEach(content => {
-                    content.style.display = 'none';
-                });
-            });
-        });
-    </script>
-
+        <!-- कनेक्ट आईपीएस Section -->
+        <div>
+            <h2 class="text-2xl sm:text-3xl font-bold section-title mb-8">कनेक्ट आईपीएस</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- ConnectIPS -->
+                <div class="bank-card bg-orange-50 p-6 shadow-md">
+                    <div>
+                        <h3 class="bank-card-header">ConnectIPS</h3>
+                        <div class="bank-card-links">
+                            <a href="https://connectips.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> आधिकारिक वेबसाइट</a>
+                            <a href="https://play.google.com/store/apps/details?id=com.nchl.connectips.mobile" target="_blank" rel="noopener noreferrer"><i class="fab fa-android"></i> एन्ड्रोइड एप</a>
+                            <a href="https://apps.apple.com/np/app/connectips/id1459063236" target="_blank" rel="noopener noreferrer"><i class="fab fa-apple"></i> आईओएस एप</a>
+                        </div>
+                        <p class="bank-card-note">ConnectIPS नेपाल क्लियरिङ्ग हाउस लिमिटेड (NCHL) द्वारा सञ्चालित एक भुक्तानी प्रणाली हो।</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </body>
 </html>
