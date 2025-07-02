@@ -75,9 +75,10 @@
         header.masthead {
             /* Background image for the entire hero section */
             background-image: url('https://raw.githubusercontent.com/lokendragaire/Lokendragaire.com.np/main/brp.jpg'); /* Updated background image URL */
-            background-size: cover;
+            background-size: contain; /* Ensures the entire image is visible without cropping */
             background-position: center;
             background-repeat: no-repeat;
+            background-color: #cceeff; /* Changed to a slightly more blue color */
             
             padding: 8rem 0 0; /* Changed padding-bottom to 0 */
             text-align: center;
@@ -436,7 +437,7 @@
                     </p>
                     <div class="mt-4"> 
                         <a href="https://www.google.com/maps/search/Galkot+Municipality-2,+Baglung,+Nepal" target="_blank" title="View Galkot Municipality on Google Maps">
-                            <img src="image_f958e4.png" alt="Map of Galkot Municipality-2, Baglung" class="mx-auto rounded-lg shadow-md" style="max-width: 300px;">
+                            
                         </a>
                         <p class="text-xs text-gray-600 mt-2">Click the map to view location on Google Maps.</p>
                     </div>
@@ -448,6 +449,10 @@
             </div>
         </div>
     </footer>
+    
+    <div class="copyright py-2 text-center text-gray-700">
+        <div class="container mx-auto"><small>Copyright © Lokendra Gaire 2024</small></div>
+    </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
