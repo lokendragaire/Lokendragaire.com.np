@@ -1,142 +1,250 @@
-<section class="page-section py-8">
-    <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold mb-6 text-gray-800 text-center">नेपालका प्रमुख वित्तीय सेवाहरू</h2>
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>नेपालका वित्तीय सेवाहरू</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Custom styles for tab-like appearance */
+        .tab-card {
+            border-top-left-radius: 0.75rem; /* Rounded top-left corner */
+            border-top-right-radius: 0.75rem; /* Rounded top-right corner */
+            border-bottom-left-radius: 0.5rem; /* Slightly less rounded bottom corners */
+            border-bottom-right-radius: 0.5rem;
+            overflow: hidden; /* Ensures borders/shadows are contained */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border: 1px solid #e2e8f0; /* Light border */
+        }
+        .tab-card:hover {
+            transform: translateY(-5px); /* Lift effect on hover */
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
+        }
+        .tab-card-header {
+            background-color: #f7fafc; /* Light header background */
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        .tab-card-body {
+            padding: 1.5rem;
+            background-color: #ffffff;
+        }
+        .tab-card-body ul li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            flex-direction: column; /* Stack links vertically */
+        }
+        .tab-card-body ul li a {
+            padding: 0.25rem 0;
+            align-items: center;
+        }
+        .tab-card-body ul li a i {
+            width: 1.5rem; /* Fixed width for icons for alignment */
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
-                <h3 class="text-xl font-semibold text-blue-700 mb-4">१. वाणिज्य बैंकहरू</h3>
-                <ul class="list-disc ml-5 space-y-2 text-gray-700">
-                    <li>
-                        <strong>नबिल बैंक (Nabil Bank)</strong><br>
-                        <a href="https://www.nabilbank.com/" target="_blank" class="text-blue-500 hover:underline">आधिकारिक वेबसाइट</a> |
-                        <a href="https://www.nabilbank.com/personal/digital-banking/nabil-smartbank" target="_blank" class="text-purple-500 hover:underline">मोबाइल बैंकिङ</a> |
-                        <a href="https://www.nabilbank.com/locate-us/" target="_blank" class="text-green-500 hover:underline">एटीएम/शाखा</a>
-                    </li>
-                    <li>
-                        <strong>ग्लोबल आईएमई बैंक (Global IME Bank)</strong><br>
-                        <a href="https://www.globalimebank.com/" target="_blank" class="text-blue-500 hover:underline">आधिकारिक वेबसाइट</a> |
-                        <a href="https://www.globalimebank.com/mobile-banking" target="_blank" class="text-purple-500 hover:underline">मोबाइल बैंकिङ</a> |
-                        <a href="https://www.globalimebank.com/atm-branch-locator" target="_blank" class="text-green-500 hover:underline">एटीएम/शाखा</a>
-                    </li>
-                    <li>
-                        <strong>एनआईसी एशिया बैंक (NIC Asia Bank)</strong><br>
-                        <a href="https://www.nicaasiabank.com/" target="_blank" class="text-blue-500 hover:underline">आधिकारिक वेबसाइट</a> |
-                        <a href="https://www.nicaasiabank.com/digital-banking" target="_blank" class="text-purple-500 hover:underline">मोबाइल बैंकिङ</a> |
-                        <a href="https://www.nicaasiabank.com/network" target="_blank" class="text-green-500 hover:underline">एटीएम/शाखा</a>
-                    </li>
-                    <li>
-                        <strong>सिद्धार्थ बैंक (Siddhartha Bank)</strong><br>
-                        <a href="https://www.siddharthabank.com/" target="_blank" class="text-blue-500 hover:underline">आधिकारिक वेबसाइट</a> |
-                        <a href="https://www.siddharthabank.com/digital-banking/siddhartha-smart" target="_blank" class="text-purple-500 hover:underline">मोबाइल बैंकिङ</a> |
-                        <a href="https://www.siddharthabank.com/location" target="_blank" class="text-green-500 hover:underline">एटीएम/शाखा</a>
-                    </li>
-                     <li>
-                        **नेपाल इन्भेष्टमेन्ट मेगा बैंक (Nepal Investment Mega Bank)**<br>
-                        <a href="https://www.nibl.com.np/" target="_blank" class="text-blue-500 hover:underline">आधिकारिक वेबसाइट</a> |
-                        <a href="https://www.nibl.com.np/individual/banking/digital-banking" target="_blank" class="text-purple-500 hover:underline">मोबाइल बैंकिङ</a> |
-                        <a href="https://www.nibl.com.np/network/branch-atm-network" target="_blank" class="text-green-500 hover:underline">एटीएम/शाखा</a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
-                <h3 class="text-xl font-semibold text-green-700 mb-4">२. सरकारी बैंकहरू</h3>
-                <ul class="list-disc ml-5 space-y-2 text-gray-700">
-                    <li>
-                        <strong>राष्ट्रिय वाणिज्य बैंक (Rastriya Banijya Bank)</strong><br>
-                        <a href="https://www.rbb.com.np/" target="_blank" class="text-blue-500 hover:underline">आधिकारिक वेबसाइट</a> |
-                        <a href="https://www.rbb.com.np/digital-banking/mobile-banking" target="_blank" class="text-purple-500 hover:underline">मोबाइल बैंकिङ</a> |
-                        <a href="https://www.rbb.com.np/network" target="_blank" class="text-green-500 hover:underline">एटीएम/शाखा</a>
-                    </li>
-                    <li>
-                        <strong>कृषि विकास बैंक (ADBL)</strong><br>
-                        <a href="https://www.adbl.gov.np/" target="_blank" class="text-blue-500 hover:underline">आधिकारिक वेबसाइट</a> |
-                        <a href="https://www.adbl.gov.np/mobile-banking" target="_blank" class="text-purple-500 hover:underline">मोबाइल बैंकिङ</a> |
-                        <a href="https://www.adbl.gov.np/branch-network" target="_blank" class="text-green-500 hover:underline">एटीएम/शाखा</a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
-                <h3 class="text-xl font-semibold text-purple-700 mb-4">३. विकास बैंकहरू</h3>
-                <ul class="list-disc ml-5 space-y-2 text-gray-700">
-                    <li>
-                        <strong>मुक्तिनाथ विकास बैंक (Muktinath Bikas Bank)</strong><br>
-                        <a href="https://www.muktinathbank.com.np/" target="_blank" class="text-blue-500 hover:underline">आधिकारिक वेबसाइट</a> |
-                        <a href="https://www.muktinathbank.com.np/digital-banking/" target="_blank" class="text-purple-500 hover:underline">मोबाइल बैंकिङ</a> |
-                        <a href="https://www.muktinathbank.com.np/Branches-ATMs/" target="_blank" class="text-green-500 hover:underline">एटीएम/शाखा</a>
-                    </li>
-                    <li>
-                        <strong>गरिमा विकास बैंक (Garima Bikas Bank)</strong><br>
-                        <a href="https://www.garimabank.com.np/" target="_blank" class="text-blue-500 hover:underline">आधिकारिक वेबसाइट</a> |
-                        <a href="https://www.garimabank.com.np/digital-banking" target="_blank" class="text-purple-500 hover:underline">मोबाइल बैंकिङ</a> |
-                        <a href="https://www.garimabank.com.np/location" target="_blank" class="text-green-500 hover:underline">एटीएम/शाखा</a>
-                    </li>
-                    <li>
-                        <strong>ज्योति विकास बैंक (Jyoti Bikas Bank)</strong><br>
-                        <a href="https://www.jyotibikasbank.com/" target="_blank" class="text-blue-500 hover:underline">आधिकारिक वेबसाइट</a> |
-                        <a href="https://www.jyotibikasbank.com/digital-banking/mobile-banking" target="_blank" class="text-purple-500 hover:underline">मोबाइल बैंकिङ</a> |
-                        <a href="https://www.jyotibikasbank.com/network/branch-atm-network" target="_blank" class="text-green-500 hover:underline">एटीएम/शाखा</a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
-                <h3 class="text-xl font-semibold text-indigo-700 mb-4">४. सहकारी बैंकहरू</h3>
-                <ul class="list-disc ml-5 space-y-2 text-gray-700">
-                    <li>
-                        <strong>राष्ट्रिय सहकारी बैंक (National Co-operative Bank)</strong><br>
-                        <a href="https://www.nccbl.coop/" target="_blank" class="text-blue-500 hover:underline">आधिकारिक वेबसाइट</a> |
-                        <a href="https://www.nccbl.coop/mobile-banking" target="_blank" class="text-purple-500 hover:underline">मोबाइल बैंकिङ</a> |
-                        <a href="https://www.nccbl.coop/branches" target="_blank" class="text-green-500 hover:underline">शाखा</a>
-                    </li>
-                    <li>
-                        **नेपाल बचत तथा ऋण केन्द्रीय सहकारी संघ लि. (NEFSCUN)**<br>
-                        <a href="https://nefscun.org.np/" target="_blank" class="text-blue-500 hover:underline">आधिकारिक वेबसाइट</a> |
-                        <em>(मोबाइल बैंकिङ/एटीएमका लागि सम्बन्धित साकोसको जानकारी लिनुहोस्)</em>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
-                <h3 class="text-xl font-semibold text-red-700 mb-4">५. डिजिटल वालेटहरू</h3>
-                <ul class="list-disc ml-5 space-y-2 text-gray-700">
-                    <li>
-                        <strong>ई-सेवा (eSewa)</strong><br>
-                        <a href="https://esewa.com.np/" target="_blank" class="text-blue-500 hover:underline">आधिकारिक वेबसाइट</a> |
-                        <a href="https://esewa.com.np/blog/download-esewa-app/" target="_blank" class="text-purple-500 hover:underline">एप डाउनलोड</a> |
-                        <a href="https://blog.esewa.com.np/esewa-cash-point/" target="_blank" class="text-green-500 hover:underline">एजेन्ट लोकेटर</a>
-                    </li>
-                    <li>
-                        <strong>खल्ती (Khalti)</strong><br>
-                        <a href="https://khalti.com/" target="_blank" class="text-blue-500 hover:underline">आधिकारिक वेबसाइट</a> |
-                        <a href="https://khalti.com/pages/download/" target="_blank" class="text-purple-500 hover:underline">एप डाउनलोड</a> |
-                        <a href="https://khalti.com/pages/khalti-pasals" target="_blank" class="text-green-500 hover:underline">एजेन्ट लोकेटर</a>
-                    </li>
-                    <li>
-                        <strong>आईएमई पे (IME Pay)</strong><br>
-                        <a href="https://www.imepay.com.np/" target="_blank" class="text-blue-500 hover:underline">आधिकारिक वेबसाइट</a> |
-                        <a href="https://www.imepay.com.np/download-app/" target="_blank" class="text-purple-500 hover:underline">एप डाउनलोड</a> |
-                        <a href="https://www.imepay.com.np/ime-pay-agents/" target="_blank" class="text-green-500 hover:underline">एजेन्ट लोकेटर</a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
-                <h3 class="text-xl font-semibold text-yellow-700 mb-4">६. ConnectIPS</h3>
-                <ul class="list-disc ml-5 space-y-2 text-gray-700">
-                    <li>
-                        <strong>ConnectIPS (एनसीएचएल)</strong><br>
-                        <a href="https://connectips.com/" target="_blank" class="text-blue-500 hover:underline">आधिकारिक वेबसाइट</a> |
-                        <a href="https://connectips.com/faq" target="_blank" class="text-purple-500 hover:underline">जानकारी</a>
-                    </li>
-                     <li>
-                        <em>प्रायः सबै वाणिज्य बैंक, विकास बैंक र राष्ट्रिय सहकारी बैंकमा ConnectIPS सेवा उपलब्ध छ। आफ्नो बैंकको आधिकारिक वेबसाइटमा हेर्नुहोस्।</em>
-                    </li>
-                </ul>
-            </div>
-
+    <header class="bg-white shadow py-6 mb-8">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl font-bold text-center text-gray-800">नेपालका डिजिटल वित्तीय सेवाहरू</h1>
         </div>
-    </div>
-</section>
+    </header>
+
+    <main>
+        <section class="page-section py-8">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                    <div class="tab-card">
+                        <div class="tab-card-header text-blue-700">
+                            <i class="fas fa-university mr-3 text-blue-600"></i>
+                            <h3 class="text-xl font-semibold">१. वाणिज्य बैंकहरू</h3>
+                        </div>
+                        <div class="tab-card-body">
+                            <ul class="list-none space-y-2 text-gray-700">
+                                <li>
+                                    <strong>नबिल बैंक (Nabil Bank)</strong>
+                                    <a href="https://www.nabilbank.com/" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-globe mr-2"></i> आधिकारिक वेबसाइट</a>
+                                    <a href="https://www.nabilbank.com/personal/digital-banking/nabil-smartbank" target="_blank" class="text-purple-500 hover:underline flex items-center mt-1"><i class="fas fa-mobile-alt mr-2"></i> मोबाइल बैंकिङ</a>
+                                    <a href="https://www.nabilbank.com/locate-us/" target="_blank" class="text-green-500 hover:underline flex items-center mt-1"><i class="fas fa-map-marker-alt mr-2"></i> एटीएम/शाखा</a>
+                                </li>
+                                <hr class="border-gray-200 my-2">
+                                <li>
+                                    <strong>ग्लोबल आईएमई बैंक (Global IME Bank)</strong>
+                                    <a href="https://www.globalimebank.com/" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-globe mr-2"></i> आधिकारिक वेबसाइट</a>
+                                    <a href="https://www.globalimebank.com/mobile-banking" target="_blank" class="text-purple-500 hover:underline flex items-center mt-1"><i class="fas fa-mobile-alt mr-2"></i> मोबाइल बैंकिङ</a>
+                                    <a href="https://www.globalimebank.com/atm-branch-locator" target="_blank" class="text-green-500 hover:underline flex items-center mt-1"><i class="fas fa-map-marker-alt mr-2"></i> एटीएम/शाखा</a>
+                                </li>
+                                <hr class="border-gray-200 my-2">
+                                <li>
+                                    <strong>एनआईसी एशिया बैंक (NIC Asia Bank)</strong>
+                                    <a href="https://www.nicaasiabank.com/" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-globe mr-2"></i> आधिकारिक वेबसाइट</a>
+                                    <a href="https://www.nicaasiabank.com/digital-banking" target="_blank" class="text-purple-500 hover:underline flex items-center mt-1"><i class="fas fa-mobile-alt mr-2"></i> मोबाइल बैंकिङ</a>
+                                    <a href="https://www.nicaasiabank.com/network" target="_blank" class="text-green-500 hover:underline flex items-center mt-1"><i class="fas fa-map-marker-alt mr-2"></i> एटीएम/शाखा</a>
+                                </li>
+                                <hr class="border-gray-200 my-2">
+                                <li>
+                                    <strong>सिद्धार्थ बैंक (Siddhartha Bank)</strong>
+                                    <a href="https://www.siddharthabank.com/" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-globe mr-2"></i> आधिकारिक वेबसाइट</a>
+                                    <a href="https://www.siddharthabank.com/digital-banking/siddhartha-smart" target="_blank" class="text-purple-500 hover:underline flex items-center mt-1"><i class="fas fa-mobile-alt mr-2"></i> मोबाइल बैंकिङ</a>
+                                    <a href="https://www.siddharthabank.com/location" target="_blank" class="text-green-500 hover:underline flex items-center mt-1"><i class="fas fa-map-marker-alt mr-2"></i> एटीएम/शाखा</a>
+                                </li>
+                                <hr class="border-gray-200 my-2">
+                                 <li>
+                                    <strong>नेपाल इन्भेष्टमेन्ट मेगा बैंक (Nepal Investment Mega Bank)</strong>
+                                    <a href="https://www.nibl.com.np/" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-globe mr-2"></i> आधिकारिक वेबसाइट</a>
+                                    <a href="https://www.nibl.com.np/individual/banking/digital-banking" target="_blank" class="text-purple-500 hover:underline flex items-center mt-1"><i class="fas fa-mobile-alt mr-2"></i> मोबाइल बैंकिङ</a>
+                                    <a href="https://www.nibl.com.np/network/branch-atm-network" target="_blank" class="text-green-500 hover:underline flex items-center mt-1"><i class="fas fa-map-marker-alt mr-2"></i> एटीएम/शाखा</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="tab-card">
+                        <div class="tab-card-header text-green-700">
+                            <i class="fas fa-building mr-3 text-green-600"></i>
+                            <h3 class="text-xl font-semibold">२. सरकारी बैंकहरू</h3>
+                        </div>
+                        <div class="tab-card-body">
+                            <ul class="list-none space-y-2 text-gray-700">
+                                <li>
+                                    <strong>राष्ट्रिय वाणिज्य बैंक (Rastriya Banijya Bank)</strong>
+                                    <a href="https://www.rbb.com.np/" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-globe mr-2"></i> आधिकारिक वेबसाइट</a>
+                                    <a href="https://www.rbb.com.np/digital-banking/mobile-banking" target="_blank" class="text-purple-500 hover:underline flex items-center mt-1"><i class="fas fa-mobile-alt mr-2"></i> मोबाइल बैंकिङ</a>
+                                    <a href="https://www.rbb.com.np/network" target="_blank" class="text-green-500 hover:underline flex items-center mt-1"><i class="fas fa-map-marker-alt mr-2"></i> एटीएम/शाखा</a>
+                                </li>
+                                <hr class="border-gray-200 my-2">
+                                <li>
+                                    <strong>कृषि विकास बैंक (ADBL)</strong>
+                                    <a href="https://www.adbl.gov.np/" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-globe mr-2"></i> आधिकारिक वेबसाइट</a>
+                                    <a href="https://www.adbl.gov.np/mobile-banking" target="_blank" class="text-purple-500 hover:underline flex items-center mt-1"><i class="fas fa-mobile-alt mr-2"></i> मोबाइल बैंकिङ</a>
+                                    <a href="https://www.adbl.gov.np/branch-network" target="_blank" class="text-green-500 hover:underline flex items-center mt-1"><i class="fas fa-map-marker-alt mr-2"></i> एटीएम/शाखा</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="tab-card">
+                        <div class="tab-card-header text-purple-700">
+                            <i class="fas fa-hand-holding-usd mr-3 text-purple-600"></i>
+                            <h3 class="text-xl font-semibold">३. विकास बैंकहरू</h3>
+                        </div>
+                        <div class="tab-card-body">
+                            <ul class="list-none space-y-2 text-gray-700">
+                                <li>
+                                    <strong>मुक्तिनाथ विकास बैंक (Muktinath Bikas Bank)</strong>
+                                    <a href="https://www.muktinathbank.com.np/" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-globe mr-2"></i> आधिकारिक वेबसाइट</a>
+                                    <a href="https://www.muktinathbank.com.np/digital-banking/" target="_blank" class="text-purple-500 hover:underline flex items-center mt-1"><i class="fas fa-mobile-alt mr-2"></i> मोबाइल बैंकिङ</a>
+                                    <a href="https://www.muktinathbank.com.np/Branches-ATMs/" target="_blank" class="text-green-500 hover:underline flex items-center mt-1"><i class="fas fa-map-marker-alt mr-2"></i> एटीएम/शाखा</a>
+                                </li>
+                                <hr class="border-gray-200 my-2">
+                                <li>
+                                    <strong>गरिमा विकास बैंक (Garima Bikas Bank)</strong>
+                                    <a href="https://www.garimabank.com.np/" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-globe mr-2"></i> आधिकारिक वेबसाइट</a>
+                                    <a href="https://www.garimabank.com.np/digital-banking" target="_blank" class="text-purple-500 hover:underline flex items-center mt-1"><i class="fas fa-mobile-alt mr-2"></i> मोबाइल बैंकिङ</a>
+                                    <a href="https://www.garimabank.com.np/location" target="_blank" class="text-green-500 hover:underline flex items-center mt-1"><i class="fas fa-map-marker-alt mr-2"></i> एटीएम/शाखा</a>
+                                </li>
+                                <hr class="border-gray-200 my-2">
+                                <li>
+                                    <strong>ज्योति विकास बैंक (Jyoti Bikas Bank)</strong>
+                                    <a href="https://www.jyotibikasbank.com/" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-globe mr-2"></i> आधिकारिक वेबसाइट</a>
+                                    <a href="https://www.jyotibikasbank.com/digital-banking/mobile-banking" target="_blank" class="text-purple-500 hover:underline flex items-center mt-1"><i class="fas fa-mobile-alt mr-2"></i> मोबाइल बैंकिङ</a>
+                                    <a href="https://www.jyotibikasbank.com/network/branch-atm-network" target="_blank" class="text-green-500 hover:underline flex items-center mt-1"><i class="fas fa-map-marker-alt mr-2"></i> एटीएम/शाखा</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="tab-card">
+                        <div class="tab-card-header text-indigo-700">
+                            <i class="fas fa-hands-helping mr-3 text-indigo-600"></i>
+                            <h3 class="text-xl font-semibold">४. सहकारी बैंकहरू</h3>
+                        </div>
+                        <div class="tab-card-body">
+                            <ul class="list-none space-y-2 text-gray-700">
+                                <li>
+                                    <strong>राष्ट्रिय सहकारी बैंक (National Co-operative Bank)</strong>
+                                    <a href="https://www.nccbl.coop/" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-globe mr-2"></i> आधिकारिक वेबसाइट</a>
+                                    <a href="https://www.nccbl.coop/mobile-banking" target="_blank" class="text-purple-500 hover:underline flex items-center mt-1"><i class="fas fa-mobile-alt mr-2"></i> मोबाइल बैंकिङ</a>
+                                    <a href="https://www.nccbl.coop/branches" target="_blank" class="text-green-500 hover:underline flex items-center mt-1"><i class="fas fa-map-marker-alt mr-2"></i> शाखा</a>
+                                </li>
+                                <hr class="border-gray-200 my-2">
+                                <li>
+                                    <strong>नेपाल बचत तथा ऋण केन्द्रीय सहकारी संघ लि. (NEFSCUN)</strong>
+                                    <a href="https://nefscun.org.np/" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-globe mr-2"></i> आधिकारिक वेबसाइट</a>
+                                    <span class="text-sm text-gray-500 mt-1 ml-2 italic"> (मोबाइल बैंकिङ/एटीएमका लागि सम्बन्धित साकोसको जानकारी लिनुहोस्)</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="tab-card">
+                        <div class="tab-card-header text-red-700">
+                            <i class="fas fa-wallet mr-3 text-red-600"></i>
+                            <h3 class="text-xl font-semibold">५. डिजिटल वालेटहरू</h3>
+                        </div>
+                        <div class="tab-card-body">
+                            <ul class="list-none space-y-2 text-gray-700">
+                                <li>
+                                    <strong>ई-सेवा (eSewa)</strong>
+                                    <a href="https://esewa.com.np/" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-globe mr-2"></i> आधिकारिक वेबसाइट</a>
+                                    <a href="https://esewa.com.np/blog/download-esewa-app/" target="_blank" class="text-purple-500 hover:underline flex items-center mt-1"><i class="fas fa-download mr-2"></i> एप डाउनलोड</a>
+                                    <a href="https://blog.esewa.com.np/esewa-cash-point/" target="_blank" class="text-green-500 hover:underline flex items-center mt-1"><i class="fas fa-map-marker-alt mr-2"></i> एजेन्ट लोकेटर</a>
+                                </li>
+                                <hr class="border-gray-200 my-2">
+                                <li>
+                                    <strong>खल्ती (Khalti)</strong>
+                                    <a href="https://khalti.com/" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-globe mr-2"></i> आधिकारिक वेबसाइट</a>
+                                    <a href="https://khalti.com/pages/download/" target="_blank" class="text-purple-500 hover:underline flex items-center mt-1"><i class="fas fa-download mr-2"></i> एप डाउनलोड</a>
+                                    <a href="https://khalti.com/pages/khalti-pasals" target="_blank" class="text-green-500 hover:underline flex items-center mt-1"><i class="fas fa-map-marker-alt mr-2"></i> एजेन्ट लोकेटर</a>
+                                </li>
+                                <hr class="border-gray-200 my-2">
+                                <li>
+                                    <strong>आईएमई पे (IME Pay)</strong>
+                                    <a href="https://www.imepay.com.np/" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-globe mr-2"></i> आधिकारिक वेबसाइट</a>
+                                    <a href="https://www.imepay.com.np/download-app/" target="_blank" class="text-purple-500 hover:underline flex items-center mt-1"><i class="fas fa-download mr-2"></i> एप डाउनलोड</a>
+                                    <a href="https://www.imepay.com.np/ime-pay-agents/" target="_blank" class="text-green-500 hover:underline flex items-center mt-1"><i class="fas fa-map-marker-alt mr-2"></i> एजेन्ट लोकेटर</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="tab-card">
+                        <div class="tab-card-header text-yellow-700">
+                            <i class="fas fa-exchange-alt mr-3 text-yellow-600"></i>
+                            <h3 class="text-xl font-semibold">६. ConnectIPS</h3>
+                        </div>
+                        <div class="tab-card-body">
+                            <ul class="list-none space-y-2 text-gray-700">
+                                <li>
+                                    <strong>ConnectIPS (एनसीएचएल)</strong>
+                                    <a href="https://connectips.com/" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-globe mr-2"></i> आधिकारिक वेबसाइट</a>
+                                    <a href="https://connectips.com/faq" target="_blank" class="text-purple-500 hover:underline flex items-center mt-1"><i class="fas fa-info-circle mr-2"></i> जानकारी</a>
+                                </li>
+                                <hr class="border-gray-200 my-2">
+                                <li>
+                                    <em class="text-sm text-gray-500">प्रायः सबै वाणिज्य बैंक, विकास बैंक र राष्ट्रिय सहकारी बैंकमा ConnectIPS सेवा उपलब्ध छ। आफ्नो बैंकको आधिकारिक वेबसाइटमा हेर्नुहोस्।</em>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center py-6 mt-8">
+        <p>&copy; 2025 नेपाल वित्तीय सेवा जानकारी। सबै अधिकार सुरक्षित।</p>
+    </footer>
+
+</body>
+</html>
