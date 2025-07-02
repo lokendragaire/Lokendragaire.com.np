@@ -340,7 +340,7 @@
                                 <a href="#" class="flex items-center"><i class="fas fa-flag mr-2 text-indigo-700"></i>नेपाली काँग्रेस: क्रियाशिल सदस्य</a>
                             </div>
                         </li>
-                
+                        
                         <!-- Trading Dropdown -->
                         <li class="nav-item relative group">
                             <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('tradingDropdown')">Trading <i class="fas fa-caret-down ml-1"></i></a>
@@ -350,16 +350,19 @@
                             </div>
                         </li>
                     </ul>
+
                     <!-- Second Column of Dropdowns -->
                     <ul class="navbar-nav flex lg:space-x-4 lg:ml-auto">
                         <!-- Wallet Dropdown -->
                         <li class="nav-item relative group">
-                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('walletDropdown')">Banking and Wallet service <i class="fas fa-caret-down ml-1"></i></a> 
-                               </i></a><div id="governmentSitesDropdown" class="dropdown-menu hidden"> 
-                                   <a href="wallet.html" class="flex items-center"><i class="fas fa-money-coin mr-2 text-yellow-600"></i>सबै बैँक तथा wallet हरुको Connect Ips ,ATM र मोबाइल बैँकिङ सेवाहरु, </a>
-
+                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('walletDropdown')">Wallet <i class="fas fa-caret-down ml-1"></i></a>
+                            <div id="walletDropdown" class="dropdown-menu hidden">
+                                <a href="https://esewa.com.np/" target="_blank" class="flex items-center"><i class="fas fa-wallet mr-2 text-blue-600"></i>eSewa</a>
+                                <a href="https://khalti.com/" target="_blank" class="flex items-center"><i class="fas fa-wallet mr-2 text-purple-600"></i>Khalti</a>
+                                <a href="https://www.imepay.com.np/" target="_blank" class="flex items-center"><i class="fas fa-wallet mr-2 text-orange-600"></i>IME Pay</a>
                             </div>
                         </li>
+
                         <!-- Government Uses sites Dropdown -->
                         <li class="nav-item relative group">
                             <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('governmentSitesDropdown')">Government Uses sites <i class="fas fa-caret-down ml-1"></i></a>
@@ -371,6 +374,7 @@
                                 
                             </div>
                         </li>
+
                         <!-- Important Links Dropdown -->
                         <li class="nav-item relative group">
                             <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('importantLinksDropdown')">Important Links <i class="fas fa-caret-down ml-1"></i></a>
@@ -383,7 +387,7 @@
                                 <a href="bi.html" class="flex items-center"><i class="fas fa-building mr-2 text-indigo-600"></i>बैँक, विमा कम्पनी तथा पुनर्विमा कम्पनीहरु</a>
                             </div>
                         </li>
-                
+                        
                         <!-- Direct Contact Dropdown -->
                         <li class="nav-item relative group">
                             <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('directContactDropdown')">Direct Contact <i class="fas fa-caret-down ml-1"></i></a>
@@ -397,7 +401,8 @@
                 </ul>
             </div>
         </div>
-    </nav
+    </nav>
+
     <!-- Masthead (Hero Section) - Copied from index.html -->
     <header class="masthead relative">
         <div class="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-center lg:justify-start relative z-20">
@@ -464,6 +469,7 @@
             </div>
         </div>
     </footer>
+    
     <div class="copyright py-2 text-center text-gray-700">
         <div class="container mx-auto"><small>Copyright © Lokendra Gaire 2024</small></div>
     </div>
@@ -540,6 +546,7 @@
                 allDropdowns[i].classList.add('hidden');
             }
         }
+
         // Combined search and highlight function
         function performSearchAndHighlight(query) {
             showSpinner();
@@ -708,8 +715,6 @@
                 if (!navbarResponsive.classList.contains('hidden')) {
                     navbarResponsive.classList.add('hidden');
                     navbarResponsive.classList.remove('flex', 'flex-col');
-                    <a href="wallet.html" class="flex items-center"><i class="fas fa-bank-tie bank-atm-2 text-purple-600"></i></a>
-                            <div id="walletDropdown" class="dropdown-menu hidden">
                 }
             }
         }
