@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Lokendra Gaire - Personal Website</title>
-    <meta name="description" content="Welcome to my personal website, featuring my education, experience, portfolio, and social engagement." />
-    <meta name="keywords" caontent="Lokendra Gaire, portfolio, experience, contact, MIS Operator, Financial Literacy, Nepal" />
-    <link rel="canonical" href="https://lokendragaire.com.np/" />
+    <title>Lokendra Gaire - Social Engagement</title>
+    <meta name="description" content="Lokendra Gaire's social and community engagement." />
+    <meta name="keywords" caontent="Lokendra Gaire, social engagement, community, politics, Nepal" />
+    <link rel="canonical" href="https://lokendragaire.com.np/politicaleng.html" />
     <link rel="icon" type="image/x-xicon" href="assets/images/brp.jpg" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -43,8 +43,12 @@
             background-color: #FFFFFF; /* White background */
             color: #333; /* Dark text for contrast */
             min-height: 100vh; /* Ensure enough height for scrolling */
+            display: flex;
+            flex-direction: column;
         }
-
+        main {
+            flex: 1; /* Allow main content to grow and push footer down */
+        }
         #mainNav {
             background-color: #FFC0CB; /* Pink background for navbar */
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -68,7 +72,6 @@
         #mainNav .nav-link:hover, #mainNav .nav-link.active {
             color: #228B22; /* Forest Green Accent */
         }
-
         header.masthead {
             /* Background image for the entire hero section */
             background-image: url('https://raw.githubusercontent.com/lokendragaire/Lokendragaire.com.np/main/brp.jpg'); /* Updated background image URL */
@@ -126,69 +129,38 @@
             font-size: 1.5rem;
             margin-bottom: 1rem;
         }
-
         .page-section {
-            padding: 4rem 0; /* Reduced padding */
-            background-color: #FFFFFF; /* White background for sections */
+            padding: 4rem 0;
+            background-color: #FFFFFF;
         }
         .page-section h2 {
             font-size: 2.5rem;
             text-align: center;
-            margin-bottom: 2rem; /* Reduced margin */
-            color: #228B22; /* Forest Green */
+            margin-bottom: 2rem;
+            color: #228B22;
         }
-        .form-group label {
-            color: #555; /* Darker gray for form labels */
-        }
-        .form-control {
-            background-color: #f0f0f0; /* Light gray for form fields */
-            border: 1px solid #ccc;
-            color: #333;
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-        }
-        .form-control:focus {
-            background-color: #e0e0e0;
-            border-color: #228B22; /* Forest Green accent */
-            box-shadow: 0 0 0 3px rgba(34, 139, 34, 0.3);
-        }
-        .btn-primary {
-            background-color: #228B22; /* Forest Green for primary button */
-            border-color: #228B22;
-            padding: 0.75rem 2rem;
-            border-radius: 8px;
-            font-weight: 700;
-            transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
-            color: white; /* White text for buttons */
-        }
-        .btn-primary:hover {
-            background-color: #1a7a1a; /* Darker green on hover */
-            border-color: #1a7a1a;
-        }
-
         .footer {
-            background-color: #F8F8F8; /* Slightly off-white for footer */
-            padding: 2rem 0; /* Reduced padding */
-            color: #333; /* Dark text for footer */
-            border-radius: 20px 20px 0 0; /* Rounded top corners */
+            background-color: #F8F8F8;
+            padding: 2rem 0;
+            color: #333;
+            border-radius: 20px 20px 0 0;
             box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
         }
         .footer h4 {
-            color: #228B22; /* Forest Green */
+            color: #228B22;
             font-weight: 700;
-            margin-bottom: 0.75rem; /* Reduced margin */
+            margin-bottom: 0.75rem;
         }
         .footer p.lead {
-            color: #777; /* Medium gray */
-            font-size: 0.95rem; /* Slightly smaller font */
+            color: #777;
+            font-size: 0.95rem;
         }
         .copyright {
-            background-color: #E6E6E6; /* Light gray for copyright */
-            color: #555; /* Darker gray */
-            padding: 1rem 0; /* Reduced padding */
-            font-size: 0.8rem; /* Slightly smaller font */
+            background-color: #E6E6E6;
+            color: #555;
+            padding: 1rem 0;
+            font-size: 0.8rem;
         }
-        
         /* Custom styles for dropdown */
         .dropdown-menu {
             position: absolute;
@@ -262,10 +234,10 @@
     </style>
 </head>
 <body id="page-top">
-    <!-- Navigation-->
+    <!-- Navigation (Copied from index.html for consistency) -->
     <nav class="navbar fixed-top py-3" id="mainNav"> 
         <div class="container mx-auto px-4 flex justify-between items-center">
-            <a class="navbar-brand text-2xl font-bold" href="#page-top">You Can Visit</a>
+            <a class="navbar-brand text-2xl font-bold" href="index.html">You Can Visit</a>
             
             <!-- Navbar Toggler for mobile -->
             <button class="navbar-toggler lg:hidden focus:outline-none" type="button" onclick="toggleNavbar()">
@@ -282,15 +254,23 @@
                         <li class="nav-item relative group">
                             <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('portfolioDropdown')">Portfolio <i class="fas fa-caret-down ml-1"></i></a>
                             <div id="portfolioDropdown" class="dropdown-menu hidden">
-                                <a href="portfolio.html" class="flex items-center"><i class="fas fa-folder-open mr-2 text-purple-600"></i>My Portfolio</a>
+                                <a href="portfolio.html#projects" class="flex items-center"><i class="fas fa-project-diagram mr-2 text-blue-600"></i>Projects</a>
+                                <a href="portfolio.html#achievements" class="flex items-center"><i class="fas fa-trophy mr-2 text-yellow-600"></i>Achievements</a>
+                                <a href="portfolio.html#skills" class="flex items-center"><i class="fas fa-code mr-2 text-red-600"></i>Skills</a>
+                                <a href="portfolio.html#gallery" class="flex items-center"><i class="fas fa-images mr-2 text-purple-600"></i>Gallery</a>
                             </div>
                         </li>
 
-                        <!-- Social Engagement Dropdown -->
+                        <!-- Social Engagement Dropdown - Now a dropdown -->
                         <li class="nav-item relative group">
                             <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('socialEngagementDropdown')">Social Engagement <i class="fas fa-caret-down ml-1"></i></a>
                             <div id="socialEngagementDropdown" class="dropdown-menu hidden">
-                                <a href="politicaleng.html" class="flex items-center"><i class="fas fa-handshake mr-2 text-green-600"></i>My Social Engagement</a>
+                                <a href="#" class="flex items-center"><i class="fas fa-graduation-cap mr-2 text-green-700"></i>गलकोट बहुमुखी क्याम्पस: निवर्तमान अध्यक्ष (स्वतन्त्र विद्यार्थी युनियन)</a>
+                                <a href="#" class="flex items-center"><i class="fas fa-users mr-2 text-blue-700"></i>निजामती कर्मचारी युनियन: गलकोट सदस्य</a>
+                                <a href="#" class="flex items-center"><i class="fas fa-running mr-2 text-purple-700"></i>जनजागृति युवा क्लब: सहसचिव</a>
+                                <a href="#" class="flex items-center"><i class="fas fa-hand-holding-heart mr-2 text-orange-700"></i>लायन्स क्लब अफ गलकोट घुम्टे: Charter Member</a>
+                                <a href="#" class="flex items-center"><i class="fas fa-globe-americas mr-2 text-red-700"></i>रोट्र्याक्ट क्लब अफ गलकोट बागलुङ: International Development Chair</a>
+                                <a href="#" class="flex items-center"><i class="fas fa-flag mr-2 text-indigo-700"></i>नेपाली काँग्रेस: सदस्यता लिएको</a>
                             </div>
                         </li>
                         
@@ -353,8 +333,8 @@
             </div>
         </div>
     </nav>
-    
-    <!-- Masthead (Hero Section)-->
+
+    <!-- Masthead (Hero Section) - Copied from index.html -->
     <header class="masthead relative">
         <div class="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-center lg:justify-start relative z-20">
             <div class="masthead-content text-center lg:text-left lg:w-1/2 p-4 lg:p-8">
@@ -369,35 +349,18 @@
         </div>
     </header>
 
-    <!-- Social Media Links Section - Moved outside Masthead -->
-    <section class="page-section text-left" id="social-media-links" style="padding-top: 2rem; padding-bottom: 0;">
-        <div class="container mx-auto px-4">
-            <h3 class="text-lg font-semibold mb-4" style="color: #333;">Follow Me on Social Media</h3>
-            <div class="flex flex-wrap justify-start gap-2"> <!-- Added gap for spacing between buttons -->
-                <a href="https://www.youtube.com/channel/hamrogalkot9" target="_blank" class="btn btn-social btn-youtube"><i class="fab fa-youtube"></i></a>
-                <a href="https://www.facebook.com/lokendra.gaire.7" target="_blank" class="btn btn-social btn-facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://tiktok.com/@mr.gairelokendra" target="_blank" class="btn btn-social btn-tiktok"><i class="fab fa-tiktok"></i></a>
-                <a href="https://www.linkedin.com/in/lokendra-gaire-45892523b/" target="_blank" class="btn btn-social btn-linkedin"><i class="fab fa-linkedin"></i></a>
-                <a href="https://t.me/lokendragaire" target="_blank" class="btn btn-social btn-telegram"><i class="fab fa-telegram"></i></a>
-            </div>
-        </div>
-    </section>
-
-    <main> <!-- Removed min-h-screen from main tag -->
-        <section class="page-section bg-gray-100 text-gray-800" id="direct-contact" style="padding-top: 0; padding-bottom: 4rem;">
-            <div class="container mx-auto px-4 py-4">
-                <h2 class="text-center mb-6 text-2xl">Direct Contact</h2>
-                <div class="text-center">
-                    <p class="lead text-base text-gray-700 mb-2">
-                        <i class="fas fa-phone mr-2 text-2xl text-green-500"></i><strong>Phone:</strong> <a href="tel:+9779869065252" class="text-gray-700 hover:underline">+977 9869065252</a><br>
-                        <i class="fas fa-envelope mr-2 text-2xl text-red-500"></i><strong>Email:</strong> <a href="mailto:lokendra.gaire.70@gmail.com" class="text-green-600 hover:underline">lokendra.gaire.70@gmail.com</a><br>
-                        <i class="fas fa-map-marker-alt mr-2 text-2xl text-blue-500"></i><strong>Address:</strong> <a href="https://maps.google.com/?q=Galkot+Municipality-2,+Baglung,+Nepal" target="_blank" class="text-gray-700 hover:underline">Galkot Municipality-2, Baglung</a>
-                    </p>
-                </div>
+    <main class="min-h-screen">
+        <!-- This page now serves as a landing page for social engagement with the masthead -->
+        <section class="page-section text-center py-12">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-gray-800">मेरो सामाजिक संलग्नता</h2>
+                <p class="text-lg text-gray-600 mt-4">विभिन्न संघसंस्थाहरूमा मेरो भूमिका र योगदान यहाँ पाउन सक्नुहुन्छ।</p>
+                <p class="text-lg text-gray-600 mt-2">नेभिगेसन बारमा रहेको "Social Engagement" ड्रपडाउनमा क्लिक गरेर विस्तृत जानकारी हेर्नुहोस्।</p>
             </div>
         </section>
     </main>
 
+    <!-- Footer (Copied from index.html for consistency) -->
     <footer class="footer py-2">
         <div class="container mx-auto px-4">
             <div class="flex flex-wrap justify-center text-center">
