@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ne">
 <head>
@@ -331,355 +332,12 @@
         <div id="letterContent" class="a4-paper hidden">
             <!-- Header Section -->
             <div class="flex items-start justify-between w-full mb-4">
-               <!DOCTYPE html>
-<html lang="ne">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>सामाजिक सुरक्षा भत्ता सम्बन्धी पत्र</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Custom styles for A4 paper layout */
-        body {
-            font-family: 'Inter', sans-serif; /* Default font, browser will fallback for Nepali */
-            background-color: #f0f0f0;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-        .form-container, .a4-paper {
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            box-sizing: border-box;
-            border-radius: 0.5rem; /* Rounded corners */
-        }
-        .form-container {
-            width: 80%; /* Adjust width for form */
-            max-width: 600px;
-            padding: 20px;
-        }
-        .a4-paper {
-            width: 210mm; /* A4 width (portrait) for screen view */
-            min-height: 297mm; /* A4 height (portrait) for screen view */
-            padding: 25mm; /* Standard A4 margins */
-            display: flex;
-            flex-direction: column;
-        }
-        input[type="text"], textarea, select {
-            border: none;
-            border-bottom: 1px dashed #000;
-            outline: none;
-            padding: 2px 0;
-            font-size: inherit;
-            font-family: inherit;
-            width: auto; /* Allow input to size based on content or flex */
-            min-width: 50px; /* Minimum width for inputs */
-            text-align: left;
-            background-color: transparent; /* Ensure background is transparent */
-            border-radius: 0; /* Remove rounded corners for inputs */
-        }
-        input[type="text"]:focus, textarea:focus, select:focus {
-            border-bottom: 1px solid #3B82F6; /* Highlight on focus */
-        }
-        /* Style for readonly/disabled inputs */
-        input[readonly], input[disabled] {
-            background-color: #f9f9f9;
-            color: #555;
-            border-bottom: 1px solid #ccc; /* Solid line for readonly */
-        }
-
-        /* Hide input borders and print button when printing */
-        @media print {
-            body {
-                background-color: white;
-                margin: 0;
-                padding: 0;
-            }
-            .container-wrapper {
-                flex-direction: column;
-                align-items: center;
-                gap: 0;
-            }
-            .form-container, .print-button-container, .back-button-container {
-                display: none !important; /* Hide form, print, and back button */
-            }
-            .a4-paper {
-                box-shadow: none;
-                margin: 0;
-                padding: 25mm; /* Maintain print margins */
-                min-height: auto; /* Adjust height for print */
-                /* Reverted to Portrait orientation for print */
-                width: 210mm !important; /* A4 Portrait width */
-                height: 297mm !important; /* A4 Portrait height */
-                /* Ensure content fits within the portrait page */
-                transform-origin: top left;
-                transform: rotate(0deg); /* Reset rotation if any */
-            }
-            input[type="text"], textarea, select {
-                border-bottom: none; /* Hide dashed line on print */
-            }
-            /* Ensure text aligns correctly in printed letter */
-            .letter-content-text span {
-                display: inline; /* Ensure spans don't break lines */
-            }
-            .letter-header-center {
-                text-align: center;
-            }
-            /* Ensure logo is visible when printing */
-            .logo-container {
-                display: flex !important; /* Ensure the container is a flex container */
-                align-items: center !important; /* Vertically align image if needed */
-                justify-content: flex-start !important; /* Align to start */
-                width: auto !important; /* Allow it to take natural width */
-                visibility: visible !important;
-                /* margin-right: 20px !important; */ /* Removed as logo-placeholder balances */
-            }
-            .logo-container img {
-                display: block !important;
-                visibility: visible !important;
-                width: 80px !important; /* Updated fixed size for print */
-                height: 80px !important; /* Updated fixed size for print */
-            }
-            .logo-placeholder {
-                width: 80px !important; /* Same as logo width for balancing */
-                height: 80px !important; /* Same as logo height for balancing */
-            }
-        }
-        .flex-grow-1 { flex-grow: 1; }
-        .flex-grow-2 { flex-grow: 2; }
-        .flex-grow-3 { flex-grow: 3; }
-        .flex-grow-4 { flex-grow: 4; }
-        .flex-grow-5 { flex-grow: 5; }
-        .required-field::after {
-            content: '*';
-            color: red;
-            margin-left: 4px;
-        }
-        .text-justify {
-            text-align: justify;
-        }
-        /* Adjust logo container for left alignment */
-        .logo-container {
-            display: flex;
-            justify-content: flex-start; /* Align logo to the left */
-            width: auto; /* Take only necessary width */
-            /* margin-right: 20px; */ /* Removed as logo-placeholder balances */
-        }
-        .header-text-container {
-            flex-grow: 1; /* Allow text container to take available space */
-            text-align: center; /* Center the text within its container */
-        }
-        /* Custom spacing for Chalan No. and Sa.Su. Patra No. */
-        .chalan-sasu-line {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start; /* Ensure left alignment */
-            gap: 1cm; /* Approximately 1cm gap */
-        }
-        .chalan-sasu-line > div {
-            display: flex;
-            align-items: center;
-        }
-        .patra-sankhya-label, .miti-label, .chalan-no-label, .sasu-patra-no-label, .province-address {
-            color: red;
-            font-weight: bold;
-        }
-        .patra-sankhya-value, .miti-value, .chalan-no-value, .sasu-patra-no-value {
-            color: black;
-        }
-        .signature-block {
-            text-align: right; /* Align the entire block to the right */
-            width: 100%; /* Take full width to allow internal centering */
-            display: flex; /* Use flexbox for internal alignment */
-            flex-direction: column; /* Stack items vertically */
-            align-items: flex-end; /* Align all items to the right */
-        }
-        .signature-block p {
-            width: 200px; /* Fixed width for signature elements */
-            text-align: center; /* Center text within their fixed width */
-        }
-        .signature-line {
-            display: block; /* Ensure it takes full width of its container */
-        }
-        /* Increased font size for office name */
-        .office-name-display {
-            font-size: 1.25rem; /* Tailwind's text-xl is 1.25rem, text-lg is 1.125rem. Making it bigger than text-lg. */
-        }
-        .logo-placeholder {
-            width: 80px; /* Same as w-20 in Tailwind */
-            height: 80px; /* Same as h-20 in Tailwind */
-            flex-shrink: 0;
-        }
-    </style>
-</head>
-<body class="selection:bg-blue-200">
-    <div class="container-wrapper">
-        <!-- Input Form Section -->
-        <div id="inputForm" class="form-container p-6 mb-8 rounded-lg shadow-lg">
-            <h2 class="text-xl font-bold mb-6 text-center text-gray-700">सामाजिक सुरक्षा पत्र विवरण</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="col-span-2">
-                    <label for="officeName" class="block text-gray-700 text-sm font-bold mb-1 required-field">कार्यालयको नाम:</label>
-                    <input type="text" id="officeName" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="उदाहरण: वडा कार्यालय"/>
-                </div>
-                <div class="col-span-2">
-                    <label for="officeAddress" class="block text-gray-700 text-sm font-bold mb-1 required-field">कार्यालयको ठेगाना:</label>
-                    <input type="text" id="officeAddress" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="उदाहरण: हटिया"/>
-                </div>
-                <div>
-                    <label for="fiscalYear" class="block text-gray-700 text-sm font-bold mb-1 required-field">आ.व. (आर्थिक वर्ष):</label>
-                    <select id="fiscalYear" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">आ.व. छान्नुहोस्</option>
-                        <option value="२०७९/८०">२०७९/८०</option>
-                        <option value="२०८०/८१">२०८०/८१</option>
-                        <option value="२०८१/८२">२०८१/८२</option>
-                        <option value="२०८२/८३">२०८२/८३</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="patraSankhya" class="block text-gray-700 text-sm font-bold mb-1 required-field">पत्र संख्याः</label>
-                    <input type="text" id="patraSankhya" class="w-full rounded-md px-3 py-2 border border-gray-300 bg-gray-100 text-gray-600" readonly placeholder="आ.व. छनोट गरेपछि स्वतः आउनेछ"/>
-                </div>
-                <div>
-                    <label for="miti" class="block text-gray-700 text-sm font-bold mb-1 required-field">मितिः</label>
-                    <input type="text" id="miti" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="YYYY/MM/DD (वि.सं.)" maxlength="10"/>
-                </div>
-                <div class="col-span-2 flex items-center">
-                    <label for="chalanNo" class="block text-gray-700 text-sm font-bold mb-1 mr-2">च.नं.:</label>
-                    <input type="text" id="chalanNo" class="w-24 rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="चलानी नं."/>
-                    <span class="inline-block w-16 h-px bg-transparent border-b border-dashed border-gray-400 mx-2"></span> <!-- Tab space for manual writing -->
-                    <!-- Removed Sa.Su. Patra No. input -->
-                </div>
-                <div>
-                    <label for="bankName" class="block text-gray-700 text-sm font-bold mb-1 required-field">बैंकको नाम:</label>
-                    <select id="bankName" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">बैंक छान्नुहोस्</option>
-                        <option value="प्रभु बैँक लि.">प्रभु बैँक लि.</option>
-                        <option value="नेपाल बैँक लि.">नेपाल बैँक लि.</option>
-                        <option value="कामना सेवा विकास बैँक लि.">कामना सेवा विकास बैँक लि.</option>
-                        <option value="ग्लोबल आइएमइ बैँक लि">ग्लोबल आइएमइ बैँक लि</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="wardNo" class="block text-gray-700 text-sm font-bold mb-1 required-field">वडा नं.:</label>
-                    <select id="wardNo" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">वडा नं. छान्नुहोस्</option>
-                        <script>
-                            for (let i = 1; i <= 11; i++) {
-                                document.write(`<option value="${i}">${i}</option>`);
-                            }
-                        </script>
-                    </select>
-                </div>
-                <div class="col-span-2">
-                    <label for="ssbId" class="block text-gray-700 text-sm font-bold mb-1 required-field">सामाजिक सुरक्षा भत्ता परिचयपत्र नं.:</label>
-                    <input type="text" id="ssbId" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="परिचयपत्र नं." maxlength="13"/>
-                </div>
-                <div class="col-span-2">
-                    <label for="personName" class="block text-gray-700 text-sm font-bold mb-1 required-field">व्यक्तिगत नाम:</label>
-                    <input type="text" id="personName" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="श्री/श्रीमती/कुमारी"/>
-                </div>
-                <div>
-                    <label for="deathDate" class="block text-gray-700 text-sm font-bold mb-1 required-field">मृत्यु मिति:</label>
-                    <input type="text" id="deathDate" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="YYYY/MM/DD (वि.सं.)" maxlength="10"/>
-                </div>
-                <div>
-                    <label for="deathRegDate" class="block text-gray-700 text-sm font-bold mb-1 required-field">मृत्युदर्ता मिति:</label>
-                    <input type="text" id="deathRegDate" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="YYYY/MM/DD (वि.सं.)" maxlength="10"/>
-                </div>
-                <div>
-                    <label for="quarter" class="block text-gray-700 text-sm font-bold mb-1 required-field">त्रैमासिक:</label>
-                    <select id="quarter" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">त्रैमासिक छान्नुहोस्</option>
-                        <option value="प्रथम">प्रथम</option>
-                        <option value="दोस्रो">दोस्रो</option>
-                        <option value="तेस्रो">तेस्रो</option>
-                        <option value="चौथो">चौथो</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="amount" class="block text-gray-700 text-sm font-bold mb-1 required-field">रकम रु.:</label>
-                    <input type="text" id="amount" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="रकम"/>
-                </div>
-                <div>
-                    <label for="relationship" class="block text-gray-700 text-sm font-bold mb-1 required-field">सम्बन्ध:</label>
-                    <select id="relationship" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">सम्बन्ध छान्नुहोस्</option>
-                        <option value="श्रीमान">श्रीमान</option>
-                        <option value="श्रीमती">श्रीमती</option>
-                        <option value="छोरा">छोरा</option>
-                        <option value="छोरी">छोरी</option>
-                        <option value="बुहारी">बुहारी</option>
-                        <option value="नाती">नाती</option>
-                        <option value="नातिनी">नातिनी</option>
-                    </select>
-                </div>
-                <div id="relatedPersonNameContainer" class="col-span-2 hidden">
-                    <label for="relatedPersonName" class="block text-gray-700 text-sm font-bold mb-1 required-field">सम्बन्धित व्यक्तिको नाम:</label>
-                    <input type="text" id="relatedPersonName" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="सम्बन्धित व्यक्तिको नाम"/>
-                </div>
-                <div>
-                    <label for="citizenshipNo" class="block text-gray-700 text-sm font-bold mb-1 required-field">ना.प्र.नं.:</label>
-                    <input type="text" id="citizenshipNo" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="नागरिकता प्रमाण पत्र नं."/>
-                </div>
-                <div>
-                    <label for="citizenshipIssueDate" class="block text-gray-700 text-sm font-bold mb-1 required-field">जारी मिति:</label>
-                    <input type="text" id="citizenshipIssueDate" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="YYYY/MM/DD (वि.सं.)" maxlength="10"/>
-                </div>
-                <div>
-                    <label for="remainingAmount" class="block text-gray-700 text-sm font-bold mb-1 required-field">बाँकी रकम रु.:</label>
-                    <input type="text" id="remainingAmount" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="बाँकी रकम"/>
-                </div>
-                <div class="col-span-2">
-                    <label for="remainingAmountAksharu" class="block text-gray-700 text-sm font-bold mb-1">अक्षेरुपीःरु. (बाँकी रकम):</label>
-                    <input type="text" id="remainingAmountAksharu" class="w-full rounded-md px-3 py-2 border border-gray-300 bg-gray-100 text-gray-600" readonly placeholder="अक्षेरुपी रकम स्वतः आउनेछ"/>
-                </div>
-                <div class="col-span-2">
-                    <label for="depositAccount" class="block text-gray-700 text-sm font-bold mb-1 required-field">दाखिला गर्ने खाता:</label>
-                    <select id="depositAccount" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">खाता छान्नुहोस्</option>
-                        <option value="कोलेनिकाको बजेट खर्च खाता">कोलेनिका बजेट खर्च खाता</option>
-                        <option value="सैघीय बेरुजू खाता">सैघीय बेरुजू खाता</option>
-                    </select>
-                </div>
-                <div class="col-span-2">
-                    <label for="signerName" class="block text-gray-700 text-sm font-bold mb-1">हस्ताक्षर गर्नेको नाम:</label>
-                    <input type="text" id="signerName" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="नाम"/>
-                </div>
-                <div class="col-span-2">
-                    <label for="signerPost" class="block text-gray-700 text-sm font-bold mb-1">पद:</label>
-                    <input type="text" id="signerPost" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="पद"/>
-                </div>
-            </div>
-            <div class="text-center mt-6">
-                <button id="generateLetterBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full shadow-md transition duration-300 ease-in-out">
-                    पत्र तयार गर्नुहोस्
-                </button>
-            </div>
-            <div id="errorMessage" class="text-red-500 text-center mt-4 hidden"></div>
-        </div>
-
-        <!-- A4 Paper Letter Content Section -->
-        <div id="letterContent" class="a4-paper hidden">
-            <!-- Header Section -->
-            <div class="flex items-center w-full mb-4"> <!-- Changed to flex items-center for vertical alignment -->
                 <!-- Logo Container -->
                 <div class="logo-container">
                     <!-- नेपाल सरकारको लोगो A4 कागजको बायाँतर्फ (left align) राख्ने -->
-                    <!-- NOTE: Replace the src below with your hosted emblem.png URL -->
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Emblem_of_Nepal.svg/768px-Emblem_of_Nepal.svg.png" alt="नेपाल सरकारको लोगो" class="w-20 h-20" onerror="this.onerror=null;this.src='https://placehold.co/80x80/E0E0E0/000000?text=LOGO'; console.error('Error loading logo image.');">
-                </div>
-                <div class="header-text-container flex flex-col items-center flex-grow"> <!-- flex-grow to take available space -->
+<img src="assets/images/emblem.png" alt="नेपाल सरकारको लोगो" style="width: 100px; height: auto; float: left; margin-right: 20px;">
+<img src="emblem.png" alt="नेपाल सरकारको लोगो" class="w-20 h-20">
+                <div class="header-text-container flex flex-col items-center flex-grow">
                     <p class="font-bold text-lg text-red-600">गलकोट नगरपालिका</p>
                     <p class="font-bold office-name-display text-red-600">
                         <span id="displayOfficeName"></span>&nbsp;कार्यालय
@@ -688,8 +346,6 @@
                         <span id="displayOfficeAddress"></span>&nbsp;, बागलुङ
                     </p>
                 </div>
-                <!-- Empty div to balance the center alignment of the text, matching logo width -->
-                <div class="logo-placeholder"></div>
             </div>
 
             <!-- Letter Info Section -->
@@ -1072,6 +728,9 @@
                 document.getElementById('displayMiti').textContent = document.getElementById('miti').value;
                 document.getElementById('displayChalanNo').textContent = convertEnglishToNepaliDigits(document.getElementById('chalanNo').value);
                 
+                // Removed displaySaSuPatra No.
+                // document.getElementById('displaySaSuPatraNo').textContent = convertEnglishToNepaliDigits(document.getElementById('saSuPatraNo').value);
+
                 document.getElementById('displayBankName').textContent = document.getElementById('bankName').value;
                 document.getElementById('displayWardNo').textContent = convertEnglishToNepaliDigits(document.getElementById('wardNo').value);
                 document.getElementById('displaySsbId').textContent = convertEnglishToNepaliDigits(document.getElementById('ssbId').value);
@@ -1164,4 +823,3 @@
     </script>
 </body>
 </html>
-
