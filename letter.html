@@ -97,6 +97,21 @@
             .letter-header-center {
                 text-align: center;
             }
+            /* Ensure logo is visible when printing */
+            .logo-container {
+                display: flex !important; /* Ensure the container is a flex container */
+                align-items: center !important; /* Vertically align image if needed */
+                justify-content: flex-start !important; /* Align to start */
+                width: auto !important; /* Allow it to take natural width */
+                visibility: visible !important;
+                margin-right: 20px !important; /* Ensure margin is applied on print too */
+            }
+            .logo-container img {
+                display: block !important;
+                visibility: visible !important;
+                width: 80px !important; /* Updated fixed size for print */
+                height: 80px !important; /* Updated fixed size for print */
+            }
         }
         .flex-grow-1 { flex-grow: 1; }
         .flex-grow-2 { flex-grow: 2; }
@@ -115,8 +130,8 @@
         .logo-container {
             display: flex;
             justify-content: flex-start; /* Align logo to the left */
-            <a href="emblem.png" class="flex items-center"><i class="fas fa-graduation-cap mr-2 text-green-700"></i>emblem.png)</a>
             width: auto; /* Take only necessary width */
+            margin-right: 20px; /* Space between logo and text */
         }
         .header-text-container {
             flex-grow: 1; /* Allow text container to take available space */
@@ -133,11 +148,11 @@
             display: flex;
             align-items: center;
         }
-        .patra-sankhya-label, .miti-label {
+        .patra-sankhya-label, .miti-label, .chalan-no-label, .sasu-patra-no-label, .province-address {
             color: red;
             font-weight: bold;
         }
-        .patra-sankhya-value, .miti-value {
+        .patra-sankhya-value, .miti-value, .chalan-no-value, .sasu-patra-no-value {
             color: black;
         }
         .signature-block {
@@ -153,6 +168,10 @@
         }
         .signature-line {
             display: block; /* Ensure it takes full width of its container */
+        }
+        /* Increased font size for office name */
+        .office-name-display {
+            font-size: 1.25rem; /* Tailwind's text-xl is 1.25rem, text-lg is 1.125rem. Making it bigger than text-lg. */
         }
     </style>
 </head>
@@ -192,9 +211,7 @@
                     <label for="chalanNo" class="block text-gray-700 text-sm font-bold mb-1 mr-2">च.नं.:</label>
                     <input type="text" id="chalanNo" class="w-24 rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="चलानी नं."/>
                     <span class="inline-block w-16 h-px bg-transparent border-b border-dashed border-gray-400 mx-2"></span> <!-- Tab space for manual writing -->
-                    <label class="block text-gray-700 text-sm font-bold mb-1 ml-4 mr-2 required-field">सा.सु. पत्र नं.:</label>
-                    <span id="saSuPatraNoDisplay" class="w-24 rounded-md px-3 py-2 border border-gray-300 bg-gray-100 text-gray-600"></span>
-                    <input type="hidden" id="saSuPatraNo" /> <!-- Hidden input to store generated value -->
+                    <!-- Removed Sa.Su. Patra No. input -->
                 </div>
                 <div>
                     <label for="bankName" class="block text-gray-700 text-sm font-bold mb-1 required-field">बैंकको नाम:</label>
@@ -260,6 +277,10 @@
                         <option value="नातिनी">नातिनी</option>
                     </select>
                 </div>
+                <div id="relatedPersonNameContainer" class="col-span-2 hidden">
+                    <label for="relatedPersonName" class="block text-gray-700 text-sm font-bold mb-1 required-field">सम्बन्धित व्यक्तिको नाम:</label>
+                    <input type="text" id="relatedPersonName" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="सम्बन्धित व्यक्तिको नाम"/>
+                </div>
                 <div>
                     <label for="citizenshipNo" class="block text-gray-700 text-sm font-bold mb-1 required-field">ना.प्र.नं.:</label>
                     <input type="text" id="citizenshipNo" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="नागरिकता प्रमाण पत्र नं."/>
@@ -304,19 +325,19 @@
         <!-- A4 Paper Letter Content Section -->
         <div id="letterContent" class="a4-paper hidden">
             <!-- Header Section -->
-            <div class="flex items-start justify-between w-full mb-4"> <!-- Changed to flex row, justify-between -->
+            <div class="flex items-start justify-between w-full mb-4">
                 <!-- Logo Container -->
-                <div class="logo-container"> <!-- Removed self-start as parent is flex-start -->
-                    <!-- Using a placeholder image -->
-                    <img src="https://placehold.co/64x64/E0E0E0/000000?text=Logo" alt="Municipality Logo" class="w-16 h-16"> <!-- Removed mb-2 as it's not a column anymore -->
+                <div class="logo-container">
+                    <!-- Using the provided Nepal Emblem image -->
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Emblem_of_Nepal.svg/768px-Emblem_of_Nepal.svg.png" alt="नेपाल सरकारको लोगो" class="w-20 h-20" onerror="this.onerror=null;this.src='https://placehold.co/80x80/E0E0E0/000000?text=LOGO'; console.error('Error loading logo image.');">
                 </div>
-                <div class="header-text-container flex flex-col items-center flex-grow"> <!-- Added flex-col, items-center -->
+                <div class="header-text-container flex flex-col items-center flex-grow">
                     <p class="font-bold text-lg text-red-600">गलकोट नगरपालिका</p>
-                    <p class="font-bold text-xl text-red-600"> <!-- Increased size for 'कार्यालय' -->
-                        <span id="displayOfficeName"></span> कार्यालय
+                    <p class="font-bold office-name-display text-red-600">
+                        <span id="displayOfficeName"></span>&nbsp;कार्यालय
                     </p>
-                    <p class="text-sm font-bold text-black"> <!-- Changed color to black -->
-                        <span id="displayOfficeAddress"></span> , बागलुङ
+                    <p class="text-sm font-bold text-black">
+                        <span id="displayOfficeAddress"></span>&nbsp;, बागलुङ
                     </p>
                 </div>
             </div>
@@ -324,20 +345,17 @@
             <!-- Letter Info Section -->
             <div class="flex justify-between items-end mt-4">
                 <div class="flex-grow-2">
-                    <p><span class="patra-sankhya-label">पत्र संख्याः</span> <span id="displayPatraSankhya" class="w-40 patra-sankhya-value"></span></p>
+                    <p><span class="patra-sankhya-label">पत्र संख्याः</span> <span id="displayPatraSankhya" class="w-40 patra-sankhya-value"></span>&nbsp;</p>
                     <div class="chalan-sasu-line mt-2">
                         <div>
-                            <span class="text-red-600">च.नं.</span> <span id="displayChalanNo" class="w-40 text-black"></span>
+                            <span class="chalan-no-label">च.नं.</span> <span id="displayChalanNo" class="w-40 chalan-no-value"></span>&nbsp;
                         </div>
-                        <div>
-                            <span class="text-red-600">सा.सु. पत्र नं.</span> <span id="displaySaSuPatraNo" class="w-30 text-black"></span>
-                        </div>
+                        <!-- Removed Sa.Su. Patra No. display -->
                     </div>
                 </div>
                 <div class="flex-grow-1 text-right">
-                    <!-- Swapped positions -->
-                    <p class="ml-4 text-red-600">गण्डकी प्रदेश, नेपाल</p>
-                    <p><span class="miti-label">मितिः</span> <span id="displayMiti" class="w-40 text-right miti-value"></span></p>
+                    <p class="ml-4 province-address">गण्डकी प्रदेश, नेपाल</p>
+                    <p><span class="miti-label">मितिः</span> <span id="displayMiti" class="w-40 text-right miti-value"></span>&nbsp;</p>
                 </div>
             </div>
 
@@ -359,14 +377,14 @@
             <!-- Body Section -->
             <div class="leading-relaxed letter-content-text text-justify">
                 <p>
-                    <span style="margin-left: 2em;"></span>उपरोक्त विषयमा गलकोट नगरपालिका वडा नं.<span id="displayWardNo" class="w-12"></span> निवासी
-                    सामाजिक सुरक्षा भत्ता परिचयपत्र नं.<span id="displaySsbId" class="w-24"></span>भएका श्री <span id="displayPersonName" class="w-48"></span>को
-                    मिति <span id="displayDeathDate" class="w-24"></span>मा मृत्यु भएको र मिति<span id="displayDeathRegDate" class="w-24"></span>मा
+                    <span style="margin-left: 2em;"></span>उपरोक्त विषयमा गलकोट नगरपालिका वडा नं.<span id="displayWardNo" class="w-12"></span>&nbsp;निवासी
+                    सामाजिक सुरक्षा भत्ता परिचयपत्र नं.<span id="displaySsbId" class="w-24"></span>&nbsp;भएका श्री <span id="displayPersonName" class="w-48"></span>&nbsp;को
+                    मिति <span id="displayDeathDate" class="w-24"></span>&nbsp;मा मृत्यु भएको र मिति<span id="displayDeathRegDate" class="w-24"></span>&nbsp;मा
                     मृत्युदर्ता गरी लगत कट्टा गरिएको हुदाँ निज जिवित हुदाँ सम्मको प्राप्त
-                    गर्नुपर्ने आ.व.(<span id="displayFiscalYear" class="w-20"></span>) को <span id="displayQuarter" class="w-28"></span> त्रैमासिकको
-                    रकम रु. <span id="displayAmount" class="w-24"></span>/-निजको <span id="displayRelationship" class="w-36"></span> (ना.प्र.नं. <span id="displayCitizenshipNo" class="w-24"></span>, जारी मिति<span id="displayCitizenshipIssueDate" class="w-24"></span>)लाइ
+                    गर्नुपर्ने आ.व.(<span id="displayFiscalYear" class="w-20"></span>)&nbsp;को <span id="displayQuarter" class="w-28"></span>&nbsp;त्रैमासिकको
+                    रकम रु. <span id="displayAmount" class="w-24"></span>/-&nbsp;निजको <span id="displayRelationship" class="w-36"></span>&nbsp;<span id="displayRelatedPersonName" class="w-48"></span>&nbsp;(सम्बन्धितको नाम<span id="displayCitizenshipIssueDate" class="w-24"></span>)लाइ;(ना.प्र.नं. <span id="displayCitizenshipNo" class="w-24"></span>,&nbsp;जारी मिति<span id="displayCitizenshipIssueDate" class="w-24"></span>)लाइ
                     भुक्तानी दिनुहुन साथै मृत्यु मिति पछी खातामा बाँकी रहन आउने रकम रु. <span id="displayRemainingAmount" class="w-24"></span>/-
-                    (अक्षेरुपीःरु<span id="displayRemainingAmountAksharu" class="w-48"></span>मात्र) <span id="displayDepositAccount" class="w-64"></span>मा दाखिला गरिदिनुहुन अनुरोध
+                    (अक्षेरुपीःरु<span id="displayRemainingAmountAksharu" class="w-48"></span>मात्र)&nbsp;<span id="displayDepositAccount" class="w-64"></span>मा दाखिला गरिदिनुहुन अनुरोध
                     छ।
                 </p>
             </div>
@@ -385,7 +403,7 @@
         </div>
 
         <!-- Print Button -->
-        <div class="print-button-container fixed bottom-4 right-4">
+        <div class="print-button-container fixed bottom-4 right-4 hidden"> <!-- Hidden by default -->
             <button id="printBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-lg flex items-center space-x-2">
                 <span>🖨️</span> <span>Print</span>
             </button>
@@ -399,9 +417,6 @@
     </div>
 
     <script>
-        // Global counter for Sa.Su. Patra No. (client-side, resets on page load)
-        let currentSaSuPatraNum = 0;
-
         // Function to convert English digits to Nepali digits
         function convertEnglishToNepaliDigits(input) {
             if (typeof input !== 'string') {
@@ -578,6 +593,22 @@
                     document.getElementById('patraSankhya').value = `${years[0].slice(-2)}/${years[1].slice(-2)}`;
                 }
             }
+
+            // Event listener for relationship select
+            const relationshipSelect = document.getElementById('relationship');
+            const relatedPersonNameContainer = document.getElementById('relatedPersonNameContainer');
+            const relatedPersonNameInput = document.getElementById('relatedPersonName');
+
+            relationshipSelect.addEventListener('change', function() {
+                if (this.value !== '') {
+                    relatedPersonNameContainer.classList.remove('hidden');
+                    relatedPersonNameInput.setAttribute('required', 'required');
+                } else {
+                    relatedPersonNameContainer.classList.add('hidden');
+                    relatedPersonNameInput.removeAttribute('required');
+                    relatedPersonNameInput.value = ''; // Clear value when hidden
+                }
+            });
         });
 
 
@@ -617,6 +648,18 @@
                     inputElement.style.borderColor = ''; // Reset border color
                 }
             }
+
+            // Validate relatedPersonName if relationship is selected
+            const relationshipSelect = document.getElementById('relationship');
+            const relatedPersonNameInput = document.getElementById('relatedPersonName');
+            if (relationshipSelect.value !== '' && relatedPersonNameInput.value.trim() === '') {
+                missingFields.push('सम्बन्धित व्यक्तिको नाम');
+                relatedPersonNameInput.style.borderColor = 'red';
+                allFieldsValid = false;
+            } else {
+                relatedPersonNameInput.style.borderColor = '';
+            }
+
 
             // SSB ID 13-digit validation
             const ssbIdInput = document.getElementById('ssbId');
@@ -666,18 +709,11 @@
             const letterContent = document.getElementById('letterContent');
             const inputForm = document.getElementById('inputForm');
             const backButtonContainer = document.querySelector('.back-button-container');
+            const printButtonContainer = document.querySelector('.print-button-container');
+
 
             if (allFieldsValid) {
                 errorMessageDiv.classList.add('hidden');
-
-                // Generate Sa.Su. Patra No.
-                currentSaSuPatraNum++;
-                if (currentSaSuPatraNum > 200) {
-                    currentSaSuPatraNum = 1; // Reset if exceeds 200
-                }
-                const formattedSaSuNum = String(currentSaSuPatraNum).padStart(3, '0');
-                document.getElementById('saSuPatraNoDisplay').textContent = convertEnglishToNepaliDigits(formattedSaSuNum);
-                document.getElementById('saSuPatraNo').value = formattedSaSuNum; // Store in hidden input
 
                 // Populate letter content
                 document.getElementById('displayOfficeName').textContent = document.getElementById('officeName').value;
@@ -686,7 +722,8 @@
                 document.getElementById('displayMiti').textContent = document.getElementById('miti').value;
                 document.getElementById('displayChalanNo').textContent = convertEnglishToNepaliDigits(document.getElementById('chalanNo').value);
                 
-                document.getElementById('displaySaSuPatraNo').textContent = convertEnglishToNepaliDigits(document.getElementById('saSuPatraNo').value);
+                // Removed displaySaSuPatraNo
+                // document.getElementById('displaySaSuPatraNo').textContent = convertEnglishToNepaliDigits(document.getElementById('saSuPatraNo').value);
 
                 document.getElementById('displayBankName').textContent = document.getElementById('bankName').value;
                 document.getElementById('displayWardNo').textContent = convertEnglishToNepaliDigits(document.getElementById('wardNo').value);
@@ -698,8 +735,9 @@
                 document.getElementById('displayQuarter').textContent = document.getElementById('quarter').value;
                 document.getElementById('displayAmount').textContent = convertEnglishToNepaliDigits(document.getElementById('amount').value);
                 document.getElementById('displayRelationship').textContent = document.getElementById('relationship').value;
+                document.getElementById('displayRelatedPersonName').textContent = document.getElementById('relatedPersonName').value; // New field
                 document.getElementById('displayCitizenshipNo').textContent = convertEnglishToNepaliDigits(document.getElementById('citizenshipNo').value);
-                document.getElementById('displayCitizenshipIssueDate').textContent = document.getElementById('citizenshipIssueDate').value;
+                document.getElementById('displayCitizenshipIssueDate').textContent = convertEnglishToNepaliDigits(document.getElementById('citizenshipIssueDate').value); // Convert to Nepali digits
                 document.getElementById('displayRemainingAmount').textContent = convertEnglishToNepaliDigits(document.getElementById('remainingAmount').value);
                 
                 document.getElementById('displayRemainingAmountAksharu').textContent = document.getElementById('remainingAmountAksharu').value;
@@ -713,14 +751,14 @@
                 letterContent.classList.remove('hidden');
                 inputForm.classList.add('hidden'); // Hide the form
                 backButtonContainer.classList.remove('hidden'); // Show back button
-
-                // Automatically trigger print dialog
-                window.print();
+                printButtonContainer.classList.remove('hidden'); // Show print button
+                
             } else {
                 errorMessageDiv.classList.remove('hidden');
                 errorMessageDiv.innerHTML = `कृपया निम्न फिल्डहरू भर्नुहोस् वा सुधार्नुहोस्: <br> ${missingFields.join(', ')}।`;
                 letterContent.classList.add('hidden'); // Ensure letter is hidden if validation fails
                 backButtonContainer.classList.add('hidden'); // Hide back button
+                printButtonContainer.classList.add('hidden'); // Hide print button
             }
         });
 
@@ -729,7 +767,14 @@
             document.getElementById('letterContent').classList.add('hidden');
             document.getElementById('inputForm').classList.remove('hidden');
             document.querySelector('.back-button-container').classList.add('hidden');
+            document.querySelector('.print-button-container').classList.add('hidden'); // Hide print button when going back
         });
+
+        // Event listener for print button
+        document.getElementById('printBtn').addEventListener('click', function() {
+            window.print();
+        });
+
 
         // Auto-fill Patra Sankhya when Fiscal Year changes
         document.getElementById('fiscalYear').addEventListener('change', function() {
