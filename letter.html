@@ -36,8 +36,8 @@
             padding: 20px;
         }
         .a4-paper {
-            width: 210mm; /* A4 width */
-            min-height: 297mm; /* A4 height */
+            width: 210mm; /* A4 width (portrait) for screen view */
+            min-height: 297mm; /* A4 height (portrait) for screen view */
             padding: 25mm; /* Standard A4 margins */
             display: flex;
             flex-direction: column;
@@ -85,7 +85,12 @@
                 margin: 0;
                 padding: 25mm; /* Maintain print margins */
                 min-height: auto; /* Adjust height for print */
-                height: 297mm; /* Ensure A4 height on print */
+                /* Landscape orientation for print */
+                width: 297mm !important; /* A4 Landscape width */
+                height: 210mm !important; /* A4 Landscape height */
+                /* Ensure content fits within the landscape page */
+                transform-origin: top left;
+                transform: rotate(0deg); /* Reset rotation if any */
             }
             input[type="text"], textarea, select {
                 border-bottom: none; /* Hide dashed line on print */
@@ -382,7 +387,7 @@
                     मिति <span id="displayDeathDate" class="w-24"></span>&nbsp;मा मृत्यु भएको र मिति<span id="displayDeathRegDate" class="w-24"></span>&nbsp;मा
                     मृत्युदर्ता गरी लगत कट्टा गरिएको हुदाँ निज जिवित हुदाँ सम्मको प्राप्त
                     गर्नुपर्ने आ.व.(<span id="displayFiscalYear" class="w-20"></span>)&nbsp;को <span id="displayQuarter" class="w-28"></span>&nbsp;त्रैमासिकको
-                    रकम रु. <span id="displayAmount" class="w-24"></span>/-&nbsp;निजको <span id="displayRelationship" class="w-36"></span>&nbsp;<span id="displayRelatedPersonName" class="w-48"></span>&nbsp;(सम्बन्धितको नाम<span id="displayCitizenshipIssueDate" class="w-24"></span>)लाइ;(ना.प्र.नं. <span id="displayCitizenshipNo" class="w-24"></span>,&nbsp;जारी मिति<span id="displayCitizenshipIssueDate" class="w-24"></span>)लाइ
+                    रकम रु. <span id="displayAmount" class="w-24"></span>/-&nbsp;निजको <span id="displayRelationship" class="w-36"></span>&nbsp;<span id="displayRelatedPersonName" class="w-48"></span>&nbsp;(ना.प्र.नं. <span id="displayCitizenshipNo" class="w-24"></span>,&nbsp;जारी मिति<span id="displayCitizenshipIssueDate" class="w-24"></span>)लाइ
                     भुक्तानी दिनुहुन साथै मृत्यु मिति पछी खातामा बाँकी रहन आउने रकम रु. <span id="displayRemainingAmount" class="w-24"></span>/-
                     (अक्षेरुपीःरु<span id="displayRemainingAmountAksharu" class="w-48"></span>मात्र)&nbsp;<span id="displayDepositAccount" class="w-64"></span>मा दाखिला गरिदिनुहुन अनुरोध
                     छ।
@@ -683,7 +688,7 @@
 
                 if (parts.length !== 3 || parts[0].length !== 4 || parts[1].length !== 2 || parts[2].length !== 2) {
                     if (!missingFields.includes(requiredFields[fieldId])) {
-                        missingFields.push(`${requiredFields[fieldId]} (ढाँचा YYYY/MM/DD हुनुपर्छ)`);
+                        missingFields.push(`${requiredFields[fieldId]} (ढाँचा Wochenende/MM/DD हुनुपर्छ)`);
                     }
                     dateInput.style.borderColor = 'red';
                     allFieldsValid = false;
@@ -722,7 +727,7 @@
                 document.getElementById('displayMiti').textContent = document.getElementById('miti').value;
                 document.getElementById('displayChalanNo').textContent = convertEnglishToNepaliDigits(document.getElementById('chalanNo').value);
                 
-                // Removed displaySaSuPatraNo
+                // Removed displaySaSuPatra No.
                 // document.getElementById('displaySaSuPatraNo').textContent = convertEnglishToNepaliDigits(document.getElementById('saSuPatraNo').value);
 
                 document.getElementById('displayBankName').textContent = document.getElementById('bankName').value;
