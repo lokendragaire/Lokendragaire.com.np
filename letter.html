@@ -39,6 +39,9 @@
             width: 210mm; /* A4 width */
             min-height: 297mm; /* A4 height */
             padding: 25mm; /* Standard A4 margins */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Distribute space for header, body, footer */
         }
         input[type="text"], textarea, select {
             border: none;
@@ -250,8 +253,12 @@
                     </select>
                 </div>
                 <div class="col-span-2">
-                    <label for="signerName" class="block text-gray-700 text-sm font-bold mb-1">हस्ताक्षर गर्नेको नाम/पद:</label>
-                    <input type="text" id="signerName" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="नाम/पद"/>
+                    <label for="signerName" class="block text-gray-700 text-sm font-bold mb-1">हस्ताक्षर गर्नेको नाम:</label>
+                    <input type="text" id="signerName" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="नाम"/>
+                </div>
+                <div class="col-span-2">
+                    <label for="signerPost" class="block text-gray-700 text-sm font-bold mb-1">पद:</label>
+                    <input type="text" id="signerPost" class="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="पद"/>
                 </div>
             </div>
             <div class="text-center mt-6">
@@ -263,12 +270,13 @@
         </div>
 
         <!-- A4 Paper Letter Content Section -->
-        <div id="letterContent" class="a4-paper flex flex-col space-y-2 text-sm text-gray-800 hidden">
+        <div id="letterContent" class="a4-paper hidden">
             <!-- Header Section -->
             <div class="flex flex-col items-center justify-center mb-4 text-center letter-header-center">
-                <!-- Placeholder for logo - Left aligned within its own flex container -->
+                <!-- Logo Container -->
                 <div class="logo-container self-start">
-                    <img src="https://placehold.co/100x100/A0A0A0/FFFFFF?text=Logo" alt="Municipality Logo" class="w-16 h-16 rounded-full mb-2">
+                    <!-- Using the uploaded image directly -->
+                    <img src="uploaded:image_50bb29.png-ac6177f5-d733-483b-a6b9-392343845406" alt="Municipality Logo" class="w-16 h-16 mb-2">
                 </div>
                 <div class="header-text-container">
                     <p class="font-bold text-lg text-red-600">गलकोट नगरपालिका</p>
@@ -314,7 +322,7 @@
             <!-- Body Section -->
             <div class="leading-relaxed letter-content-text text-justify">
                 <p>
-                    उपरोक्त विषयमा गलकोट नगरपालिका वडा नं.<span id="displayWardNo" class="w-12"></span> निवासी
+                    <span style="margin-left: 2em;"></span>उपरोक्त विषयमा गलकोट नगरपालिका वडा नं.<span id="displayWardNo" class="w-12"></span> निवासी
                     सामाजिक सुरक्षा भत्ता परिचयपत्र नं.<span id="displaySsbId" class="w-24"></span>भएका श्री <span id="displayPersonName" class="w-48"></span>को
                     मिति <span id="displayDeathDate" class="w-24"></span>मा मृत्यु भएको र मिति<span id="displayDeathRegDate" class="w-24"></span>मा
                     मृत्युदर्ता गरी लगत कट्टा गरिएको हुदाँ निज जिवित हुदाँ सम्मको प्राप्त
@@ -326,16 +334,23 @@
                 </p>
             </div>
 
-            <!-- Signature Section -->
-            <div class="flex justify-end mt-12">
-                <span id="displaySignerName" class="w-48 text-center"></span>
+            <!-- Signature Section - Moved above footer line -->
+            <div class="flex justify-end flex-col items-end mt-8">
+                <p>.........................</p>
+                <p><span id="displaySignerName" class="w-48 text-center"></span></p>
+                <p><span id="displaySignerPost" class="w-48 text-center"></span></p>
+            </div>
+
+            <!-- Footer Section -->
+            <div class="mt-auto pt-8"> <!-- mt-auto pushes it to the bottom, pt-8 adds padding top -->
+                <hr class="border-t border-gray-400 my-4"> <!-- Third horizontal line -->
             </div>
         </div>
 
         <!-- Print Button -->
         <div class="print-button-container fixed bottom-4 right-4">
-            <button onclick="window.print()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-lg">
-                Print
+            <button id="printBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-lg flex items-center space-x-2">
+                <span>🖨️</span> <span>Print</span>
             </button>
         </div>
     </div>
@@ -402,9 +417,42 @@
             return result.trim();
         }
 
+        // Function to get approximate current Nepali date (BS)
+        // This is a simplified approximation and may not be perfectly accurate for all dates.
+        // For precise conversion, a dedicated Nepali calendar library is recommended.
+        function getApproxNepaliDate() {
+            const today = new Date();
+            const yearAD = today.getFullYear();
+            const monthAD = today.getMonth() + 1; // getMonth() is 0-indexed
+            const dayAD = today.getDate();
+
+            // A very rough offset from AD to BS (e.g., 2024 AD is roughly 2081 BS)
+            // This offset varies slightly throughout the year.
+            let yearBS = yearAD + 56;
+            let monthBS = monthAD;
+            let dayBS = dayAD;
+
+            // Simple adjustment for month/day to align with typical Nepali calendar start (e.g., Baisakh 1)
+            // This is still highly approximate.
+            if (monthAD < 4 || (monthAD === 4 && dayAD < 14)) { // Roughly before Baisakh 1st
+                yearBS -= 1;
+            }
+
+            // Format to YYYY/MM/DD
+            const formattedMonthBS = String(monthBS).padStart(2, '0');
+            const formattedDayBS = String(dayBS).padStart(2, '0');
+
+            return `${yearBS}/${formattedMonthBS}/${formattedDayBS}`;
+        }
+
+        // Set initial Nepali date on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('miti').value = getApproxNepaliDate();
+        });
+
 
         document.getElementById('generateLetterBtn').addEventListener('click', function() {
-            // List of required fields by their IDs (chalanNo is no longer required)
+            // List of required fields by their IDs (chalanNo, signerName, signerPost are not required)
             const requiredFields = [
                 'officeName', 'officeAddress', 'patraSankhya', 'miti',
                 'bankName', 'wardNo', 'ssbId', 'personName', 'deathDate', 'deathRegDate',
@@ -467,8 +515,9 @@
                 
                 document.getElementById('displayDepositAccount').textContent = document.getElementById('depositAccount').value;
                 
-                // Signer name is optional
+                // Signer name and post are optional
                 document.getElementById('displaySignerName').textContent = document.getElementById('signerName').value;
+                document.getElementById('displaySignerPost').textContent = document.getElementById('signerPost').value;
 
                 letterContent.classList.remove('hidden');
                 inputForm.classList.add('hidden'); // Hide the form
