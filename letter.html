@@ -115,7 +115,7 @@
         .logo-container {
             display: flex;
             justify-content: flex-start; /* Align logo to the left */
-            width: 100%; /* Take full width to allow text to center */
+            width: auto; /* Take only necessary width */
         }
         .header-text-container {
             flex-grow: 1; /* Allow text container to take available space */
@@ -142,11 +142,16 @@
         .signature-block {
             text-align: right; /* Align the entire block to the right */
             width: 100%; /* Take full width to allow internal centering */
+            display: flex; /* Use flexbox for internal alignment */
+            flex-direction: column; /* Stack items vertically */
+            align-items: flex-end; /* Align all items to the right */
+        }
+        .signature-block p {
+            width: 200px; /* Fixed width for signature elements */
+            text-align: center; /* Center text within their fixed width */
         }
         .signature-line {
-            display: inline-block; /* Allows centering within a right-aligned parent */
-            text-align: center;
-            width: 200px; /* Adjust width as needed for dots */
+            display: block; /* Ensure it takes full width of its container */
         }
     </style>
 </head>
@@ -298,19 +303,19 @@
         <!-- A4 Paper Letter Content Section -->
         <div id="letterContent" class="a4-paper hidden">
             <!-- Header Section -->
-            <div class="flex flex-col items-center justify-center mb-4 text-center letter-header-center">
+            <div class="flex items-start justify-between w-full mb-4"> <!-- Changed to flex row, justify-between -->
                 <!-- Logo Container -->
-                <div class="logo-container self-start">
+                <div class="logo-container"> <!-- Removed self-start as parent is flex-start -->
                     <!-- Using a placeholder image -->
-                    <img src="https://placehold.co/64x64/E0E0E0/000000?text=Logo" alt="Municipality Logo" class="w-16 h-16 mb-2">
+                    <img src="https://placehold.co/64x64/E0E0E0/000000?text=Logo" alt="Municipality Logo" class="w-16 h-16"> <!-- Removed mb-2 as it's not a column anymore -->
                 </div>
-                <div class="header-text-container">
+                <div class="header-text-container flex flex-col items-center flex-grow"> <!-- Added flex-col, items-center -->
                     <p class="font-bold text-lg text-red-600">गलकोट नगरपालिका</p>
-                    <p class="text-sm text-red-600 font-bold">
-                        <span id="displayOfficeName" class="text-center"></span> कार्यालय
-                    </p>    <p class="text-sm text-red-600 font-bold">
-                    <p class="text-sm text-red-600 font-bold">
-                        <span id="displayOfficeAddress" class="text-center"></span> , बागलुङ
+                    <p class="font-bold text-xl text-red-600"> <!-- Increased size for 'कार्यालय' -->
+                        <span id="displayOfficeName"></span> कार्यालय
+                    </p>
+                    <p class="text-sm font-bold text-black"> <!-- Changed color to black -->
+                        <span id="displayOfficeAddress"></span> , बागलुङ
                     </p>
                 </div>
             </div>
@@ -321,16 +326,16 @@
                     <p><span class="patra-sankhya-label">पत्र संख्याः</span> <span id="displayPatraSankhya" class="w-40 patra-sankhya-value"></span></p>
                     <div class="chalan-sasu-line mt-2">
                         <div>
-                            च.नं. <span id="displayChalanNo" class="w-40"></span>
+                            <span class="text-red-600">च.नं.</span> <span id="displayChalanNo" class="w-40 text-black"></span>
                         </div>
                         <div>
-                            सा.सु. पत्र नं. <span id="displaySaSuPatraNo" class="w-30"></span>
+                            <span class="text-red-600">सा.सु. पत्र नं.</span> <span id="displaySaSuPatraNo" class="w-30 text-black"></span>
                         </div>
                     </div>
                 </div>
                 <div class="flex-grow-1 text-right">
                     <!-- Swapped positions -->
-                    <p class="ml-4">गण्डकी प्रदेश, नेपाल</p>
+                    <p class="ml-4 text-red-600">गण्डकी प्रदेश, नेपाल</p>
                     <p><span class="miti-label">मितिः</span> <span id="displayMiti" class="w-40 text-right miti-value"></span></p>
                 </div>
             </div>
@@ -368,8 +373,8 @@
             <!-- Signature Section -->
             <div class="signature-block mt-8">
                 <p class="signature-line">.........................</p>
-                <p class="font-bold"><span id="displaySignerName" class="w-48 text-center"></span></p>
-                <p><span id="displaySignerPost" class="w-48 text-center"></span></p>
+                <p class="font-bold"><span id="displaySignerName"></span></p>
+                <p><span id="displaySignerPost"></span></p>
             </div>
 
             <!-- Footer Section -->
