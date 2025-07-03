@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ne">
 <head>
@@ -86,10 +85,10 @@
                 margin: 0;
                 padding: 25mm; /* Maintain print margins */
                 min-height: auto; /* Adjust height for print */
-                /* Landscape orientation for print */
-                width: 297mm !important; /* A4 Landscape width */
-                height: 210mm !important; /* A4 Landscape height */
-                /* Ensure content fits within the landscape page */
+                /* Reverted to Portrait orientation for print */
+                width: 210mm !important; /* A4 Portrait width */
+                height: 297mm !important; /* A4 Portrait height */
+                /* Ensure content fits within the portrait page */
                 transform-origin: top left;
                 transform: rotate(0deg); /* Reset rotation if any */
             }
@@ -110,13 +109,17 @@
                 justify-content: flex-start !important; /* Align to start */
                 width: auto !important; /* Allow it to take natural width */
                 visibility: visible !important;
-                margin-right: 20px !important; /* Ensure margin is applied on print too */
+                /* margin-right: 20px !important; */ /* Removed as logo-placeholder balances */
             }
             .logo-container img {
                 display: block !important;
                 visibility: visible !important;
                 width: 80px !important; /* Updated fixed size for print */
                 height: 80px !important; /* Updated fixed size for print */
+            }
+            .logo-placeholder {
+                width: 80px !important; /* Same as logo width for balancing */
+                height: 80px !important; /* Same as logo height for balancing */
             }
         }
         .flex-grow-1 { flex-grow: 1; }
@@ -137,7 +140,7 @@
             display: flex;
             justify-content: flex-start; /* Align logo to the left */
             width: auto; /* Take only necessary width */
-            margin-right: 20px; /* Space between logo and text */
+            /* margin-right: 20px; */ /* Removed as logo-placeholder balances */
         }
         .header-text-container {
             flex-grow: 1; /* Allow text container to take available space */
@@ -178,6 +181,11 @@
         /* Increased font size for office name */
         .office-name-display {
             font-size: 1.25rem; /* Tailwind's text-xl is 1.25rem, text-lg is 1.125rem. Making it bigger than text-lg. */
+        }
+        .logo-placeholder {
+            width: 80px; /* Same as w-20 in Tailwind */
+            height: 80px; /* Same as h-20 in Tailwind */
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -331,12 +339,14 @@
         <!-- A4 Paper Letter Content Section -->
         <div id="letterContent" class="a4-paper hidden">
             <!-- Header Section -->
-            <div class="flex items-start justify-between w-full mb-4">
+            <div class="flex items-center w-full mb-4"> <!-- Changed to flex items-center for vertical alignment -->
                 <!-- Logo Container -->
                 <div class="logo-container">
                     <!-- नेपाल सरकारको लोगो A4 कागजको बायाँतर्फ (left align) राख्ने -->
-<img src="emblem.png" alt="नेपाल सरकारको लोगो" class="w-20 h-20">
-                <div class="header-text-container flex flex-col items-center flex-grow">
+                    <!-- NOTE: तपाईंको emblem.png फाइललाई वेबमा होस्ट गरेपछि, src="emblem.png" को सट्टा होस्ट गरिएको URL प्रयोग गर्नुहोस्। -->
+                    <img src="#type Here" alt="नेपाल सरकारको लोगो" class="w-20 h-20" onerror="this.onerror=null;this.src='https://placehold.co/80x80/E0E0E0/000000?text=LOGO'; console.error('Error loading logo image.');">
+                </div>
+                <div class="header-text-container flex flex-col items-center flex-grow"> <!-- flex-grow to take available space -->
                     <p class="font-bold text-lg text-red-600">गलकोट नगरपालिका</p>
                     <p class="font-bold office-name-display text-red-600">
                         <span id="displayOfficeName"></span>&nbsp;कार्यालय
@@ -345,6 +355,8 @@
                         <span id="displayOfficeAddress"></span>&nbsp;, बागलुङ
                     </p>
                 </div>
+                <!-- Empty div to balance the center alignment of the text, matching logo width -->
+                <div class="logo-placeholder"></div>
             </div>
 
             <!-- Letter Info Section -->
@@ -466,7 +478,7 @@
             const tens = ['', '', 'बिस', 'तीस', 'चालीस', 'पचास', 'साठी', 'सत्तरी', 'असी', 'नब्बे'];
             const specialTens = {
                 21: 'एक्काइस', 22: 'बाइस', 23: 'तेइस', 24: 'चौबिस', 25: 'पच्चिस', 26: 'छब्बिस', 27: 'सत्ताइस', 28: 'अठ्ठाइस', 29: 'उनन्तिस',
-                31: 'एकतीस', 32: 'बत्तीस', 33: 'तेत्तीस', 34: 'चौंतीस', 35: 'पैंतीस', 36: 'छत्तिस', 37: 'सैंतीस', 38: 'अठतीस', 39: 'उनन्चालीस',
+                31: 'एकतीस', 32: 'बत्तीस', 33: 'teत्तीस', 34: 'चौंतीस', 35: 'पैंतीस', 36: 'छत्तिस', 37: 'सैंतीस', 38: 'अठतीस', 39: 'उनन्चालीस',
                 41: 'एकचालीस', 42: 'बयालीस', 43: 'त्रियालीस', 44: 'चौवालीस', 45: 'पैंतालीस', 46: 'छयालीस', 47: 'सन्तालीस', 48: 'अठ्चालीस', 49: 'उनन्चास',
                 51: 'एकाउन्न', 52: 'बाउन्न', 53: 'तिरपन्न', 54: 'चौवन्न', 55: 'पचपन्न', 56: 'छप्पन्न', 57: 'सन्ताउन्न', 58: 'अन्ठाउन्न', 59: 'उनन्साठी',
                 61: 'एकसट्ठी', 62: 'बासट्ठी', 63: 'त्रिसट्ठी', 64: 'चौंसट्ठी', 65: 'पैंसट्ठी', 66: 'छैसट्ठी', 67: 'सड्सट्ठी', 68: 'अठ्सट्ठी', 69: 'उनन्सत्तरी',
@@ -593,7 +605,7 @@
             // Initial auto-fill for Patra Sankhya
             const fiscalYearSelect = document.getElementById('fiscalYear');
             if (fiscalYearSelect.value) {
-                const years = fiscalYearSelect.value.split('/');
+                const years = fiscalYear.value.split('/');
                 if (years.length === 2) {
                     document.getElementById('patraSankhya').value = `${years[0].slice(-2)}/${years[1].slice(-2)}`;
                 }
@@ -727,9 +739,6 @@
                 document.getElementById('displayMiti').textContent = document.getElementById('miti').value;
                 document.getElementById('displayChalanNo').textContent = convertEnglishToNepaliDigits(document.getElementById('chalanNo').value);
                 
-                // Removed displaySaSuPatra No.
-                // document.getElementById('displaySaSuPatraNo').textContent = convertEnglishToNepaliDigits(document.getElementById('saSuPatraNo').value);
-
                 document.getElementById('displayBankName').textContent = document.getElementById('bankName').value;
                 document.getElementById('displayWardNo').textContent = convertEnglishToNepaliDigits(document.getElementById('wardNo').value);
                 document.getElementById('displaySsbId').textContent = convertEnglishToNepaliDigits(document.getElementById('ssbId').value);
