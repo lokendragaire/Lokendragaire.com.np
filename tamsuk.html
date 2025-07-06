@@ -4,794 +4,683 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>तमसुक फारम</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
-        /* Custom font for Nepali text and general styling */
+        /* Custom styles for better visual appeal and layout */
         body {
-            font-family: 'Inter', sans-serif; /* A clear and readable sans-serif font */
-            background-color: #f0f2f5; /* Light background */
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Align to the top of the viewport */
-            min-height: 100vh;
             padding: 20px;
-            box-sizing: border-box;
-            line-height: 1.8; /* Adjust line height for better spacing with blanks */
-            font-size: 16px;
+            gap: 20px; /* Space between form and preview */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
         }
-        .main-wrapper {
-            display: flex;
-            position: relative; /* For absolute positioning of sidebar */
+        .form-container, .preview-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             width: 100%;
-            max-width: 900px; /* Wider to accommodate sidebars */
+            max-width: 700px; /* Max width for readability */
             box-sizing: border-box;
+            margin-bottom: 20px; /* Space for mobile view */
         }
-        .form-container {
-            background-color: #fff;
-            padding: 30px 50px; /* Increased padding for a document feel */
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            width: 100%;
-            box-sizing: border-box;
-            margin-left: 100px; /* Space for the rotated left sidebar */
-            margin-right: 100px; /* Space for the rotated right sidebar */
+        @media (min-width: 1024px) {
+            .form-container, .preview-container {
+                width: calc(50% - 20px); /* Two columns layout */
+                margin-bottom: 0;
+            }
         }
-        /* Style for the blank input lines - NO UNDERLINE */
-        .blank-input {
-            border: 1px solid #ccc; /* Light border to show input area */
-            border-radius: 0.25rem; /* Slightly rounded corners */
-            padding: 8px 12px; /* Increased padding for better usability */
-            text-align: left;
-            font-size: 16px;
-            line-height: 1.5;
-            min-width: 40px; /* Minimum width for short blanks */
-            outline: none; /* Remove focus outline */
-            background-color: #fefefe; /* Slightly off-white background */
-            flex-grow: 1; /* Allow inputs to grow if within flex */
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); /* Subtle inner shadow */
-            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        h2 {
+            text-align: center;
+            font-size: 2.2em;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: 700;
         }
-        .blank-input:focus {
-            border-color: #6366f1; /* Indigo-500 on focus */
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* Ring on focus */
-        }
-        /* Specific width overrides for better visual match */
-        .w-name { width: 220px; min-width: 150px; }
-        .w-district { width: 120px; min-width: 80px; }
-        .w-ward { width: 80px; min-width: 50px; }
-        .w-address-long { width: 400px; min-width: 300px; }
-        .w-date-year { width: 70px; min-width: 60px; }
-        .w-date-month { width: 50px; min-width: 40px; }
-        .w-date-day { width: 50px; min-width: 40px; }
-        .w-percent { width: 60px; min-width: 40px; }
-        .w-years-months { width: 50px; min-width: 40px; }
-        .w-place { width: 250px; min-width: 150px; }
-        .w-phone { width: 150px; min-width: 100px; }
-        .w-municipality-name { width: 150px; min-width: 100px; }
-        .w-day-of-week { width: 100px; min-width: 80px; }
-        .w-sanchi-name { width: 180px; min-width: 120px; }
-        .w-parent-name { width: 180px; min-width: 120px; }
-
-
-        .flex-line {
+        .form-group {
+            margin-bottom: 15px;
             display: flex;
-            align-items: center; /* Align items vertically in the center */
-            flex-wrap: wrap; /* Allow content to wrap to the next line if needed */
-            gap: 10px; /* Increased gap between elements on the same line */
+            flex-direction: column;
         }
-        .form-label {
-            white-space: nowrap; /* Prevent labels from wrapping */
-            font-weight: 500; /* Slightly bolder labels */
+        .form-row {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap; /* Allow items to wrap */
+            gap: 5px; /* Spacing between inline elements */
+        }
+        .form-row label {
+            min-width: 80px; /* Adjust label width */
+            font-weight: 600;
+            color: #34495e;
+            text-align: right;
+            padding-right: 10px;
+        }
+        .form-row .input-field,
+        .form-row select {
+            flex-grow: 1;
+            border: none;
+            border-bottom: 1px dashed #95a5a6;
+            padding: 8px 0;
+            margin-right: 5px;
+            background-color: transparent;
+            font-size: 1em;
+            color: #2c3e50;
+            border-radius: 0; /* Remove default border-radius */
+        }
+        .form-row .input-field:focus,
+        .form-row select:focus {
+            outline: none;
+            border-bottom-color: #3498db;
+        }
+        .form-row span {
+            white-space: nowrap;
+            color: #555;
+            margin-right: 5px;
+        }
+        .text-area-group {
+            margin-top: 20px;
+        }
+        textarea {
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            min-height: 100px;
+            font-size: 1em;
+            color: #2c3e50;
+        }
+        .signature-section {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .signature-block {
+            flex: 1;
+            min-width: 200px; /* Ensure blocks don't get too small */
+            text-align: center;
+            padding-top: 20px;
+            position: relative;
+        }
+        .signature-line {
+            border-bottom: 1px solid #000;
+            margin-bottom: 5px;
+        }
+        .signature-label {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .witness-section {
+            margin-top: 30px;
+            border-top: 1px dashed #ccc;
+            padding-top: 20px;
+        }
+        .witness-entry {
+            display: flex;
+            flex-direction: column; /* Stack name, phone, writer, signature vertically */
+            margin-bottom: 15px; /* Space between witness entries */
+            border: 1px dashed #eee; /* Visual separation in form */
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .witness-entry .witness-row {
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+            margin-bottom: 5px;
+        }
+        .witness-entry .witness-row input {
+            border: none;
+            border-bottom: 1px dashed #95a5a6;
+            padding: 5px 0;
+            flex-grow: 1;
+            min-width: 100px;
+        }
+        .witness-entry .witness-row span {
+            white-space: nowrap;
+            margin-right: 5px;
+        }
+        .add-witness-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+        .add-witness-btn:hover {
+            background-color: #218838;
+        }
+
+        /* Preview specific styles */
+        .preview-container {
+            font-size: 1em;
+            line-height: 1.8;
             color: #333;
+            position: relative; /* For absolute positioning of signature boxes */
         }
-        .text-justify-blanks {
-            text-align: justify;
-            display: inline;
+        .preview-container h3 {
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #2c3e50;
         }
-        .signature-box {
-            border: 1px solid black;
-            width: 150px;
-            height: 80px;
-            display: flex;
-            justify-content: center; /* Center horizontally */
-            align-items: flex-end; /* Align label to the bottom */
-            font-size: 14px;
-            padding-bottom: 5px; /* Space from bottom border */
-        }
-
-        /* Styles for the rotated left sidebar */
-        .rotated-sidebar-left {
-            position: absolute;
-            left: 0;
-            top: 50%; /* Center vertically relative to its parent */
-            transform: translateY(-50%) rotate(-90deg); /* Rotate and center */
-            transform-origin: 0 0; /* Rotate from top-left of its own content box */
-            white-space: nowrap;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding: 10px;
-            font-size: 16px;
-            z-index: 10; /* Ensure it's above the main form if needed */
-            left: -50px; /* Adjust this value to position it correctly outside the main form */
-            width: 200px; /* This width will become height after rotation */
-            justify-content: center; /* Center content within the rotated box */
-            align-items: flex-end; /* Align text to the right within the rotated box */
-            background-color: #f9fafb; /* Light background for sidebar */
-            border-radius: 0.5rem;
-        }
-        .rotated-sidebar-left .flex-line {
-            flex-direction: row; /* Keep inputs horizontal within the rotated container */
-            align-items: center;
-            gap: 5px;
-        }
-        .rotated-sidebar-left .blank-input {
-            width: 150px; /* Specific width for these inputs */
-            min-width: 100px;
+        /* On-screen preview uses pre for simple text display */
+        #formPreviewScreen {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            min-height: 500px;
+            border: 1px dashed #ccc; /* Visual border for screen preview */
+            padding: 15px;
+            text-align: left; /* Default for screen preview */
         }
 
-        /* Styles for the rotated right sidebar (for phone number) */
-        .rotated-sidebar-right {
-            position: absolute;
-            right: 0;
-            top: 50%; /* Center vertically relative to its parent */
-            transform: translateY(-50%) rotate(90deg); /* Rotate and center */
-            transform-origin: 100% 0; /* Rotate from top-right of its own content box */
-            white-space: nowrap;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding: 10px;
-            font-size: 16px;
-            z-index: 10;
-            right: -50px; /* Adjust this value to position it correctly outside the main form */
-            width: 200px; /* This width will become height after rotation */
-            justify-content: center;
-            align-items: flex-start; /* Align text to the left within the rotated box */
-            background-color: #f9fafb; /* Light background for sidebar */
-            border-radius: 0.5rem;
-        }
-        .rotated-sidebar-right .flex-line {
-            flex-direction: row;
-            align-items: center;
-            gap: 5px;
-        }
-        .rotated-sidebar-right .blank-input {
-            width: 150px;
-            min-width: 100px;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .main-wrapper {
-                flex-direction: column; /* Stack sidebar and form on small screens */
-                max-width: 100%;
+        /* Print specific styles */
+        @media print {
+            body {
+                display: block;
+                padding: 0;
+                margin: 0;
+                background-color: #fff;
             }
             .form-container {
-                margin-left: 0; /* Remove left margin */
-                margin-right: 0; /* Remove right margin */
-                padding: 20px;
+                display: none; /* Hide the form when printing */
             }
-            .rotated-sidebar-left, .rotated-sidebar-right {
-                position: relative; /* Make it flow with content */
-                transform: none; /* Remove rotation */
-                top: auto;
-                left: auto;
-                right: auto;
-                width: 100%;
-                margin-bottom: 20px;
-                padding: 10px;
+            .preview-container {
+                width: 210mm; /* A4 width */
+                height: 297mm; /* A4 height */
+                max-width: none;
+                box-shadow: none;
+                border: none;
+                /* Adjusted padding to match the image more closely */
+                padding: 25mm 20mm 20mm 25mm; /* Top Right Bottom Left */
+                margin: 0;
+                font-size: 11pt; /* Adjust font size for print */
+                line-height: 1.5; /* Slightly tighter line height */
+                position: relative; /* For absolute positioning of signature boxes */
+            }
+            .preview-container h3 {
+                display: none; /* Hide preview title on print */
+            }
+            .add-witness-btn {
+                display: none; /* Hide print button on print */
+            }
+
+            /* Hide screen preview and show print-specific layout */
+            #formPreviewScreen {
+                display: none;
+            }
+            #printOutputArea {
+                display: block;
+                height: 100%; /* Fill available height */
+            }
+
+            .print-witness-column {
+                float: left;
+                width: 50mm; /* Adjust width for witness column to be thinner */
+                margin-right: 15mm; /* Space between witness and main content */
+                font-size: 10pt; /* Smaller font for witness details */
+                line-height: 1.3;
+                white-space: pre-wrap; /* Preserve formatting for witness block */
+                text-align: left;
+            }
+            .print-witness-column .witness-title {
                 text-align: center;
-                flex-direction: row; /* Arrange items horizontally */
-                flex-wrap: wrap;
-                justify-content: center;
-                align-items: center;
-                gap: 10px;
+                margin-bottom: 5mm;
+                font-weight: bold;
             }
-            .rotated-sidebar-left .flex-line, .rotated-sidebar-right .flex-line {
-                flex-direction: row;
-                justify-content: center;
-                width: 100%;
+            .print-witness-column .witness-entry-print {
+                margin-bottom: 10mm; /* Space between witness entries in print */
             }
-            .rotated-sidebar-left .blank-input, .rotated-sidebar-right .blank-input {
-                width: auto; /* Auto width for responsiveness */
-                flex-grow: 1;
+            .print-witness-column .witness-label {
+                font-weight: bold;
+            }
+            .print-witness-column .witness-line {
+                border-bottom: 1px dashed #000;
+            }
+
+            .print-main-content {
+                overflow: hidden; /* Makes content flow around floated element */
+                text-align: justify; /* Justify main content */
+                font-size: 11pt; /* Main content font size */
+                line-height: 1.5;
+            }
+            .print-main-content .tamasuk-title {
+                text-align: center;
+                font-size: 14pt; /* Larger title for print */
+                font-weight: bold;
+                margin-bottom: 10mm; /* Space below title */
+            }
+            .print-main-content .tamasuk-passage {
+                text-indent: 10mm; /* Indent first line of paragraph */
+                margin-bottom: 10mm;
+            }
+            .print-main-content .signature-placeholder {
+                display: inline-block;
+                min-width: 50mm; /* Adjust width of placeholder lines */
+                border-bottom: 1px dashed #000;
+            }
+            .print-main-content .date-line {
+                text-align: right; /* Align the date line to the right */
+                margin-top: 10mm;
+            }
+
+            .print-signature-boxes {
+                position: absolute;
+                bottom: 20mm; /* Adjust as needed from bottom margin */
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                width: 80%; /* Adjust width for print */
+                justify-content: space-around;
+            }
+            .print-signature-box {
+                width: 150px;
+                height: 70px;
+                border: 1px solid #000;
+                display: flex;
+                justify-content: center;
+                align-items: flex-end;
+                padding-bottom: 5px;
+                font-size: 0.9em;
             }
         }
     </style>
 </head>
 <body>
-    <div class="main-wrapper">
-        <!-- Left Rotated Sidebar for Saanchi -->
-        <div class="rotated-sidebar-left bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
-            <div class="flex-line">
-                <span class="font-bold">साँची:</span>
-            </div>
-            <div class="flex-line">
-                <input type="text" id="sanchi1_name" name="sanchi1_name" class="blank-input w-sanchi-name" placeholder="साँची १ को नाम">
-            </div>
-            <div class="flex-line">
-                <input type="text" id="sanchi2_name" name="sanchi2_name" class="blank-input w-sanchi-name" placeholder="साँची २ को नाम">
+    <div class="form-container">
+        <h2>तमसुक फारम</h2>
+
+        <div class="form-group">
+            <div class="form-row">
+                <label for="date_nepali_year">मिति:</label>
+                <input type="text" id="date_nepali_year" class="input-field w-20" placeholder="वर्ष">
+                <span>साल</span>
+                <input type="text" id="date_nepali_month" class="input-field w-20" placeholder="महिना">
+                <span>महिना</span>
+                <input type="text" id="date_nepali_day" class="input-field w-16" placeholder="दिन">
+                <span>गते</span>
             </div>
         </div>
 
-        <div class="form-container">
-            <h1 class="text-3xl font-bold text-center mb-10">तमसुक</h1>
-
-            <form id="tamasukForm">
-                <div class="space-y-6">
-                    <!-- Section 1: Borrower/Party Details (आफ्नो) -->
-                    <div class="flex-line">
-                        <span class="form-label">आगे श्री</span>
-                        <input type="text" id="age_grandparent_name" name="age_grandparent_name" class="blank-input w-parent-name" placeholder="हजुरबुबाको नाम">
-                        <span class="form-label">, श्री</span>
-                        <input type="text" id="age_parent_name" name="age_parent_name" class="blank-input w-parent-name" placeholder="बुबाको नाम">
-                        <span class="form-label">, श्री</span>
-                        <input type="text" id="age_name" name="age_name" class="blank-input w-name" placeholder="आफ्नो नाम">
-                    </div>
-
-                    <!-- Permanent/Temporary Address Selection -->
-                    <div class="flex-line mt-4">
-                        <span class="form-label">ठेगाना:</span>
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="address_type" value="permanent" class="form-radio" checked onchange="toggleAddressFields()">
-                            <span class="ml-2">स्थायी</span>
-                        </label>
-                        <label class="inline-flex items-center ml-4">
-                            <input type="radio" name="address_type" value="temporary" class="form-radio" onchange="toggleAddressFields()">
-                            <span class="ml-2">अस्थायी</span>
-                        </label>
-                    </div>
-
-                    <!-- Permanent Address Section -->
-                    <div id="permanent_address_section">
-                        <div class="flex-line">
-                            <span class="form-label">जिल्ला</span>
-                            <select id="district1" name="district1" class="blank-input w-district">
-                                <option value="">जिल्ला छान्नुहोस्</option>
-                                <!-- All 77 Districts of Nepal in alphabetical order -->
-                                <option value="अछाम">अछाम</option>
-                                <option value="अर्घाखाँची">अर्घाखाँची</option>
-                                <option value="इलाम">इलाम</option>
-                                <option value="उदयपुर">उदयपुर</option>
-                                <option value="ओखलढुङ्गा">ओखलढुङ्गा</option>
-                                <option value="कञ्चनपुर">कञ्चनपुर</option>
-                                <option value="कपिलवस्तु">कपिलवस्तु</option>
-                                <option value="काभ्रेपलाञ्चोक">काभ्रेपलाञ्चोक</option>
-                                <option value="कास्की">कास्की</option>
-                                <option value="काठमाडौं">काठमाडौं</option>
-                                <option value="कालिकोट">कालिकोट</option>
-                                <option value="कौडा">कौडा</option>
-                                <option value="खोटाङ">खोटाङ</option>
-                                <option value="गुल्मी">गुल्मी</option>
-                                <option value="गोरखा">गोरखा</option>
-                                <option value="चितवन">चितवन</option>
-                                <option value="जाजरकोट">जाजरकोट</option>
-                                <option value="जुम्ला">जुम्ला</option>
-                                <option value="झापा">झापा</option>
-                                <option value="डोटी">डोटी</option>
-                                <option value="डडेल्धुरा">डडेल्धुरा</option>
-                                <option value="तनहुँ">तनहुँ</option>
-                                <option value="ताप्लेजुङ">ताप्लेजुङ</option>
-                                <option value="तेह्रथुम">तेह्रथुम</option>
-                                <option value="दैलेख">दैलेख</option>
-                                <option value="दोलखा">दोलखा</option>
-                                <option value="धनकुटा">धनकुटा</option>
-                                <option value="धनुषा">धनुषा</option>
-                                <option value="धादिङ">धादिङ</option>
-                                <option value="नवलपरासी पूर्व">नवलपरासी पूर्व</option>
-                                <option value="नवलपरासी पश्चिम">नवलपरासी पश्चिम</option>
-                                <option value="नुवाकोट">नुवाकोट</option>
-                                <option value="पर्वत">पर्वत</option>
-                                <option value="पर्सा">पर्सा</option>
-                                <option value="पाल्पा">पाल्पा</option>
-                                <option value="पांचथर">पांचथर</option>
-                                <option value="प्युठान">प्युठान</option>
-                                <option value="बझाङ">बझाङ</option>
-                                <option value="बर्दिया">बर्दिया</option>
-                                <option value="बागलुङ">बागलुङ</option>
-                                <option value="बाजुरा">बाजुरा</option>
-                                <option value="बाँके">बाँके</option>
-                                <option value="बारा">बारा</option>
-                                <option value="बुटवल">बुटवल</option>
-                                <option value="बैतडी">बैतडी</option>
-                                <option value="भक्तपुर">भक्तपुर</option>
-                                <option value="भोजपुर">भोजपुर</option>
-                                <option value="मनाङ">मनाङ</option>
-                                <option value="महोत्तरी">महोत्तरी</option>
-                                <option value="मकवानपुर">मकवानपुर</option>
-                                <option value="मुगु">मुगु</option>
-                                <option value="मुस्ताङ">मुस्ताङ</option>
-                                <option value="मोरङ">मोरङ</option>
-                                <option value="म्याग्दी">म्याग्दी</option>
-                                <option value="रसुवा">रसुवा</option>
-                                <option value="रामेछाप">रामेछाप</option>
-                                <option value="रौतहट">रौतहट</option>
-                                <option value="रोल्पा">रोल्पा</option>
-                                <option value="रुकुम पूर्व">रुकुम पूर्व</option>
-                                <option value="रुकुम पश्चिम">रुकुम पश्चिम</option>
-                                <option value="रूपन्देही">रूपन्देही</option>
-                                <option value="ललितपुर">ललितपुर</option>
-                                <option value="लम्जुङ">लम्जुङ</option>
-                                <option value="सप्तरी">सप्तरी</option>
-                                <option value="सल्यान">सल्यान</option>
-                                <option value="संखुवासभा">संखुवासभा</option>
-                                <option value="सर्लाही">सर्लाही</option>
-                                <option value="सिन्धुली">सिन्धुली</option>
-                                <option value="सिन्धुपाल्चोक">सिन्धुपाल्चोक</option>
-                                <option value="सिराहा">सिराहा</option>
-                                <option value="सुर्खेत">सुर्खेत</option>
-                                <option value="सुनसरी">सुनसरी</option>
-                                <option value="स्याङ्जा">स्याङ्जा</option>
-                                <option value="सोलुखुम्बु">सोलुखुम्बु</option>
-                                <option value="हर्षा">हर्षा</option>
-                            </select>
-                            <input type="text" id="municipality_name1" name="municipality_name1" class="blank-input w-municipality-name" placeholder="पालिकाको नाम">
-                            <select id="municipality_type1" name="municipality_type1" class="blank-input w-district">
-                                <option value="">पालिकाको प्रकार</option>
-                                <option value="महानगरपालिका">महानगरपालिका</option>
-                                <option value="उप-महानगरपालिका">उप-महानगरपालिका</option>
-                                <option value="नगरपालिका">नगरपालिका</option>
-                                <option value="गाउँपालिका">गाउँपालिका</option>
-                            </select>
-                            <span class="form-label">वडा नं.</span>
-                            <select id="ward1" name="ward1" class="blank-input w-ward">
-                                <option value="">वडा</option>
-                                <!-- Generate ward numbers 1 to 37 -->
-                                <script>
-                                    for (let i = 1; i <= 37; i++) {
-                                        document.write(`<option value="${i}">${i}</option>`);
-                                    }
-                                </script>
-                            </select>
-                            <span class="form-label">,</span>
-                            <input type="text" id="place1" name="place1" class="blank-input w-place" placeholder="ठाउँको नाम">
-                        </div> श्री</span>
-                        <input type="text" id="age_grandparent_name" name="age_grandparent_name" class="blank-input w-parent-name" placeholder="हजुरबुबाको नाम">
-                        <span class="form-label">, श्री</span>
-                        <input type="text" id="age_parent_name" name="age_parent_name" class="blank-input w-parent-name" placeholder="बुबाको नाम">
-                        <span class="form-label">, श्री</span>
-                        <input type="text" id="age_name" name="age_name" class="blank-input w-name" placeholder="आफ्नो नाम">
-                   
-                    </div>
-
-                    <!-- Temporary Address Section (Initially hidden) -->
-                    <div id="temporary_address_section" class="hidden">
-                        <div class="flex-line mt-4">
-                            <span class="form-label">अस्थायी ठेगाना:</span>
-                            <span class="form-label">जिल्ला</span>
-                            <select id="district2" name="district2" class="blank-input w-district">
-                                <option value="">जिल्ला छान्नुहोस्</option>
-                                <!-- All 77 Districts of Nepal in alphabetical order -->
-                                <option value="अछाम">अछाम</option>
-                                <option value="अर्घाखाँची">अर्घाखाँची</option>
-                                <option value="इलाम">इलाम</option>
-                                <option value="उदयपुर">उदयपुर</option>
-                                <option value="ओखलढुङ्गा">ओखलढुङ्गा</option>
-                                <option value="कञ्चनपुर">कञ्चनपुर</option>
-                                <option value="कपिलवस्तु">कपिलवस्तु</option>
-                                <option value="काभ्रेपलाञ्चोक">काभ्रेपलाञ्चोक</option>
-                                <option value="कास्की">कास्की</option>
-                                <option value="काठमाडौं">काठमाडौं</option>
-                                <option value="कालिकोट">कालिकोट</option>
-                                <option value="कौडा">कौडा</option>
-                                <option value="खोटाङ">खोटाङ</option>
-                                <option value="गुल्मी">गुल्मी</option>
-                                <option value="गोरखा">गोरखा</option>
-                                <option value="चितवन">चितवन</option>
-                                <option value="जाजरकोट">जाजरकोट</option>
-                                <option value="जुम्ला">जुम्ला</option>
-                                <option value="झापा">झापा</option>
-                                <option value="डोटी">डोटी</option>
-                                <option value="डडेल्धुरा">डडेल्धुरा</option>
-                                <option value="तनहुँ">तनहुँ</option>
-                                <option value="ताप्लेजुङ">ताप्लेजुङ</option>
-                                <option value="तेह्रथुम">तेह्रथुम</option>
-                                <option value="दैलेख">दैलेख</option>
-                                <option value="दोलखा">दोलखा</option>
-                                <option value="धनकुटा">धनकुटा</option>
-                                <option value="धनुषा">धनुषा</option>
-                                <option value="धादिङ">धादिङ</option>
-                                <option value="नवलपरासी पूर्व">नवलपरासी पूर्व</option>
-                                <option value="नवलपरासी पश्चिम">नवलपरासी पश्चिम</option>
-                                <option value="नुवाकोट">नुवाकोट</option>
-                                <option value="पर्वत">पर्वत</option>
-                                <option value="पर्सा">पर्सा</option>
-                                <option value="पाल्पा">पाल्पा</option>
-                                <option value="पांचथर">पांचथर</option>
-                                <option value="प्युठान">प्युठान</option>
-                                <option value="बझाङ">बझाङ</option>
-                                <option value="बर्दिया">बर्दिया</option>
-                                <option value="बागलुङ">बागलुङ</option>
-                                <option value="बाजुरा">बाजुरा</option>
-                                <option value="बाँके">बाँके</option>
-                                <option value="बारा">बारा</option>
-                                <option value="बुटवल">बुटवल</option>
-                                <option value="बैतडी">बैतडी</option>
-                                <option value="भक्तपुर">भक्तपुर</option>
-                                <option value="भोजपुर">भोजपुर</option>
-                                <option value="मनाङ">मनाङ</option>
-                                <option value="महोत्तरी">महोत्तरी</option>
-                                <option value="मकवानपुर">मकवानपुर</option>
-                                <option value="मुगु">मुगु</option>
-                                <option value="मुस्ताङ">मुस्ताङ</option>
-                                <option value="मोरङ">मोरङ</option>
-                                <option value="म्याग्दी">म्याग्दी</option>
-                                <option value="रसुवा">रसुवा</option>
-                                <option value="रामेछाप">रामेछाप</option>
-                                <option value="रौतहट">रौतहट</option>
-                                <option value="रोल्पा">रोल्पा</option>
-                                <option value="रुकुम पूर्व">रुकुम पूर्व</option>
-                                <option value="रुकुम पश्चिम">रुकुम पश्चिम</option>
-                                <option value="रूपन्देही">रूपन्देही</option>
-                                <option value="ललितपुर">ललितपुर</option>
-                                <option value="लम्जुङ">लम्जुङ</option>
-                                <option value="सप्तरी">सप्तरी</option>
-                                <option value="सल्यान">सल्यान</option>
-                                <option value="संखुवासभा">संखुवासभा</option>
-                                <option value="सर्लाही">सर्लाही</option>
-                                <option value="सिन्धुली">सिन्धुली</option>
-                                <option value="सिन्धुपाल्चोक">सिन्धुपाल्चोक</option>
-                                <option value="सिराहा">सिराहा</option>
-                                <option value="सुर्खेत">सुर्खेत</option>
-                                <option value="सुनसरी">सुनसरी</option>
-                                <option value="स्याङ्जा">स्याङ्जा</option>
-                                <option value="सोलुखुम्बु">सोलुखुम्बु</option>
-                                <option value="हर्षा">हर्षा</option>
-                            </select>
-                            <input type="text" id="municipality_name2" name="municipality_name2" class="blank-input w-municipality-name" placeholder="पालिकाको नाम">
-                            <select id="municipality_type2" name="municipality_type2" class="blank-input w-district">
-                                <option value="">पालिकाको प्रकार</option>
-                                <option value="महानगरपालिका">महानगरपालिका</option>
-                                <option value="उप-महानगरपालिका">उप-महानगरपालिका</option>
-                                <option value="नगरपालिका">नगरपालिका</option>
-                                <option value="गाउँपालिका">गाउँपालिका</option>
-                            </select>
-                            <span class="form-label">वडा नं.</span>
-                            <select id="ward2" name="ward2" class="blank-input w-ward">
-                                <option value="">वडा</option>
-                                <script>
-                                    for (let i = 1; i <= 37; i++) {
-                                        document.write(`<option value="${i}">${i}</option>`);
-                                    }
-                                </script>
-                            </select>
-                            <span class="form-label">,</span>
-                            <input type="text" id="place2" name="place2" class="blank-input w-place" placeholder="ठाउँको नाम">
-                        </div>
-                    </div>
-
-
-                    <!-- Section 2: Lender/Second Party Details (ब) -->
-                    <div class="flex-line mt-8">
-                        <span class="form-label">ब) आएका श्री</span>
-                        <input type="text" id="b_grandparent_name" name="b_grandparent_name" class="blank-input w-parent-name" placeholder="हजुरबुबाको नाम">
-                        <span class="form-label">, श्री</span>
-                        <input type="text" id="b_parent_name" name="b_parent_name" class="blank-input w-parent-name" placeholder="बुबाको नाम">
-                        <span class="form-label">, श्री</span>
-                        <input type="text" id="b_name" name="b_name" class="blank-input w-name" placeholder="नाम">
-                        <span class="form-label">ले जिल्ला</span>
-                        <select id="district3" name="district3" class="blank-input w-district">
-                            <option value="">जिल्ला छान्नुहोस्</option>
-                            <!-- All 77 Districts of Nepal in alphabetical order -->
-                            <option value="अछाम">अछाम</option>
-                            <option value="अर्घाखाँची">अर्घाखाँची</option>
-                            <option value="इलाम">इलाम</option>
-                            <option value="उदयपुर">उदयपुर</option>
-                            <option value="ओखलढुङ्गा">ओखलढुङ्गा</option>
-                            <option value="कञ्चनपुर">कञ्चनपुर</option>
-                            <option value="कपिलवस्तु">कपिलवस्तु</option>
-                            <option value="काभ्रेपलाञ्चोक">काभ्रेपलाञ्चोक</option>
-                            <option value="कास्की">कास्की</option>
-                            <option value="काठमाडौं">काठमाडौं</option>
-                            <option value="कालिकोट">कालिकोट</option>
-                            <option value="कौडा">कौडा</option>
-                            <option value="खोटाङ">खोटाङ</option>
-                            <option value="गुल्मी">गुल्मी</option>
-                            <option value="गोरखा">गोरखा</option>
-                            <option value="चितवन">चितवन</option>
-                            <option value="जाजरकोट">जाजरकोट</option>
-                            <option value="जुम्ला">जुम्ला</option>
-                            <option value="झापा">झापा</option>
-                            <option value="डोटी">डोटी</option>
-                            <option value="डडेल्धुरा">डडेल्धुरा</option>
-                            <option value="तनहुँ">तनहुँ</option>
-                            <option value="ताप्लेजुङ">ताप्लेजुङ</option>
-                            <option value="तेह्रथुम">तेह्रथुम</option>
-                            <option value="दैलेख">दैलेख</option>
-                            <option value="दोलखा">दोलखा</option>
-                            <option value="धनकुटा">धनकुटा</option>
-                            <option value="धनुषा">धनुषा</option>
-                            <option value="धादिङ">धादिङ</option>
-                            <option value="नवलपरासी पूर्व">नवलपरासी पूर्व</option>
-                            <option value="नवलपरासी पश्चिम">नवलपरासी पश्चिम</option>
-                            <option value="नुवाकोट">नुवाकोट</option>
-                            <option value="पर्वत">पर्वत</option>
-                            <option value="पर्सा">पर्सा</option>
-                            <option value="पाल्पा">पाल्पा</option>
-                            <option value="पांचथर">पांचथर</option>
-                            <option value="प्युठान">प्युठान</option>
-                            <option value="बझाङ">बझाङ</option>
-                            <option value="बर्दिया">बर्दिया</option>
-                            <option value="बागलुङ">बागलुङ</option>
-                            <option value="बाजुरा">बाजुरा</option>
-                            <option value="बाँके">बाँके</option>
-                            <option value="बारा">बारा</option>
-                            <option value="बुटवल">बुटवल</option>
-                            <option value="बैतडी">बैतडी</option>
-                            <option value="भक्तपुर">भक्तपुर</option>
-                            <option value="भोजपुर">भोजपुर</option>
-                            <option value="मनाङ">मनाङ</option>
-                            <option value="महोत्तरी">महोत्तरी</option>
-                            <option value="मकवानपुर">मकवानपुर</option>
-                            <option value="मुगु">मुगु</option>
-                            <option value="मुस्ताङ">मुस्ताङ</option>
-                            <option value="मोरङ">मोरङ</option>
-                            <option value="म्याग्दी">म्याग्दी</option>
-                            <option value="रसुवा">रसुवा</option>
-                            <option value="रामेछाप">रामेछाप</option>
-                            <option value="रौतहट">रौतहट</option>
-                            <option value="रोल्पा">रोल्पा</option>
-                            <option value="रुकुम पूर्व">रुकुम पूर्व</option>
-                            <option value="रुकुम पश्चिम">रुकुम पश्चिम</option>
-                            <option value="रूपन्देही">रूपन्देही</option>
-                            <option value="ललितपुर">ललितपुर</option>
-                            <option value="लम्जुङ">लम्जुङ</option>
-                            <option value="सप्तरी">सप्तरी</option>
-                            <option value="सल्यान">सल्यान</option>
-                            <option value="संखुवासभा">संखुवासभा</option>
-                            <option value="सर्लाही">सर्लाही</option>
-                            <option value="सिन्धुली">सिन्धुली</option>
-                            <option value="सिन्धुपाल्चोक">सिन्धुपाल्चोक</option>
-                            <option value="सिराहा">सिराहा</option>
-                            <option value="सुर्खेत">सुर्खेत</option>
-                            <option value="सुनसरी">सुनसरी</option>
-                            <option value="स्याङ्जा">स्याङ्जा</option>
-                            <option value="सोलुखुम्बु">सोलुखुम्बु</option>
-                            <option value="हर्षा">हर्षा</option>
-                        </select>
-                        <input type="text" id="municipality_name3" name="municipality_name3" class="blank-input w-municipality-name" placeholder="पालिकाको नाम">
-                        <select id="municipality_type3" name="municipality_type3" class="blank-input w-district">
-                            <option value="">पालिकाको प्रकार</option>
-                            <option value="महानगरपालिका">महानगरपालिका</option>
-                            <option value="उप-महानगरपालिका">उप-महानगरपालिका</option>
-                            <option value="नगरपालिका">नगरपालिका</option>
-                            <option value="गाउँपालिका">गाउँपालिका</option>
-                        </select>
-                        <span class="form-label">वडा नं.</span>
-                        <select id="ward3" name="ward3" class="blank-input w-ward">
-                            <option value="">वडा</option>
-                            <script>
-                                for (let i = 1; i <= 37; i++) {
-                                    document.write(`<option value="${i}">${i}</option>`);
-                                }
-                            </script>
-                        </select>
-                        <span class="form-label">, स्थायी ठेगाना (अस्थायी ठेगाना)</span>
-                        <input type="text" id="address2" name="address2" class="blank-input w-address-long" placeholder="ठेगाना">
-                        <span class="form-label">जिल्ला</span>
-                        <select id="district4" name="district4" class="blank-input w-district">
-                            <option value="">जिल्ला छान्नुहोस्</option>
-                            <!-- All 77 Districts of Nepal in alphabetical order -->
-                            <option value="अछाम">अछाम</option>
-                            <option value="अर्घाखाँची">अर्घाखाँची</option>
-                            <option value="इलाम">इलाम</option>
-                            <option value="उदयपुर">उदयपुर</option>
-                            <option value="ओखलढुङ्गा">ओखलढुङ्गा</option>
-                            <option value="कञ्चनपुर">कञ्चनपुर</option>
-                            <option value="कपिलवस्तु">कपिलवस्तु</option>
-                            <option value="काभ्रेपलाञ्चोक">काभ्रेपलाञ्चोक</option>
-                            <option value="कास्की">कास्की</option>
-                            <option value="काठमाडौं">काठमाडौं</option>
-                            <option value="कालिकोट">कालिकोट</option>
-                            <option value="कौडा">कौडा</option>
-                            <option value="खोटाङ">खोटाङ</option>
-                            <option value="गुल्मी">गुल्मी</option>
-                            <option value="गोरखा">गोरखा</option>
-                            <option value="चितवन">चितवन</option>
-                            <option value="जाजरकोट">जाजरकोट</option>
-                            <option value="जुम्ला">जुम्ला</option>
-                            <option value="झापा">झापा</option>
-                            <option value="डोटी">डोटी</option>
-                            <option value="डडेल्धुरा">डडेल्धुरा</option>
-                            <option value="तनहुँ">तनहुँ</option>
-                            <option value="ताप्लेजुङ">ताप्लेजुङ</option>
-                            <option value="तेह्रथुम">तेह्रथुम</option>
-                            <option value="दैलेख">दैलेख</option>
-                            <option value="दोलखा">दोलखा</option>
-                            <option value="धनकुटा">धनकुटा</option>
-                            <option value="धनुषा">धनुषा</option>
-                            <option value="धादिङ">धादिङ</option>
-                            <option value="नवलपरासी पूर्व">नवलपरासी पूर्व</option>
-                            <option value="नवलपरासी पश्चिम">नवलपरासी पश्चिम</option>
-                            <option value="नुवाकोट">नुवाकोट</option>
-                            <option value="पर्वत">पर्वत</option>
-                            <option value="पर्सा">पर्सा</option>
-                            <option value="पाल्पा">पाल्पा</option>
-                            <option value="पांचथर">पांचथर</option>
-                            <option value="प्युठान">प्युठान</option>
-                            <option value="बझाङ">बझाङ</option>
-                            <option value="बर्दिया">बर्दिया</option>
-                            <option value="बागलुङ">बागलुङ</option>
-                            <option value="बाजुरा">बाजुरा</option>
-                            <option value="बाँके">बाँके</option>
-                            <option value="बारा">बारा</option>
-                            <option value="बुटवल">बुटवल</option>
-                            <option value="बैतडी">बैतडी</option>
-                            <option value="भक्तपुर">भक्तपुर</option>
-                            <option value="भोजपुर">भोजपुर</option>
-                            <option value="मनाङ">मनाङ</option>
-                            <option value="महोत्तरी">महोत्तरी</option>
-                            <option value="मकवानपुर">मकवानपुर</option>
-                            <option value="मुगु">मुगु</option>
-                            <option value="मुस्ताङ">मुस्ताङ</option>
-                            <option value="मोरङ">मोरङ</option>
-                            <option value="म्याग्दी">म्याग्दी</option>
-                            <option value="रसुवा">रसुवा</option>
-                            <option value="रामेछाप">रामेछाप</option>
-                            <option value="रौतहट">रौतहट</option>
-                            <option value="रोल्पा">रोल्पा</option>
-                            <option value="रुकुम पूर्व">रुकुम पूर्व</option>
-                            <option value="रुकुम पश्चिम">रुकुम पश्चिम</option>
-                            <option value="रूपन्देही">रूपन्देही</option>
-                            <option value="ललितपुर">ललितपुर</option>
-                            <option value="लम्जुङ">लम्जुङ</option>
-                            <option value="सप्तरी">सप्तरी</option>
-                            <option value="सल्यान">सल्यान</option>
-                            <option value="संखुवासभा">संखुवासभा</option>
-                            <option value="सर्लाही">सर्लाही</option>
-                            <option value="सिन्धुली">सिन्धुली</option>
-                            <option value="सिन्धुपाल्चोक">सिन्धुपाल्चोक</option>
-                            <option value="सिराहा">सिराहा</option>
-                            <option value="सुर्खेत">सुर्खेत</option>
-                            <option value="सुनसरी">सुनसरी</option>
-                            <option value="स्याङ्जा">स्याङ्जा</option>
-                            <option value="सोलुखुम्बु">सोलुखुम्बु</option>
-                            <option value="हर्षा">हर्षा</option>
-                        </select>
-                        <input type="text" id="municipality_name4" name="municipality_name4" class="blank-input w-municipality-name" placeholder="पालिकाको नाम">
-                        <select id="municipality_type4" name="municipality_type4" class="blank-input w-district">
-                            <option value="">पालिकाको प्रकार</option>
-                            <option value="महानगरपालिका">महानगरपालिका</option>
-                            <option value="उप-महानगरपालिका">उप-महानगरपालिका</option>
-                            <option value="नगरपालिका">नगरपालिका</option>
-                            <option value="गाउँपालिका">गाउँपालिका</option>
-                        </select>
-                        <span class="form-label">वडा नं.</span>
-                        <select id="ward4" name="ward4" class="blank-input w-ward">
-                            <option value="">वडा</option>
-                            <script>
-                                for (let i = 1; i <= 37; i++) {
-                                    document.write(`<option value="${i}">${i}</option>`);
-                                }
-                            </script>
-                        </select>
-                        <span class="form-label">,</span>
-                        <input type="text" id="place4" name="place4" class="blank-input w-place" placeholder="ठाउँको नाम">
-                    </div>
-
-                    <!-- Section 3: Agreement Clause (Main Paragraph) -->
-                    <div class="mt-8 text-justify-blanks">
-                        <span class="form-label">बाट मिति</span>
-                        <input type="text" id="date_year_start" name="date_year_start" class="blank-input w-date-year" placeholder="साल (२०८०)">/
-                        <input type="text" id="date_month_start" name="date_month_start" class="blank-input w-date-month" placeholder="महिना (०१)">/
-                        <input type="text" id="date_day_start" name="date_day_start" class="blank-input w-date-day" placeholder="गते (०१)">
-                        <span class="form-label">गते गर्नका वार्षिक</span>
-                        <input type="text" id="interest_percent" name="interest_percent" class="blank-input w-percent" placeholder="५">%
-                        <span class="form-label">का दरले ब्याज लगाई आगामी</span>
-                        <input type="text" id="loan_years" name="loan_years" class="blank-input w-years-months" placeholder="वर्ष">
-                        <span class="form-label">वर्ष</span>
-                        <input type="text" id="loan_months" name="loan_months" class="blank-input w-years-months" placeholder="महिना">
-                        <span class="form-label">महिना</span>
-                        <input type="text" id="date_day_end" name="date_day_end" class="blank-input w-date-day" placeholder="गते">
-                        <span class="form-label">गते सम्ममा साँवा एकमुष्ठ बुझाउने भाका राख्दै सो म्यादमा बुझाउन नयकी म्याद नाघ्यो भने प्रचलित नेपाल कानुन बमोजिम मेरो घर चरानबाट असुल उपर गरि लिनु भनी मेरो मनोनम राजी खुसी</span>
-                        <input type="text" id="agreement_place" name="agreement_place" class="blank-input w-place" placeholder="ठाउँ">
-                        <span class="form-label">बसी कृपाले तमसुुक लेखी तपाई माउलाई दिए साक्षी बायाँ किनाराको सदर हति गम्मल</span>
-                    </div>
-
-                    <!-- Section 4: Date/Signing Details -->
-                    <div class="flex-line justify-end mt-8">
-                        <input type="text" id="signing_year" name="signing_year" class="blank-input w-date-year" placeholder="साल">
-                        <span class="form-label">साल</span>
-                        <select id="signing_month" name="signing_month" class="blank-input w-date-month">
-                            <option value="">महिना</option>
-                            <option value="बैशाख">बैशाख</option>
-                            <option value="जेठ">जेठ</option>
-                            <option value="असार">असार</option>
-                            <option value="साउन">साउन</option>
-                            <option value="भदौ">भदौ</option>
-                            <option value="असोज">असोज</option>
-                            <option value="कार्तिक">कार्तिक</option>
-                            <option value="मंसिर">मंसिर</option>
-                            <option value="पुस">पुस</option>
-                            <option value="माघ">माघ</option>
-                            <option value="फागुन">फागुन</option>
-                            <option value="चैत">चैत</option>
-                        </select>
-                        <input type="text" id="signing_day" name="signing_day" class="blank-input w-date-day" placeholder="गते">
-                        <span class="form-label">रोज</span>
-                        <select id="dayOfWeek" name="dayOfWeek" class="blank-input w-day-of-week">
-                            <option value="">बार</option>
-                            <option value="आइतबार">आइतबार</option>
-                            <option value="सोमबार">सोमबार</option>
-                            <option value="मंगलबार">मंगलबार</option>
-                            <option value="बुधबार">बुधबार</option>
-                            <option value="बिहीबार">बिहीबार</option>
-                            <option value="शुक्रबार">शुक्रबार</option>
-                            <option value="शनिबार">शनिबार</option>
-                        </select>
-                        <span class="form-label">शुभम् ।</span>
-                    </div>
-
-                    <!-- Section 5: Signature Boxes -->
-                    <div class="flex justify-end gap-10 mt-12 mb-4">
-                        <div class="signature-box">
-                            <span class="font-bold">दा.</span>
-                        </div>
-                        <div class="signature-box">
-                            <span class="font-bold">बा.</span>
-                        </div>
-                    </div>
-
-                    <!-- Preview Button -->
-                    <div class="buttons-container flex justify-center gap-4 mt-10">
-                        <button type="button" onclick="generatePreview()"
-                                class="py-3 px-6 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                            प्रिभ्यु हेर्नुहोस्
-                        </button>
-                    </div>
-                </div>
-            </form>
+        <div class="form-group">
+            <div class="form-row">
+                <label for="borrower_name">ऋणीको नाम:</label>
+                <input type="text" id="borrower_name" class="input-field" placeholder="ऋणीको पूरा नाम">
+            </div>
+            <div class="form-row mt-2">
+                <label for="borrower_grandparent_name">हजुरबुवाको नाम:</label>
+                <input type="text" id="borrower_grandparent_name" class="input-field" placeholder="हजुरबुवाको नाम">
+            </div>
+            <div class="form-row mt-2">
+                <label for="borrower_parent_name">बुवाको नाम:</label>
+                <input type="text" id="borrower_parent_name" class="input-field" placeholder="बुवाको नाम">
+            </div>
+            <div class="form-row mt-2">
+                <label for="borrower_address">ठेगाना:</label>
+                <span>जिल्ला</span>
+                <select id="borrower_district" class="input-field">
+                    <option value="">जिल्ला छान्नुहोस्</option>
+                    <option value="अछाम">अछाम</option><option value="अर्घाखाँची">अर्घाखाँची</option><option value="इलाम">इलाम</option><option value="उदयपुर">उदयपुर</option><option value="ओखलढुङ्गा">ओखलढुङ्गा</option><option value="कञ्चनपुर">कञ्चनपुर</option><option value="कपिलवस्तु">कपिलवस्तु</option><option value="काभ्रेपलाञ्चोक">काभ्रेपलाञ्चोक</option><option value="कास्की">कास्की</option><option value="काठमाडौं">काठमाडौं</option><option value="कालिकोट">कालिकोट</option><option value="कान्छी">कान्छी</option><option value="खुम्बु">खुम्बु</option><option value="खोटाङ">खोटाङ</option><option value="गुल्मी">गुल्मी</option><option value="गोरखा">गोरखा</option><option value="चितवन">चितवन</option><option value="जाजरकोट">जाजरकोट</option><option value="जाजरकोट">जाजरकोट</option><option value="जुम्ला">जुम्ला</option><option value="झापा">झापा</option><option value="डोल्पा">डोल्पा</option><option value="डोटी">डोटी</option><option value="तनहुँ">तनहुँ</option><option value="ताप्लेजुङ">ताप्लेजुङ</option><option value="तेह्रथुम">तेह्रथुम</option><option value="दोलखा">दोलखा</option><option value="दैलेख">दैलेख</option><option value="धनकुटा">धनकुटा</option><option value="धादिङ">धादिङ</option><option value="नवलपरासी (बर्दघाट सुस्ता पूर्व)">नवलपरासी (बर्दघाट सुस्ता पूर्व)</option><option value="नवलपरासी (बर्दघाट सुस्ता पश्चिम)">नवलपरासी (बर्दघाट सुस्ता पश्चिम)</option><option value="नुवाकोट">नुवाकोट</option><option value="पर्वत">पर्वत</option><option value="पाल्पा">पाल्पा</option><option value="पाँचथर">पाँचथर</option><option value="प्यूठान">प्यूठान</option><option value="बझाङ">बझाङ</option><option value="बर्दिया">बर्दिया</option><option value="बागलुङ">बागलुङ</option><option value="बाजुरा">बाजुरा</option><option value="बाँके">बाँके</option><option value="भक्तपुर">भक्तपुर</option><option value="भोजपुर">भोजपुर</option><option value="मकवानपुर">मकवानपुर</option><option value="मनाङ">मनाङ</option><option value="महोत्तरी">महोत्तरी</option><option value="मुगु">मुगु</option><option value="मुस्ताङ">मुस्ताङ</option><option value="मोरङ">मोरङ</option><option value="म्याग्दी">म्याग्दी</option><option value="रसुवा">रसुवा</option><option value="रामेछाप">रामेछाप</option><option value="रोल्पा">रोल्पा</option><option value="रुकुम (पूर्वी)">रुकुम (पूर्वी)</option><option value="रुकुम (पश्चिमी)">रुकुम (पश्चिमी)</option><option value="रुपन्देही">रुपन्देही</option><option value="ललितपुर">ललितपुर</option><option value="लम्जुङ">लम्जुङ</option><option value="बारा">बारा</option><option value="बर्दिया">बर्दिया</option><option value="बागलुङ">बागलुङ</option><option value="बाजुरा">बाजुरा</option><option value="बाँके">बाँके</option><option value="बुटवल">बुटवल</option><option value="भक्तपुर">भक्तपुर</option><option value="भोजपुर">भोजपुर</option><option value="मकवानपुर">मकवानपुर</option><option value="मनाङ">मनाङ</option><option value="महोत्तरी">महोत्तरी</option><option value="मुगु">मुगु</option><option value="मुस्ताङ">मुस्ताङ</option><option value="मोरङ">मोरङ</option><option value="म्याग्दी">म्याग्दी</option><option value="रसुवा">रसुवा</option><option value="रामेछाप">रामेछाप</option><option value="रोल्पा">रोल्पा</option><option value="रुकुम (पूर्वी)">रुकुम (पूर्वी)</option><option value="रुकुम (पश्चिमी)">रुकुम (पश्चिमी)</option><option value="रुपन्देही">रुपन्देही</option><option value="ललितपुर">ललितपुर</option><option value="लम्जुङ">लम्जुङ</option><option value="बारा">बारा</option>
+                </select>
+                <select id="borrower_local_body_type" class="input-field w-32">
+                    <option value="">प्रकार</option>
+                    <option value="महानगरपालिका">महानगरपालिका</option>
+                    <option value="उप-महानगरपालिका">उप-महानगरपालिका</option>
+                    <option value="नगरपालिका">नगरपालिका</option>
+                    <option value="गाउँपालिका">गाउँपालिका</option>
+                </select>
+                <input type="text" id="borrower_local_body_name" class="input-field" placeholder="पालिकाको नाम">
+                <span>वडा नं.</span>
+                <input type="text" id="borrower_ward_no" class="input-field w-16" placeholder="वडा">
+            </div>
+            <div class="form-row mt-2">
+                <label for="borrower_temp_address">ठेगाना (अस्थायी ठेगाना):</label>
+                <span>जिल्ला</span>
+                <input type="text" id="borrower_temp_district" class="input-field" placeholder="जिल्ला">
+                <span>गाउँपालिका/</span>
+                <input type="text" id="borrower_temp_local_body_name" class="input-field" placeholder="पालिकाको नाम">
+                <span>वडा नं.</span>
+                <input type="text" id="borrower_temp_ward_no" class="input-field w-16" placeholder="वडा">
+            </div>
         </div>
 
-        <!-- Right Rotated Sidebar for Phone Number -->
-        <div class="rotated-sidebar-right bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
-            <div class="flex-line">
-                <span class="font-bold">फोन नं.:</span>
-                <input type="text" id="phone_number" name="phone_number" class="blank-input w-phone" placeholder="९८xxxxxxxx">
+        <div class="form-group">
+            <div class="form-row">
+                <label for="lender_name">साहुको नाम:</label>
+                <input type="text" id="lender_name" class="input-field" placeholder="साहुको पूरा नाम">
             </div>
+            <div class="form-row mt-2">
+                <label for="lender_grandparent_name">हजुरबुवाको नाम:</label>
+                <input type="text" id="lender_grandparent_name" class="input-field" placeholder="हजुरबुवाको नाम">
+            </div>
+            <div class="form-row mt-2">
+                <label for="lender_parent_name">बुवाको नाम:</label>
+                <input type="text" id="lender_parent_name" class="input-field" placeholder="बुवाको नाम">
+            </div>
+            <div class="form-row mt-2">
+                <label for="lender_address">ठेगाना:</label>
+                <span>जिल्ला</span>
+                <select id="lender_district" class="input-field">
+                    <option value="">जिल्ला छान्नुहोस्</option>
+                    <option value="अछाम">अछाम</option><option value="अर्घाखाँची">अर्घाखाँची</option><option value="इलाम">इलाम</option><option value="उदयपुर">उदयपुर</option><option value="ओखलढुङ्गा">ओखलढुङ्गा</option><option value="कञ्चनपुर">कञ्चनपुर</option><option value="कपिलवस्तु">कपिलवस्तु</option><option value="काभ्रेपलाञ्चोक">काभ्रेपलाञ्चोक</option><option value="कास्की">कास्की</option><option value="काठमाडौं">काठमाडौं</option><option value="कालिकोट">कालिकोट</option><option value="कान्छी">कान्छी</option><option value="खुम्बु">खुम्बु</option><option value="खोटाङ">खोटाङ</option><option value="गुल्मी">गुल्मी</option><option value="गोरखा">गोरखा</option><option value="चितवन">चितवन</option><option value="जाजरकोट">जाजरकोट</option><option value="जाजरकोट">जाजरकोट</option><option value="जुम्ला">जुम्ला</option><option value="झापा">झापा</option><option value="डोल्पा">डोल्पा</option><option value="डोटी">डोटी</option><option value="तनहुँ">तनहुँ</option><option value="ताप्लेजुङ">ताप्लेजुङ</option><option value="तेह्रथुम">तेह्रथुम</option><option value="दोलखा">दोलखा</option><option value="दैलेख">दैलेख</option><option value="धनकुटा">धनकुटा</option><option value="धादिङ">धादिङ</option><option value="नवलपरासी (बर्दघाट सुस्ता पूर्व)">नवलपरासी (बर्दघाट सुस्ता पूर्व)</option><option value="नवलपरासी (बर्दघाट सुस्ता पश्चिम)">नवलपरासी (बर्दघाट सुस्ता पश्चिम)</option><option value="नुवाकोट">नुवाकोट</option><option value="पर्वत">पर्वत</option><option value="पाल्पा">पाल्पा</option><option value="पाँचथर">पाँचथर</option><option value="प्यूठान">प्यूठान</option><option value="बझाङ">बझाङ</option><option value="बर्दिया">बर्दिया</option><option value="बागलुङ">बागलुङ</option><option value="बाजुरा">बाजुरा</option><option value="बाँके">बाँके</option><option value="भक्तपुर">भक्तपुर</option><option value="भोजपुर">भोजपुर</option><option value="मकवानपुर">मकवानपुर</option><option value="मनाङ">मनाङ</option><option value="महोत्तरी">महोत्तरी</option><option value="मुगु">मुगु</option><option value="मुस्ताङ">मुस्ताङ</option><option value="मोरङ">मोरङ</option><option value="म्याग्दी">म्याग्दी</option><option value="रसुवा">रसुवा</option><option value="रामेछाप">रामेछाप</option><option value="रोल्पा">रोल्पा</option><option value="रुकुम (पूर्वी)">रुकुम (पूर्वी)</option><option value="रुकुम (पश्चिमी)">रुकुम (पश्चिमी)</option><option value="रुपन्देही">रुपन्देही</option><option value="ललितपुर">ललितपुर</option><option value="लम्जुङ">लम्जुङ</option><option value="बारा">बारा</option>
+                </select>
+                <select id="lender_local_body_type" class="input-field w-32">
+                    <option value="">प्रकार</option>
+                    <option value="महानगरपालिका">महानगरपालिका</option>
+                    <option value="उप-महानगरपालिका">उप-महानगरपालिका</option>
+                    <option value="नगरपालिका">नगरपालिका</option>
+                    <option value="गाउँपालिका">गाउँपालिका</option>
+                </select>
+                <input type="text" id="lender_local_body_name" class="input-field" placeholder="पालिकाको नाम">
+                <span>वडा नं.</span>
+                <input type="text" id="lender_ward_no" class="input-field w-16" placeholder="वडा">
+            </div>
+            <div class="form-row mt-2">
+                <label for="lender_temp_address">ठेगाना (अस्थायी ठेगाना):</label>
+                <span>जिल्ला</span>
+                <input type="text" id="lender_temp_district" class="input-field" placeholder="जिल्ला">
+                <span>गाउँपालिका/</span>
+                <input type="text" id="lender_temp_local_body_name" class="input-field" placeholder="पालिकाको नाम">
+                <span>वडा नं.</span>
+                <input type="text" id="lender_temp_ward_no" class="input-field w-16" placeholder="वडा">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-row">
+                <label for="loan_amount_num">ऋण रकम:</label>
+                <span>रु.</span>
+                <input type="number" id="loan_amount_num" class="input-field" placeholder="अंकमा रकम" min="0">
+                <span>(अक्षेरुपीः <span id="loan_amount_words" class="amount-in-words">.........................</span> मात्र)</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-row">
+                <label for="interest_rate">ब्याज दर:</label>
+                <input type="number" id="interest_rate" class="input-field w-20" placeholder="%" min="0" max="100" step="0.01">
+                <span>% वार्षिक</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-row">
+                <label for="loan_period">ऋण अवधि:</label>
+                <input type="number" id="loan_period_year" class="input-field w-20" placeholder="वर्ष">
+                <span>वर्ष</span>
+                <input type="number" id="loan_period_month" class="input-field w-20" placeholder="महिना">
+                <span>महिना</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-row">
+                <label for="place_agreed">स्थान:</label>
+                <input type="text" id="place_agreed" class="input-field" placeholder="तमसुक लेखिएको स्थान">
+            </div>
+        </div>
+
+        <div class="form-group text-area-group">
+            <label for="additional_terms" class="block text-gray-700 text-sm font-bold mb-2">अन्य शर्तहरू (यदि छन् भने):</label>
+            <textarea id="additional_terms" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="यहाँ थप शर्तहरू लेख्नुहोस्..."></textarea>
+        </div>
+
+        <div class="signature-section">
+            <div class="signature-block">
+                <div class="signature-line"></div>
+                <div class="signature-label">ऋणीको दस्तखत</div>
+            </div>
+            <div class="signature-block">
+                <div class="signature-line"></div>
+                <div class="signature-label">साहुको दस्तखत</div>
+            </div>
+        </div>
+
+        <div class="witness-section">
+            <h3 class="text-lg font-semibold mb-4 text-gray-800">साक्षीहरू:</h3>
+            <div id="witnesses-container">
+                <!-- Witness entries will be added here by JavaScript -->
+            </div>
+            <button type="button" id="add-witness-btn" class="add-witness-btn">साक्षी थप्नुहोस्</button>
         </div>
     </div>
 
+    <div class="preview-container">
+        <h3>तमसुकको प्रिभ्यू (स्क्रिनमा हेर्नका लागि)</h3>
+        <pre id="formPreviewScreen" class="preview-content"></pre>
+
+        <!-- Hidden div for print layout -->
+        <div id="printOutputArea" style="display: none;">
+            <div class="print-witness-column" id="printWitnessColumn">
+                <!-- Witness content for print will go here -->
+            </div>
+            <div class="print-main-content" id="printMainContent">
+                <!-- Main content for print will go here -->
+            </div>
+        </div>
+
+        <!-- Signature boxes for print, hidden by default -->
+        <div class="print-signature-boxes" style="display: none;">
+            <div class="print-signature-box">दा.</div>
+            <div class="print-signature-box">बा.</div>
+        </div>
+        <button onclick="window.print()" class="add-witness-btn mt-4 w-full bg-blue-600 hover:bg-blue-700">प्रिन्ट गर्नुहोस्</button>
+    </div>
+
     <script>
-        // Function to toggle address fields based on radio button selection
-        function toggleAddressFields() {
-            const permanentAddressSection = document.getElementById('permanent_address_section');
-            const temporaryAddressSection = document.getElementById('temporary_address_section');
-            const addressType = document.querySelector('input[name="address_type"]:checked').value;
-
-            if (addressType === 'permanent') {
-                permanentAddressSection.classList.remove('hidden');
-                temporaryAddressSection.classList.add('hidden');
+        // Function to convert Nepali numbers to Nepali words
+        const nepaliNumbersToWords = (num) => {
+            if (num === 0) return "शून्य";
+            const units = ["", "एक", "दुई", "तीन", "चार", "पाँच", "छ", "सात", "आठ", "नौ"];
+            const tens = ["", "दश", "बिस", "तीस", "चालीस", "पचास", "साठी", "सत्तर", "अस्सी", "नब्बे"];
+            const teens = ["", "एघार", "बाह्र", "तेह्र", "चौध", "पन्ध्र", "सोह्र", "सत्र", "अठार", "उनाइस"];
+            
+            if (num < 10) {
+                return units[num];
+            } else if (num < 20) {
+                return teens[num - 10];
+            } else if (num < 100) {
+                return tens[Math.floor(num / 10)] + (num % 10 !== 0 ? " " + units[num % 10] : "");
+            } else if (num < 1000) {
+                return units[Math.floor(num / 100)] + " सय " + nepaliNumbersToWords(num % 100);
+            } else if (num < 100000) { // Up to 99 thousand
+                return nepaliNumbersToWords(Math.floor(num / 1000)) + " हजार " + nepaliNumbersToWords(num % 1000);
+            } else if (num < 10000000) { // Up to 99 lakh
+                return nepaliNumbersToWords(Math.floor(num / 100000)) + " लाख " + nepaliNumbersToWords(num % 100000);
+            } else if (num < 1000000000) { // Up to 99 crore
+                return nepaliNumbersToWords(Math.floor(num / 10000000)) + " करोड " + nepaliNumbersToWords(num % 10000000);
             } else {
-                permanentAddressSection.classList.remove('hidden'); // Keep permanent visible for "अस्थायी" as per user's request
-                temporaryAddressSection.classList.remove('hidden');
+                return num.toLocaleString('en-IN'); // Fallback for very large numbers
             }
-        }
+        };
 
-        // Call on load to set initial state
-        document.addEventListener('DOMContentLoaded', toggleAddressFields);
+        // Get references to all input fields and preview areas
+        const formInputs = document.querySelectorAll('.form-container input, .form-container select, .form-container textarea');
+        const formPreviewScreen = document.getElementById('formPreviewScreen');
+        const printWitnessColumn = document.getElementById('printWitnessColumn');
+        const printMainContent = document.getElementById('printMainContent');
+        const loanAmountNumInput = document.getElementById('loan_amount_num');
+        const loanAmountWordsSpan = document.getElementById('loan_amount_words');
+        const witnessesContainer = document.getElementById('witnesses-container');
+        const addWitnessBtn = document.getElementById('add-witness-btn');
 
+        let witnessCount = 0;
+
+        // Function to add a new witness input block
+        const addWitnessField = () => {
+            witnessCount++;
+            const witnessDiv = document.createElement('div');
+            witnessDiv.className = 'witness-entry';
+            witnessDiv.innerHTML = `
+                <div class="witness-row">
+                    <span>साक्षी ${witnessCount} नाम:</span>
+                    <input type="text" id="witness_name_${witnessCount}" class="input-field" placeholder="नाम">
+                </div>
+                <div class="witness-row">
+                    <span>लेखक:</span>
+                    <input type="text" id="witness_writer_${witnessCount}" class="input-field" placeholder="लेखकको नाम">
+                </div>
+                <div class="witness-row">
+                    <span>फोन नं.:</span>
+                    <input type="text" id="witness_phone_${witnessCount}" class="input-field" placeholder="फोन नं.">
+                </div>
+                <div class="witness-row">
+                    <span>दस्तखत:</span>
+                    <div class="signature-line flex-grow"></div>
+                </div>
+            `;
+            witnessesContainer.appendChild(witnessDiv);
+
+            // Add event listeners to the newly added inputs
+            const newInputs = witnessDiv.querySelectorAll('input');
+            newInputs.forEach(input => {
+                input.addEventListener('input', generatePreview);
+            });
+            generatePreview(); // Update preview after adding a new field
+        };
+
+        // Initial witness field
+        addWitnessField();
+
+        // Add event listener for "Add Witness" button
+        addWitnessBtn.addEventListener('click', addWitnessField);
+
+        // Function to generate the preview text for both screen and print
         function generatePreview() {
-            const form = document.getElementById('tamasukForm');
-            const formData = new FormData(form);
-            const data = {};
-            for (let [key, value] of formData.entries()) {
-                data[key] = value;
+            const dateYear = document.getElementById('date_nepali_year').value || '.......';
+            const dateMonth = document.getElementById('date_nepali_month').value || '.......';
+            const dateDay = document.getElementById('date_nepali_day').value || '.......';
+
+            const borrowerName = document.getElementById('borrower_name').value || '.........................';
+            const borrowerGrandparentName = document.getElementById('borrower_grandparent_name').value || '.........................';
+            const borrowerParentName = document.getElementById('borrower_parent_name').value || '.........................';
+            const borrowerDistrict = document.getElementById('borrower_district').value || '....................';
+            const borrowerLocalBodyType = document.getElementById('borrower_local_body_type').value || '....................';
+            const borrowerLocalBodyName = document.getElementById('borrower_local_body_name').value || '....................';
+            const borrowerWardNo = document.getElementById('borrower_ward_no').value || '....';
+            const borrowerTempDistrict = document.getElementById('borrower_temp_district').value || '....................';
+            const borrowerTempLocalBodyName = document.getElementById('borrower_temp_local_body_name').value || '....................';
+            const borrowerTempWardNo = document.getElementById('borrower_temp_ward_no').value || '....';
+
+
+            const lenderName = document.getElementById('lender_name').value || '.........................';
+            const lenderGrandparentName = document.getElementById('lender_grandparent_name').value || '.........................';
+            const lenderParentName = document.getElementById('lender_parent_name').value || '.........................';
+            const lenderDistrict = document.getElementById('lender_district').value || '....................';
+            const lenderLocalBodyType = document.getElementById('lender_local_body_type').value || '....................';
+            const lenderLocalBodyName = document.getElementById('lender_local_body_name').value || '....................';
+            const lenderWardNo = document.getElementById('lender_ward_no').value || '....';
+            const lenderTempDistrict = document.getElementById('lender_temp_district').value || '....................';
+            const lenderTempLocalBodyName = document.getElementById('lender_temp_local_body_name').value || '....................';
+            const lenderTempWardNo = document.getElementById('lender_temp_ward_no').value || '....';
+
+            const loanAmountNum = parseFloat(document.getElementById('loan_amount_num').value) || 0;
+            const loanAmountWords = nepaliNumbersToWords(loanAmountNum);
+            loanAmountWordsSpan.textContent = loanAmountWords; // Update the span in the form itself
+
+            const interestRate = document.getElementById('interest_rate').value || '....';
+            const loanPeriodYear = document.getElementById('loan_period_year').value || '....';
+            const loanPeriodMonth = document.getElementById('loan_period_month').value || '....';
+            const placeAgreed = document.getElementById('place_agreed').value || '....................';
+            const additionalTerms = document.getElementById('additional_terms').value || '';
+
+            // --- Generate Witness Block Content for Print ---
+            let printWitnessContent = '';
+            if (witnessCount > 0) {
+                printWitnessContent += `<div class="witness-title">साक्षीहरू:</div>`;
+                for (let i = 1; i <= witnessCount; i++) {
+                    const witnessName = document.getElementById(`witness_name_${i}`).value || '....................';
+                    const witnessWriter = document.getElementById(`witness_writer_${i}`).value || '....................';
+                    const witnessPhone = document.getElementById(`witness_phone_${i}`).value || '....................';
+                    printWitnessContent += `
+<div class="witness-entry-print">
+    <div class="witness-label">नाम:</div>
+    <div class="witness-line">${witnessName}</div>
+    <div class="witness-label">लेखक:</div>
+    <div class="witness-line">${witnessWriter}</div>
+    <div class="witness-label">फोन नं.:</div>
+    <div class="witness-line">${witnessPhone}</div>
+    <div class="witness-label">दस्तखत:</div>
+    <div class="witness-line"></div>
+</div>
+`;
+                }
+            }
+            printWitnessColumn.innerHTML = printWitnessContent;
+
+            // --- Generate Main Content for Print ---
+            // Reconstructing the main passage exactly as per user's latest request
+            const printMainContentText = `
+<div class="tamasuk-title">तमसुक</div>
+
+<div class="tamasuk-passage">
+    आगे जिल्ला ${lenderDistrict} ${lenderLocalBodyType}/${lenderLocalBodyName} वडा नं. ${lenderWardNo}, स्थायी ठेगाना, (अस्थायी ठेगाना जिल्ला ${lenderTempDistrict} ${lenderTempLocalBodyName} वडा नं. ${lenderTempWardNo}) भएका श्री ${lenderName} (हजुरबुबाको नाम ${lenderGrandparentName}), श्री ${lenderParentName} (बुवाको नाम), श्री ${lenderName} ले
+    जिल्ला ${borrowerDistrict} ${borrowerLocalBodyType}/${borrowerLocalBodyName} वडा नं. ${borrowerWardNo}, स्थायी ठेगाना (अस्थायी ठेगाना जिल्ला ${borrowerTempDistrict} ${borrowerTempLocalBodyName} वडा नं. ${borrowerTempWardNo}) निवासी श्री ${borrowerName} (हजुरबुवाको नाम ${borrowerGrandparentName}), श्री ${borrowerParentName} (बुवाको नाम), बाट मिति ${dateYear}/${dateMonth}/${dateDay} गते रु. ${loanAmountNum.toLocaleString('en-IN')} (अक्षेरुपीः ${loanAmountWords} मात्र) गर्नका बार्षिक ${interestRate}% का दरले ब्याज लगाई आगामी ${loanPeriodYear} वर्ष ${loanPeriodMonth} महिना गते सम्ममा रु. ${loanAmountNum.toLocaleString('en-IN')} (अक्षेरुपीः ${loanAmountWords} मात्र) को साँवा र ब्याज एकमुष्ट बुझाउने भाका राख्दै सो म्यादमा बुझाउन नसकी म्याद नाघ्यो भने प्रचलित नेपाल कानून बमोजिम मेरो घर घरानाबाट असूल उपर गरी लिनु भनी मेरो मनोमन राजी खुसी ${placeAgreed} (स्थान) बसी कपालि तमसुक लेखी तपाई साहुलाई दिए साक्षी बाँया किनाराको सदर इति संवत ${dateYear} साल ${dateMonth} महिना ${dateDay} रोज शुभम् ।
+</div>
+
+${additionalTerms ? `<div class="tamasuk-passage">\nअन्य शर्तहरू:\n${additionalTerms}\n</div>` : ''}
+`;
+            printMainContent.innerHTML = printMainContentText;
+
+
+            // --- Generate Screen Preview Content (simpler, pre-based) ---
+            // Build screen witness content separately for cleaner output
+            let screenWitnessContent = '';
+            if (witnessCount > 0) {
+                screenWitnessContent += `साक्षीहरू:\n`;
+                for (let i = 1; i <= witnessCount; i++) {
+                    const witnessName = document.getElementById(`witness_name_${i}`).value || '....................';
+                    const witnessWriter = document.getElementById(`witness_writer_${i}`).value || '....................';
+                    const witnessPhone = document.getElementById(`witness_phone_${i}`).value || '....................';
+                    screenWitnessContent += `साक्षी ${i} नाम: ${witnessName}\nलेखक: ${witnessWriter}\nफोन नं.: ${witnessPhone}\nदस्तखत: ....................\n\n`;
+                }
             }
 
-            // Add values from rotated sidebars
-            data['sanchi1_name'] = document.getElementById('sanchi1_name').value;
-            data['sanchi2_name'] = document.getElementById('sanchi2_name').value;
-            data['phone_number'] = document.getElementById('phone_number').value;
+            const screenPreviewText = `
+                                    तमसुक
 
-            // Store data in sessionStorage to pass to the preview page
-            sessionStorage.setItem('tamasukData', JSON.stringify(data));
+आगे जिल्ला ${lenderDistrict} ${lenderLocalBodyType}/${lenderLocalBodyName} वडा नं. ${lenderWardNo}, स्थायी ठेगाना, (अस्थायी ठेगाना जिल्ला ${lenderTempDistrict} ${lenderTempLocalBodyName} वडा नं. ${lenderTempWardNo}) भएका श्री ${lenderName} (हजुरबुबाको नाम ${lenderGrandparentName}), श्री ${lenderParentName} (बुवाको नाम), श्री ${lenderName} ले
+जिल्ला ${borrowerDistrict} ${borrowerLocalBodyType}/${borrowerLocalBodyName} वडा नं. ${borrowerWardNo}, स्थायी ठेगाना (अस्थायी ठेगाना जिल्ला ${borrowerTempDistrict} ${borrowerTempLocalBodyName} वडा नं. ${borrowerTempWardNo}) निवासी श्री ${borrowerName} (हजुरबुवाको नाम ${borrowerGrandparentName}), श्री ${borrowerParentName} (बुवाको नाम), बाट मिति ${dateYear}/${dateMonth}/${dateDay} गते रु. ${loanAmountNum.toLocaleString('en-IN')} (अक्षेरुपीः ${loanAmountWords} मात्र) गर्नका बार्षिक ${interestRate}% का दरले ब्याज लगाई आगामी ${loanPeriodYear} वर्ष ${loanPeriodMonth} महिना गते सम्ममा रु. ${loanAmountNum.toLocaleString('en-IN')} (अक्षेरुपीः ${loanAmountWords} मात्र) को साँवा र ब्याज एकमुष्ट बुझाउने भाका राख्दै सो म्यादमा बुझाउन नसकी म्याद नाघ्यो भने प्रचलित नेपाल कानून बमोजिम मेरो घर घरानाबाट असूल उपर गरी लिनु भनी मेरो मनोमन राजी खुसी ${placeAgreed} (स्थान) बसी कपालि तमसुक लेखी तपाई साहुलाई दिए साक्षी बाँया किनाराको सदर इति संवत ${dateYear} साल ${dateMonth} महिना ${dateDay} रोज शुभम् ।
 
-            // Redirect to the preview page
-            window.location.href = 'tamasuk-preview.html';
+${additionalTerms ? `\nअन्य शर्तहरू:\n${additionalTerms}\n` : ''}
+
+ऋणीको दस्तखत: ..........................................
+साहुको दस्तखत: ..........................................
+
+${screenWitnessContent}
+`;
+            formPreviewScreen.textContent = screenPreviewText;
         }
+
+        // Add event listeners to all input fields to update the preview on change
+        formInputs.forEach(input => {
+            input.addEventListener('input', generatePreview);
+            input.addEventListener('change', generatePreview); // For select elements
+        });
+
+        // Initial preview generation when the page loads
+        generatePreview();
+
+        // Show/hide print-specific elements based on print media
+        window.onbeforeprint = () => {
+            document.getElementById('formPreviewScreen').style.display = 'none';
+            document.getElementById('printOutputArea').style.display = 'block';
+            document.querySelector('.print-signature-boxes').style.display = 'flex';
+            document.querySelector('.preview-container h3').style.display = 'none';
+        };
+        window.onafterprint = () => {
+            document.getElementById('formPreviewScreen').style.display = 'block';
+            document.getElementById('printOutputArea').style.display = 'none';
+            document.querySelector('.print-signature-boxes').style.display = 'none';
+            document.querySelector('.preview-container h3').style.display = 'block';
+        };
     </script>
 </body>
 </html>
