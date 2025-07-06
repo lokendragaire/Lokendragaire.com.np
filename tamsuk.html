@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>तमसुक फारम</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for Nepali text and general styling */
+        body {
+            font-family: 'Inter', sans-serif; /* A clear and readable sans-serif font */
+            background-color: #f0f2f5; /* Light background */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to the top of the viewport */
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            line-height: 1.8; /* Adjust line height for better spacing with blanks */
+            font-size: 16px;
+        }
+        .main-wrapper {
+            display: flex;
+            position: relative; /* For absolute positioning of sidebar */
+            width: 100%;
+            max-width: 900px; /* Wider to accommodate sidebars */
+            box-sizing: border-box;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 30px 50px; /* Increased padding for a document feel */
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            box-sizing: border-box;
+            margin-left: 100px; /* Space for the rotated left sidebar */
+            margin-right: 100px; /* Space for the rotated right sidebar */
+        }
+        /* Style for the blank input lines - NO UNDERLINE */
+        .blank-input {
+            border: 1px solid #ccc; /* Light border to show input area */
+            border-radius: 0.25rem; /* Slightly rounded corners */
+            padding: 8px 12px; /* Increased padding for better usability */
+            text-align: left;
+            font-size: 16px;
+            line-height: 1.5;
+            min-width: 40px; /* Minimum width for short blanks */
+            outline: none; /* Remove focus outline */
+            background-color: #fefefe; /* Slightly off-white background */
+            flex-grow: 1; /* Allow inputs to grow if within flex */
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); /* Subtle inner shadow */
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .blank-input:focus {
+            border-color: #6366f1; /* Indigo-500 on focus */
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* Ring on focus */
+        }
+        /* Specific width overrides for better visual match */
+        .w-name { width: 220px; min-width: 150px; }
+        .w-district { width: 120px; min-width: 80px; }
+        .w-ward { width: 80px; min-width: 50px; }
+        .w-address-long { width: 400px; min-width: 300px; }
+        .w-date-year { width: 70px; min-width: 60px; }
+        .w-date-month { width: 50px; min-width: 40px; }
+        .w-date-day { width: 50px; min-width: 40px; }
+        .w-percent { width: 60px; min-width: 40px; }
+        .w-years-months { width: 50px; min-width: 40px; }
+        .w-place { width: 250px; min-width: 150px; }
+        .w-phone { width: 150px; min-width: 100px; }
+        .w-municipality-name { width: 150px; min-width: 100px; }
+        .w-day-of-week { width: 100px; min-width: 80px; }
+        .w-sanchi-name { width: 180px; min-width: 120px; }
+        .w-parent-name { width: 180px; min-width: 120px; }
+
+
+        .flex-line {
+            display: flex;
+            align-items: center; /* Align items vertically in the center */
+            flex-wrap: wrap; /* Allow content to wrap to the next line if needed */
+            gap: 10px; /* Increased gap between elements on the same line */
+        }
+        .form-label {
+            white-space: nowrap; /* Prevent labels from wrapping */
+            font-weight: 500; /* Slightly bolder labels */
+            color: #333;
+        }
+        .text-justify-blanks {
+            text-align: justify;
+            display: inline;
+        }
+        .signature-box {
+            border: 1px solid black;
+            width: 150px;
+            height: 80px;
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: flex-end; /* Align label to the bottom */
+            font-size: 14px;
+            padding-bottom: 5px; /* Space from bottom border */
+        }
+
+        /* Styles for the rotated left sidebar */
+        .rotated-sidebar-left {
+            position: absolute;
+            left: 0;
+            top: 50%; /* Center vertically relative to its parent */
+            transform: translateY(-50%) rotate(-90deg); /* Rotate and center */
+            transform-origin: 0 0; /* Rotate from top-left of its own content box */
+            white-space: nowrap;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 10px;
+            font-size: 16px;
+            z-index: 10; /* Ensure it's above the main form if needed */
+            left: -50px; /* Adjust this value to position it correctly outside the main form */
+            width: 200px; /* This width will become height after rotation */
+            justify-content: center; /* Center content within the rotated box */
+            align-items: flex-end; /* Align text to the right within the rotated box */
+            background-color: #f9fafb; /* Light background for sidebar */
+            border-radius: 0.5rem;
+        }
+        .rotated-sidebar-left .flex-line {
+            flex-direction: row; /* Keep inputs horizontal within the rotated container */
+            align-items: center;
+            gap: 5px;
+        }
+        .rotated-sidebar-left .blank-input {
+            width: 150px; /* Specific width for these inputs */
+            min-width: 100px;
+        }
+
+        /* Styles for the rotated right sidebar (for phone number) */
+        .rotated-sidebar-right {
+            position: absolute;
+            right: 0;
+            top: 50%; /* Center vertically relative to its parent */
+            transform: translateY(-50%) rotate(90deg); /* Rotate and center */
+            transform-origin: 100% 0; /* Rotate from top-right of its own content box */
+            white-space: nowrap;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 10px;
+            font-size: 16px;
+            z-index: 10;
+            right: -50px; /* Adjust this value to position it correctly outside the main form */
+            width: 200px; /* This width will become height after rotation */
+            justify-content: center;
+            align-items: flex-start; /* Align text to the left within the rotated box */
+            background-color: #f9fafb; /* Light background for sidebar */
+            border-radius: 0.5rem;
+        }
+        .rotated-sidebar-right .flex-line {
+            flex-direction: row;
+            align-items: center;
+            gap: 5px;
+        }
+        .rotated-sidebar-right .blank-input {
+            width: 150px;
+            min-width: 100px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-wrapper {
+                flex-direction: column; /* Stack sidebar and form on small screens */
+                max-width: 100%;
+            }
+            .form-container {
+                margin-left: 0; /* Remove left margin */
+                margin-right: 0; /* Remove right margin */
+                padding: 20px;
+            }
+            .rotated-sidebar-left, .rotated-sidebar-right {
+                position: relative; /* Make it flow with content */
+                transform: none; /* Remove rotation */
+                top: auto;
+                left: auto;
+                right: auto;
+                width: 100%;
+                margin-bottom: 20px;
+                padding: 10px;
+                text-align: center;
+                flex-direction: row; /* Arrange items horizontally */
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+            }
+            .rotated-sidebar-left .flex-line, .rotated-sidebar-right .flex-line {
+                flex-direction: row;
+                justify-content: center;
+                width: 100%;
+            }
+            .rotated-sidebar-left .blank-input, .rotated-sidebar-right .blank-input {
+                width: auto; /* Auto width for responsiveness */
+                flex-grow: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- Left Rotated Sidebar for Saanchi -->
+        <div class="rotated-sidebar-left bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+            <div class="flex-line">
+                <span class="font-bold">साँची:</span>
+            </div>
+            <div class="flex-line">
+                <input type="text" id="sanchi1_name" name="sanchi1_name" class="blank-input w-sanchi-name" placeholder="साँची १ को नाम">
+            </div>
+            <div class="flex-line">
+                <input type="text" id="sanchi2_name" name="sanchi2_name" class="blank-input w-sanchi-name" placeholder="साँची २ को नाम">
+            </div>
+        </div>
+
+        <div class="form-container">
+            <h1 class="text-3xl font-bold text-center mb-10">तमसुक</h1>
+
+            <form id="tamasukForm">
+                <div class="space-y-6">
+                    <!-- Section 1: Borrower/Party Details (आफ्नो) -->
+                    <div class="flex-line">
+                        <span class="form-label">आगे श्री</span>
+                        <input type="text" id="age_grandparent_name" name="age_grandparent_name" class="blank-input w-parent-name" placeholder="हजुरबुबाको नाम">
+                        <span class="form-label">, श्री</span>
+                        <input type="text" id="age_parent_name" name="age_parent_name" class="blank-input w-parent-name" placeholder="बुबाको नाम">
+                        <span class="form-label">, श्री</span>
+                        <input type="text" id="age_name" name="age_name" class="blank-input w-name" placeholder="आफ्नो नाम">
+                    </div>
+
+                    <!-- Permanent/Temporary Address Selection -->
+                    <div class="flex-line mt-4">
+                        <span class="form-label">ठेगाना:</span>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="address_type" value="permanent" class="form-radio" checked onchange="toggleAddressFields()">
+                            <span class="ml-2">स्थायी</span>
+                        </label>
+                        <label class="inline-flex items-center ml-4">
+                            <input type="radio" name="address_type" value="temporary" class="form-radio" onchange="toggleAddressFields()">
+                            <span class="ml-2">अस्थायी</span>
+                        </label>
+                    </div>
+
+                    <!-- Permanent Address Section -->
+                    <div id="permanent_address_section">
+                        <div class="flex-line">
+                            <span class="form-label">जिल्ला</span>
+                            <select id="district1" name="district1" class="blank-input w-district">
+                                <option value="">जिल्ला छान्नुहोस्</option>
+                                <!-- All 77 Districts of Nepal in alphabetical order -->
+                                <option value="अछाम">अछाम</option>
+                                <option value="अर्घाखाँची">अर्घाखाँची</option>
+                                <option value="इलाम">इलाम</option>
+                                <option value="उदयपुर">उदयपुर</option>
+                                <option value="ओखलढुङ्गा">ओखलढुङ्गा</option>
+                                <option value="कञ्चनपुर">कञ्चनपुर</option>
+                                <option value="कपिलवस्तु">कपिलवस्तु</option>
+                                <option value="काभ्रेपलाञ्चोक">काभ्रेपलाञ्चोक</option>
+                                <option value="कास्की">कास्की</option>
+                                <option value="काठमाडौं">काठमाडौं</option>
+                                <option value="कालिकोट">कालिकोट</option>
+                                <option value="कौडा">कौडा</option>
+                                <option value="खोटाङ">खोटाङ</option>
+                                <option value="गुल्मी">गुल्मी</option>
+                                <option value="गोरखा">गोरखा</option>
+                                <option value="चितवन">चितवन</option>
+                                <option value="जाजरकोट">जाजरकोट</option>
+                                <option value="जुम्ला">जुम्ला</option>
+                                <option value="झापा">झापा</option>
+                                <option value="डोटी">डोटी</option>
+                                <option value="डडेल्धुरा">डडेल्धुरा</option>
+                                <option value="तनहुँ">तनहुँ</option>
+                                <option value="ताप्लेजुङ">ताप्लेजुङ</option>
+                                <option value="तेह्रथुम">तेह्रथुम</option>
+                                <option value="दैलेख">दैलेख</option>
+                                <option value="दोलखा">दोलखा</option>
+                                <option value="धनकुटा">धनकुटा</option>
+                                <option value="धनुषा">धनुषा</option>
+                                <option value="धादिङ">धादिङ</option>
+                                <option value="नवलपरासी पूर्व">नवलपरासी पूर्व</option>
+                                <option value="नवलपरासी पश्चिम">नवलपरासी पश्चिम</option>
+                                <option value="नुवाकोट">नुवाकोट</option>
+                                <option value="पर्वत">पर्वत</option>
+                                <option value="पर्सा">पर्सा</option>
+                                <option value="पाल्पा">पाल्पा</option>
+                                <option value="पांचथर">पांचथर</option>
+                                <option value="प्युठान">प्युठान</option>
+                                <option value="बझाङ">बझाङ</option>
+                                <option value="बर्दिया">बर्दिया</option>
+                                <option value="बागलुङ">बागलुङ</option>
+                                <option value="बाजुरा">बाजुरा</option>
+                                <option value="बाँके">बाँके</option>
+                                <option value="बारा">बारा</option>
+                                <option value="बुटवल">बुटवल</option>
+                                <option value="बैतडी">बैतडी</option>
+                                <option value="भक्तपुर">भक्तपुर</option>
+                                <option value="भोजपुर">भोजपुर</option>
+                                <option value="मनाङ">मनाङ</option>
+                                <option value="महोत्तरी">महोत्तरी</option>
+                                <option value="मकवानपुर">मकवानपुर</option>
+                                <option value="मुगु">मुगु</option>
+                                <option value="मुस्ताङ">मुस्ताङ</option>
+                                <option value="मोरङ">मोरङ</option>
+                                <option value="म्याग्दी">म्याग्दी</option>
+                                <option value="रसुवा">रसुवा</option>
+                                <option value="रामेछाप">रामेछाप</option>
+                                <option value="रौतहट">रौतहट</option>
+                                <option value="रोल्पा">रोल्पा</option>
+                                <option value="रुकुम पूर्व">रुकुम पूर्व</option>
+                                <option value="रुकुम पश्चिम">रुकुम पश्चिम</option>
+                                <option value="रूपन्देही">रूपन्देही</option>
+                                <option value="ललितपुर">ललितपुर</option>
+                                <option value="लम्जुङ">लम्जुङ</option>
+                                <option value="सप्तरी">सप्तरी</option>
+                                <option value="सल्यान">सल्यान</option>
+                                <option value="संखुवासभा">संखुवासभा</option>
+                                <option value="सर्लाही">सर्लाही</option>
+                                <option value="सिन्धुली">सिन्धुली</option>
+                                <option value="सिन्धुपाल्चोक">सिन्धुपाल्चोक</option>
+                                <option value="सिराहा">सिराहा</option>
+                                <option value="सुर्खेत">सुर्खेत</option>
+                                <option value="सुनसरी">सुनसरी</option>
+                                <option value="स्याङ्जा">स्याङ्जा</option>
+                                <option value="सोलुखुम्बु">सोलुखुम्बु</option>
+                                <option value="हर्षा">हर्षा</option>
+                            </select>
+                            <input type="text" id="municipality_name1" name="municipality_name1" class="blank-input w-municipality-name" placeholder="पालिकाको नाम">
+                            <select id="municipality_type1" name="municipality_type1" class="blank-input w-district">
+                                <option value="">पालिकाको प्रकार</option>
+                                <option value="महानगरपालिका">महानगरपालिका</option>
+                                <option value="उप-महानगरपालिका">उप-महानगरपालिका</option>
+                                <option value="नगरपालिका">नगरपालिका</option>
+                                <option value="गाउँपालिका">गाउँपालिका</option>
+                            </select>
+                            <span class="form-label">वडा नं.</span>
+                            <select id="ward1" name="ward1" class="blank-input w-ward">
+                                <option value="">वडा</option>
+                                <!-- Generate ward numbers 1 to 37 -->
+                                <script>
+                                    for (let i = 1; i <= 37; i++) {
+                                        document.write(`<option value="${i}">${i}</option>`);
+                                    }
+                                </script>
+                            </select>
+                            <span class="form-label">,</span>
+                            <input type="text" id="place1" name="place1" class="blank-input w-place" placeholder="ठाउँको नाम">
+                        </div> श्री</span>
+                        <input type="text" id="age_grandparent_name" name="age_grandparent_name" class="blank-input w-parent-name" placeholder="हजुरबुबाको नाम">
+                        <span class="form-label">, श्री</span>
+                        <input type="text" id="age_parent_name" name="age_parent_name" class="blank-input w-parent-name" placeholder="बुबाको नाम">
+                        <span class="form-label">, श्री</span>
+                        <input type="text" id="age_name" name="age_name" class="blank-input w-name" placeholder="आफ्नो नाम">
+                   
+                    </div>
+
+                    <!-- Temporary Address Section (Initially hidden) -->
+                    <div id="temporary_address_section" class="hidden">
+                        <div class="flex-line mt-4">
+                            <span class="form-label">अस्थायी ठेगाना:</span>
+                            <span class="form-label">जिल्ला</span>
+                            <select id="district2" name="district2" class="blank-input w-district">
+                                <option value="">जिल्ला छान्नुहोस्</option>
+                                <!-- All 77 Districts of Nepal in alphabetical order -->
+                                <option value="अछाम">अछाम</option>
+                                <option value="अर्घाखाँची">अर्घाखाँची</option>
+                                <option value="इलाम">इलाम</option>
+                                <option value="उदयपुर">उदयपुर</option>
+                                <option value="ओखलढुङ्गा">ओखलढुङ्गा</option>
+                                <option value="कञ्चनपुर">कञ्चनपुर</option>
+                                <option value="कपिलवस्तु">कपिलवस्तु</option>
+                                <option value="काभ्रेपलाञ्चोक">काभ्रेपलाञ्चोक</option>
+                                <option value="कास्की">कास्की</option>
+                                <option value="काठमाडौं">काठमाडौं</option>
+                                <option value="कालिकोट">कालिकोट</option>
+                                <option value="कौडा">कौडा</option>
+                                <option value="खोटाङ">खोटाङ</option>
+                                <option value="गुल्मी">गुल्मी</option>
+                                <option value="गोरखा">गोरखा</option>
+                                <option value="चितवन">चितवन</option>
+                                <option value="जाजरकोट">जाजरकोट</option>
+                                <option value="जुम्ला">जुम्ला</option>
+                                <option value="झापा">झापा</option>
+                                <option value="डोटी">डोटी</option>
+                                <option value="डडेल्धुरा">डडेल्धुरा</option>
+                                <option value="तनहुँ">तनहुँ</option>
+                                <option value="ताप्लेजुङ">ताप्लेजुङ</option>
+                                <option value="तेह्रथुम">तेह्रथुम</option>
+                                <option value="दैलेख">दैलेख</option>
+                                <option value="दोलखा">दोलखा</option>
+                                <option value="धनकुटा">धनकुटा</option>
+                                <option value="धनुषा">धनुषा</option>
+                                <option value="धादिङ">धादिङ</option>
+                                <option value="नवलपरासी पूर्व">नवलपरासी पूर्व</option>
+                                <option value="नवलपरासी पश्चिम">नवलपरासी पश्चिम</option>
+                                <option value="नुवाकोट">नुवाकोट</option>
+                                <option value="पर्वत">पर्वत</option>
+                                <option value="पर्सा">पर्सा</option>
+                                <option value="पाल्पा">पाल्पा</option>
+                                <option value="पांचथर">पांचथर</option>
+                                <option value="प्युठान">प्युठान</option>
+                                <option value="बझाङ">बझाङ</option>
+                                <option value="बर्दिया">बर्दिया</option>
+                                <option value="बागलुङ">बागलुङ</option>
+                                <option value="बाजुरा">बाजुरा</option>
+                                <option value="बाँके">बाँके</option>
+                                <option value="बारा">बारा</option>
+                                <option value="बुटवल">बुटवल</option>
+                                <option value="बैतडी">बैतडी</option>
+                                <option value="भक्तपुर">भक्तपुर</option>
+                                <option value="भोजपुर">भोजपुर</option>
+                                <option value="मनाङ">मनाङ</option>
+                                <option value="महोत्तरी">महोत्तरी</option>
+                                <option value="मकवानपुर">मकवानपुर</option>
+                                <option value="मुगु">मुगु</option>
+                                <option value="मुस्ताङ">मुस्ताङ</option>
+                                <option value="मोरङ">मोरङ</option>
+                                <option value="म्याग्दी">म्याग्दी</option>
+                                <option value="रसुवा">रसुवा</option>
+                                <option value="रामेछाप">रामेछाप</option>
+                                <option value="रौतहट">रौतहट</option>
+                                <option value="रोल्पा">रोल्पा</option>
+                                <option value="रुकुम पूर्व">रुकुम पूर्व</option>
+                                <option value="रुकुम पश्चिम">रुकुम पश्चिम</option>
+                                <option value="रूपन्देही">रूपन्देही</option>
+                                <option value="ललितपुर">ललितपुर</option>
+                                <option value="लम्जुङ">लम्जुङ</option>
+                                <option value="सप्तरी">सप्तरी</option>
+                                <option value="सल्यान">सल्यान</option>
+                                <option value="संखुवासभा">संखुवासभा</option>
+                                <option value="सर्लाही">सर्लाही</option>
+                                <option value="सिन्धुली">सिन्धुली</option>
+                                <option value="सिन्धुपाल्चोक">सिन्धुपाल्चोक</option>
+                                <option value="सिराहा">सिराहा</option>
+                                <option value="सुर्खेत">सुर्खेत</option>
+                                <option value="सुनसरी">सुनसरी</option>
+                                <option value="स्याङ्जा">स्याङ्जा</option>
+                                <option value="सोलुखुम्बु">सोलुखुम्बु</option>
+                                <option value="हर्षा">हर्षा</option>
+                            </select>
+                            <input type="text" id="municipality_name2" name="municipality_name2" class="blank-input w-municipality-name" placeholder="पालिकाको नाम">
+                            <select id="municipality_type2" name="municipality_type2" class="blank-input w-district">
+                                <option value="">पालिकाको प्रकार</option>
+                                <option value="महानगरपालिका">महानगरपालिका</option>
+                                <option value="उप-महानगरपालिका">उप-महानगरपालिका</option>
+                                <option value="नगरपालिका">नगरपालिका</option>
+                                <option value="गाउँपालिका">गाउँपालिका</option>
+                            </select>
+                            <span class="form-label">वडा नं.</span>
+                            <select id="ward2" name="ward2" class="blank-input w-ward">
+                                <option value="">वडा</option>
+                                <script>
+                                    for (let i = 1; i <= 37; i++) {
+                                        document.write(`<option value="${i}">${i}</option>`);
+                                    }
+                                </script>
+                            </select>
+                            <span class="form-label">,</span>
+                            <input type="text" id="place2" name="place2" class="blank-input w-place" placeholder="ठाउँको नाम">
+                        </div>
+                    </div>
+
+
+                    <!-- Section 2: Lender/Second Party Details (ब) -->
+                    <div class="flex-line mt-8">
+                        <span class="form-label">ब) आएका श्री</span>
+                        <input type="text" id="b_grandparent_name" name="b_grandparent_name" class="blank-input w-parent-name" placeholder="हजुरबुबाको नाम">
+                        <span class="form-label">, श्री</span>
+                        <input type="text" id="b_parent_name" name="b_parent_name" class="blank-input w-parent-name" placeholder="बुबाको नाम">
+                        <span class="form-label">, श्री</span>
+                        <input type="text" id="b_name" name="b_name" class="blank-input w-name" placeholder="नाम">
+                        <span class="form-label">ले जिल्ला</span>
+                        <select id="district3" name="district3" class="blank-input w-district">
+                            <option value="">जिल्ला छान्नुहोस्</option>
+                            <!-- All 77 Districts of Nepal in alphabetical order -->
+                            <option value="अछाम">अछाम</option>
+                            <option value="अर्घाखाँची">अर्घाखाँची</option>
+                            <option value="इलाम">इलाम</option>
+                            <option value="उदयपुर">उदयपुर</option>
+                            <option value="ओखलढुङ्गा">ओखलढुङ्गा</option>
+                            <option value="कञ्चनपुर">कञ्चनपुर</option>
+                            <option value="कपिलवस्तु">कपिलवस्तु</option>
+                            <option value="काभ्रेपलाञ्चोक">काभ्रेपलाञ्चोक</option>
+                            <option value="कास्की">कास्की</option>
+                            <option value="काठमाडौं">काठमाडौं</option>
+                            <option value="कालिकोट">कालिकोट</option>
+                            <option value="कौडा">कौडा</option>
+                            <option value="खोटाङ">खोटाङ</option>
+                            <option value="गुल्मी">गुल्मी</option>
+                            <option value="गोरखा">गोरखा</option>
+                            <option value="चितवन">चितवन</option>
+                            <option value="जाजरकोट">जाजरकोट</option>
+                            <option value="जुम्ला">जुम्ला</option>
+                            <option value="झापा">झापा</option>
+                            <option value="डोटी">डोटी</option>
+                            <option value="डडेल्धुरा">डडेल्धुरा</option>
+                            <option value="तनहुँ">तनहुँ</option>
+                            <option value="ताप्लेजुङ">ताप्लेजुङ</option>
+                            <option value="तेह्रथुम">तेह्रथुम</option>
+                            <option value="दैलेख">दैलेख</option>
+                            <option value="दोलखा">दोलखा</option>
+                            <option value="धनकुटा">धनकुटा</option>
+                            <option value="धनुषा">धनुषा</option>
+                            <option value="धादिङ">धादिङ</option>
+                            <option value="नवलपरासी पूर्व">नवलपरासी पूर्व</option>
+                            <option value="नवलपरासी पश्चिम">नवलपरासी पश्चिम</option>
+                            <option value="नुवाकोट">नुवाकोट</option>
+                            <option value="पर्वत">पर्वत</option>
+                            <option value="पर्सा">पर्सा</option>
+                            <option value="पाल्पा">पाल्पा</option>
+                            <option value="पांचथर">पांचथर</option>
+                            <option value="प्युठान">प्युठान</option>
+                            <option value="बझाङ">बझाङ</option>
+                            <option value="बर्दिया">बर्दिया</option>
+                            <option value="बागलुङ">बागलुङ</option>
+                            <option value="बाजुरा">बाजुरा</option>
+                            <option value="बाँके">बाँके</option>
+                            <option value="बारा">बारा</option>
+                            <option value="बुटवल">बुटवल</option>
+                            <option value="बैतडी">बैतडी</option>
+                            <option value="भक्तपुर">भक्तपुर</option>
+                            <option value="भोजपुर">भोजपुर</option>
+                            <option value="मनाङ">मनाङ</option>
+                            <option value="महोत्तरी">महोत्तरी</option>
+                            <option value="मकवानपुर">मकवानपुर</option>
+                            <option value="मुगु">मुगु</option>
+                            <option value="मुस्ताङ">मुस्ताङ</option>
+                            <option value="मोरङ">मोरङ</option>
+                            <option value="म्याग्दी">म्याग्दी</option>
+                            <option value="रसुवा">रसुवा</option>
+                            <option value="रामेछाप">रामेछाप</option>
+                            <option value="रौतहट">रौतहट</option>
+                            <option value="रोल्पा">रोल्पा</option>
+                            <option value="रुकुम पूर्व">रुकुम पूर्व</option>
+                            <option value="रुकुम पश्चिम">रुकुम पश्चिम</option>
+                            <option value="रूपन्देही">रूपन्देही</option>
+                            <option value="ललितपुर">ललितपुर</option>
+                            <option value="लम्जुङ">लम्जुङ</option>
+                            <option value="सप्तरी">सप्तरी</option>
+                            <option value="सल्यान">सल्यान</option>
+                            <option value="संखुवासभा">संखुवासभा</option>
+                            <option value="सर्लाही">सर्लाही</option>
+                            <option value="सिन्धुली">सिन्धुली</option>
+                            <option value="सिन्धुपाल्चोक">सिन्धुपाल्चोक</option>
+                            <option value="सिराहा">सिराहा</option>
+                            <option value="सुर्खेत">सुर्खेत</option>
+                            <option value="सुनसरी">सुनसरी</option>
+                            <option value="स्याङ्जा">स्याङ्जा</option>
+                            <option value="सोलुखुम्बु">सोलुखुम्बु</option>
+                            <option value="हर्षा">हर्षा</option>
+                        </select>
+                        <input type="text" id="municipality_name3" name="municipality_name3" class="blank-input w-municipality-name" placeholder="पालिकाको नाम">
+                        <select id="municipality_type3" name="municipality_type3" class="blank-input w-district">
+                            <option value="">पालिकाको प्रकार</option>
+                            <option value="महानगरपालिका">महानगरपालिका</option>
+                            <option value="उप-महानगरपालिका">उप-महानगरपालिका</option>
+                            <option value="नगरपालिका">नगरपालिका</option>
+                            <option value="गाउँपालिका">गाउँपालिका</option>
+                        </select>
+                        <span class="form-label">वडा नं.</span>
+                        <select id="ward3" name="ward3" class="blank-input w-ward">
+                            <option value="">वडा</option>
+                            <script>
+                                for (let i = 1; i <= 37; i++) {
+                                    document.write(`<option value="${i}">${i}</option>`);
+                                }
+                            </script>
+                        </select>
+                        <span class="form-label">, स्थायी ठेगाना (अस्थायी ठेगाना)</span>
+                        <input type="text" id="address2" name="address2" class="blank-input w-address-long" placeholder="ठेगाना">
+                        <span class="form-label">जिल्ला</span>
+                        <select id="district4" name="district4" class="blank-input w-district">
+                            <option value="">जिल्ला छान्नुहोस्</option>
+                            <!-- All 77 Districts of Nepal in alphabetical order -->
+                            <option value="अछाम">अछाम</option>
+                            <option value="अर्घाखाँची">अर्घाखाँची</option>
+                            <option value="इलाम">इलाम</option>
+                            <option value="उदयपुर">उदयपुर</option>
+                            <option value="ओखलढुङ्गा">ओखलढुङ्गा</option>
+                            <option value="कञ्चनपुर">कञ्चनपुर</option>
+                            <option value="कपिलवस्तु">कपिलवस्तु</option>
+                            <option value="काभ्रेपलाञ्चोक">काभ्रेपलाञ्चोक</option>
+                            <option value="कास्की">कास्की</option>
+                            <option value="काठमाडौं">काठमाडौं</option>
+                            <option value="कालिकोट">कालिकोट</option>
+                            <option value="कौडा">कौडा</option>
+                            <option value="खोटाङ">खोटाङ</option>
+                            <option value="गुल्मी">गुल्मी</option>
+                            <option value="गोरखा">गोरखा</option>
+                            <option value="चितवन">चितवन</option>
+                            <option value="जाजरकोट">जाजरकोट</option>
+                            <option value="जुम्ला">जुम्ला</option>
+                            <option value="झापा">झापा</option>
+                            <option value="डोटी">डोटी</option>
+                            <option value="डडेल्धुरा">डडेल्धुरा</option>
+                            <option value="तनहुँ">तनहुँ</option>
+                            <option value="ताप्लेजुङ">ताप्लेजुङ</option>
+                            <option value="तेह्रथुम">तेह्रथुम</option>
+                            <option value="दैलेख">दैलेख</option>
+                            <option value="दोलखा">दोलखा</option>
+                            <option value="धनकुटा">धनकुटा</option>
+                            <option value="धनुषा">धनुषा</option>
+                            <option value="धादिङ">धादिङ</option>
+                            <option value="नवलपरासी पूर्व">नवलपरासी पूर्व</option>
+                            <option value="नवलपरासी पश्चिम">नवलपरासी पश्चिम</option>
+                            <option value="नुवाकोट">नुवाकोट</option>
+                            <option value="पर्वत">पर्वत</option>
+                            <option value="पर्सा">पर्सा</option>
+                            <option value="पाल्पा">पाल्पा</option>
+                            <option value="पांचथर">पांचथर</option>
+                            <option value="प्युठान">प्युठान</option>
+                            <option value="बझाङ">बझाङ</option>
+                            <option value="बर्दिया">बर्दिया</option>
+                            <option value="बागलुङ">बागलुङ</option>
+                            <option value="बाजुरा">बाजुरा</option>
+                            <option value="बाँके">बाँके</option>
+                            <option value="बारा">बारा</option>
+                            <option value="बुटवल">बुटवल</option>
+                            <option value="बैतडी">बैतडी</option>
+                            <option value="भक्तपुर">भक्तपुर</option>
+                            <option value="भोजपुर">भोजपुर</option>
+                            <option value="मनाङ">मनाङ</option>
+                            <option value="महोत्तरी">महोत्तरी</option>
+                            <option value="मकवानपुर">मकवानपुर</option>
+                            <option value="मुगु">मुगु</option>
+                            <option value="मुस्ताङ">मुस्ताङ</option>
+                            <option value="मोरङ">मोरङ</option>
+                            <option value="म्याग्दी">म्याग्दी</option>
+                            <option value="रसुवा">रसुवा</option>
+                            <option value="रामेछाप">रामेछाप</option>
+                            <option value="रौतहट">रौतहट</option>
+                            <option value="रोल्पा">रोल्पा</option>
+                            <option value="रुकुम पूर्व">रुकुम पूर्व</option>
+                            <option value="रुकुम पश्चिम">रुकुम पश्चिम</option>
+                            <option value="रूपन्देही">रूपन्देही</option>
+                            <option value="ललितपुर">ललितपुर</option>
+                            <option value="लम्जुङ">लम्जुङ</option>
+                            <option value="सप्तरी">सप्तरी</option>
+                            <option value="सल्यान">सल्यान</option>
+                            <option value="संखुवासभा">संखुवासभा</option>
+                            <option value="सर्लाही">सर्लाही</option>
+                            <option value="सिन्धुली">सिन्धुली</option>
+                            <option value="सिन्धुपाल्चोक">सिन्धुपाल्चोक</option>
+                            <option value="सिराहा">सिराहा</option>
+                            <option value="सुर्खेत">सुर्खेत</option>
+                            <option value="सुनसरी">सुनसरी</option>
+                            <option value="स्याङ्जा">स्याङ्जा</option>
+                            <option value="सोलुखुम्बु">सोलुखुम्बु</option>
+                            <option value="हर्षा">हर्षा</option>
+                        </select>
+                        <input type="text" id="municipality_name4" name="municipality_name4" class="blank-input w-municipality-name" placeholder="पालिकाको नाम">
+                        <select id="municipality_type4" name="municipality_type4" class="blank-input w-district">
+                            <option value="">पालिकाको प्रकार</option>
+                            <option value="महानगरपालिका">महानगरपालिका</option>
+                            <option value="उप-महानगरपालिका">उप-महानगरपालिका</option>
+                            <option value="नगरपालिका">नगरपालिका</option>
+                            <option value="गाउँपालिका">गाउँपालिका</option>
+                        </select>
+                        <span class="form-label">वडा नं.</span>
+                        <select id="ward4" name="ward4" class="blank-input w-ward">
+                            <option value="">वडा</option>
+                            <script>
+                                for (let i = 1; i <= 37; i++) {
+                                    document.write(`<option value="${i}">${i}</option>`);
+                                }
+                            </script>
+                        </select>
+                        <span class="form-label">,</span>
+                        <input type="text" id="place4" name="place4" class="blank-input w-place" placeholder="ठाउँको नाम">
+                    </div>
+
+                    <!-- Section 3: Agreement Clause (Main Paragraph) -->
+                    <div class="mt-8 text-justify-blanks">
+                        <span class="form-label">बाट मिति</span>
+                        <input type="text" id="date_year_start" name="date_year_start" class="blank-input w-date-year" placeholder="साल (२०८०)">/
+                        <input type="text" id="date_month_start" name="date_month_start" class="blank-input w-date-month" placeholder="महिना (०१)">/
+                        <input type="text" id="date_day_start" name="date_day_start" class="blank-input w-date-day" placeholder="गते (०१)">
+                        <span class="form-label">गते गर्नका वार्षिक</span>
+                        <input type="text" id="interest_percent" name="interest_percent" class="blank-input w-percent" placeholder="५">%
+                        <span class="form-label">का दरले ब्याज लगाई आगामी</span>
+                        <input type="text" id="loan_years" name="loan_years" class="blank-input w-years-months" placeholder="वर्ष">
+                        <span class="form-label">वर्ष</span>
+                        <input type="text" id="loan_months" name="loan_months" class="blank-input w-years-months" placeholder="महिना">
+                        <span class="form-label">महिना</span>
+                        <input type="text" id="date_day_end" name="date_day_end" class="blank-input w-date-day" placeholder="गते">
+                        <span class="form-label">गते सम्ममा साँवा एकमुष्ठ बुझाउने भाका राख्दै सो म्यादमा बुझाउन नयकी म्याद नाघ्यो भने प्रचलित नेपाल कानुन बमोजिम मेरो घर चरानबाट असुल उपर गरि लिनु भनी मेरो मनोनम राजी खुसी</span>
+                        <input type="text" id="agreement_place" name="agreement_place" class="blank-input w-place" placeholder="ठाउँ">
+                        <span class="form-label">बसी कृपाले तमसुुक लेखी तपाई माउलाई दिए साक्षी बायाँ किनाराको सदर हति गम्मल</span>
+                    </div>
+
+                    <!-- Section 4: Date/Signing Details -->
+                    <div class="flex-line justify-end mt-8">
+                        <input type="text" id="signing_year" name="signing_year" class="blank-input w-date-year" placeholder="साल">
+                        <span class="form-label">साल</span>
+                        <select id="signing_month" name="signing_month" class="blank-input w-date-month">
+                            <option value="">महिना</option>
+                            <option value="बैशाख">बैशाख</option>
+                            <option value="जेठ">जेठ</option>
+                            <option value="असार">असार</option>
+                            <option value="साउन">साउन</option>
+                            <option value="भदौ">भदौ</option>
+                            <option value="असोज">असोज</option>
+                            <option value="कार्तिक">कार्तिक</option>
+                            <option value="मंसिर">मंसिर</option>
+                            <option value="पुस">पुस</option>
+                            <option value="माघ">माघ</option>
+                            <option value="फागुन">फागुन</option>
+                            <option value="चैत">चैत</option>
+                        </select>
+                        <input type="text" id="signing_day" name="signing_day" class="blank-input w-date-day" placeholder="गते">
+                        <span class="form-label">रोज</span>
+                        <select id="dayOfWeek" name="dayOfWeek" class="blank-input w-day-of-week">
+                            <option value="">बार</option>
+                            <option value="आइतबार">आइतबार</option>
+                            <option value="सोमबार">सोमबार</option>
+                            <option value="मंगलबार">मंगलबार</option>
+                            <option value="बुधबार">बुधबार</option>
+                            <option value="बिहीबार">बिहीबार</option>
+                            <option value="शुक्रबार">शुक्रबार</option>
+                            <option value="शनिबार">शनिबार</option>
+                        </select>
+                        <span class="form-label">शुभम् ।</span>
+                    </div>
+
+                    <!-- Section 5: Signature Boxes -->
+                    <div class="flex justify-end gap-10 mt-12 mb-4">
+                        <div class="signature-box">
+                            <span class="font-bold">दा.</span>
+                        </div>
+                        <div class="signature-box">
+                            <span class="font-bold">बा.</span>
+                        </div>
+                    </div>
+
+                    <!-- Preview Button -->
+                    <div class="buttons-container flex justify-center gap-4 mt-10">
+                        <button type="button" onclick="generatePreview()"
+                                class="py-3 px-6 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            प्रिभ्यु हेर्नुहोस्
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Right Rotated Sidebar for Phone Number -->
+        <div class="rotated-sidebar-right bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+            <div class="flex-line">
+                <span class="font-bold">फोन नं.:</span>
+                <input type="text" id="phone_number" name="phone_number" class="blank-input w-phone" placeholder="९८xxxxxxxx">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to toggle address fields based on radio button selection
+        function toggleAddressFields() {
+            const permanentAddressSection = document.getElementById('permanent_address_section');
+            const temporaryAddressSection = document.getElementById('temporary_address_section');
+            const addressType = document.querySelector('input[name="address_type"]:checked').value;
+
+            if (addressType === 'permanent') {
+                permanentAddressSection.classList.remove('hidden');
+                temporaryAddressSection.classList.add('hidden');
+            } else {
+                permanentAddressSection.classList.remove('hidden'); // Keep permanent visible for "अस्थायी" as per user's request
+                temporaryAddressSection.classList.remove('hidden');
+            }
+        }
+
+        // Call on load to set initial state
+        document.addEventListener('DOMContentLoaded', toggleAddressFields);
+
+        function generatePreview() {
+            const form = document.getElementById('tamasukForm');
+            const formData = new FormData(form);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+
+            // Add values from rotated sidebars
+            data['sanchi1_name'] = document.getElementById('sanchi1_name').value;
+            data['sanchi2_name'] = document.getElementById('sanchi2_name').value;
+            data['phone_number'] = document.getElementById('phone_number').value;
+
+            // Store data in sessionStorage to pass to the preview page
+            sessionStorage.setItem('tamasukData', JSON.stringify(data));
+
+            // Redirect to the preview page
+            window.location.href = 'tamasuk-preview.html';
+        }
+    </script>
+</body>
+</html>
