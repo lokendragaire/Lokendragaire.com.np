@@ -219,40 +219,59 @@
             #printOutputArea {
                 display: block;
                 height: 100%; /* Fill available height */
+                width: 100%;
+                position: relative; /* To contain absolutely positioned children */
             }
 
-            .print-witness-column {
+            .print-left-margin-area {
                 position: absolute;
-                bottom: 60mm; /* Adjusted to leave space for thumbprints below */
-                left: 25mm; /* Left margin */
-                width: 50mm; /* Width of the content block */
-                font-size: 10pt;
-                line-height: 1.3;
-                text-align: left;
+                top: 0;
+                left: 0;
+                width: 65mm; /* This width includes the space for the rotated heading and witness details */
+                height: 100%;
+                /* No padding here, as preview-container handles the main padding */
             }
 
             .rotated-witness-heading {
                 position: absolute;
-                top: 25mm; /* Adjust vertical position */
-                left: -15mm; /* Push it into the left margin (25mm - 15mm = 10mm from page edge) */
-                transform-origin: top left; /* Rotate around its top-left point */
-                transform: rotate(90deg); /* Rotate 90 degrees clockwise */
+                /* Position relative to print-left-margin-area */
+                top: 25mm; /* Vertical position within the margin */
+                left: 10mm; /* Horizontal position within the 65mm area */
+                transform-origin: top left;
+                transform: rotate(90deg);
                 white-space: nowrap;
                 font-weight: bold;
                 font-size: 11pt;
                 color: #000;
                 z-index: 10;
             }
+
+            .print-witness-column {
+                position: absolute;
+                /* Position relative to print-left-margin-area */
+                top: 70mm; /* Start below the rotated heading */
+                left: 25mm; /* Position within the 65mm margin area */
+                width: 35mm; /* Actual width of witness text content */
+                bottom: 50mm; /* Adjusted to be above thumbprints and leave space for them */
+                font-size: 9pt;
+                line-height: 1.3;
+                text-align: left;
+                overflow-y: auto; /* Enable scrolling if too many witnesses */
+            }
             .print-witness-column .witness-title {
                 display: none; /* Hide the old title, use the new rotated one */
             }
+            .print-witness-column .witness-entry-print {
+                margin-bottom: 5mm; /* Smaller space between witness entries in print */
+            }
 
             .print-main-content {
+                /* This will naturally flow after the left padding of preview-container */
+                /* Needs margin-left to push it away from the absolute print-left-margin-area */
+                margin-left: 65mm; /* Pushes content past the 65mm wide left margin area */
                 text-align: justify; /* Justify main content */
                 font-size: 11pt; /* Main content font size */
                 line-height: 1.5;
-                /* Adjust padding-left to account for the witness column and its rotated heading */
-                padding-left: calc(50mm + 15mm + 5mm); /* Witness content width + space for rotated heading + extra margin */
             }
             .print-main-content .tamasuk-title {
                 text-align: center;
@@ -277,15 +296,16 @@
             .print-signature-boxes {
                 position: absolute;
                 bottom: 20mm; /* Adjust as needed from bottom margin */
-                left: 50%;
-                transform: translateX(-50%);
+                right: 20mm; /* Align to the right margin */
                 display: flex;
-                width: 80%; /* Adjust width for print */
-                justify-content: space-around;
+                width: auto; /* Auto width to fit content */
+                gap: 20mm; /* Space between signatures */
+                justify-content: flex-end; /* Align signatures to the right */
+                padding-right: 10mm; /* Add some padding from the right edge */
             }
             .print-signature-box {
-                width: 150px;
-                height: 70px;
+                width: 40mm; /* Size of signature box */
+                height: 20mm;
                 border: 1px solid #000;
                 display: flex;
                 justify-content: center;
@@ -297,7 +317,7 @@
             .borrower-thumbprint-boxes {
                 position: absolute;
                 bottom: 20mm; /* Same bottom as signature boxes */
-                left: 25mm; /* Align with left margin */
+                left: 25mm; /* Align with the start of the left margin area */
                 display: flex;
                 gap: 10mm; /* Space between left and right thumbprint */
             }
@@ -306,6 +326,7 @@
                 height: 30mm;
                 border: 1px solid #000;
                 display: flex;
+                flex-direction: column; /* Stack बाँ/दाँ and box vertically */
                 justify-content: center;
                 align-items: center;
                 font-size: 0.8em;
@@ -527,8 +548,10 @@
         <pre id="formPreviewScreen" class="preview-content"></pre>
 
         <div id="printOutputArea" style="display: none;">
-            <div class="print-witness-column" id="printWitnessColumn">
+            <div class="print-left-margin-area">
                 <div class="rotated-witness-heading">साक्षीको नाम र विवरण</div>
+                <div class="print-witness-column" id="printWitnessColumn">
+                    </div>
             </div>
             <div class="print-main-content" id="printMainContent">
                 </div>
@@ -600,10 +623,13 @@
         const borrowerAddressTypeRadios = document.querySelectorAll('input[name="borrower_address_type"]');
         const borrowerPermanentFields = document.getElementById('borrower_permanent_address_fields');
         const borrowerTemporaryFields = document.getElementById('borrower_temporary_address_fields');
+        const borrowerTempLocalBodyTypeSelect = document.getElementById('borrower_temp_local_body_type');
+
 
         const lenderAddressTypeRadios = document.querySelectorAll('input[name="lender_address_type"]');
         const lenderPermanentFields = document.getElementById('lender_permanent_address_fields');
         const lenderTemporaryFields = document.getElementById('lender_temporary_address_fields');
+        const lenderTempLocalBodyTypeSelect = document.getElementById('lender_temp_local_body_type');
 
 
         let witnessCount = 0;
@@ -690,17 +716,23 @@
 
             // Helper to check if an address is sufficiently complete for display
             const isAddressFieldsFilled = (district, lbType, lbName, wardNo) => {
-                return (district && lbType && lbName && wardNo);
+                return (district !== '' && lbType !== '' && lbName !== '' && wardNo !== '');
             };
 
-            // Helper to get formatted core address part
+            // Helper to get formatted core address part with placeholders
             const getFormattedAddressString = (district, lbType, lbName, wardNo) => {
-                const lbPart = (lbType && lbType !== '') ? `${lbType}/${lbName}` : lbName;
-                const districtText = district ? `जिल्ला ${district}` : '............... जिल्ला';
-                const lbText = (lbType || lbName) ? `${lbPart}` : '............... गाउँपालिका/नगरपालिका/उप-महानगरपालिका/महानगरपालिका';
-                const wardText = wardNo ? `वडा नं. ${wardNo}` : 'वडा नं. ....';
+                const districtPart = district ? `जिल्ला ${district}` : '............... जिल्ला';
+                let localBodyPart = '';
+                if (lbType && lbName) {
+                    localBodyPart = `${lbType}/${lbName}`;
+                } else if (lbName) {
+                    localBodyPart = lbName;
+                } else {
+                    localBodyPart = '............... गाउँपालिका/नगरपालिका/उप-महानगरपालिका/महानगरपालिका';
+                }
+                const wardPart = wardNo ? `वडा नं. ${wardNo}` : 'वडा नं. ....';
 
-                return `${districtText}${lbText ? ` ${lbText}` : ''} ${wardText}`;
+                return `${districtPart} ${localBodyPart} ${wardPart}`;
             };
 
 
@@ -744,8 +776,6 @@
 
             // --- Generate Witness Block Content for Print ---
             let printWitnessContent = '';
-            // The rotated heading is now a fixed element, so no need to generate its content here.
-            // Just generate the list of witnesses.
             if (witnessCount > 0) {
                 for (let i = 1; i <= witnessCount; i++) {
                     const witnessName = document.getElementById(`witness_name_${i}`).value || '....................';
@@ -765,7 +795,7 @@
 `;
                 }
             }
-            printWitnessColumn.innerHTML = `<div class="rotated-witness-heading">साक्षीको नाम र विवरण</div>` + printWitnessContent;
+            printWitnessColumn.innerHTML = printWitnessContent;
 
 
             // --- Generate Main Content for Print ---
@@ -773,8 +803,8 @@
 <div class="tamasuk-title">तमसुक</div>
 
 <div class="tamasuk-passage">
-    आगे ${lenderFinalAddressString} भएका श्री ${lenderName} (हजुरबुबाको नाम ${lenderGrandparentName}), श्री ${lenderParentName} (बुवाको नाम), श्री ${lenderName} ले
-    ${borrowerFinalAddressString} निवासी श्री ${borrowerName} (हजुरबुबाको नाम ${borrowerGrandparentName}), श्री ${borrowerParentName} (बुवाको नाम), बाट मिति ${dateYear}/${dateMonth}/${dateDay} गते रु. ${loanAmountNum.toLocaleString('en-IN')} (अक्षेरुपीः ${loanAmountWords} मात्र) गर्नका बार्षिक ${interestRate}% का दरले ब्याज लगाई आगामी ${loanPeriodYear} वर्ष ${loanPeriodMonth} महिना गते सम्ममा रु. ${loanAmountNum.toLocaleString('en-IN')} (अक्षेरुपीः ${loanAmountWords} मात्र) को साँवा र ब्याज एकमुष्ट बुझाउने भाका राख्दै सो म्यादमा बुझाउन नसकी म्याद नाघ्यो भने प्रचलित नेपाल कानून बमोजिम मेरो घर घरानाबाट असूल उपर गरी लिनु भनी मेरो मनोमन राजी खुसी ${placeAgreed} (स्थान) बसी कपालि तमसुक लेखी तपाई साहुलाई दिए साक्षी बाँया किनाराको सदर इति संवत ${dateYear} साल ${dateMonth} महिना ${dateDay} रोज शुभम् ।
+    आगे ${lenderFinalAddressString} भएका श्री ${lenderName} (हजुरबुवाको नाम ${lenderGrandparentName}), श्री ${lenderParentName} (बुवाको नाम), श्री ${lenderName} ले
+    ${borrowerFinalAddressString} निवासी श्री ${borrowerName} (हजुरबुवाको नाम ${borrowerGrandparentName}), श्री ${borrowerParentName} (बुवाको नाम), बाट मिति ${dateYear}/${dateMonth}/${dateDay} गते रु. ${loanAmountNum.toLocaleString('en-IN')} (अक्षेरुपीः ${loanAmountWords} मात्र) गर्नका बार्षिक ${interestRate}% का दरले ब्याज लगाई आगामी ${loanPeriodYear} वर्ष ${loanPeriodMonth} महिना गते सम्ममा रु. ${loanAmountNum.toLocaleString('en-IN')} (अक्षेरुपीः ${loanAmountWords} मात्र) को साँवा र ब्याज एकमुष्ट बुझाउने भाका राख्दै सो म्यादमा बुझाउन नसकी म्याद नाघ्यो भने प्रचलित नेपाल कानून बमोजिम मेरो घर घरानाबाट असूल उपर गरी लिनु भनी मेरो मनोमन राजी खुसी ${placeAgreed} (स्थान) बसी कपालि तमसुक लेखी तपाई साहुलाई दिए साक्षी बाँया किनाराको सदर इति संवत ${dateYear} साल ${dateMonth} महिना ${dateDay} रोज शुभम् ।
 </div>
 
 ${additionalTerms ? `<div class="tamasuk-passage">\nअन्य शर्तहरू:\n${additionalTerms}\n</div>` : ''}
@@ -797,8 +827,8 @@ ${additionalTerms ? `<div class="tamasuk-passage">\nअन्य शर्तह
             const screenPreviewText = `
                                     तमसुक
 
-आगे ${lenderFinalAddressString} भएका श्री ${lenderName} (हजुरबुबाको नाम ${lenderGrandparentName}), श्री ${lenderParentName} (बुवाको नाम), श्री ${lenderName} ले
-${borrowerFinalAddressString} निवासी श्री ${borrowerName} (हजुरबुबाको नाम ${borrowerGrandparentName}), श्री ${borrowerParentName} (बुवाको नाम), बाट मिति ${dateYear}/${dateMonth}/${dateDay} गते रु. ${loanAmountNum.toLocaleString('en-IN')} (अक्षेरुपीः ${loanAmountWords} मात्र) गर्नका बार्षिक ${interestRate}% का दरले ब्याज लगाई आगामी ${loanPeriodYear} वर्ष ${loanPeriodMonth} महिना गते सम्ममा रु. ${loanAmountNum.toLocaleString('en-IN')} (अक्षेरुपीः ${loanAmountWords} मात्र) को साँवा र ब्याज एकमुष्ट बुझाउने भाका राख्दै सो म्यादमा बुझाउन नसकी म्याद नाघ्यो भने प्रचलित नेपाल कानून बमोजिम मेरो घर घरानाबाट असूल उपर गरी लिनु भनी मेरो मनोमन राजी खुसी ${placeAgreed} (स्थान) बसी कपालि तमसुक लेखी तपाई साहुलाई दिए साक्षी बाँया किनाराको सदर इति संवत ${dateYear} साल ${dateMonth} महिना ${dateDay} रोज शुभम् ।
+आगे ${lenderFinalAddressString} भएका श्री ${lenderName} (हजुरबुवाको नाम ${lenderGrandparentName}), श्री ${lenderParentName} (बुवाको नाम), श्री ${lenderName} ले
+${borrowerFinalAddressString} निवासी श्री ${borrowerName} (हजुरबुवाको नाम ${borrowerGrandparentName}), श्री ${borrowerParentName} (बुवाको नाम), बाट मिति ${dateYear}/${dateMonth}/${dateDay} गते रु. ${loanAmountNum.toLocaleString('en-IN')} (अक्षेरुपीः ${loanAmountWords} मात्र) गर्नका बार्षिक ${interestRate}% का दरले ब्याज लगाई आगामी ${loanPeriodYear} वर्ष ${loanPeriodMonth} महिना गते सम्ममा रु. ${loanAmountNum.toLocaleString('en-IN')} (अक्षेरुपीः ${loanAmountWords} मात्र) को साँवा र ब्याज एकमुष्ट बुझाउने भाका राख्दै सो म्यादमा बुझाउन नसकी म्याद नाघ्यो भने प्रचलित नेपाल कानून बमोजिम मेरो घर घरानाबाट असूल उपर गरी लिनु भनी मेरो मनोमन राजी खुसी ${placeAgreed} (स्थान) बसी कपालि तमसुक लेखी तपाई साहुलाई दिए साक्षी बाँया किनाराको सदर इति संवत ${dateYear} साल ${dateMonth} महिना ${dateDay} रोज शुभम् ।
 
 ${additionalTerms ? `\nअन्य शर्तहरू:\n${additionalTerms}\n` : ''}
 
@@ -822,9 +852,19 @@ ${screenWitnessContent}
                 if (radio.value === 'permanent') {
                     borrowerPermanentFields.style.display = 'block';
                     borrowerTemporaryFields.style.display = 'none';
+                    // Clear temporary fields when switching to permanent
+                    document.getElementById('borrower_temp_district').value = '';
+                    document.getElementById('borrower_temp_local_body_type').value = '';
+                    document.getElementById('borrower_temp_local_body_name').value = '';
+                    document.getElementById('borrower_temp_ward_no').value = '';
                 } else {
                     borrowerPermanentFields.style.display = 'none';
                     borrowerTemporaryFields.style.display = 'block';
+                    // Clear permanent fields when switching to temporary
+                    document.getElementById('borrower_district').value = '';
+                    document.getElementById('borrower_local_body_type').value = '';
+                    document.getElementById('borrower_local_body_name').value = '';
+                    document.getElementById('borrower_ward_no').value = '';
                 }
                 generatePreview();
             });
@@ -835,9 +875,19 @@ ${screenWitnessContent}
                 if (radio.value === 'permanent') {
                     lenderPermanentFields.style.display = 'block';
                     lenderTemporaryFields.style.display = 'none';
+                    // Clear temporary fields when switching to permanent
+                    document.getElementById('lender_temp_district').value = '';
+                    document.getElementById('lender_temp_local_body_type').value = '';
+                    document.getElementById('lender_temp_local_body_name').value = '';
+                    document.getElementById('lender_temp_ward_no').value = '';
                 } else {
                     lenderPermanentFields.style.display = 'none';
                     lenderTemporaryFields.style.display = 'block';
+                    // Clear permanent fields when switching to temporary
+                    document.getElementById('lender_district').value = '';
+                    document.getElementById('lender_local_body_type').value = '';
+                    document.getElementById('lender_local_body_name').value = '';
+                    document.getElementById('lender_ward_no').value = '';
                 }
                 generatePreview();
             });
