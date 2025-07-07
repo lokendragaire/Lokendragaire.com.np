@@ -561,10 +561,6 @@
             </div>
         </div>
 
-        <div class="print-signature-boxes" style="display: none;">
-            <div class="print-signature-box">दा.</div>
-            <div class="print-signature-box">बा.</div>
-        </div>
         <button onclick="window.print()" class="add-witness-btn mt-4 w-full bg-blue-600 hover:bg-blue-700">प्रिन्ट गर्नुहोस्</button>
     </div>
 
@@ -783,14 +779,14 @@
                     const witnessPhone = document.getElementById(`witness_phone_${i}`).value || '....................';
                     printWitnessContent += `
 <div class="witness-entry-print">
-    <div class="rotated-witness-heading">नाम:</div>
-    <div class="rotated-witness-heading">${witnessName}</div>
-    <div class="rotated-witness-heading">लेखक:</div>
-    <div class="rotated-witness-heading">${witnessWriter}</div>
-    <div class="rotated-witness-heading">फोन नं.:</div>
-    <div class="rotated-witness-heading">${witnessPhone}</div>
-    <div class="rotated-witness-heading">दस्तखत:</div>
-    <div class="rotated-witness-heading"></div>
+    <p> class="rotated-witness-heading">नाम:</p>
+   <p> class="rotated-witness-heading">${witnessName}</p>
+    <p> class="rotated-witness-heading">लेखक:</p>
+    <p> class="rotated-witness-heading">${witnessWriter}</p>
+    <p> class="rotated-witness-heading">फोन नं.:</p>
+    <p> class="rotated-witness-heading">${witnessPhone}</p>
+    <p> class="rotated-witness-heading">दस्तखत:</p>
+    <div class="rotated-witness-heading">.................</div>
 </div>
 `;
                 }
