@@ -779,14 +779,14 @@
                     const witnessPhone = document.getElementById(`witness_phone_${i}`).value || '....................';
                     printWitnessContent += `
 <div class="witness-entry-print">
-    <p> class="rotated-witness-heading">नाम:</p>
-   <p> class="rotated-witness-heading">${witnessName}</p>
-    <p> class="rotated-witness-heading">लेखक:</p>
-    <p> class="rotated-witness-heading">${witnessWriter}</p>
-    <p> class="rotated-witness-heading">फोन नं.:</p>
-    <p> class="rotated-witness-heading">${witnessPhone}</p>
-    <p> class="rotated-witness-heading">दस्तखत:</p>
+    <div class="rotated-witness-heading">नाम:</div>
+   <div class="rotated-witness-heading">${witnessName}</div>
+    <div class="rotated-witness-heading">फोन नं.:</div>
+   <div class="rotated-witness-heading">${witnessPhone}</div>
+    <div class="rotated-witness-heading">दस्तखत:</div>
     <div class="rotated-witness-heading">.................</div>
+   <div class="rotated-witness-heading">लेखक:</div>
+   <div class="rotated-witness-heading">${witnessWriter}</div>
 </div>
 `;
                 }
