@@ -119,11 +119,13 @@
             border-bottom: 1px dotted #999; /* Changed to dotted */
             padding-bottom: 2px;
             display: inline-block;
-            min-width: 50px; /* Smaller min-width to allow more dynamic sizing */
+            /* Removed min-width to allow dynamic sizing */
             text-align: left; /* Align text to left within the dotted line */
             box-sizing: border-box; /* Include padding and border in the element's total width and height */
             margin-left: 1px; /* Small space after label */
             margin-right: 1px; /* Small space before next element */
+            flex-grow: 1; /* Allow to grow and fill space */
+            flex-shrink: 1; /* Allow to shrink if needed */
         }
         .field-row {
             display: flex;
@@ -204,6 +206,27 @@
         }
         .header-top-section .right-col p {
             margin-bottom: 2px;
+        }
+        /* Ensure header text adjusts to single line if possible, or wraps gracefully */
+        .header-center p {
+            white-space: normal; /* Allow wrapping */
+            word-break: break-word; /* Break long words */
+            font-size: 0.875rem; /* text-sm */
+            line-height: 1.25rem; /* leading-5 */
+        }
+        .header-center p.text-lg {
+            font-size: 1.125rem; /* text-lg */
+            line-height: 1.75rem; /* leading-7 */
+        }
+
+        /* Adjust header flex item to give more space to center */
+        .header-flex-item.left, .header-flex-item.right {
+            flex-basis: 15%; /* Reduced side column width */
+            max-width: 15%;
+        }
+        .header-flex-item.center {
+            flex-basis: 70%; /* Increased center column width */
+            max-width: 70%;
         }
     </style>
 </head>
@@ -399,27 +422,21 @@
         <div id="previewSection" class="preview-section">
             <div class="watermark-container relative">
                 <!-- Watermark Image - Using emblem.png for watermark -->
-                <img src="https://placehold.co/600x400/ffffff/000000?text=WATERMARK" alt="Watermark" class="watermark">
+                <img src="emblem.png" alt="Watermark" class="watermark">
                 
                 <div class="letter-content text-gray-800 leading-relaxed text-sm">
                     <div class="header-main-row mb-4">
                         <!-- Emblem -->
                         <div class="header-flex-item left">
-                            <img src="https://placehold.co/100x100/ffffff/000000?text=EMBLEM" alt="Emblem" class="w-28 h-28 object-contain">
+                            <img src="emblem.png" alt="Emblem" class="w-28 h-28 object-contain">
                         </div>
                         
-                        <div class="header-flex-item text-center mt-4 header-center">
-                            <p class="text-lg font-bold"><span id="displayHeaderMunicipalityNepali" class="dotted-line-bottom"></span> नगरपालिका</p> 
-                            <p class="text-base font-bold"><span id="displayHeaderMunicipalityEnglish" class="dotted-line-bottom"></span> Municipality</p>
-                            <p class="text-base font-bold"><span id="displayHeaderWardOfficeNepali" class="dotted-line-bottom"></span> नं. वडा कार्यालय</p>
-                             <p class="text-base font-bold"><span id="displayHeaderWardOfficeEnglish" class="dotted-line-bottom"></span> No. Ward Office</p>
-                            <p class="text-base"><span class="dotted-line-bottom" id="displayDistrictNepali"></span> जिल्ला</p>
-                             <p class="text-base font-bold"><span id="displayDistrictEnglish" class="dotted-line-bottom"></span> District</p>
-                            <p class="text-base"><span class="dotted-line-bottom" id="displayProvinceNepali"></span> प्रदेश</p>
-                           <p class="text-base font-bold"><span class="dotted-line-bottom" id="displayProvinceEnglish"></span> Province</p>
-
-                            <p class="text-base">नेपाल</p>
-                            <p class="text-base">Nepal</p>
+                        <div class="header-flex-item text-center mt-4 header-center text-red-600">
+                            <p class="text-lg font-bold"><span id="displayHeaderMunicipalityNepali" class="dotted-line-bottom"></span> नगरपालिका, <span id="displayHeaderMunicipalityEnglish" class="dotted-line-bottom"></span> Municipality</p> 
+                            <p class="text-base font-bold"><span id="displayHeaderWardOfficeNepali" class="dotted-line-bottom"></span> नं. वडा कार्यालय, <span id="displayHeaderWardOfficeEnglish" class="dotted-line-bottom"></span> No. Ward Office</p>
+                            <p class="text-base"><span class="dotted-line-bottom" id="displayDistrictNepali"></span> जिल्ला, <span id="displayDistrictEnglish" class="dotted-line-bottom"></span> District</p>
+                            <p class="text-base"><span class="dotted-line-bottom" id="displayProvinceNepali"></span> प्रदेश, <span class="dotted-line-bottom" id="displayProvinceEnglish"></span> Province</p>
+                            <p class="text-base">नेपाल, Nepal</p>
                         </div>
 
                         <div class="header-flex-item right">
@@ -436,6 +453,9 @@
                             <p class="text-sm text-right">मिति(Date): <span id="displayDate" class="dotted-line-bottom"></span></p>
                         </div>
                     </div>
+
+                    <!-- New horizontal line -->
+                    <div class="border-b border-gray-400 my-4"></div>
 
                     <h3 class="text-xl font-bold text-center mb-6">जन्म प्रमाणिकरण (Birth Verification)</h3>
 
@@ -613,14 +633,14 @@
                     dobBS: document.getElementById('dobBS').value,
                     dobAD: document.getElementById('dobAD').value,
                     sex: document.getElementById('sex').value,
-                    permanentAddressMunicipalityNepali: document.getElementById('permanentAddressMunicipalityNepali').value, // Changed ID
+                    permanentAddressMunicipalityNepali: document.getElementById('permanentAddressMunicipalityNepali').value,
                     permanentAddressWardNo: document.getElementById('permanentAddressWardNo').value,
-                    permanentAddressDistrictNepali: document.getElementById('permanentAddressDistrictNepali').value, // New field
-                    permanentAddressMunicipalityEnglish: document.getElementById('permanentAddressMunicipalityEnglish').value, // Changed ID
+                    permanentAddressDistrictNepali: document.getElementById('permanentAddressDistrictNepali').value,
+                    permanentAddressMunicipalityEnglish: document.getElementById('permanentAddressMunicipalityEnglish').value,
                     permanentAddressDistrictEnglish: document.getElementById('permanentAddressDistrictEnglish').value,
                     birthPlaceMunicipalityNepali: document.getElementById('birthPlaceMunicipalityNepali').value,
                     birthPlaceWardNo: document.getElementById('birthPlaceWardNo').value,
-                    birthPlaceDistrictNepali: document.getElementById('birthPlaceDistrictNepali').value, // New field
+                    birthPlaceDistrictNepali: document.getElementById('birthPlaceDistrictNepali').value,
                     birthPlaceMunicipalityEnglish: document.getElementById('birthPlaceMunicipalityEnglish').value,
                     birthPlaceDistrictEnglish: document.getElementById('birthPlaceDistrictEnglish').value,
                     fatherFullNameNepali: document.getElementById('fatherFullNameNepali').value,
