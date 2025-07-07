@@ -14,17 +14,17 @@
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px; /* Reduced padding */
         }
         .container {
             background-color: #ffffff;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            padding: 30px;
+            padding: 20px; /* Reduced padding */
             width: 100%;
             max-width: 800px;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            margin-top: 10px; /* Reduced margin */
+            margin-bottom: 10px; /* Reduced margin */
         }
         .form-section, .preview-section {
             display: none; /* Hidden by default */
@@ -49,7 +49,7 @@
                 width: 210mm; /* A4 width */
                 min-height: 297mm; /* A4 height */
                 margin: 0 auto;
-                padding: 20mm; /* Standard A4 margins */
+                padding: 15mm; /* Reduced print padding */
                 page-break-after: always; /* Ensure each letter starts on a new page if multiple */
                 position: relative; /* For watermark positioning */
             }
@@ -119,8 +119,9 @@
             border-bottom: 1px dotted #999; /* Changed to dotted */
             padding-bottom: 2px;
             display: inline-block;
-            min-width: 120px; /* Ensure line is visible even if content is short */
+            min-width: 50px; /* Smaller min-width to allow more dynamic sizing */
             text-align: left; /* Align text to left within the dotted line */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
         }
         .field-row {
             display: flex;
@@ -135,8 +136,8 @@
         }
         .field-value {
             flex-grow: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            /* Removed overflow and text-overflow to allow natural wrapping */
+            /* white-space: normal; */ /* Allow text to wrap */
         }
         .header-top-right p {
             margin-bottom: 2px;
@@ -150,6 +151,24 @@
         .header-right-align {
             text-align: right;
         }
+        .header-flex-item {
+            flex-basis: 33.33%; /* Approx one-third width for each section */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center align items in the middle column */
+        }
+        .header-flex-item.left {
+            align-items: flex-start;
+        }
+        .header-flex-item.right {
+            align-items: flex-end;
+        }
+        .header-main-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -159,8 +178,12 @@
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">जन्म प्रमाणिकरण विवरण प्रविष्ट गर्नुहोस्</h2>
             <form id="letterForm" class="space-y-6">
                 <div>
-                    <label for="municipality" class="block text-sm font-medium text-gray-700">नगरपालिका/महानगरपालिका:</label>
-                    <input type="text" id="municipality" name="municipality" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="नगरपालिका/महानगरपालिका प्रविष्ट गर्नुहोस्">
+                    <label for="municipalityNepali" class="block text-sm font-medium text-gray-700">नगरपालिका/महानगरपालिका (नेपाली):</label>
+                    <input type="text" id="municipalityNepali" name="municipalityNepali" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="नगरपालिका/महानगरपालिका नेपालीमा प्रविष्ट गर्नुहोस्">
+                </div>
+                <div>
+                    <label for="municipalityEnglish" class="block text-sm font-medium text-gray-700">Municipality (English):</label>
+                    <input type="text" id="municipalityEnglish" name="municipalityEnglish" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Municipality name in English">
                 </div>
                 <div>
                     <label for="wardOffice" class="block text-sm font-medium text-gray-700">वडा कार्यालय:</label>
@@ -299,25 +322,28 @@
                 <img src="emblem.png" alt="Watermark" class="watermark">
                 
                 <div class="letter-content text-gray-800 leading-relaxed text-sm">
-                    <div class="flex justify-between items-start mb-4">
+                    <div class="header-main-row mb-4">
                         <!-- Emblem -->
-                        <img src="emblem.png" alt="Emblem" class="w-28 h-28 object-contain">
-                        
-                        <div class="flex-grow text-center mt-4 header-center">
-                            <p class="text-lg font-bold"><span id="displayHeaderMunicipality" class="dotted-line-bottom"></span> नगरपालिका</p>
-                            <p class="text-base font-bold"><span id="displayHeaderWardOffice" class="dotted-line-bottom"></span> वडा कार्यालय</p>
-                            <p class="text-base">जिल्ला (<span id="displayDistrict" class="dotted-line-bottom"></span>)</p>
-                            <p class="text-base">प्रदेश (<span id="displayProvince" class="dotted-line-bottom"></span>)</p>
-                            <p class="text-base">नेपाल</p>
+                        <div class="header-flex-item left">
+                            <img src="emblem.png" alt="Emblem" class="w-28 h-28 object-contain">
                         </div>
-
-                        <!-- Right section for Ref.No, Des.No, Date -->
-                        <div class="flex flex-col items-end mt-4 header-right-section" style="width: 250px;"> 
-                            <p class="text-sm w-full text-left">प.सं. <span id="displayRefNo" class="dotted-line-bottom"></span></p>
+                        
+                        <div class="header-flex-item text-center mt-4 header-center">
+                            <p class="text-lg font-bold"><span id="displayHeaderMunicipalityNepali" class="dotted-line-bottom"></span> नगरपालिका</p>
+                            <p class="text-base font-bold"><span id="displayHeaderMunicipalityEnglish" class="dotted-line-bottom"></span></p>
+                            <p class="text-base font-bold"><span id="displayHeaderWardOffice" class="dotted-line-bottom"></span> नं. वडा कार्यालय</p>
+                            <p class="text-base"><span id="displayDistrict" class="dotted-line-bottom"></span> जिल्ला</p>
+                            <p class="text-base"><span id="displayProvince" class="dotted-line-bottom"></span> प्रदेश</p>
+                            <p class="text-base">नेपाल</p>
+                            <p class="text-sm header-left-align mt-2">प.सं. <span id="displayRefNo" class="dotted-line-bottom"></span></p>
                             <div class="flex justify-between w-full items-end">
                                 <p class="text-sm text-left">चलानी नं <span id="displayDesNo" class="dotted-line-bottom"></span></p>
                                 <p class="text-sm text-right">मिति: <span id="displayDate" class="dotted-line-bottom"></span></p>
                             </div>
+                        </div>
+
+                        <div class="header-flex-item right">
+                            <!-- Empty div to push content to center/left -->
                         </div>
                     </div>
 
@@ -447,71 +473,73 @@
 
                 // Get form data
                 const formData = {
-                    municipality: document.getElementById('municipality').value,
+                    municipalityNepali: document.getElementById('municipalityNepali').value,
+                    municipalityEnglish: document.getElementById('municipalityEnglish').value,
                     wardOffice: document.getElementById('wardOffice').value,
                     district: document.getElementById('district').value,
                     province: document.getElementById('province').value,
                     refNo: document.getElementById('refNo').value,
-                    desNo: document.getElementById('desNo').value, // New field
+                    desNo: document.getElementById('desNo').value,
                     date: document.getElementById('date').value,
                     applicantName: document.getElementById('applicantName').value,
                     verifiedPersonName: document.getElementById('verifiedPersonName').value,
                     fullName: document.getElementById('fullName').value,
-                    dobBS: document.getElementById('dobBS').value, // New field
-                    dobAD: document.getElementById('dobAD').value, // New field
+                    dobBS: document.getElementById('dobBS').value,
+                    dobAD: document.getElementById('dobAD').value,
                     sex: document.getElementById('sex').value,
                     permanentAddress: document.getElementById('permanentAddress').value,
                     permanentWardNo: document.getElementById('permanentWardNo').value,
                     birthPlace: document.getElementById('birthPlace').value,
                     birthMunicipalityWardNo: document.getElementById('birthMunicipalityWardNo').value,
                     birthDistrict: document.getElementById('birthDistrict').value,
-                    fatherFullNameNepali: document.getElementById('fatherFullNameNepali').value, // New field
-                    fatherFullNameEnglish: document.getElementById('fatherFullNameEnglish').value, // New field
-                    fatherIdType: document.getElementById('fatherIdType').value, // New field
-                    fatherIdNumber: document.getElementById('fatherIdNumber').value, // New field
-                    motherFullNameNepali: document.getElementById('motherFullNameNepali').value, // New field
-                    motherFullNameEnglish: document.getElementById('motherFullNameEnglish').value, // New field
-                    motherIdType: document.getElementById('motherIdType').value, // New field
-                    motherIdNumber: document.getElementById('motherIdNumber').value, // New field
-                    wardChairpersonNameNepali: document.getElementById('wardChairpersonNameNepali').value, // New field
-                    wardChairpersonNameEnglish: document.getElementById('wardChairpersonNameEnglish').value, // New field
+                    fatherFullNameNepali: document.getElementById('fatherFullNameNepali').value,
+                    fatherFullNameEnglish: document.getElementById('fatherFullNameEnglish').value,
+                    fatherIdType: document.getElementById('fatherIdType').value,
+                    fatherIdNumber: document.getElementById('fatherIdNumber').value,
+                    motherFullNameNepali: document.getElementById('motherFullNameNepali').value,
+                    motherFullNameEnglish: document.getElementById('motherFullNameEnglish').value,
+                    motherIdType: document.getElementById('motherIdType').value,
+                    motherIdNumber: document.getElementById('motherIdNumber').value,
+                    wardChairpersonNameNepali: document.getElementById('wardChairpersonNameNepali').value,
+                    wardChairpersonNameEnglish: document.getElementById('wardChairpersonNameEnglish').value,
                 };
 
                 console.log('Form Data:', formData);
 
                 // Populate preview section with form data
-                document.getElementById('displayHeaderMunicipality').textContent = formData.municipality;
+                document.getElementById('displayHeaderMunicipalityNepali').textContent = formData.municipalityNepali;
+                document.getElementById('displayHeaderMunicipalityEnglish').textContent = formData.municipalityEnglish;
                 document.getElementById('displayHeaderWardOffice').textContent = formData.wardOffice;
                 document.getElementById('displayDistrict').textContent = formData.district;
                 document.getElementById('displayProvince').textContent = formData.province;
                 document.getElementById('displayRefNo').textContent = formData.refNo;
-                document.getElementById('displayDesNo').textContent = formData.desNo; // Populate new field
+                document.getElementById('displayDesNo').textContent = formData.desNo;
                 document.getElementById('displayDate').textContent = formData.date;
                 document.getElementById('displayApplicantName').textContent = formData.applicantName;
                 document.getElementById('displayVerifiedPersonName').textContent = formData.verifiedPersonName;
                 document.getElementById('displayVerifiedPersonNameAgain').textContent = formData.verifiedPersonName;
                 document.getElementById('displayVerifiedPersonNameThird').textContent = formData.verifiedPersonName;
                 document.getElementById('displayFullName').textContent = formData.fullName;
-                document.getElementById('displayDobBS').textContent = formData.dobBS; // Populate new field
-                document.getElementById('displayDobAD').textContent = formData.dobAD; // Populate new field
-                document.getElementById('displaySex').textContent = `${formData.sex}/${getSexEnglish(formData.sex)}`; // Format sex
+                document.getElementById('displayDobBS').textContent = formData.dobBS;
+                document.getElementById('displayDobAD').textContent = formData.dobAD;
+                document.getElementById('displaySex').textContent = `${formData.sex}/${getSexEnglish(formData.sex)}`;
                 document.getElementById('displayPermanentAddress').textContent = formData.permanentAddress;
                 document.getElementById('displayPermanentWardNo').textContent = formData.permanentWardNo;
                 document.getElementById('displayBirthPlace').textContent = formData.birthPlace;
                 document.getElementById('displayBirthMunicipalityWardNo').textContent = formData.birthMunicipalityWardNo;
                 document.getElementById('displayBirthDistrict').textContent = formData.birthDistrict;
-                document.getElementById('displayFatherFullNameNepali').textContent = formData.fatherFullNameNepali; // Populate new field
-                document.getElementById('displayFatherFullNameEnglish').textContent = formData.fatherFullNameEnglish; // Populate new field
-                document.getElementById('displayFatherIdTypeNepali').textContent = formData.fatherIdType; // Populate new field
-                document.getElementById('displayFatherIdTypeEnglish').textContent = getIdTypeEnglish(formData.fatherIdType); // Populate new field
-                document.getElementById('displayFatherIdNumber').textContent = formData.fatherIdNumber; // Populate new field
-                document.getElementById('displayMotherFullNameNepali').textContent = formData.motherFullNameNepali; // Populate new field
-                document.getElementById('displayMotherFullNameEnglish').textContent = formData.motherFullNameEnglish; // Populate new field
-                document.getElementById('displayMotherIdTypeNepali').textContent = formData.motherIdType; // Populate new field
-                document.getElementById('displayMotherIdTypeEnglish').textContent = getIdTypeEnglish(formData.motherIdType); // Populate new field
-                document.getElementById('displayMotherIdNumber').textContent = formData.motherIdNumber; // Populate new field
-                document.getElementById('displayWardChairpersonNameNepali').textContent = formData.wardChairpersonNameNepali; // Populate new field
-                document.getElementById('displayWardChairpersonNameEnglish').textContent = formData.wardChairpersonNameEnglish; // Populate new field
+                document.getElementById('displayFatherFullNameNepali').textContent = formData.fatherFullNameNepali;
+                document.getElementById('displayFatherFullNameEnglish').textContent = formData.fatherFullNameEnglish;
+                document.getElementById('displayFatherIdTypeNepali').textContent = formData.fatherIdType;
+                document.getElementById('displayFatherIdTypeEnglish').textContent = getIdTypeEnglish(formData.fatherIdType);
+                document.getElementById('displayFatherIdNumber').textContent = formData.fatherIdNumber;
+                document.getElementById('displayMotherFullNameNepali').textContent = formData.motherFullNameNepali;
+                document.getElementById('displayMotherFullNameEnglish').textContent = formData.motherFullNameEnglish;
+                document.getElementById('displayMotherIdTypeNepali').textContent = formData.motherIdType;
+                document.getElementById('displayMotherIdTypeEnglish').textContent = getIdTypeEnglish(formData.motherIdType);
+                document.getElementById('displayMotherIdNumber').textContent = formData.motherIdNumber;
+                document.getElementById('displayWardChairpersonNameNepali').textContent = formData.wardChairpersonNameNepali;
+                document.getElementById('displayWardChairpersonNameEnglish').textContent = formData.wardChairpersonNameEnglish;
 
 
                 // Show preview and hide form
