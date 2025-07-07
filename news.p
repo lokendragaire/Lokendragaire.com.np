@@ -1,7 +1,7 @@
 import React, { useEffect, useState, createContext, useContext } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, deleteDoc, limit } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, deleteDoc, limit, where } from 'firebase/firestore'; // 'where' added here
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 // Create a context for Firebase and User data
@@ -170,14 +170,7 @@ const Header = () => {
           </ul>
         </nav>
       )}
-      <style jsx>{`
-        .nav-button {
-          @apply text-lg font-medium hover:text-blue-200 transition duration-300 ease-in-out px-3 py-2 rounded-md;
-        }
-        .nav-button-mobile {
-          @apply text-lg font-medium hover:bg-blue-600 transition duration-300 ease-in-out w-full text-left p-3 rounded-md;
-        }
-      `}</style>
+      {/* Removed the style jsx block as it's not standard React in this Canvas environment */}
     </header>
   );
 };
@@ -788,4 +781,3 @@ const AddAdForm = () => {
     </div>
   );
 };
-v
