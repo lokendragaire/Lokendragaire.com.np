@@ -435,9 +435,11 @@
 
                 <h3 class="text-xl font-bold text-center mb-6">सामाजिक सुरक्षा भत्ता सम्बन्धमा।</h3>
 
+                <p class="mb-1">
+                    <span style="margin-left: 2em;"></span>श्री <strong><span id="displayBankName" class="dotted-line-bottom"></span></strong> गलकोट शाखा,
+                </p>
                 <p class="mb-4">
-                    <span style="margin-left: 2em;"></span>श्री <strong><span id="displayBankName" class="dotted-line-bottom"></span></strong>
-                    गलकोट शाखा, गलकोट, बागलुङ।
+                    <span style="margin-left: 2em;"></span>गलकोट, बागलुङ।
                 </p>
 
                 <p class="mb-4">
@@ -462,9 +464,10 @@
                     </div>
                 </div>
 
-                <div class="mt-8 border border-gray-400 p-3 rounded-md text-xs">
-                    <p class="font-bold">नोट:</p>
-                    <p>यो पत्र सामाजिक सुरक्षा भत्ता वितरण प्रयोजनका लागि मात्र मान्य हुनेछ।</p>
+                <!-- Footer Note Section -->
+                <div class="mt-8 border border-gray-400 p-3 rounded-md text-xs text-center">
+                    <p class="font-bold">“कृषि‚पर्यटन‚ जलस्रोत‚स्थानीय सीप र पूर्वाधार: समृद्ध गल्कोट निर्माणको मूल आधार”</p>
+                    <p class="mt-1">"galkotmunicipality@gmail.com|facebook.com/hellogalkot|Twitter.com/hellogalkot|www.galkotmun.gov.np"</p>
                 </div>
             </div>
         </div>
@@ -767,7 +770,7 @@
 
                 if (parts.length !== 3 || parts[0].length !== 4 || parts[1].length !== 2 || parts[2].length !== 2) {
                     if (!missingFields.includes(requiredFields[fieldId])) {
-                        missingFields.push(`${requiredFields[fieldId]} (ढाँचा YYYY/MM/DD हुनुपर्छ)`); /* Corrected format string */
+                        missingFields.push(`${requiredFields[fieldId]} (ढाँचा YYYY/MM/DD हुनुपर्छ)`);
                     }
                     dateInput.style.borderColor = 'red';
                     allFieldsValid = false;
@@ -788,7 +791,7 @@
                 }
             });
 
-            const errorMessageDiv = document.getElementById('errorMessage'); /* This is now unused, replaced by errorModal */
+            const errorMessageDiv = document.getElementById('errorMessage');
             const formSection = document.getElementById('formSection');
             const previewSection = document.getElementById('previewSection');
             const buttonsContainer = document.querySelector('.buttons-container');
