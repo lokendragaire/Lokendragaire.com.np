@@ -115,6 +115,9 @@
         .letter-content {
             position: relative;
             z-index: 10;
+            display: flex; /* Make it a flex container */
+            flex-direction: column; /* Stack children vertically */
+            flex-grow: 1; /* Allow it to grow and fill the .a4-paper height */
         }
         /* Custom styles for dotted lines and layout */
         .dotted-line-bottom {
@@ -238,6 +241,18 @@
             border-radius: 0.5rem;
             padding: 1.5rem;
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+        /* New flex class to push content down */
+        .flex-grow-content {
+            flex-grow: 1; /* This div will expand and push the footer down */
+            display: flex; /* Make its content also flex to manage internal spacing if needed */
+            flex-direction: column;
+            justify-content: flex-start; /* Align content to top within this growing div */
+        }
+        /* Ensure the hr is positioned correctly at the bottom of the flex-grow-content */
+        .flex-grow-content hr {
+            margin-top: auto; /* This will push the hr to the bottom of flex-grow-content */
         }
     </style>
 </head>
@@ -398,74 +413,77 @@
             </div>
                 
             <div class="letter-content text-gray-800 leading-relaxed text-sm">
-                <div class="header-main-row mb-4">
-                    <!-- Emblem -->
-                    <div class="header-flex-item left">
-                        <!-- NOTE: तपाईंको emblem.png फाइललाई वेबमा होस्ट (जस्तै GitHub Pages, Imgur, वा तपाईंको आफ्नै सर्भर) गरेपछि,
-                            src="emblem.png" को सट्टा होस्ट गरिएको URL प्रयोग गर्नुहोस्।
-                            उदाहरण: src="https://raw.githubusercontent.com/your-username/your-repo/main/emblem.png"
-                        -->
-                        <img src="emblem.png" alt="Emblem" class="w-28 h-28 object-contain" onerror="this.onerror=null;this.src='https://placehold.co/80x80/E0E0E0/000000?text=LOGO'; console.error('Error loading logo image.');">
-                    </div>
-                    
-                    <div class="header-flex-item center text-red-600">
-                        <p class="text-lg font-bold">गलकोट नगरपालिका</p>
-                        <p class="text-base font-bold"><span id="displayOfficeName"></span> कार्यालय</p>
-                        <p class="text-base"><span id="displayOfficeAddress"></span>, बागलुङ</p>
-                        <p class="text-base">गण्डकी प्रदेश, नेपाल</p>
+                <!-- This div will contain all content that should push the footer down -->
+                <div class="flex-grow-content">
+                    <div class="header-main-row mb-4">
+                        <!-- Emblem -->
+                        <div class="header-flex-item left">
+                            <!-- NOTE: तपाईंको emblem.png फाइललाई वेबमा होस्ट (जस्तै GitHub Pages, Imgur, वा तपाईंको आफ्नै सर्भर) गरेपछि,
+                                src="emblem.png" को सट्टा होस्ट गरिएको URL प्रयोग गर्नुहोस्।
+                                उदाहरण: src="https://raw.githubusercontent.com/your-username/your-repo/main/emblem.png"
+                            -->
+                            <img src="emblem.png" alt="Emblem" class="w-28 h-28 object-contain" onerror="this.onerror=null;this.src='https://placehold.co/80x80/E0E0E0/000000?text=LOGO'; console.error('Error loading logo image.');">
+                        </div>
+                        
+                        <div class="header-flex-item center text-red-600">
+                            <p class="text-lg font-bold">गलकोट नगरपालिका</p>
+                            <p class="text-base font-bold"><span id="displayOfficeName"></span> कार्यालय</p>
+                            <p class="text-base"><span id="displayOfficeAddress"></span>, बागलुङ</p>
+                            <p class="text-base">गण्डकी प्रदेश, नेपाल</p>
+                        </div>
+
+                        <div class="header-flex-item right">
+                            <!-- Empty div to push content to center/left -->
+                        </div>
                     </div>
 
-                    <div class="header-flex-item right">
-                        <!-- Empty div to push content to center/left -->
+                    <div class="grid grid-cols-3 w-full items-end mb-6">
+                        <div class="col-span-2 flex flex-col text-left">
+                            <p class="text-sm">प.सं.(Ref.No.) <span id="displayPatraSankhya" class="dotted-line-bottom"></span></p>
+                            <p class="text-sm">च.नं.(Des.No.) <span id="displayChalanNo" class="dotted-line-bottom"></span></p>
+                        </div>
+                        <div class="col-span-1 flex flex-col justify-end h-full">
+                            <p class="text-sm text-right">मिति(Date): <span id="displayMiti" class="dotted-line-bottom"></span></p>
+                        </div>
                     </div>
+
+                    <!-- New horizontal line -->
+                    <div class="border-b border-gray-400 my-4"></div>
+
+                    <h3 class="text-xl font-bold text-center mb-6">सामाजिक सुरक्षा भत्ता सम्बन्धमा।</h3>
+
+                    <p class="mb-1">
+                        <span style="margin-left: 2em;"></span>श्री <strong><span id="displayBankName" class="dotted-line-bottom"></span></strong> गलकोट शाखा,
+                    </p>
+                    <p class="mb-4">
+                        <span style="margin-left: 2em;"></span>गलकोट, बागलुङ।
+                    </p>
+
+                    <p class="mb-4">
+                        <span style="margin-left: 2em;"></span>उपरोक्त विषयमा गलकोट नगरपालिका वडा नं.<span id="displayWardNo" class="dotted-line-bottom"></span>&nbsp;निवासी
+                        सामाजिक सुरक्षा भत्ता परिचयपत्र नं.<span id="displaySsbId" class="dotted-line-bottom"></span>&nbsp;भएका श्री <span id="displayPersonName" class="dotted-line-bottom"></span>&nbsp;को
+                        मिति <span id="displayDeathDate" class="dotted-line-bottom"></span>&nbsp;मा मृत्यु भएको र मिति<span id="displayDeathRegDate" class="dotted-line-bottom"></span>&nbsp;मा
+                        मृत्युदर्ता गरी लगत कट्टा गरिएको हुदाँ निज जिवित हुदाँ सम्मको प्राप्त
+                        गर्नुपर्ने आ.व.(<span id="displayFiscalYear" class="dotted-line-bottom"></span>)&nbsp;को <span id="displayQuarter" class="dotted-line-bottom"></span>&nbsp;त्रैमासिकको
+                        रकम रु. <span id="displayAmount" class="dotted-line-bottom"></span>/-&nbsp;निजको <span id="displayRelationship" class="dotted-line-bottom"></span>&nbsp;<span id="displayRelatedPersonName" class="dotted-line-bottom"></span>&nbsp;(ना.प्र.नं. <span id="displayCitizenshipNo" class="dotted-line-bottom"></span>,&nbsp;जारी मिति<span id="displayCitizenshipIssueDate" class="dotted-line-bottom"></span>)लाइ
+                        भुक्तानी दिनुहुन साथै मृत्यु मिति पछी खातामा बाँकी रहन आउने रकम रु. <span id="displayRemainingAmount" class="dotted-line-bottom"></span>/-
+                        (अक्षेरुपीःरु<span id="displayRemainingAmountAksharu" class="dotted-line-bottom"></span>मात्र)&nbsp;<span id="displayDepositAccount" class="dotted-line-bottom"></span>मा दाखिला गरिदिनुहुन अनुरोध
+                        छ।
+                    </p>
+
+                    <div class="mt-12 flex justify-end items-end">
+                        <div class="text-right">
+                            <p class="font-bold">सही (Signature):</p>
+                            <p class="mt-4 font-bold">नाम:</p>
+                            <p class="font-semibold dotted-line-bottom" id="displaySignerName"></p>
+                            <p class="mt-4 font-bold">पद:</p>
+                            <p class="font-semibold dotted-line-bottom" id="displaySignerPost"></p>
+                        </div>
+                    </div>
+
+                    <!-- Third horizontal line -->
+                    <hr class="border-t border-gray-400 my-4">
                 </div>
-
-                <div class="grid grid-cols-3 w-full items-end mb-6">
-                    <div class="col-span-2 flex flex-col text-left">
-                        <p class="text-sm">प.सं.(Ref.No.) <span id="displayPatraSankhya" class="dotted-line-bottom"></span></p>
-                        <p class="text-sm">च.नं.(Des.No.) <span id="displayChalanNo" class="dotted-line-bottom"></span></p>
-                    </div>
-                    <div class="col-span-1 flex flex-col justify-end h-full">
-                        <p class="text-sm text-right">मिति(Date): <span id="displayMiti" class="dotted-line-bottom"></span></p>
-                    </div>
-                </div>
-
-                <!-- New horizontal line -->
-                <div class="border-b border-gray-400 my-4"></div>
-
-                <h3 class="text-xl font-bold text-center mb-6">सामाजिक सुरक्षा भत्ता सम्बन्धमा।</h3>
-
-                <p class="mb-1">
-                    <span style="margin-left: 2em;"></span>श्री <strong><span id="displayBankName" class="dotted-line-bottom"></span></strong> गलकोट शाखा,
-                </p>
-                <p class="mb-4">
-                    <span style="margin-left: 2em;"></span>गलकोट, बागलुङ।
-                </p>
-
-                <p class="mb-4">
-                    <span style="margin-left: 2em;"></span>उपरोक्त विषयमा गलकोट नगरपालिका वडा नं.<span id="displayWardNo" class="dotted-line-bottom"></span>&nbsp;निवासी
-                    सामाजिक सुरक्षा भत्ता परिचयपत्र नं.<span id="displaySsbId" class="dotted-line-bottom"></span>&nbsp;भएका श्री <span id="displayPersonName" class="dotted-line-bottom"></span>&nbsp;को
-                    मिति <span id="displayDeathDate" class="dotted-line-bottom"></span>&nbsp;मा मृत्यु भएको र मिति<span id="displayDeathRegDate" class="dotted-line-bottom"></span>&nbsp;मा
-                    मृत्युदर्ता गरी लगत कट्टा गरिएको हुदाँ निज जिवित हुदाँ सम्मको प्राप्त
-                    गर्नुपर्ने आ.व.(<span id="displayFiscalYear" class="dotted-line-bottom"></span>)&nbsp;को <span id="displayQuarter" class="dotted-line-bottom"></span>&nbsp;त्रैमासिकको
-                    रकम रु. <span id="displayAmount" class="dotted-line-bottom"></span>/-&nbsp;निजको <span id="displayRelationship" class="dotted-line-bottom"></span>&nbsp;<span id="displayRelatedPersonName" class="dotted-line-bottom"></span>&nbsp;(ना.प्र.नं. <span id="displayCitizenshipNo" class="dotted-line-bottom"></span>,&nbsp;जारी मिति<span id="displayCitizenshipIssueDate" class="dotted-line-bottom"></span>)लाइ
-                    भुक्तानी दिनुहुन साथै मृत्यु मिति पछी खातामा बाँकी रहन आउने रकम रु. <span id="displayRemainingAmount" class="dotted-line-bottom"></span>/-
-                    (अक्षेरुपीःरु<span id="displayRemainingAmountAksharu" class="dotted-line-bottom"></span>मात्र)&nbsp;<span id="displayDepositAccount" class="dotted-line-bottom"></span>मा दाखिला गरिदिनुहुन अनुरोध
-                    छ।
-                </p>
-
-                <div class="mt-12 flex justify-end items-end">
-                    <div class="text-right">
-                        <p class="font-bold">सही (Signature):</p>
-                        <p class="mt-4 font-bold">नाम:</p>
-                        <p class="font-semibold dotted-line-bottom" id="displaySignerName"></p>
-                        <p class="mt-4 font-bold">पद:</p>
-                        <p class="font-semibold dotted-line-bottom" id="displaySignerPost"></p>
-                    </div>
-                </div>
-
-                <!-- Third horizontal line -->
-                <hr class="border-t border-gray-400 my-4 mt-auto">
 
                 <!-- Footer Note Section - Moved to bottom and removed border -->
                 <div class="text-xs text-center">
@@ -539,7 +557,7 @@
             const tens = ['', '', 'बिस', 'तीस', 'चालीस', 'पचास', 'साठी', 'सत्तरी', 'असी', 'नब्बे'];
             const specialTens = {
                 21: 'एक्काइस', 22: 'बाइस', 23: 'तेइस', 24: 'चौबिस', 25: 'पच्चिस', 26: 'छब्बिस', 27: 'सत्ताइस', 28: 'अठ्ठाइस', 29: 'उनन्तिस',
-                31: 'एकतीस', 32: 'बत्तीस', 33: 'teत्तीस', 34: 'चौंतीस', 35: 'पैंतीस', 36: 'छत्तिस', 37: 'सैंतीस', 38: 'अठतीस', 39: 'उनन्चालीस',
+                31: 'एकतीस', 32: 'बत्तीस', 33: 'तेत्तीस', 34: 'चौंतीस', 35: 'पैंतीस', 36: 'छत्तिस', 37: 'सैंतीस', 38: 'अठतीस', 39: 'उनन्चालीस',
                 41: 'एकचालीस', 42: 'बयालीस', 43: 'त्रियालीस', 44: 'चौवालीस', 45: 'पैंतालीस', 46: 'छयालीस', 47: 'सन्तालीस', 48: 'अठ्चालीस', 49: 'उनन्चास',
                 51: 'एकाउन्न', 52: 'बाउन्न', 53: 'तिरपन्न', 54: 'चौवन्न', 55: 'पचपन्न', 56: 'छप्पन्न', 57: 'सन्ताउन्न', 58: 'अन्ठाउन्न', 59: 'उनन्साठी',
                 61: 'एकसट्ठी', 62: 'बासट्ठी', 63: 'त्रिसट्ठी', 64: 'चौंसट्ठी', 65: 'पैंसट्ठी', 66: 'छैसट्ठी', 67: 'सड्सट्ठी', 68: 'अठ्सट्ठी', 69: 'उनन्सत्तरी',
@@ -773,7 +791,7 @@
 
                 if (parts.length !== 3 || parts[0].length !== 4 || parts[1].length !== 2 || parts[2].length !== 2) {
                     if (!missingFields.includes(requiredFields[fieldId])) {
-                        missingFields.push(`${requiredFields[fieldId]} (ढाँचा Wochenende/MM/DD हुनुपर्छ)`);
+                        missingFields.push(`${requiredFields[fieldId]} (ढाँचा YYYY/MM/DD हुनुपर्छ)`); /* Corrected format string */
                     }
                     dateInput.style.borderColor = 'red';
                     allFieldsValid = false;
