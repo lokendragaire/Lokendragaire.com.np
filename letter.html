@@ -53,7 +53,7 @@
                 page-break-after: always;
                 position: relative;
             }
-            .form-section, .buttons-container {
+            .form-section, .buttons-container, #errorModal { /* Hide error modal during print */
                 display: none !important;
             }
             .preview-section {
@@ -226,6 +226,18 @@
         .header-flex-item.center {
             flex-basis: 70%;
             max-width: 70%;
+        }
+
+        /* Error Modal Styles */
+        #errorModal {
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+        #errorModal > div {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
         }
     </style>
 </head>
@@ -464,6 +476,15 @@
             <button id="backBtn" class="px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-200">
                 पछाडि जानुहोस्
             </button>
+        </div>
+    </div>
+
+    <!-- Error Message Modal -->
+    <div id="errorModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
+            <h3 class="text-xl font-bold text-red-600 mb-4">त्रुटि !</h3>
+            <p id="errorModalMessage" class="text-gray-700 mb-6"></p>
+            <button id="closeErrorModal" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full">बन्द गर्नुहोस्</button>
         </div>
     </div>
 
@@ -746,7 +767,7 @@
 
                 if (parts.length !== 3 || parts[0].length !== 4 || parts[1].length !== 2 || parts[2].length !== 2) {
                     if (!missingFields.includes(requiredFields[fieldId])) {
-                        missingFields.push(`${requiredFields[fieldId]} (ढाँचा YYYY/MM/DD हुनुपर्s)`);
+                        missingFields.push(`${requiredFields[fieldId]} (ढाँचा YYYY/MM/DD हुनुपर्छ)`); /* Corrected format string */
                     }
                     dateInput.style.borderColor = 'red';
                     allFieldsValid = false;
@@ -767,13 +788,16 @@
                 }
             });
 
-            const errorMessageDiv = document.getElementById('errorMessage');
+            const errorMessageDiv = document.getElementById('errorMessage'); /* This is now unused, replaced by errorModal */
             const formSection = document.getElementById('formSection');
             const previewSection = document.getElementById('previewSection');
             const buttonsContainer = document.querySelector('.buttons-container');
+            const errorModal = document.getElementById('errorModal');
+            const errorModalMessage = document.getElementById('errorModalMessage');
+            const closeErrorModal = document.getElementById('closeErrorModal');
 
             if (allFieldsValid) {
-                errorMessageDiv.classList.add('hidden');
+                errorModal.classList.add('hidden'); // Ensure modal is hidden on success
 
                 document.getElementById('displayOfficeName').textContent = document.getElementById('officeName').value;
                 document.getElementById('displayOfficeAddress').textContent = document.getElementById('officeAddress').value;
@@ -792,7 +816,7 @@
                 document.getElementById('displayRelationship').textContent = document.getElementById('relationship').value;
                 document.getElementById('displayRelatedPersonName').textContent = document.getElementById('relatedPersonName').value;
                 document.getElementById('displayCitizenshipNo').textContent = convertEnglishToNepaliDigits(document.getElementById('citizenshipNo').value);
-                document.getElementById('displayCitizenshipIssueDate').textContent = document.getElementById('citizenshipIssueDate').value;
+                document.getElementById('displayCitizenshipIssueDate').textContent = convertEnglishToNepaliDigits(document.getElementById('citizenshipIssueDate').value); /* Converted to Nepali digits */
                 document.getElementById('displayRemainingAmount').textContent = convertEnglishToNepaliDigits(document.getElementById('remainingAmount').value);
                 document.getElementById('displayRemainingAmountAksharu').textContent = document.getElementById('remainingAmountAksharu').value;
                 document.getElementById('displayDepositAccount').textContent = document.getElementById('depositAccount').value;
@@ -803,12 +827,16 @@
                 previewSection.classList.add('active');
                 buttonsContainer.classList.add('active'); // Show buttons
             } else {
-                errorMessageDiv.classList.remove('hidden');
-                errorMessageDiv.innerHTML = `कृपया निम्न फिल्डहरू भर्नुहोस् वा सुधार्नुहोस्: <br> ${missingFields.join(', ')}।`;
+                errorModalMessage.innerHTML = `कृपया निम्न फिल्डहरू भर्नुहोस् वा सुधार्नुहोस्: <br> ${missingFields.join(', ')}।`;
+                errorModal.classList.remove('hidden'); // Show the error modal
                 previewSection.classList.remove('active');
                 formSection.classList.add('active');
-                buttonsContainer.classList.remove('active'); // Hide buttons
+                buttonsContainer.classList.remove('active');
             }
+
+            closeErrorModal.addEventListener('click', function() {
+                errorModal.classList.add('hidden');
+            });
         });
 
         document.getElementById('printBtn').addEventListener('click', function() {
