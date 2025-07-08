@@ -464,8 +464,11 @@
                     </div>
                 </div>
 
-                <!-- Footer Note Section -->
-                <div class="mt-8 border border-gray-400 p-3 rounded-md text-xs text-center">
+                <!-- Third horizontal line -->
+                <hr class="border-t border-gray-400 my-4 mt-auto">
+
+                <!-- Footer Note Section - Moved to bottom and removed border -->
+                <div class="text-xs text-center">
                     <p class="font-bold">“कृषि‚पर्यटन‚ जलस्रोत‚स्थानीय सीप र पूर्वाधार: समृद्ध गल्कोट निर्माणको मूल आधार”</p>
                     <p class="mt-1">"galkotmunicipality@gmail.com|facebook.com/hellogalkot|Twitter.com/hellogalkot|www.galkotmun.gov.np"</p>
                 </div>
@@ -536,7 +539,7 @@
             const tens = ['', '', 'बिस', 'तीस', 'चालीस', 'पचास', 'साठी', 'सत्तरी', 'असी', 'नब्बे'];
             const specialTens = {
                 21: 'एक्काइस', 22: 'बाइस', 23: 'तेइस', 24: 'चौबिस', 25: 'पच्चिस', 26: 'छब्बिस', 27: 'सत्ताइस', 28: 'अठ्ठाइस', 29: 'उनन्तिस',
-                31: 'एकतीस', 32: 'बत्तीस', 33: 'तेत्तीस', 34: 'चौंतीस', 35: 'पैंतीस', 36: 'छत्तिस', 37: 'सैंतीस', 38: 'अठतीस', 39: 'उनन्चालीस',
+                31: 'एकतीस', 32: 'बत्तीस', 33: 'teत्तीस', 34: 'चौंतीस', 35: 'पैंतीस', 36: 'छत्तिस', 37: 'सैंतीस', 38: 'अठतीस', 39: 'उनन्चालीस',
                 41: 'एकचालीस', 42: 'बयालीस', 43: 'त्रियालीस', 44: 'चौवालीस', 45: 'पैंतालीस', 46: 'छयालीस', 47: 'सन्तालीस', 48: 'अठ्चालीस', 49: 'उनन्चास',
                 51: 'एकाउन्न', 52: 'बाउन्न', 53: 'तिरपन्न', 54: 'चौवन्न', 55: 'पचपन्न', 56: 'छप्पन्न', 57: 'सन्ताउन्न', 58: 'अन्ठाउन्न', 59: 'उनन्साठी',
                 61: 'एकसट्ठी', 62: 'बासट्ठी', 63: 'त्रिसट्ठी', 64: 'चौंसट्ठी', 65: 'पैंसट्ठी', 66: 'छैसट्ठी', 67: 'सड्सट्ठी', 68: 'अठ्सट्ठी', 69: 'उनन्सत्तरी',
@@ -770,7 +773,7 @@
 
                 if (parts.length !== 3 || parts[0].length !== 4 || parts[1].length !== 2 || parts[2].length !== 2) {
                     if (!missingFields.includes(requiredFields[fieldId])) {
-                        missingFields.push(`${requiredFields[fieldId]} (ढाँचा YYYY/MM/DD हुनुपर्छ)`);
+                        missingFields.push(`${requiredFields[fieldId]} (ढाँचा Wochenende/MM/DD हुनुपर्छ)`);
                     }
                     dateInput.style.borderColor = 'red';
                     allFieldsValid = false;
