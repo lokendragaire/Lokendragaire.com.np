@@ -64,14 +64,14 @@
                     <div>
                         <label for="form-date" class="font-semibold text-gray-700">मिति (बि.सं.)</label>
                         <div class="grid grid-cols-3 gap-2">
-                            <input type="number" id="year" placeholder="वर्ष" class="input-field">
-                            <input type="number" id="month" placeholder="महिना" class="input-field">
-                            <input type="number" id="day" placeholder="गते" class="input-field">
+                            <input type="text" id="year" placeholder="वर्ष" class="input-field">
+                            <input type="text" id="month" placeholder="महिना" class="input-field">
+                            <input type="text" id="day" placeholder="गते" class="input-field">
                         </div>
                     </div>
                     <div>
                         <label for="ward-no" class="font-semibold text-gray-700">वडा नं.</label>
-                        <input type="number" id="ward-no" class="input-field">
+                        <input type="text" id="ward-no" class="input-field">
                     </div>
 
                     <!-- Beneficiary Details -->
@@ -91,9 +91,18 @@
                                     <option value="अन्य">अन्य</option>
                                 </select>
                             </div>
-                            <div>
+                            <div class="col-span-1 md:col-span-2">
                                 <label for="group" class="font-semibold text-gray-700">लक्षित समुह</label>
-                                <input type="text" id="group" class="input-field">
+                                <select id="group" class="input-field">
+                                    <option value="">छान्नुहोस्</option>
+                                    <option value="अन्य जेष्ठ नागरिक">अन्य जेष्ठ नागरिक</option>
+                                    <option value="जेष्ठ नागरिक दलित">जेष्ठ नागरिक दलित</option>
+                                    <option value="जेष्ठ नागरिक एकल महिला">जेष्ठ नागरिक एकल महिला</option>
+                                    <option value="विधवा">विधवा</option>
+                                    <option value="पुर्ण अपाङ्गता">पुर्ण अपाङ्गता</option>
+                                    <option value="अति अशक्त अपाङ्गता">अति अशक्त अपाङ्गता</option>
+                                    <option value="दलित बालबालिका">दलित बालबालिका</option>
+                                </select>
                             </div>
                             <div>
                                 <label for="social-id" class="font-semibold text-gray-700">सामाजिक सुरक्षा परिचयपत्र नं.</label>
@@ -109,9 +118,18 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Guardian Details -->
+                    
+                    <!-- Guardian Checkbox -->
                     <div class="border-t pt-4">
+                         <div class="flex items-center">
+                            <input type="checkbox" id="needsGuardian" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <label for="needsGuardian" class="ml-2 block text-sm text-gray-900">बालबालिका वा आफैँ उपस्थित हुन नसक्ने व्यक्तिको हकमा हो?</label>
+                        </div>
+                    </div>
+
+
+                    <!-- Guardian Details (Initially Hidden) -->
+                    <div id="guardian-form-section" class="border-t pt-4" style="display: none;">
                         <h3 class="text-xl font-bold mb-4 text-gray-800">संरक्षक/मायवरको विवरण</h3>
                          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
@@ -183,7 +201,7 @@
                     <div class="grid grid-cols-2 gap-x-8 gap-y-2">
                         <p>नाम थर :- <span id="preview-name" class="placeholder">नाम</span></p>
                         <p>लिङ्ग:- <span id="preview-gender" class="placeholder">लिङ्ग</span></p>
-                        <p>लक्षित समुह:- <span id="preview-group" class="placeholder">समुह</span></p>
+                        <p class="col-span-2">लक्षित समुह:- <span id="preview-group" class="placeholder">समुह</span></p>
                         <p>सामाजिक सुरक्षा परिचयपत्र नं.: <span id="preview-social-id" class="placeholder">नं.</span></p>
                         <p>राष्ट्रिय परिचयपत्र नं.:- <span id="preview-national-id" class="placeholder">नं.</span></p>
                         <p>सम्पर्क मोबाइल नं.:- <span id="preview-mobile" class="placeholder">नं.</span></p>
@@ -192,7 +210,7 @@
                     </div>
                 </div>
 
-                <div class="mb-6">
+                <div id="guardian-preview-section" class="mb-6">
                     <h4 class="font-bold text-center mb-2">संरक्षक/ मायवर/ स्याहारसुसार गर्ने व्यक्तिको विवरण (बालबालिका वा आफैँ उपस्थित हुन नसक्ने व्यक्तिको हकमा)</h4>
                     <p class="mb-4">
                         यस निवेदनमा भएको लाभग्राहीको दस्तखत / सहिछाप मेरो रोहवरमा भएको ठिक साँचो हो । यसमा भएको दस्तखत वा मितिमा फरक परेमा कानून बमोजिम सहुँदा बुझाउँला भनी सहिछाप गर्ने इच्छाएको व्यक्तिको:-
@@ -223,19 +241,31 @@
     </div>
 
     <script>
-        // यो स्क्रिप्टले फारमको इनपुटलाई पूर्वावलोकनमा रियल-टाइममा अपडेट गर्छ
+        // --- Helper Functions ---
+
+        // Function to convert English digits to Nepali digits
+        const toNepaliNumber = (numStr) => {
+            if (numStr === null || numStr === undefined) return '';
+            const englishNumerals = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            const nepaliNumerals = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+            let nepaliStr = String(numStr);
+            for (let i = 0; i < 10; i++) {
+                nepaliStr = nepaliStr.replace(new RegExp(englishNumerals[i], "g"), nepaliNumerals[i]);
+            }
+            return nepaliStr;
+        };
         
-        // Helper function to set up event listeners
-        function listenAndUpdate(inputId, previewId, defaultValue) {
+        // Function to set up event listeners for text fields
+        function listenAndUpdate(inputId, previewId, defaultValue, isNumeric = false) {
             const inputElement = document.getElementById(inputId);
             const previewElement = document.getElementById(previewId);
             
-            // Set initial placeholder text
             previewElement.textContent = defaultValue;
 
             inputElement.addEventListener('input', () => {
-                if (inputElement.value.trim() !== '') {
-                    previewElement.textContent = inputElement.value;
+                let value = inputElement.value.trim();
+                if (value !== '') {
+                    previewElement.textContent = isNumeric ? toNepaliNumber(value) : value;
                     previewElement.classList.remove('placeholder');
                 } else {
                     previewElement.textContent = defaultValue;
@@ -244,41 +274,40 @@
             });
         }
 
-        // Date fields
-        const yearInput = document.getElementById('year');
-        const monthInput = document.getElementById('month');
-        const dayInput = document.getElementById('day');
-        const previewYear = document.getElementById('preview-year');
-        const previewMonth = document.getElementById('preview-month');
-        const previewDay = document.getElementById('preview-day');
+        // --- Event Listeners Setup ---
 
-        yearInput.addEventListener('input', () => {
-            previewYear.textContent = yearInput.value || '२०\u00a0\u00a0';
-            previewYear.classList.toggle('placeholder', !yearInput.value);
-        });
-        monthInput.addEventListener('input', () => {
-            previewMonth.textContent = monthInput.value || '\u00a0\u00a0';
-             previewMonth.classList.toggle('placeholder', !monthInput.value);
-        });
-        dayInput.addEventListener('input', () => {
-            previewDay.textContent = dayInput.value || '\u00a0\u00a0';
-            previewDay.classList.toggle('placeholder', !dayInput.value);
-        });
+        // Date fields (with Nepali conversion)
+        listenAndUpdate('year', 'preview-year', '२०\u00a0\u00a0', true);
+        listenAndUpdate('month', 'preview-month', '\u00a0\u00a0', true);
+        listenAndUpdate('day', 'preview-day', '\u00a0\u00a0', true);
 
-        // Setup listeners for all fields
-        listenAndUpdate('ward-no', 'preview-ward-no', '...');
+        // Other numeric and text fields
+        listenAndUpdate('ward-no', 'preview-ward-no', '...', true);
         listenAndUpdate('name', 'preview-name', 'नाम');
         listenAndUpdate('gender', 'preview-gender', 'लिङ्ग');
         listenAndUpdate('group', 'preview-group', 'समुह');
-        listenAndUpdate('social-id', 'preview-social-id', 'नं.');
-        listenAndUpdate('national-id', 'preview-national-id', 'नं.');
-        listenAndUpdate('mobile', 'preview-mobile', 'नं.');
+        listenAndUpdate('social-id', 'preview-social-id', 'नं.', true);
+        listenAndUpdate('national-id', 'preview-national-id', 'नं.', true);
+        listenAndUpdate('mobile', 'preview-mobile', 'नं.', true);
+        
+        // Guardian fields
         listenAndUpdate('guardian-name', 'preview-guardian-name', 'नाम');
         listenAndUpdate('relation', 'preview-relation', 'नाता');
-        listenAndUpdate('guardian-mobile', 'preview-guardian-mobile', 'नं.');
-        listenAndUpdate('guardian-national-id', 'preview-guardian-national-id', 'नं.');
-        listenAndUpdate('citizenship-no', 'preview-citizenship-no', 'नं.');
+        listenAndUpdate('guardian-mobile', 'preview-guardian-mobile', 'नं.', true);
+        listenAndUpdate('guardian-national-id', 'preview-guardian-national-id', 'नं.', true);
+        listenAndUpdate('citizenship-no', 'preview-citizenship-no', 'नं.', true);
         listenAndUpdate('issue-details', 'preview-issue-details', 'विवरण');
+
+        // Guardian section visibility toggle
+        const needsGuardianCheckbox = document.getElementById('needsGuardian');
+        const guardianFormSection = document.getElementById('guardian-form-section');
+        
+        needsGuardianCheckbox.addEventListener('change', () => {
+            const isChecked = needsGuardianCheckbox.checked;
+            // Only toggle the form section, the preview section is always visible
+            guardianFormSection.style.display = isChecked ? 'block' : 'none';
+        });
+
     </script>
 
 </body>
