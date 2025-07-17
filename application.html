@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>अनलाइन फाराम र प्रवेशपत्र</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .form-section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #1a202c;
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 0.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="date"],
+        .form-group textarea,
+        .form-group select,
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus,
+        .form-group input[type="date"]:focus,
+        .form-group textarea:focus,
+        .form-group select:focus,
+        .form-group input[type="file"]:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+        }
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        }
+        .btn-primary {
+            background-color: #4299e1;
+            color: #fff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #3182ce;
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #2d3748;
+            border: 1px solid #cbd5e0;
+        }
+        .btn-secondary:hover {
+            background-color: #cbd5e0;
+            transform: translateY(-1px);
+        }
+        .preview-section {
+            display: none; /* Hidden by default */
+            margin-top: 2rem;
+            padding: 2rem;
+            background-color: #f7fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        .preview-section h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #1a202c;
+            text-align: center;
+        }
+        .preview-content {
+            padding: 1.5rem;
+            border: 1px dashed #a0aec0;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        .preview-item {
+            margin-bottom: 0.75rem;
+        }
+        .preview-item strong {
+            color: #2d3748;
+        }
+        .admission-card {
+            border: 2px solid #2b6cb0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            background-color: #ebf8ff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        .admission-card h3 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #2b6cb0;
+            margin-bottom: 1rem;
+        }
+        .admission-card p {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #2d3748;
+        }
+        .admission-card .logo {
+            max-width: 100px;
+            margin-bottom: 1rem;
+        }
+        .print-area {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .education-entry, .experience-entry {
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background-color: #fdfdfe;
+        }
+        .remove-btn {
+            background-color: #ef4444;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+        .remove-btn:hover {
+            background-color: #dc2626;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-area, .print-area * {
+                visibility: visible;
+            }
+            .print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 1rem;
+            }
+            .container {
+                box-shadow: none;
+                border: none;
+                margin: 0;
+                padding: 0;
+            }
+            .preview-section {
+                display: block; /* Ensure preview section is visible for printing */
+                margin: 0;
+                padding: 0;
+                border: none;
+                background-color: #fff;
+            }
+            .button-group {
+                display: none; /* Hide buttons when printing */
+            }
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="container">
+        <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">अनलाइन फाराम</h1>
+
+        <form id="applicationForm" class="space-y-6">
+            <div class="form-section-title">व्यक्तिगत विवरण</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
+                    <label for="fullName">पूरा नाम:</label>
+                    <input type="text" id="fullName" name="fullName" placeholder="पूरा नाम प्रविष्ट गर्नुहोस्" required class="rounded-lg">
+                </div>
+                <div class="form-group">
+                    <label for="dob">जन्म मिति:</label>
+                    <input type="date" id="dob" name="dob" required class="rounded-lg">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
+                    <label for="citizenshipNo">नागरिकता नम्बर:</label>
+                    <input type="text" id="citizenshipNo" name="citizenshipNo" placeholder="नागरिकता नम्बर प्रविष्ट गर्नुहोस्" required class="rounded-lg">
+                </div>
+                <div class="form-group">
+                    <label for="email">इमेल:</label>
+                    <input type="email" id="email" name="email" placeholder="इमेल प्रविष्ट गर्नुहोस्" required class="rounded-lg">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="address">ठेगाना:</label>
+                <textarea id="address" name="address" rows="3" placeholder="ठेगाना प्रविष्ट गर्नुहोस्" required class="rounded-lg"></textarea>
+            </div>
+
+            <div class="form-section-title">फोटो अपलोड</div>
+            <div class="form-group">
+                <label for="passportPhoto">पासपोर्ट साइजको फोटो:</label>
+                <input type="file" id="passportPhoto" name="passportPhoto" accept="image/*" class="rounded-lg p-2 border border-gray-300">
+                <div id="photoPreviewContainer" class="mt-4 hidden">
+                    <img id="passportPhotoPreview" src="#" alt="फोटो पूर्वावलोकन" class="max-w-[150px] h-auto rounded-lg shadow-md border border-gray-200">
+                </div>
+            </div>
+
+            <div class="form-section-title">शैक्षिक योग्यता</div>
+            <div id="educationEntries">
+                <!-- Initial education entry -->
+                <div class="education-entry border p-4 rounded-lg mb-4 bg-gray-50">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <label>शैक्षिक तह:</label>
+                            <select name="educationLevel[]" class="rounded-lg">
+                                <option value="">छान्नुहोस्</option>
+                                <option value="SLC/SEE">SLC/SEE</option>
+                                <option value="10+2">१०+२</option>
+                                <option value="Bachelor">स्नातक</option>
+                                <option value="Master">स्नातकोत्तर</option>
+                                <option value="PhD">पीएच.डी.</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>संस्था/विश्वविद्यालय:</label>
+                            <input type="text" name="institution[]" placeholder="संस्था/विश्वविद्यालय" class="rounded-lg">
+                        </div>
+                        <div class="form-group">
+                            <label>उत्तीर्ण वर्ष:</label>
+                            <input type="text" name="passingYear[]" placeholder="उत्तीर्ण वर्ष (उदाहरण: 2075)" class="rounded-lg">
+                        </div>
+                        <div class="form-group">
+                            <label>मुख्य विषय:</label>
+                            <input type="text" name="majorSubject[]" placeholder="मुख्य विषय" class="rounded-lg">
+                        </div>
+                        <div class="form-group">
+                            <label>श्रेणी/ग्रेड:</label>
+                            <input type="text" name="grade[]" placeholder="श्रेणी/ग्रेड (उदाहरण: प्रथम श्रेणी)" class="rounded-lg">
+                        </div>
+                        <div class="form-group">
+                            <label>प्रतिशत/CGPA:</label>
+                            <input type="text" name="percentage[]" placeholder="प्रतिशत/CGPA (उदाहरण: 75% वा 3.5)" class="rounded-lg">
+                        </div>
+                    </div>
+                    <button type="button" class="remove-btn remove-education-btn">हटाउनुहोस्</button>
+                </div>
+            </div>
+            <button type="button" id="addEducationBtn" class="btn btn-secondary mt-4">थप शैक्षिक योग्यता थप्नुहोस्</button>
+
+            <div class="form-section-title">कार्य अनुभव</div>
+            <div id="experienceEntries">
+                <!-- Initial experience entry -->
+                <div class="experience-entry border p-4 rounded-lg mb-4 bg-gray-50">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <label>पद:</label>
+                            <input type="text" name="position[]" placeholder="पद (उदाहरण: सफ्टवेयर इन्जिनियर)" class="rounded-lg">
+                        </div>
+                        <div class="form-group">
+                            <label>संस्था/कम्पनी:</label>
+                            <input type="text" name="organization[]" placeholder="संस्था/कम्पनी" class="rounded-lg">
+                        </div>
+                        <div class="form-group">
+                            <label>अवधि:</label>
+                            <input type="text" name="duration[]" placeholder="अवधि (उदाहरण: Jan 2020 - Dec 2022)" class="rounded-lg">
+                        </div>
+                        <div class="form-group">
+                            <label>जिम्मेवारीहरू:</label>
+                            <textarea name="responsibilities[]" rows="2" placeholder="मुख्य जिम्मेवारीहरू" class="rounded-lg"></textarea>
+                        </div>
+                    </div>
+                    <button type="button" class="remove-btn remove-experience-btn">हटाउनुहोस्</button>
+                </div>
+            </div>
+            <button type="button" id="addExperienceBtn" class="btn btn-secondary mt-4">थप कार्य अनुभव थप्नुहोस्</button>
+
+
+            <div class="button-group">
+                <button type="button" id="previewBtn" class="btn btn-primary">पूर्वावलोकन देखाउनुहोस्</button>
+                <button type="reset" class="btn btn-secondary">फाराम खाली गर्नुहोस्</button>
+            </div>
+        </form>
+
+        <div id="previewSection" class="preview-section">
+            <h2>फाराम पूर्वावलोकन र प्रवेशपत्र</h2>
+            <div class="print-area">
+                <div class="preview-content">
+                    <h3 class="text-2xl font-semibold mb-4 text-center text-gray-700">फाराम विवरण</h3>
+                    <div id="previewDetails" class="space-y-2">
+                        <!-- Preview details will be inserted here by JavaScript -->
+                    </div>
+                    <div id="previewPhotoContainer" class="mt-4 hidden text-center">
+                        <h4 class="font-semibold mb-2">अपलोड गरिएको फोटो:</h4>
+                        <img id="previewPassportPhoto" src="#" alt="अपलोड गरिएको फोटो" class="max-w-[150px] h-auto rounded-lg shadow-md mx-auto border border-gray-200">
+                    </div>
+                </div>
+
+                <div class="admission-card">
+                    <img src="https://placehold.co/100x100/A0DCF0/000000?text=LOGO" alt="संस्थाको लोगो" class="logo mx-auto">
+                    <h3>प्रवेशपत्र</h3>
+                    <p><strong>परीक्षा केन्द्र:</strong> गैंडाकोट नगरपालिका, गैंडाकोट-५, नवलपरासी</p>
+                    <p><strong>परीक्षा मिति:</strong> २०८१/०५/१५</p>
+                    <p><strong>समय:</strong> बिहान १०:०० बजे</p>
+                    <p><strong>उम्मेदवारको नाम:</strong> <span id="admitCardName" class="font-bold text-blue-700"></span></p>
+                    <p><strong>नागरिकता नम्बर:</strong> <span id="admitCardCitizenship" class="font-bold text-blue-700"></span></p>
+                    <p class="mt-4 text-sm text-gray-600">कृपया परीक्षा सुरु हुनुभन्दा ३० मिनेट अगावै परीक्षा केन्द्रमा उपस्थित हुनुहोला।</p>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" id="editBtn" class="btn btn-secondary">सम्पादन गर्नुहोस्</button>
+                <button type="button" id="printBtn" class="btn btn-primary">प्रिन्ट गर्नुहोस्</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('applicationForm');
+            const previewBtn = document.getElementById('previewBtn');
+            const previewSection = document.getElementById('previewSection');
+            const previewDetails = document.getElementById('previewDetails');
+            const editBtn = document.getElementById('editBtn');
+            const printBtn = document.getElementById('printBtn');
+            const admitCardName = document.getElementById('admitCardName');
+            const admitCardCitizenship = document.getElementById('admitCardCitizenship');
+
+            const passportPhotoInput = document.getElementById('passportPhoto');
+            const photoPreviewContainer = document.getElementById('photoPreviewContainer');
+            const passportPhotoPreview = document.getElementById('passportPhotoPreview');
+            const previewPassportPhoto = document.getElementById('previewPassportPhoto');
+            const previewPhotoContainer = document.getElementById('previewPhotoContainer');
+
+
+            const educationEntriesContainer = document.getElementById('educationEntries');
+            const addEducationBtn = document.getElementById('addEducationBtn');
+            const experienceEntriesContainer = document.getElementById('experienceEntries');
+            const addExperienceBtn = document.getElementById('addExperienceBtn');
+
+            // Function to add a new education entry
+            function addEducationEntry() {
+                const newEducationEntry = document.createElement('div');
+                newEducationEntry.classList.add('education-entry', 'border', 'p-4', 'rounded-lg', 'mb-4', 'bg-gray-50');
+                newEducationEntry.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <label>शैक्षिक तह:</label>
+                            <select name="educationLevel[]" class="rounded-lg">
+                                <option value="">छान्नुहोस्</option>
+                                <option value="SLC/SEE">SLC/SEE</option>
+                                <option value="10+2">१०+२</option>
+                                <option value="Bachelor">स्नातक</option>
+                                <option value="Master">स्नातकोत्तर</option>
+                                <option value="PhD">पीएच.डी.</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>संस्था/विश्वविद्यालय:</label>
+                            <input type="text" name="institution[]" placeholder="संस्था/विश्वविद्यालय" class="rounded-lg">
+                        </div>
+                        <div class="form-group">
+                            <label>उत्तीर्ण वर्ष:</label>
+                            <input type="text" name="passingYear[]" placeholder="उत्तीर्ण वर्ष (उदाहरण: 2075)" class="rounded-lg">
+                        </div>
+                        <div class="form-group">
+                            <label>मुख्य विषय:</label>
+                            <input type="text" name="majorSubject[]" placeholder="मुख्य विषय" class="rounded-lg">
+                        </div>
+                        <div class="form-group">
+                            <label>श्रेणी/ग्रेड:</label>
+                            <input type="text" name="grade[]" placeholder="श्रेणी/ग्रेड (उदाहरण: प्रथम श्रेणी)" class="rounded-lg">
+                        </div>
+                        <div class="form-group">
+                            <label>प्रतिशत/CGPA:</label>
+                            <input type="text" name="percentage[]" placeholder="प्रतिशत/CGPA (उदाहरण: 75% वा 3.5)" class="rounded-lg">
+                        </div>
+                    </div>
+                    <button type="button" class="remove-btn remove-education-btn">हटाउनुहोस्</button>
+                `;
+                educationEntriesContainer.appendChild(newEducationEntry);
+            }
+
+            // Function to remove an education entry
+            function removeEducationEntry(button) {
+                button.closest('.education-entry').remove();
+            }
+
+            // Function to add a new experience entry
+            function addExperienceEntry() {
+                const newExperienceEntry = document.createElement('div');
+                newExperienceEntry.classList.add('experience-entry', 'border', 'p-4', 'rounded-lg', 'mb-4', 'bg-gray-50');
+                newExperienceEntry.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <label>पद:</label>
+                            <input type="text" name="position[]" placeholder="पद (उदाहरण: सफ्टवेयर इन्जिनियर)" class="rounded-lg">
+                        </div>
+                        <div class="form-group">
+                            <label>संस्था/कम्पनी:</label>
+                            <input type="text" name="organization[]" placeholder="संस्था/कम्पनी" class="rounded-lg">
+                        </div>
+                        <div class="form-group">
+                            <label>अवधि:</label>
+                            <input type="text" name="duration[]" placeholder="अवधि (उदाहरण: Jan 2020 - Dec 2022)" class="rounded-lg">
+                        </div>
+                        <div class="form-group">
+                            <label>जिम्मेवारीहरू:</label>
+                            <textarea name="responsibilities[]" rows="2" placeholder="मुख्य जिम्मेवारीहरू" class="rounded-lg"></textarea>
+                        </div>
+                    </div>
+                    <button type="button" class="remove-btn remove-experience-btn">हटाउनुहोस्</button>
+                `;
+                experienceEntriesContainer.appendChild(newExperienceEntry);
+            }
+
+            // Function to remove an experience entry
+            function removeExperienceEntry(button) {
+                button.closest('.experience-entry').remove();
+            }
+
+            // Event listener for adding education entries
+            addEducationBtn.addEventListener('click', addEducationEntry);
+
+            // Event listener for adding experience entries
+            addExperienceBtn.addEventListener('click', addExperienceEntry);
+
+            // Event delegation for removing education/experience entries
+            document.addEventListener('click', (event) => {
+                if (event.target.classList.contains('remove-education-btn')) {
+                    removeEducationEntry(event.target);
+                }
+                if (event.target.classList.contains('remove-experience-btn')) {
+                    removeExperienceEntry(event.target);
+                }
+            });
+
+            // Passport photo preview
+            passportPhotoInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        passportPhotoPreview.src = e.target.result;
+                        photoPreviewContainer.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    photoPreviewContainer.classList.add('hidden');
+                    passportPhotoPreview.src = '#';
+                }
+            });
+
+            // पूर्वावलोकन बटनमा क्लिक गर्दा
+            previewBtn.addEventListener('click', () => {
+                // फाराम भ्यालिडेसन
+                if (!form.checkValidity()) {
+                    form.reportValidity(); // ब्राउजरको डिफल्ट भ्यालिडेसन देखाउँछ
+                    return;
+                }
+
+                // फारामबाट डाटा लिने
+                const formData = {
+                    fullName: document.getElementById('fullName').value,
+                    dob: document.getElementById('dob').value,
+                    citizenshipNo: document.getElementById('citizenshipNo').value,
+                    email: document.getElementById('email').value,
+                    address: document.getElementById('address').value,
+                    phoneNumber: document.getElementById('phoneNumber').value,
+                    emergencyContact: document.getElementById('emergencyContact').value,
+                    passportPhoto: passportPhotoPreview.src !== '#' ? passportPhotoPreview.src : null // Get photo data
+                };
+
+                // शैक्षिक योग्यता विवरण सङ्कलन
+                const educationEntries = document.querySelectorAll('.education-entry');
+                let educationDetailsHtml = '';
+                if (educationEntries.length > 0) {
+                    educationDetailsHtml += '<h4 class="font-semibold mt-4 mb-2">शैक्षिक योग्यता:</h4>';
+                    educationEntries.forEach((entry, index) => {
+                        const level = entry.querySelector('select[name="educationLevel[]"]').value;
+                        const institution = entry.querySelector('input[name="institution[]"]').value;
+                        const year = entry.querySelector('input[name="passingYear[]"]').value;
+                        const major = entry.querySelector('input[name="majorSubject[]"]').value;
+                        const grade = entry.querySelector('input[name="grade[]"]').value; // Added grade
+                        const percentage = entry.querySelector('input[name="percentage[]"]').value; // Added percentage
+
+                        if (level || institution || year || major || grade || percentage) {
+                            educationDetailsHtml += `
+                                <div class="border-b border-gray-200 pb-2 mb-2">
+                                    <div class="preview-item"><strong>शैक्षिक तह:</strong> ${level || 'N/A'}</div>
+                                    <div class="preview-item"><strong>संस्था/विश्वविद्यालय:</strong> ${institution || 'N/A'}</div>
+                                    <div class="preview-item"><strong>उत्तीर्ण वर्ष:</strong> ${year || 'N/A'}</div>
+                                    <div class="preview-item"><strong>मुख्य विषय:</strong> ${major || 'N/A'}</div>
+                                    <div class="preview-item"><strong>श्रेणी/ग्रेड:</strong> ${grade || 'N/A'}</div>
+                                    <div class="preview-item"><strong>प्रतिशत/CGPA:</strong> ${percentage || 'N/A'}</div>
+                                </div>
+                            `;
+                        }
+                    });
+                }
+
+                // कार्य अनुभव विवरण सङ्कलन
+                const experienceEntries = document.querySelectorAll('.experience-entry');
+                let experienceDetailsHtml = '';
+                if (experienceEntries.length > 0) {
+                    experienceDetailsHtml += '<h4 class="font-semibold mt-4 mb-2">कार्य अनुभव:</h4>';
+                    experienceEntries.forEach((entry, index) => {
+                        const position = entry.querySelector('input[name="position[]"]').value;
+                        const organization = entry.querySelector('input[name="organization[]"]').value;
+                        const duration = entry.querySelector('input[name="duration[]"]').value;
+                        const responsibilities = entry.querySelector('textarea[name="responsibilities[]"]').value;
+                        if (position || organization || duration || responsibilities) {
+                            experienceDetailsHtml += `
+                                <div class="border-b border-gray-200 pb-2 mb-2">
+                                    <div class="preview-item"><strong>पद:</strong> ${position || 'N/A'}</div>
+                                    <div class="preview-item"><strong>संस्था/कम्पनी:</strong> ${organization || 'N/A'}</div>
+                                    <div class="preview-item"><strong>अवधि:</strong> ${duration || 'N/A'}</div>
+                                    <div class="preview-item"><strong>जिम्मेवारीहरू:</strong> ${responsibilities || 'N/A'}</div>
+                                </div>
+                            `;
+                        }
+                    });
+                }
+
+
+                // पूर्वावलोकन विवरण अपडेट गर्ने
+                previewDetails.innerHTML = `
+                    <div class="preview-item"><strong>पूरा नाम:</strong> ${formData.fullName}</div>
+                    <div class="preview-item"><strong>जन्म मिति:</strong> ${formData.dob}</div>
+                    <div class="preview-item"><strong>नागरिकता नम्बर:</strong> ${formData.citizenshipNo}</div>
+                    <div class="preview-item"><strong>इमेल:</strong> ${formData.email}</div>
+                    <div class="preview-item"><strong>ठेगाना:</strong> ${formData.address}</div>
+                    <div class="preview-item"><strong>फोन नम्बर:</strong> ${formData.phoneNumber}</div>
+                    <div class="preview-item"><strong>आपतकालीन सम्पर्क:</strong> ${formData.emergencyContact}</div>
+                    ${educationDetailsHtml}
+                    ${experienceDetailsHtml}
+                `;
+
+                // फोटो पूर्वावलोकन अपडेट गर्ने
+                if (formData.passportPhoto) {
+                    previewPassportPhoto.src = formData.passportPhoto;
+                    previewPhotoContainer.classList.remove('hidden');
+                } else {
+                    previewPhotoContainer.classList.add('hidden');
+                    previewPassportPhoto.src = '#';
+                }
+
+
+                // प्रवेशपत्रमा नाम र नागरिकता नम्बर अपडेट गर्ने
+                admitCardName.textContent = formData.fullName;
+                admitCardCitizenship.textContent = formData.citizenshipNo;
+
+                // फाराम लुकाउने र पूर्वावलोकन देखाउने
+                form.style.display = 'none';
+                previewSection.style.display = 'block';
+            });
+
+            // सम्पादन बटनमा क्लिक गर्दा
+            editBtn.addEventListener('click', () => {
+                // पूर्वावलोकन लुकाउने र फाराम देखाउने
+                previewSection.style.display = 'none';
+                form.style.display = 'block';
+            });
+
+            // प्रिन्ट बटनमा क्लिक गर्दा
+            printBtn.addEventListener('click', () => {
+                window.print(); // ब्राउजरको प्रिन्ट संवाद खोल्छ
+            });
+        });
+    </script>
+</body>
+</html>
