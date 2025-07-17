@@ -106,11 +106,13 @@
                             </div>
                             <div>
                                 <label for="social-id" class="font-semibold text-gray-700">सामाजिक सुरक्षा परिचयपत्र नं.</label>
-                                <input type="text" id="social-id" class="input-field">
+                                <input type="text" id="social-id" class="input-field" maxlength="13">
+                                <p id="social-id-error" class="text-red-500 text-sm mt-1"></p>
                             </div>
                             <div>
                                 <label for="national-id" class="font-semibold text-gray-700">राष्ट्रिय परिचयपत्र नं.</label>
-                                <input type="text" id="national-id" class="input-field">
+                                <input type="text" id="national-id" class="input-field" maxlength="10">
+                                <p id="national-id-error" class="text-red-500 text-sm mt-1"></p>
                             </div>
                             <div>
                                 <label for="mobile" class="font-semibold text-gray-700">सम्पर्क मोबाइल नं.</label>
@@ -146,7 +148,8 @@
                             </div>
                             <div>
                                 <label for="guardian-national-id" class="font-semibold text-gray-700">राष्ट्रिय परिचयपत्र नं.</label>
-                                <input type="text" id="guardian-national-id" class="input-field">
+                                <input type="text" id="guardian-national-id" class="input-field" maxlength="10">
+                                <p id="guardian-national-id-error" class="text-red-500 text-sm mt-1"></p>
                             </div>
                              <div>
                                 <label for="citizenship-no" class="font-semibold text-gray-700">नागरिकता प्रमाणपत्र नं.</label>
@@ -255,15 +258,26 @@
             return nepaliStr;
         };
         
-        // Function to set up event listeners for text fields
-        function listenAndUpdate(inputId, previewId, defaultValue, isNumeric = false) {
+        // Function to set up event listeners for text fields with optional validation
+        function listenAndUpdate(inputId, previewId, defaultValue, options = {}) {
+            const { isNumeric = false, validation = null } = options;
+
             const inputElement = document.getElementById(inputId);
             const previewElement = document.getElementById(previewId);
+            const errorElement = validation ? document.getElementById(validation.errorId) : null;
             
             previewElement.textContent = defaultValue;
 
             inputElement.addEventListener('input', () => {
-                let value = inputElement.value.trim();
+                let value = inputElement.value;
+                if (isNumeric) {
+                    value = value.replace(/[^0-9]/g, '');
+                    inputElement.value = value;
+                } else {
+                    value = value.trim();
+                }
+
+                // Update Preview
                 if (value !== '') {
                     previewElement.textContent = isNumeric ? toNepaliNumber(value) : value;
                     previewElement.classList.remove('placeholder');
@@ -271,32 +285,64 @@
                     previewElement.textContent = defaultValue;
                     previewElement.classList.add('placeholder');
                 }
+
+                // Handle Validation
+                if (validation && errorElement) {
+                    if (value.length > 0 && value.length !== validation.length) {
+                        errorElement.textContent = validation.message;
+                    } else {
+                        errorElement.textContent = '';
+                    }
+                }
             });
         }
 
         // --- Event Listeners Setup ---
 
-        // Date fields (with Nepali conversion)
-        listenAndUpdate('year', 'preview-year', '२०\u00a0\u00a0', true);
-        listenAndUpdate('month', 'preview-month', '\u00a0\u00a0', true);
-        listenAndUpdate('day', 'preview-day', '\u00a0\u00a0', true);
+        // Date fields
+        listenAndUpdate('year', 'preview-year', '२०\u00a0\u00a0', { isNumeric: true });
+        listenAndUpdate('month', 'preview-month', '\u00a0\u00a0', { isNumeric: true });
+        listenAndUpdate('day', 'preview-day', '\u00a0\u00a0', { isNumeric: true });
 
-        // Other numeric and text fields
-        listenAndUpdate('ward-no', 'preview-ward-no', '...', true);
+        // Other fields
+        listenAndUpdate('ward-no', 'preview-ward-no', '...', { isNumeric: true });
         listenAndUpdate('name', 'preview-name', 'नाम');
         listenAndUpdate('gender', 'preview-gender', 'लिङ्ग');
         listenAndUpdate('group', 'preview-group', 'समुह');
-        listenAndUpdate('social-id', 'preview-social-id', 'नं.', true);
-        listenAndUpdate('national-id', 'preview-national-id', 'नं.', true);
-        listenAndUpdate('mobile', 'preview-mobile', 'नं.', true);
+        listenAndUpdate('mobile', 'preview-mobile', 'नं.', { isNumeric: true });
         
+        // Fields with validation
+        listenAndUpdate('social-id', 'preview-social-id', 'नं.', {
+            isNumeric: true,
+            validation: {
+                length: 13,
+                errorId: 'social-id-error',
+                message: 'परिचयपत्र नं. १३ अंकको हुनुपर्छ।'
+            }
+        });
+        listenAndUpdate('national-id', 'preview-national-id', 'नं.', {
+            isNumeric: true,
+            validation: {
+                length: 10,
+                errorId: 'national-id-error',
+                message: 'राष्ट्रिय परिचयपत्र नं. १० अंकको हुनुपर्छ।'
+            }
+        });
+
         // Guardian fields
         listenAndUpdate('guardian-name', 'preview-guardian-name', 'नाम');
         listenAndUpdate('relation', 'preview-relation', 'नाता');
-        listenAndUpdate('guardian-mobile', 'preview-guardian-mobile', 'नं.', true);
-        listenAndUpdate('guardian-national-id', 'preview-guardian-national-id', 'नं.', true);
-        listenAndUpdate('citizenship-no', 'preview-citizenship-no', 'नं.', true);
+        listenAndUpdate('guardian-mobile', 'preview-guardian-mobile', 'नं.', { isNumeric: true });
+        listenAndUpdate('citizenship-no', 'preview-citizenship-no', 'नं.', { isNumeric: true });
         listenAndUpdate('issue-details', 'preview-issue-details', 'विवरण');
+        listenAndUpdate('guardian-national-id', 'preview-guardian-national-id', 'नं.', {
+            isNumeric: true,
+            validation: {
+                length: 10,
+                errorId: 'guardian-national-id-error',
+                message: 'राष्ट्रिय परिचयपत्र नं. १० अंकको हुनुपर्छ।'
+            }
+        });
 
         // Guardian section visibility toggle
         const needsGuardianCheckbox = document.getElementById('needsGuardian');
@@ -304,7 +350,6 @@
         
         needsGuardianCheckbox.addEventListener('change', () => {
             const isChecked = needsGuardianCheckbox.checked;
-            // Only toggle the form section, the preview section is always visible
             guardianFormSection.style.display = isChecked ? 'block' : 'none';
         });
 
