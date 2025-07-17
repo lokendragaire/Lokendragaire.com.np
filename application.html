@@ -359,9 +359,6 @@
             .preview-form-layout .photo-box-preview {
                 border: 1px solid #000;
             }
-            .thumbprint-box {
-                border: 1px solid #000;
-            }
         }
     </style>
 </head>
@@ -488,4 +485,576 @@
             </div>
             <div class="form-group">
                 <label for="applicationDate">फाराम भरेको मिति (वि.सं.): <span class="text-red-500">*</span></label>
-                <input type="date" id="applicationDate" name="applicationDate" requi
+                <input type="date" id="applicationDate" name="applicationDate" required class="rounded-lg">
+            </div>
+
+
+            <div class="form-section-title">फोटो अपलोड</div>
+            <div class="form-group">
+                <label for="passportPhoto">पासपोर्ट साइजको फोटो:</label>
+                <input type="file" id="passportPhoto" name="passportPhoto" accept="image/*" class="rounded-lg p-2 border border-gray-300">
+                <div id="photoPreviewContainer" class="mt-4 hidden">
+                    <img id="passportPhotoPreview" src="#" alt="फोटो पूर्वावलोकन" class="max-w-[150px] h-auto rounded-lg shadow-md border border-gray-200">
+                </div>
+            </div>
+
+            <div class="form-section-title">शैक्षिक योग्यता/तालिम (दरखास्त फाराम भरेको पदको लागि चाहिँने आवश्यक न्यूनतम शैक्षिक योग्यता/तालिम मात्र उल्लेख गर्ने)</div>
+            <div id="educationEntries">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th>शैक्षिक योग्यता</th>
+                            <th>विद्यालय/बोर्ड/तालिम दिने संस्था</th>
+                            <th>शैक्षिक उपाधि/तालिम</th>
+                            <th>संकाय</th>
+                            <th>श्रेणी/अंकिकृत</th>
+                            <th>मुख्य विषय</th>
+                            <th>उत्तीर्ण साल</th>
+                            <th>प्रतिशत</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Initial education entry -->
+                        <tr class="education-entry">
+                            <td><select name="educationLevel[]" class="rounded-lg w-full"><option value="">छान्नुहोस्</option><option value="SLC/SEE">SLC/SEE</option><option value="10+2">१०+२</option><option value="Bachelor">स्नातक</option><option value="Master">स्नातकोत्तर</option><option value="PhD">पीएच.डी.</option></select></td>
+                            <td><input type="text" name="institution[]" placeholder="संस्था" class="rounded-lg w-full"></td>
+                            <td><input type="text" name="educationalTitle[]" placeholder="उपाधि" class="rounded-lg w-full"></td>
+                            <td><input type="text" name="faculty[]" placeholder="संकाय" class="rounded-lg w-full"></td>
+                            <td><input type="text" name="grade[]" placeholder="श्रेणी" class="rounded-lg w-full"></td>
+                            <td><input type="text" name="majorSubject[]" placeholder="मुख्य विषय" class="rounded-lg w-full"></td>
+                            <td><input type="text" name="passingYear[]" placeholder="साल" class="rounded-lg w-full"></td>
+                            <td><input type="text" name="percentage[]" placeholder="प्रतिशत" class="rounded-lg w-full"></td>
+                            <td><button type="button" class="remove-btn remove-education-btn">हटाउनुहोस्</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button type="button" id="addEducationBtn" class="btn btn-secondary mt-4">थप शैक्षिक योग्यता थप्नुहोस्</button>
+
+            <div class="form-section-title">कार्य अनुभव (अनुभव सम्बन्धी विवरण)</div>
+            <div id="experienceEntries">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th>कार्यालय</th>
+                            <th>पद</th>
+                            <th>सेवा/समूह/उपसमूह</th>
+                            <th>श्रेणी/तह</th>
+                            <th>स्थायी/अस्थायी/करार</th>
+                            <th>देखि</th>
+                            <th>अवधि</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Initial experience entry -->
+                        <tr class="experience-entry">
+                            <td><input type="text" name="organization[]" placeholder="कार्यालय" class="rounded-lg w-full"></td>
+                            <td><input type="text" name="position[]" placeholder="पद" class="rounded-lg w-full"></td>
+                            <td><input type="text" name="serviceGroup[]" placeholder="सेवा/समूह" class="rounded-lg w-full"></td>
+                            <td><input type="text" name="level[]" placeholder="श्रेणी/तह" class="rounded-lg w-full"></td>
+                            <td><input type="date" name="fromDate[]" class="rounded-lg w-full"></td>
+                            <td><input type="text" name="employmentType[]" placeholder="प्रकार" class="rounded-lg w-full"></td>
+                            <td><input type="text" name="duration[]" placeholder="अवधि" class="rounded-lg w-full"></td>
+                            <td><button type="button" class="remove-btn remove-experience-btn">हटाउनुहोस्</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button type="button" id="addExperienceBtn" class="btn btn-secondary mt-4">थप कार्य अनुभव थप्नुहोस्</button>
+
+            <div class="button-group">
+                <button type="button" id="previewBtn" class="btn btn-primary">पूर्वावलोकन देखाउनुहोस्</button>
+                <button type="reset" class="btn btn-secondary">फाराम खाली गर्नुहोस्</button>
+            </div>
+        </form>
+
+        <div id="previewSection" class="preview-section">
+            <h2>फाराम पूर्वावलोकन र प्रवेशपत्र</h2>
+            <div class="print-area">
+                <div class="preview-content">
+                    <div class="preview-form-header">
+                        <img src="https://placehold.co/80x80/A0DCF0/000000?text=LOGO" alt="नगरपालिका लोगो" class="municipality-logo">
+                        <h3>गलकोट नगरपालिका</h3>
+                        <p>नगर कार्यपालिकाको कार्यालय</p>
+                        <p>गण्डकी प्रदेश, नेपाल</p>
+                        <h4 class="text-xl font-bold mt-4">करारको लागि दरखास्त फाराम</h4>
+                        <div class="photo-box-preview">
+                            <span id="previewFormPhotoPlaceholder" class="text-xs text-gray-500">हालसालै खिचेको पासपोर्ट साइजको <br> फोटो टाँस्ने र फोटो र फाराममा <br> पनि सही गर्ने उम्मेदवारले</span>
+                            <img id="previewFormPhoto" src="#" alt="पासपोर्ट साइजको फोटो" class="hidden">
+                        </div>
+                        <div class="absolute top-0 right-0 text-sm mt-2">
+                            <p>मिति: <span id="previewFormDate"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="preview-form-layout">
+                        <div class="section-heading">क) बैयक्तिक विवरण</div>
+                        <div><strong>नाम, थर (देवनागरीमा):</strong> <span id="previewFullName"></span></div>
+                        <div><strong>नाम (अंग्रेजी ठूलो अक्षरमा):</strong> <span id="previewFullNameEnglish"></span></div>
+                        <div><strong>लिङ्ग:</strong> <span id="previewGender"></span></div>
+                        <div><strong>विवाहित/अविवाहित:</strong> <span id="previewMaritalStatus"></span></div>
+                        <div>
+                            <strong>नागरिकता नं:</strong> <span id="previewCitizenshipNo"></span><br>
+                            (क) जिल्ला: <span id="previewCitizenshipIssuedDistrict"></span>
+                        </div>
+                        <div>
+                            <strong>स्थायी ठेगाना:</strong> <br>
+                            (क) जिल्ला: <span id="previewPermanentAddressDistrict"></span> (ख) गा.पा./न.पा.: <span id="previewPermanentAddressMunicipality"></span> (ग) वडा नं.: <span id="previewPermanentAddressWard"></span>
+                        </div>
+                        <div>
+                            <strong>पत्राचार गर्ने ठेगाना:</strong> <br>
+                            (क) जिल्ला: <span id="previewCorrespondenceAddressDistrict"></span> (ख) गा.पा./न.पा.: <span id="previewCorrespondenceAddressMunicipality"></span> (ग) वडा नं.: <span id="previewCorrespondenceAddressWard"></span>
+                        </div>
+                        <div><strong>बाबुको नाम, थर:</strong> <span id="previewFatherMotherName"></span></div>
+                        <div><strong>जन्म मिति (वि.सं.मा):</strong> <span id="previewDob"></span></div>
+                        <div><strong>इमेल:</strong> <span id="previewEmail"></span></div>
+                        <div><strong>फोन नं:</strong> <span id="previewPhoneNumber"></span></div>
+                        <div><strong>धर्म:</strong> <span id="previewReligion"></span></div>
+                        <div><strong>जात:</strong> <span id="previewCaste"></span></div>
+                    </div>
+
+                    <div class="section-heading full-width">ख) शैक्षिक योग्यता/तालिम (दरखास्त फाराम भरेको पदको लागि चाहिँने आवश्यक न्यूनतम शैक्षिक योग्यता/तालिम मात्र उल्लेख गर्ने)</div>
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr>
+                                <th>शैक्षिक योग्यता</th>
+                                <th>विद्यालय/बोर्ड/तालिम दिने संस्था</th>
+                                <th>शैक्षिक उपाधि/तालिम</th>
+                                <th>संकाय</th>
+                                <th>श्रेणी/अंकिकृत</th>
+                                <th>मुख्य विषय</th>
+                                <th>उत्तीर्ण साल</th>
+                                <th>प्रतिशत</th>
+                            </tr>
+                        </thead>
+                        <tbody id="previewEducationDetails">
+                            <!-- Education details will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+
+                    <div class="section-heading full-width">ग) अनुभव सम्बन्धी विवरण</div>
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr>
+                                <th>कार्यालय</th>
+                                <th>पद</th>
+                                <th>सेवा/समूह/उपसमूह</th>
+                                <th>श्रेणी/तह</th>
+                                <th>स्थायी/अस्थायी/करार</th>
+                                <th>देखि</th>
+                                <th>अवधि</th>
+                            </tr>
+                        </thead>
+                        <tbody id="previewExperienceDetails">
+                            <!-- Experience details will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+
+                    <div class="full-width mt-8 text-sm">
+                        <p>मैले यस दरखास्तमा खुलाएका सम्पूर्ण विवरणहरु सत्य छन् । दरखास्त बुझाएको पदको सूचनाको लागि अनुरोध गरिएको कुनै कुरा फारामा खुलेको छैन र दरखास्तको दस्तुरमा प्रमाणित कानून बमोजिम बुझाएको छु । उम्मेदवारले फाराम भर्दा कुनै अनिमित कुरा भए यस दरखास्त फाराममा उल्लेखित शर्त तथा नियमहरु पालना गर्ने मन्जुर गर्दछु । साथै करारमा उल्लेखित शर्तहरु पूर्ण रुपमा पालना गर्नेछु र करारको समयसम्म जेजति कार्यहरु गर्नु पर्नेछ सो सबै गर्नेछु भनी यसै दरखास्त फाराम मार्फत कबुल गर्दछु ।</p>
+                        <p class="mt-4">उम्मेदवारको ब्याले सहिछाप: _________________________</p>
+                        <p class="mt-2">उम्मेदवारको दस्तखत: _________________________</p>
+                        <div class="grid grid-cols-2 gap-4 mt-4">
+                            <div class="flex flex-col items-center">
+                                <div class="thumbprint-box">दायाँ ल्याप्चे सहिछाप</div>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="thumbprint-box">बायाँ ल्याप्चे सहिछाप</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mt-4">
+                            <div><strong>दर्ता नं:</strong></div>
+                            <div class="text-right"><strong>मिति:</strong> <span id="previewFormDate"></span></div>
+                            <div><strong>चलानी नं:</strong></div>
+                            <div class="text-right"><strong>रोल नं:</strong> _________________________</div> <!-- Roll number placeholder for manual entry -->
+                        </div>
+                        <p class="mt-4"><strong>दरखास्त स्वीकृतिको लागि भा. को कलम:</strong></p>
+                        <div class="grid grid-cols-2 gap-4 mt-2">
+                            <div>दरखास्त स्वीकृत/अस्वीकृत गर्नेको:</div>
+                            <div>दस्तखत:</div>
+                            <div>दरखास्त स्वीकृत/अस्वीकृत गर्नेको नाम र दस्तखत:</div>
+                            <div>मिति:</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admission-card">
+                    <div class="header-left">
+                        <img src="https://placehold.co/80x80/A0DCF0/000000?text=LOGO" alt="संस्थाको लोगो" class="logo">
+                    </div>
+                    <div class="header-center">
+                        <p class="text-xs">(अनुसूची २)</p>
+                        <p class="text-xs">(दफा ५ को उपदफा (१) सँग सम्बन्धित)</p>
+                        <h2 class="text-xl font-bold text-blue-800">गलकोट नगरपालिका</h2>
+                        <p class="text-lg font-semibold">नगर कार्यपालिकाको कार्यालय</p>
+                        <p class="text-md">गलकोट, बागलुङ</p>
+                    </div>
+                    <div class="header-right text-sm">
+                        <p>गण्डकी प्रदेश, नेपाल</p>
+                    </div>
+
+                    <div class="details-left text-base mt-4">
+                        <p><strong>पत्र संख्या:</strong> <span id="patraSankhya">२०७७/०७८</span></p>
+                        <p><strong>चलानी नम्बर:</strong> <span id="chalaniNumber"></span></p>
+                    </div>
+                    <div class="details-right text-base mt-4">
+                        <div class="photo-box">
+                            <span id="admitCardPhotoPlaceholder" class="text-sm text-gray-500">पासपोर्ट साइजको फोटो</span>
+                            <img id="admitCardPhoto" src="#" alt="पासपोर्ट साइजको फोटो" class="hidden">
+                        </div>
+                    </div>
+
+                    <h3 class="text-2xl font-bold text-center mt-4 mb-4 col-span-full">प्रवेश-पत्र</h3>
+
+                    <div class="col-span-full text-base">
+                        <p><strong>नाम, थर:</strong> <span id="admitCardName" class="font-bold text-blue-700"></span></p>
+                        <p><strong>पद:</strong> <span id="admitCardPosition" class="font-bold text-blue-700"></span></p>
+                        <p><strong>तह:</strong> <span id="admitCardLevel" class="font-bold text-blue-700"></span></p>
+                    </div>
+
+                    <div class="description col-span-full mt-4">
+                        <p><strong>उम्मेदवारको दस्तखत नमुना :</strong></p>
+                        <p>नगर कार्यपालिकाको कार्यालयले भने : यस कार्यालयबाट लिइने उक्तपदको परीक्षामा तपाइँलाई सम्मिलित हुन अनुमति दिइएको छ । विज्ञापनमा तोकिएको शर्त नपुगेको ठहर भएमा जुनसुकै अवस्थामा पनि यो अनुमति रद्द हुनेछ ।</p>
+                    </div>
+
+                    <div class="roll-no col-span-full mt-4">
+                        <p><strong>रोल नम्बर:</strong> _________________________</p> <!-- Roll number placeholder for manual entry -->
+                        <div class="border border-gray-400 w-32 h-16 mt-2"></div> <!-- Placeholder for signature/thumbprint -->
+                    </div>
+
+                    <div class="footer-left text-sm mt-8">
+                        <p>(कार्यालयको छाप)</p>
+                    </div>
+                    <div class="footer-right text-sm mt-8">
+                        <p>(प्रमाणित गर्नेको दस्तखत)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" id="editBtn" class="btn btn-secondary">सम्पादन गर्नुहोस्</button>
+                <button type="button" id="printBtn" class="btn btn-primary">प्रिन्ट गर्नुहोस्</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('applicationForm');
+            const previewBtn = document.getElementById('previewBtn');
+            const previewSection = document.getElementById('previewSection');
+            const editBtn = document.getElementById('editBtn');
+            const printBtn = document.getElementById('printBtn');
+
+            // Admission Card Elements
+            const admitCardName = document.getElementById('admitCardName');
+            const admitCardPosition = document.getElementById('admitCardPosition');
+            const admitCardLevel = document.getElementById('admitCardLevel');
+            // admitCardRollNo is now a static text node, no need to getElementById
+            const admitCardPhoto = document.getElementById('admitCardPhoto');
+            const admitCardPhotoPlaceholder = document.getElementById('admitCardPhotoPlaceholder');
+            const patraSankhya = document.getElementById('patraSankhya');
+            const chalaniNumber = document.getElementById('chalaniNumber');
+
+            // Form Input Elements
+            const fullNameInput = document.getElementById('fullName');
+            const fullNameEnglishInput = document.getElementById('fullNameEnglish');
+            const genderInputs = document.querySelectorAll('input[name="gender"]');
+            const maritalStatusInputs = document.querySelectorAll('input[name="maritalStatus"]');
+            const citizenshipNoInput = document.getElementById('citizenshipNo');
+            const citizenshipIssuedDistrictInput = document.getElementById('citizenshipIssuedDistrict');
+            const permanentAddressWardInput = document.getElementById('permanentAddressWard');
+            const permanentAddressMunicipalityInput = document.getElementById('permanentAddressMunicipality');
+            const permanentAddressDistrictInput = document.getElementById('permanentAddressDistrict');
+            const correspondenceAddressWardInput = document.getElementById('correspondenceAddressWard');
+            const correspondenceAddressMunicipalityInput = document.getElementById('correspondenceAddressMunicipality');
+            const correspondenceAddressDistrictInput = document.getElementById('correspondenceAddressDistrict');
+            const fatherMotherNameInput = document.getElementById('fatherMotherName');
+            const dobInput = document.getElementById('dob');
+            const emailInput = document.getElementById('email');
+            const phoneNumberInput = document.getElementById('phoneNumber');
+            const religionInput = document.getElementById('religion');
+            const casteInput = document.getElementById('caste');
+            const appliedPositionInput = document.getElementById('appliedPosition');
+            const appliedLevelInput = document.getElementById('appliedLevel');
+            const applicationDateInput = document.getElementById('applicationDate'); // New input for application date
+            const passportPhotoInput = document.getElementById('passportPhoto');
+            const photoPreviewContainer = document.getElementById('photoPreviewContainer');
+            const passportPhotoPreview = document.getElementById('passportPhotoPreview');
+            const previewFormPhoto = document.getElementById('previewFormPhoto');
+            const previewFormPhotoPlaceholder = document.getElementById('previewFormPhotoPlaceholder');
+            const previewFormDate = document.getElementById('previewFormDate');
+            // previewFormRollNo is now a static text node, no need to getElementById
+
+
+            const educationEntriesContainer = document.getElementById('educationEntries').querySelector('tbody');
+            const addEducationBtn = document.getElementById('addEducationBtn');
+            const experienceEntriesContainer = document.getElementById('experienceEntries').querySelector('tbody');
+            const addExperienceBtn = document.getElementById('addExperienceBtn');
+
+            // Function to add a new education entry
+            function addEducationEntry() {
+                const newEducationEntry = document.createElement('tr');
+                newEducationEntry.classList.add('education-entry');
+                newEducationEntry.innerHTML = `
+                    <td><select name="educationLevel[]" class="rounded-lg w-full"><option value="">छान्नुहोस्</option><option value="SLC/SEE">SLC/SEE</option><option value="10+2">१०+२</option><option value="Bachelor">स्नातक</option><option value="Master">स्नातकोत्तर</option><option value="PhD">पीएच.डी.</option></select></td>
+                    <td><input type="text" name="institution[]" placeholder="संस्था" class="rounded-lg w-full"></td>
+                    <td><input type="text" name="educationalTitle[]" placeholder="उपाधि" class="rounded-lg w-full"></td>
+                    <td><input type="text" name="faculty[]" placeholder="संकाय" class="rounded-lg w-full"></td>
+                    <td><input type="text" name="grade[]" placeholder="श्रेणी" class="rounded-lg w-full"></td>
+                    <td><input type="text" name="majorSubject[]" placeholder="मुख्य विषय" class="rounded-lg w-full"></td>
+                    <td><input type="text" name="passingYear[]" placeholder="साल" class="rounded-lg w-full"></td>
+                    <td><input type="text" name="percentage[]" placeholder="प्रतिशत" class="rounded-lg w-full"></td>
+                    <td><button type="button" class="remove-btn remove-education-btn">हटाउनुहोस्</button></td>
+                `;
+                educationEntriesContainer.appendChild(newEducationEntry);
+            }
+
+            // Function to remove an education entry
+            function removeEducationEntry(button) {
+                button.closest('.education-entry').remove();
+            }
+
+            // Function to add a new experience entry
+            function addExperienceEntry() {
+                const newExperienceEntry = document.createElement('tr');
+                newExperienceEntry.classList.add('experience-entry');
+                newExperienceEntry.innerHTML = `
+                    <td><input type="text" name="organization[]" placeholder="कार्यालय" class="rounded-lg w-full"></td>
+                    <td><input type="text" name="position[]" placeholder="पद" class="rounded-lg w-full"></td>
+                    <td><input type="text" name="serviceGroup[]" placeholder="सेवा/समूह" class="rounded-lg w-full"></td>
+                    <td><input type="text" name="level[]" placeholder="श्रेणी/तह" class="rounded-lg w-full"></td>
+                    <td><input type="date" name="fromDate[]" class="rounded-lg w-full"></td>
+                    <td><input type="text" name="employmentType[]" placeholder="प्रकार" class="rounded-lg w-full"></td>
+                    <td><input type="text" name="duration[]" placeholder="अवधि" class="rounded-lg w-full"></td>
+                    <td><button type="button" class="remove-btn remove-experience-btn">हटाउनुहोस्</button></td>
+                `;
+                experienceEntriesContainer.appendChild(newExperienceEntry);
+            }
+
+            // Function to remove an experience entry
+            function removeExperienceEntry(button) {
+                button.closest('.experience-entry').remove();
+            }
+
+            // Event listener for adding education entries
+            addEducationBtn.addEventListener('click', addEducationEntry);
+
+            // Event listener for adding experience entries
+            addExperienceBtn.addEventListener('click', addExperienceEntry);
+
+            // Event delegation for removing education/experience entries
+            document.addEventListener('click', (event) => {
+                if (event.target.classList.contains('remove-education-btn')) {
+                    removeEducationEntry(event.target);
+                }
+                if (event.target.classList.contains('remove-experience-btn')) {
+                    removeExperienceEntry(event.target);
+                }
+            });
+
+            // Passport photo preview
+            passportPhotoInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        if (passportPhotoPreview) {
+                            passportPhotoPreview.src = e.target.result;
+                            if (photoPreviewContainer) photoPreviewContainer.classList.remove('hidden');
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    if (photoPreviewContainer) photoPreviewContainer.classList.add('hidden');
+                    if (passportPhotoPreview) passportPhotoPreview.src = '#';
+                }
+            });
+
+            // Function to format date to YYYY/MM/DD
+            function formatDate(dateString) {
+                if (!dateString) return 'N/A';
+                const date = new Date(dateString);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}/${month}/${day}`;
+            }
+
+            // पूर्वावलोकन बटनमा क्लिक गर्दा
+            previewBtn.addEventListener('click', () => {
+                // फाराम भ्यालिडेसन
+                if (!form.checkValidity()) {
+                    form.reportValidity(); // ब्राउजरको डिफल्ट भ्यालिडेसन देखाउँछ
+                    console.log('Form validation failed. Preview not shown.'); // Debugging line
+                    return;
+                }
+
+                console.log('Form validation passed. Showing preview.'); // Debugging line
+
+                // फारामबाट डाटा लिने
+                const formData = {
+                    fullName: fullNameInput.value || '',
+                    fullNameEnglish: fullNameEnglishInput.value || '',
+                    gender: document.querySelector('input[name="gender"]:checked')?.value || 'N/A',
+                    maritalStatus: document.querySelector('input[name="maritalStatus"]:checked')?.value || 'N/A',
+                    citizenshipNo: citizenshipNoInput.value || '',
+                    citizenshipIssuedDistrict: citizenshipIssuedDistrictInput.value || '',
+                    permanentAddressWard: permanentAddressWardInput.value || '',
+                    permanentAddressMunicipality: permanentAddressMunicipalityInput.value || '',
+                    permanentAddressDistrict: permanentAddressDistrictInput.value || '',
+                    correspondenceAddressWard: correspondenceAddressWardInput.value || '',
+                    correspondenceAddressMunicipality: correspondenceAddressMunicipalityInput.value || '',
+                    correspondenceAddressDistrict: correspondenceAddressDistrictInput.value || '',
+                    fatherMotherName: fatherMotherNameInput.value || '',
+                    dob: dobInput.value || '',
+                    email: emailInput.value || '',
+                    phoneNumber: phoneNumberInput.value || '',
+                    religion: religionInput.value || '',
+                    caste: casteInput.value || '',
+                    appliedPosition: appliedPositionInput.value || '',
+                    appliedLevel: appliedLevelInput.value || '',
+                    applicationDate: applicationDateInput.value || '', // Get value from new input
+                    passportPhoto: passportPhotoPreview.src !== '#' ? passportPhotoPreview.src : null
+                };
+
+                // शैक्षिक योग्यता विवरण सङ्कलन
+                const educationEntries = document.querySelectorAll('#educationEntries tbody tr');
+                let educationDetailsHtml = '';
+                educationEntries.forEach((entry) => {
+                    const level = entry.querySelector('select[name="educationLevel[]"]')?.value || '';
+                    const institution = entry.querySelector('input[name="institution[]"]')?.value || '';
+                    const educationalTitle = entry.querySelector('input[name="educationalTitle[]"]')?.value || '';
+                    const faculty = entry.querySelector('input[name="faculty[]"]')?.value || '';
+                    const grade = entry.querySelector('input[name="grade[]"]')?.value || '';
+                    const major = entry.querySelector('input[name="majorSubject[]"]')?.value || '';
+                    const year = entry.querySelector('input[name="passingYear[]"]')?.value || '';
+                    const percentage = entry.querySelector('input[name="percentage[]"]')?.value || '';
+
+                    if (level || institution || educationalTitle || faculty || grade || major || year || percentage) {
+                        educationDetailsHtml += `
+                            <tr>
+                                <td>${level || 'N/A'}</td>
+                                <td>${institution || 'N/A'}</td>
+                                <td>${educationalTitle || 'N/A'}</td>
+                                <td>${faculty || 'N/A'}</td>
+                                <td>${grade || 'N/A'}</td>
+                                <td>${major || 'N/A'}</td>
+                                <td>${year || 'N/A'}</td>
+                                <td>${percentage || 'N/A'}</td>
+                            </tr>
+                        `;
+                    }
+                });
+
+                // कार्य अनुभव विवरण सङ्कलन
+                const experienceEntries = document.querySelectorAll('#experienceEntries tbody tr');
+                let experienceDetailsHtml = '';
+                experienceEntries.forEach((entry) => {
+                    const organization = entry.querySelector('input[name="organization[]"]')?.value || '';
+                    const position = entry.querySelector('input[name="position[]"]')?.value || '';
+                    const serviceGroup = entry.querySelector('input[name="serviceGroup[]"]')?.value || '';
+                    const level = entry.querySelector('input[name="level[]"]')?.value || '';
+                    const employmentType = entry.querySelector('input[name="employmentType[]"]')?.value || '';
+                    const fromDate = entry.querySelector('input[name="fromDate[]"]')?.value || '';
+                    const duration = entry.querySelector('input[name="duration[]"]')?.value || '';
+
+                    if (organization || position || serviceGroup || level || employmentType || fromDate || duration) {
+                        experienceDetailsHtml += `
+                            <tr>
+                                <td>${organization || 'N/A'}</td>
+                                <td>${position || 'N/A'}</td>
+                                <td>${serviceGroup || 'N/A'}</td>
+                                <td>${level || 'N/A'}</td>
+                                <td>${employmentType || 'N/A'}</td>
+                                <td>${fromDate || 'N/A'}</td>
+                                <td>${duration || 'N/A'}</td>
+                            </tr>
+                        `;
+                    }
+                });
+
+                // पूर्वावलोकन विवरण अपडेट गर्ने
+                document.getElementById('previewFullName').textContent = formData.fullName;
+                document.getElementById('previewFullNameEnglish').textContent = formData.fullNameEnglish;
+                document.getElementById('previewGender').textContent = formData.gender;
+                document.getElementById('previewMaritalStatus').textContent = formData.maritalStatus;
+                document.getElementById('previewCitizenshipNo').textContent = formData.citizenshipNo;
+                document.getElementById('previewCitizenshipIssuedDistrict').textContent = formData.citizenshipIssuedDistrict;
+                document.getElementById('previewPermanentAddressWard').textContent = formData.permanentAddressWard;
+                document.getElementById('previewPermanentAddressMunicipality').textContent = formData.permanentAddressMunicipality;
+                document.getElementById('previewPermanentAddressDistrict').textContent = formData.permanentAddressDistrict;
+                document.getElementById('previewCorrespondenceAddressWard').textContent = formData.correspondenceAddressWard;
+                document.getElementById('previewCorrespondenceAddressMunicipality').textContent = formData.correspondenceAddressMunicipality;
+                document.getElementById('previewCorrespondenceAddressDistrict').textContent = formData.correspondenceAddressDistrict;
+                document.getElementById('previewFatherMotherName').textContent = formData.fatherMotherName;
+                document.getElementById('previewDob').textContent = formatDate(formData.dob); // Format DOB
+                document.getElementById('previewEmail').textContent = formData.email;
+                document.getElementById('previewPhoneNumber').textContent = formData.phoneNumber;
+                document.getElementById('previewReligion').textContent = formData.religion;
+                document.getElementById('previewCaste').textContent = formData.caste;
+
+                document.getElementById('previewEducationDetails').innerHTML = educationDetailsHtml;
+                document.getElementById('previewExperienceDetails').innerHTML = experienceDetailsHtml;
+
+                // Set current date for the form preview
+                document.getElementById('previewFormDate').textContent = formatDate(formData.applicationDate); // Use application date
+
+
+                // फोटो पूर्वावलोकन अपडेट गर्ने
+                if (formData.passportPhoto) {
+                    // Check if elements exist before setting properties
+                    if (passportPhotoPreview) {
+                        passportPhotoPreview.src = formData.passportPhoto;
+                        if (photoPreviewContainer) photoPreviewContainer.classList.remove('hidden');
+                    }
+
+                    if (admitCardPhoto) {
+                        admitCardPhoto.src = formData.passportPhoto;
+                        admitCardPhoto.classList.remove('hidden');
+                        if (admitCardPhotoPlaceholder) admitCardPhotoPlaceholder.classList.add('hidden');
+                    }
+
+                    if (previewFormPhoto) {
+                        previewFormPhoto.src = formData.passportPhoto;
+                        previewFormPhoto.classList.remove('hidden');
+                        if (previewFormPhotoPlaceholder) previewFormPhotoPlaceholder.classList.add('hidden');
+                    }
+                } else {
+                    if (photoPreviewContainer) photoPreviewContainer.classList.add('hidden');
+                    if (passportPhotoPreview) passportPhotoPreview.src = '#';
+                    if (admitCardPhoto) admitCardPhoto.classList.add('hidden');
+                    if (admitCardPhotoPlaceholder) admitCardPhotoPlaceholder.classList.remove('hidden');
+                    if (previewFormPhoto) previewFormPhoto.classList.add('hidden');
+                    if (previewFormPhotoPlaceholder) previewFormPhotoPlaceholder.classList.remove('hidden');
+                }
+
+
+                // प्रवेशपत्रमा नाम, पद, तह अपडेट गर्ने (रोल नम्बर अब म्यानुअल हुनेछ)
+                admitCardName.textContent = formData.fullName;
+                admitCardPosition.textContent = formData.appliedPosition || '';
+                admitCardLevel.textContent = formData.appliedLevel || '';
+
+
+                // फाराम लुकाउने र पूर्वावलोकन देखाउने
+                form.style.display = 'none';
+                previewSection.style.display = 'block';
+            });
+
+            // सम्पादन बटनमा क्लिक गर्दा
+            editBtn.addEventListener('click', () => {
+                // पूर्वावलोकन लुकाउने र फाराम देखाउने
+                previewSection.style.display = 'none';
+                form.style.display = 'block';
+            });
+
+            // प्रिन्ट बटनमा क्लिक गर्दा
+            printBtn.addEventListener('click', () => {
+                window.print(); // ब्राउजरको प्रिन्ट संवाद खोल्छ
+            });
+        });
+    </script>
+</body>
+</html>
