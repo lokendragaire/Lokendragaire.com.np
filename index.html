@@ -564,9 +564,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="flex justify-center mt-6">
-                    <button id="resetStatsButton" class="run-button">तथ्याङ्क रिसेट गर्नुहोस्</button>
-                </div>
+                <!-- Reset button removed as per user request -->
             </div>
         </section>
     </main>
@@ -620,38 +618,33 @@
         // Session timeout duration (e.g., 30 minutes)
         const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
 
-        // Initialize or retrieve stats from localStorage (local stats for device/area)
-        let stats = JSON.parse(localStorage.getItem('websiteStats')) || {
-            totalVisits: 0, // This will be updated from Firestore
+        // Initialize stats object (will be populated from Firestore)
+        let stats = {
+            totalVisits: 0,
             totalSearches: 0,
             deviceCounts: { desktop: 0, mobile: 0, tablet: 0 },
             areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 }
         };
-
-        // Function to save local stats to localStorage
-        function saveLocalStats() {
-            localStorage.setItem('websiteStats', JSON.stringify(stats));
-        }
 
         // Function to update the dashboard UI
         function updateDashboardUI() {
             document.getElementById('totalVisits').textContent = stats.totalVisits;
             document.getElementById('totalSearches').textContent = stats.totalSearches;
 
-            const totalDevices = stats.deviceCounts.desktop + stats.deviceCounts.mobile + stats.deviceCounts.tablet;
+            const totalDevices = (stats.deviceCounts.desktop || 0) + (stats.deviceCounts.mobile || 0) + (stats.deviceCounts.tablet || 0);
             const deviceStatsHtml = `
-                <li>डेस्कटप: ${totalDevices > 0 ? ((stats.deviceCounts.desktop / totalDevices) * 100).toFixed(1) : 0}%</li>
-                <li>मोबाइल: ${totalDevices > 0 ? ((stats.deviceCounts.mobile / totalDevices) * 100).toFixed(1) : 0}%</li>
-                <li>ट्याब्लेट: ${totalDevices > 0 ? ((stats.deviceCounts.tablet / totalDevices) * 100).toFixed(1) : 0}%</li>
+                <li>डेस्कटप: ${totalDevices > 0 ? (((stats.deviceCounts.desktop || 0) / totalDevices) * 100).toFixed(1) : 0}%</li>
+                <li>मोबाइल: ${totalDevices > 0 ? (((stats.deviceCounts.mobile || 0) / totalDevices) * 100).toFixed(1) : 0}%</li>
+                <li>ट्याब्लेट: ${totalDevices > 0 ? (((stats.deviceCounts.tablet || 0) / totalDevices) * 100).toFixed(1) : 0}%</li>
             `;
             document.getElementById('deviceStats').innerHTML = deviceStatsHtml;
 
-            const totalAreas = stats.areaCounts.kathmandu + stats.areaCounts.pokhara + stats.areaCounts.baglung + stats.areaCounts.other;
+            const totalAreas = (stats.areaCounts.kathmandu || 0) + (stats.areaCounts.pokhara || 0) + (stats.areaCounts.baglung || 0) + (stats.areaCounts.other || 0);
             const areaStatsHtml = `
-                <li>काठमाडौं: ${totalAreas > 0 ? ((stats.areaCounts.kathmandu / totalAreas) * 100).toFixed(1) : 0}%</li>
-                <li>पोखरा: ${totalAreas > 0 ? ((stats.areaCounts.pokhara / totalAreas) * 100).toFixed(1) : 0}%</li>
-                <li>बागलुङ: ${totalAreas > 0 ? ((stats.areaCounts.baglung / totalAreas) * 100).toFixed(1) : 0}%</li>
-                <li>अन्य: ${totalAreas > 0 ? ((stats.areaCounts.other / totalAreas) * 100).toFixed(1) : 0}%</li>
+                <li>काठमाडौं: ${totalAreas > 0 ? (((stats.areaCounts.kathmandu || 0) / totalAreas) * 100).toFixed(1) : 0}%</li>
+                <li>पोखरा: ${totalAreas > 0 ? (((stats.areaCounts.pokhara || 0) / totalAreas) * 100).toFixed(1) : 0}%</li>
+                <li>बागलुङ: ${totalAreas > 0 ? (((stats.areaCounts.baglung || 0) / totalAreas) * 100).toFixed(1) : 0}%</li>
+                <li>अन्य: ${totalAreas > 0 ? (((stats.areaCounts.other || 0) / totalAreas) * 100).toFixed(1) : 0}%</li>
             `;
             document.getElementById('areaStats').innerHTML = areaStatsHtml;
         }
@@ -696,7 +689,6 @@
                         setupFirestoreListeners(); // Setup real-time listeners
                     } else {
                         console.log("Not authenticated or signed out.");
-                        // If not authenticated, dashboard will show default 0s or last local stats
                         document.getElementById('dashboardLoading').classList.add('hidden');
                     }
                 });
@@ -704,9 +696,7 @@
             } catch (error) {
                 console.error("Error initializing Firebase or signing in:", error);
                 document.getElementById('dashboardLoading').classList.add('hidden');
-                // Fallback to local-only stats for device/area if Firebase init fails
-                // Note: totalVisits will not be globally unique without Firestore
-                updateDashboardUI();
+                updateDashboardUI(); // Attempt to update UI with default/last known values
             }
         }
 
@@ -717,13 +707,16 @@
                 return;
             }
 
-            const globalStatsRef = doc(db, 'artifacts', appId, 'public', 'data', 'appStats', 'global_stats');
-            const uniqueUserRef = doc(db, 'artifacts', appId, 'public', 'data', 'appStats', 'uniqueUsers', auth.currentUser.uid);
+            // Corrected Firestore references
+            const appStatsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'appStats');
+            const globalStatsDocRef = doc(appStatsCollectionRef, 'global_stats');
+            const uniqueUsersCollectionRef = collection(appStatsCollectionRef, 'uniqueUsers');
+            const uniqueUserDocRef = doc(uniqueUsersCollectionRef, auth.currentUser.uid);
 
             const currentTime = Date.now();
 
             try {
-                const uniqueUserDoc = await getDoc(uniqueUserRef);
+                const uniqueUserDoc = await getDoc(uniqueUserDocRef);
                 let shouldIncrementGlobalVisit = false;
 
                 if (!uniqueUserDoc.exists()) {
@@ -731,10 +724,9 @@
                     shouldIncrementGlobalVisit = true;
                 } else {
                     const lastVisitTimestamp = uniqueUserDoc.data().lastVisitTimestamp;
-                    // Check if lastVisitTimestamp is a Firestore Timestamp object
                     const lastVisitMillis = lastVisitTimestamp && typeof lastVisitTimestamp.toMillis === 'function'
                                             ? lastVisitTimestamp.toMillis()
-                                            : lastVisitTimestamp; // Fallback if not a Timestamp object
+                                            : lastVisitTimestamp;
 
                     if (currentTime - lastVisitMillis > SESSION_TIMEOUT_MS) {
                         // Existing user, but session expired
@@ -743,38 +735,31 @@
                 }
 
                 if (shouldIncrementGlobalVisit) {
-                    // Increment global totalVisits in Firestore
-                    await updateDoc(globalStatsRef, {
-                        totalVisits: increment(1)
-                    }, { merge: true }); // Use merge:true to create if not exists
+                    const currentDeviceType = getDeviceType();
+                    const currentArea = getRandomArea();
+
+                    // Increment global totalVisits, deviceCounts, and areaCounts in Firestore
+                    await updateDoc(globalStatsDocRef, {
+                        totalVisits: increment(1),
+                        [`deviceCounts.${currentDeviceType}`]: increment(1),
+                        [`areaCounts.${currentArea}`]: increment(1)
+                    }, { merge: true });
+                    console.log("Global visit count and associated stats incremented.");
 
                     // Update unique user's last visit timestamp in Firestore
-                    await setDoc(uniqueUserRef, {
-                        lastVisitTimestamp: new Date(), // Store as Firestore Timestamp
-                        deviceType: getDeviceType(),
-                        area: getRandomArea()
+                    await setDoc(uniqueUserDocRef, {
+                        lastVisitTimestamp: new Date(),
+                        deviceType: currentDeviceType,
+                        area: currentArea
                     }, { merge: true });
-                    console.log("Global visit count incremented.");
                 } else {
                     console.log("Not a new unique visit or session active.");
                 }
 
-                // Always update local device and area stats for the current user's view
-                stats.deviceCounts[getDeviceType()]++;
-                stats.areaCounts[getRandomArea()]++;
-                saveLocalStats(); // Save local stats
-                // updateDashboardUI() will be called by the onSnapshot listener for global stats
-                // and here for local stats.
-                updateDashboardUI();
-
             } catch (error) {
                 console.error("Error handling new visit with Firestore:", error);
-                // Fallback for local device/area stats if Firestore fails
-                stats.deviceCounts[getDeviceType()]++;
-                stats.areaCounts[getRandomArea()]++;
-                saveLocalStats();
-                updateDashboardUI();
             }
+            // UI update will be triggered by onSnapshot
         }
 
         // Function to set up Firestore real-time listeners for global stats
@@ -783,39 +768,58 @@
                 console.warn("Firestore not initialized for listeners.");
                 return;
             }
-            const globalStatsRef = doc(db, 'artifacts', appId, 'public', 'data', 'appStats', 'global_stats');
+            // Corrected Firestore reference
+            const appStatsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'appStats');
+            const globalStatsDocRef = doc(appStatsCollectionRef, 'global_stats');
 
-            onSnapshot(globalStatsRef, (docSnap) => {
+            onSnapshot(globalStatsDocRef, (docSnap) => {
                 if (docSnap.exists()) {
-                    stats.totalVisits = docSnap.data().totalVisits || 0;
-                    stats.totalSearches = docSnap.data().totalSearches || 0; // Assuming global searches also tracked
-                    // Note: deviceCounts and areaCounts remain local, not fetched globally here
+                    const data = docSnap.data();
+                    stats.totalVisits = data.totalVisits || 0;
+                    stats.totalSearches = data.totalSearches || 0;
+                    stats.deviceCounts = data.deviceCounts || { desktop: 0, mobile: 0, tablet: 0 };
+                    stats.areaCounts = data.areaCounts || { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 };
                 } else {
-                    // Document doesn't exist, initialize it in Firestore
-                    setDoc(globalStatsRef, { totalVisits: 0, totalSearches: 0 }, { merge: true })
+                    // Document doesn't exist, initialize it in Firestore with default values
+                    setDoc(globalStatsDocRef, {
+                        totalVisits: 0,
+                        totalSearches: 0,
+                        deviceCounts: { desktop: 0, mobile: 0, tablet: 0 },
+                        areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 }
+                    }, { merge: true })
                         .then(() => console.log("Global stats document initialized in Firestore."))
                         .catch(error => console.error("Error initializing global stats document:", error));
                 }
-                updateDashboardUI(); // Update UI with latest global and local stats
+                updateDashboardUI(); // Update UI with latest global stats
                 document.getElementById('dashboardLoading').classList.add('hidden'); // Hide loading after data is available
             }, (error) => {
                 console.error("Error listening to global stats from Firestore:", error);
                 document.getElementById('dashboardLoading').classList.add('hidden'); // Hide loading even on error
-                // If Firestore listener fails, totalVisits will show its last known value or 0
-                updateDashboardUI();
+                updateDashboardUI(); // Attempt to update UI with last known values
             });
         }
 
-        // Function to increment search count (this remains local for each user's search activity)
-        function incrementSearchCount() {
-            stats.totalSearches++;
-            saveLocalStats();
-            updateDashboardUI();
+        // Function to increment search count (this will now update global Firestore stats)
+        async function incrementSearchCount() {
+            if (!db) {
+                console.warn("Firestore not initialized for search count.");
+                return;
+            }
+            // Corrected Firestore reference
+            const appStatsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'appStats');
+            const globalStatsDocRef = doc(appStatsCollectionRef, 'global_stats');
+            try {
+                await updateDoc(globalStatsDocRef, {
+                    totalSearches: increment(1)
+                }, { merge: true });
+                console.log("Global search count incremented.");
+            } catch (error) {
+                console.error("Error incrementing global search count in Firestore:", error);
+            }
+            // UI update will be triggered by onSnapshot
         }
 
         // General UI functions (dropdown, navbar, search highlight)
-        // These are copied from previous versions and remain client-side.
-        // JavaScript for toggling the dropdown menu
         function toggleDropdown(dropdownId) {
             const dropdown = document.getElementById(dropdownId);
             const allDropdowns = document.getElementsByClassName("dropdown-menu");
@@ -829,7 +833,6 @@
             dropdown.classList.toggle("hidden");
         }
 
-        // JavaScript for toggling the main navbar on mobile
         function toggleNavbar() {
             const navbar = document.getElementById("navbarResponsive");
             navbar.classList.toggle("hidden");
@@ -886,7 +889,7 @@
                 return;
             }
 
-            incrementSearchCount(); // This increments local search count
+            incrementSearchCount(); // This increments global search count via Firestore
 
             const regex = new RegExp(query, 'gi');
 
@@ -1031,46 +1034,16 @@
             }
         }
 
-        // Event listener for Reset Stats button
+        // Event listener for DOMContentLoaded to initialize Firebase and dashboard
         document.addEventListener('DOMContentLoaded', async () => {
-            // Show loading spinner for dashboard
+            // Show loading spinner for dashboard while data is fetched
             document.getElementById('dashboardLoading').classList.remove('hidden');
 
             // Initialize Firebase and authenticate first
             await initializeFirebaseAndAuth();
 
-            const resetStatsButton = document.getElementById('resetStatsButton');
-            if (resetStatsButton) {
-                resetStatsButton.addEventListener('click', async () => {
-                    // Reset local stats
-                    stats = {
-                        totalVisits: 0,
-                        totalSearches: 0,
-                        deviceCounts: { desktop: 0, mobile: 0, tablet: 0 },
-                        areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 }
-                    };
-                    localStorage.removeItem('uniqueDeviceId'); // Clear local unique device ID
-                    localStorage.removeItem('lastVisitTimestamp'); // Clear local session timestamp
-                    saveLocalStats(); // Save local reset
-
-                    // Attempt to reset global stats in Firestore
-                    if (db && auth && auth.currentUser) {
-                        const globalStatsRef = doc(db, 'artifacts', appId, 'public', 'data', 'appStats', 'global_stats');
-                        const uniqueUserRef = doc(db, 'artifacts', appId, 'public', 'data', 'appStats', 'uniqueUsers', auth.currentUser.uid);
-                        try {
-                            await setDoc(globalStatsRef, { totalVisits: 0, totalSearches: 0 }); // Overwrite global stats
-                            // Delete the current user's unique visit record to ensure they are counted again on next visit
-                            await deleteDoc(uniqueUserRef);
-                            console.log("Global stats reset successfully.");
-                        } catch (error) {
-                            console.error("Error resetting global stats in Firestore:", error);
-                        }
-                    }
-                    updateDashboardUI(); // Update UI after reset
-                });
-            } else {
-                console.error("Error: 'resetStatsButton' element not found.");
-            }
+            // The reset button is removed as per user request.
+            // If you need to manually reset stats for testing, you would do it via Firebase console.
         });
     </script>
 </body>
