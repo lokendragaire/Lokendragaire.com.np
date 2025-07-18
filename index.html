@@ -355,6 +355,44 @@
                 margin-bottom: 1rem; /* मोबाइलमा h2 को तलको मार्जिन घटाइयो */
             }
         }
+        /* Advertisement section specific styles */
+        .ad-section {
+            background-color: #f0f8ff; /* Light blue background */
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .ad-section h2 {
+            color: #0056b3; /* Darker blue for heading */
+            margin-bottom: 1.5rem;
+        }
+        .ad-placeholder {
+            min-height: 150px;
+            background-color: #e6f2ff;
+            border: 2px dashed #a0d9ff;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            color: #66a3ff;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        .ad-button {
+            background-color: #28a745; /* Green button */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .ad-button:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
     </style>
 </head>
 <body id="page-top">
@@ -563,10 +601,29 @@
                             <li>अन्य: 0%</li>
                         </ul>
                     </div>
+                     <div class="dashboard-card">
+                        <h3>विज्ञापन हेरिएको</h3>
+                        <p id="totalAdsViewed">0</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>विज्ञापन क्लिक</h3>
+                        <p id="totalAdsClicked">0</p>
+                    </div>
                 </div>
-                <!-- Reset button removed as per user request -->
             </div>
         </section>
+
+        <!-- Advertisement Section -->
+        <section class="page-section py-8 ad-section">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800">विज्ञापन राख्नुहोस्</h2>
+                <div class="ad-placeholder mb-4">
+                    तपाईंको विज्ञापन यहाँ देखिनेछ
+                </div>
+                <button id="placeAdButton" class="ad-button">विज्ञापन राख्न यहाँ क्लिक गर्नुहोस्</button>
+            </div>
+        </section>
+
     </main>
 
     <!-- Footer (Copied from index.html for consistency) -->
@@ -603,7 +660,7 @@
         // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, collection, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Global Firebase variables (provided by Canvas environment)
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -623,13 +680,18 @@
             totalVisits: 0,
             totalSearches: 0,
             deviceCounts: { desktop: 0, mobile: 0, tablet: 0 },
-            areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 }
+            areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 },
+            totalAdsViewed: 0, // New stat for ads
+            totalAdsClicked: 0 // New stat for ads
         };
 
         // Function to update the dashboard UI
         function updateDashboardUI() {
             document.getElementById('totalVisits').textContent = stats.totalVisits;
             document.getElementById('totalSearches').textContent = stats.totalSearches;
+            document.getElementById('totalAdsViewed').textContent = stats.totalAdsViewed;
+            document.getElementById('totalAdsClicked').textContent = stats.totalAdsClicked;
+
 
             const totalDevices = (stats.deviceCounts.desktop || 0) + (stats.deviceCounts.mobile || 0) + (stats.deviceCounts.tablet || 0);
             const deviceStatsHtml = `
@@ -710,7 +772,7 @@
             // Corrected Firestore references
             const appStatsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'appStats');
             const globalStatsDocRef = doc(appStatsCollectionRef, 'global_stats');
-            const uniqueUsersCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'uniqueUsers'); // Corrected path for uniqueUsers
+            const uniqueUsersCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'uniqueUsers');
             const uniqueUserDocRef = doc(uniqueUsersCollectionRef, auth.currentUser.uid);
 
             const currentTime = Date.now();
@@ -723,7 +785,9 @@
                         totalVisits: 0,
                         totalSearches: 0,
                         deviceCounts: { desktop: 0, mobile: 0, tablet: 0 },
-                        areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 }
+                        areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 },
+                        totalAdsViewed: 0,
+                        totalAdsClicked: 0
                     });
                     console.log("global_stats document initialized as it did not exist.");
                 }
@@ -791,13 +855,17 @@
                     stats.totalSearches = data.totalSearches || 0;
                     stats.deviceCounts = data.deviceCounts || { desktop: 0, mobile: 0, tablet: 0 };
                     stats.areaCounts = data.areaCounts || { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 };
+                    stats.totalAdsViewed = data.totalAdsViewed || 0; // Update ads viewed from Firestore
+                    stats.totalAdsClicked = data.totalAdsClicked || 0; // Update ads clicked from Firestore
                 } else {
                     // Document doesn't exist, initialize it in Firestore with default values
                     setDoc(globalStatsDocRef, {
                         totalVisits: 0,
                         totalSearches: 0,
                         deviceCounts: { desktop: 0, mobile: 0, tablet: 0 },
-                        areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 }
+                        areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 },
+                        totalAdsViewed: 0,
+                        totalAdsClicked: 0
                     }, { merge: true })
                         .then(() => console.log("Global stats document initialized in Firestore."))
                         .catch(error => console.error("Error initializing global stats document:", error));
@@ -821,6 +889,20 @@
             const appStatsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'appStats');
             const globalStatsDocRef = doc(appStatsCollectionRef, 'global_stats');
             try {
+                // Ensure global_stats document exists before updating
+                const globalStatsDocSnap = await getDoc(globalStatsDocRef);
+                if (!globalStatsDocSnap.exists()) {
+                    await setDoc(globalStatsDocRef, {
+                        totalVisits: 0,
+                        totalSearches: 0,
+                        deviceCounts: { desktop: 0, mobile: 0, tablet: 0 },
+                        areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 },
+                        totalAdsViewed: 0,
+                        totalAdsClicked: 0
+                    });
+                    console.log("global_stats document initialized by incrementSearchCount.");
+                }
+
                 await updateDoc(globalStatsDocRef, {
                     totalSearches: increment(1)
                 }, { merge: true });
@@ -829,6 +911,70 @@
                 console.error("Error incrementing global search count in Firestore:", error);
             }
             // UI update will be triggered by onSnapshot
+        }
+
+        // Function to increment ads viewed count
+        async function incrementAdsViewed() {
+            if (!db) {
+                console.warn("Firestore not initialized for ads viewed count.");
+                return;
+            }
+            const appStatsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'appStats');
+            const globalStatsDocRef = doc(appStatsCollectionRef, 'global_stats');
+            try {
+                // Ensure global_stats document exists before updating
+                const globalStatsDocSnap = await getDoc(globalStatsDocRef);
+                if (!globalStatsDocSnap.exists()) {
+                    await setDoc(globalStatsDocRef, {
+                        totalVisits: 0,
+                        totalSearches: 0,
+                        deviceCounts: { desktop: 0, mobile: 0, tablet: 0 },
+                        areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 },
+                        totalAdsViewed: 0,
+                        totalAdsClicked: 0
+                    });
+                    console.log("global_stats document initialized by incrementAdsViewed.");
+                }
+
+                await updateDoc(globalStatsDocRef, {
+                    totalAdsViewed: increment(1)
+                }, { merge: true });
+                console.log("Global ads viewed count incremented.");
+            } catch (error) {
+                console.error("Error incrementing global ads viewed count in Firestore:", error);
+            }
+        }
+
+        // Function to increment ads clicked count
+        async function incrementAdsClicked() {
+            if (!db) {
+                console.warn("Firestore not initialized for ads clicked count.");
+                return;
+            }
+            const appStatsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'appStats');
+            const globalStatsDocRef = doc(appStatsCollectionRef, 'global_stats');
+            try {
+                // Ensure global_stats document exists before updating
+                const globalStatsDocSnap = await getDoc(globalStatsDocRef);
+                if (!globalStatsDocSnap.exists()) {
+                    await setDoc(globalStatsDocRef, {
+                        totalVisits: 0,
+                        totalSearches: 0,
+                        deviceCounts: { desktop: 0, mobile: 0, tablet: 0 },
+                        areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 },
+                        totalAdsViewed: 0,
+                        totalAdsClicked: 0
+                    });
+                    console.log("global_stats document initialized by incrementAdsClicked.");
+                }
+
+                await updateDoc(globalStatsDocRef, {
+                    totalAdsClicked: increment(1)
+                }, { merge: true });
+                console.log("Global ads clicked count incremented.");
+            } catch (error) {
+                console.error("Error incrementing global ads clicked count in Firestore:", error);
+            }
         }
 
         // General UI functions (dropdown, navbar, search highlight)
@@ -1054,8 +1200,25 @@
             // Initialize Firebase and authenticate first
             await initializeFirebaseAndAuth();
 
-            // The reset button is removed as per user request.
-            // If you need to manually reset stats for testing, you would do it via Firebase console.
+            // Add event listener for the new "Place Ad" button
+            const placeAdButton = document.getElementById('placeAdButton');
+            if (placeAdButton) {
+                placeAdButton.addEventListener('click', () => {
+                    incrementAdsClicked(); // Increment ad click count
+                    // You might want to redirect to an ad placement form or show a modal here
+                    console.log("Place Ad button clicked. Ads clicked count incremented.");
+                    // Example: alert("This would lead to an ad placement form!");
+                });
+            }
+
+            // Increment ads viewed when the ad section is visible on page load
+            const adSection = document.querySelector('.ad-section');
+            if (adSection) {
+                // A simple way to check if it's "visible" on load is to just increment it.
+                // For more advanced tracking (e.g., only when user scrolls to it),
+                // Intersection Observer API would be needed.
+                incrementAdsViewed();
+            }
         });
     </script>
 </body>
