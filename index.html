@@ -139,7 +139,7 @@
             margin-bottom: 1rem;
         }
         .page-section {
-            padding: 4rem 0;
+            /* Removed fixed padding here to allow Tailwind's py-8 (2rem) to take effect by default */
             background-color: #FFFFFF;
         }
         .page-section h2 {
@@ -344,6 +344,17 @@
                 grid-template-columns: repeat(4, 1fr); /* 4 columns on large screens */
             }
         }
+
+        /* मोबाइलमा खाली ठाउँ समायोजन गर्नका लागि नयाँ CSS नियमहरू */
+        @media (max-width: 767px) {
+            .page-section {
+                padding-top: 1.5rem !important; /* मोबाइलमा माथिको प्याडिङ घटाइयो */
+                padding-bottom: 1.5rem !important; /* मोबाइलमा तलको प्याडिङ घटाइयो */
+            }
+            .page-section h2 {
+                margin-bottom: 1rem; /* मोबाइलमा h2 को तलको मार्जिन घटाइयो */
+            }
+        }
     </style>
 </head>
 <body id="page-top">
@@ -522,6 +533,10 @@
         <section class="page-section py-8">
             <div class="container mx-auto px-4">
                 <h2 class="text-3xl font-bold mb-6 text-gray-800">Website Traffic Insights</h2>
+                <div id="dashboardLoading" class="text-center text-gray-600 mt-4">
+                    <div class="spinner mx-auto"></div>
+                    <p>तथ्याङ्क लोड हुँदैछ...</p>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 dashboard-grid">
                     <div class="dashboard-card">
                         <h3>कुल आगन्तुक</h3>
@@ -549,7 +564,9 @@
                         </ul>
                     </div>
                 </div>
-                
+                <div class="flex justify-center mt-6">
+                    <button id="resetStatsButton" class="run-button">तथ्याङ्क रिसेट गर्नुहोस्</button>
+                </div>
             </div>
         </section>
     </main>
@@ -584,266 +601,35 @@
         <div class="container mx-auto"><small>Copyright © Lokendra Gaire 2024</small></div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // JavaScript for toggling the dropdown menu
-        function toggleDropdown(dropdownId) {
-            const dropdown = document.getElementById(dropdownId);
-            const allDropdowns = document.getElementsByClassName("dropdown-menu");
+    <script type="module">
+        // Firebase imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, collection, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-            // Close all other dropdowns
-            for (let i = 0; i < allDropdowns.length; i++) {
-                let openDropdown = allDropdowns[i];
-                if (openDropdown.id !== dropdownId && !openDropdown.classList.contains('hidden')) {
-                    openDropdown.classList.add('hidden');
-                }
-            }
+        // Global Firebase variables (provided by Canvas environment)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-            // Toggle the clicked dropdown
-            dropdown.classList.toggle("hidden");
-        }
+        let app;
+        let db;
+        let auth;
+        let userId = 'anonymous'; // Default until authenticated
 
-        // JavaScript for toggling the main navbar on mobile
-        function toggleNavbar() {
-            const navbar = document.getElementById("navbarResponsive");
-            navbar.classList.toggle("hidden");
-            navbar.classList.toggle("flex"); // Toggle flex to show/hide
-            navbar.classList.toggle("flex-col"); // Ensure vertical stacking when open
-        }
+        // Session timeout duration (e.g., 30 minutes)
+        const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
 
-        // Get references to search elements and spinner
-        const searchInput = document.getElementById('searchInput');
-        const searchActionButton = document.getElementById('searchActionButton');
-        const searchIcon = document.getElementById('searchIcon');
-        const clearSearchIcon = document.getElementById('clearSearchIcon');
-        const loadingSpinner = document.getElementById('loadingSpinner');
-
-        // Function to show/hide spinner
-        function showSpinner() {
-            searchIcon.classList.add('hidden');
-            clearSearchIcon.classList.add('hidden'); // Hide clear icon if showing
-            loadingSpinner.classList.remove('hidden');
-        }
-
-        function hideSpinner() {
-            loadingSpinner.classList.add('hidden');
-            // Decide whether to show search icon or clear icon based on input value
-            if (searchInput.value.length > 0) {
-                clearSearchIcon.classList.remove('hidden');
-            } else {
-                searchIcon.classList.remove('hidden');
-            }
-        }
-
-        // Function to remove all existing highlights (general text)
-        function removeTextHighlights() {
-            const highlights = document.querySelectorAll('.highlight');
-            highlights.forEach(span => {
-                const parent = span.parentNode;
-                // Replace the span with its text content
-                parent.replaceChild(document.createTextNode(span.textContent), span);
-                parent.normalize(); // Merge adjacent text nodes
-            });
-        }
-
-        // Function to remove nav and dropdown item highlights
-        function removeNavHighlights() {
-            document.querySelectorAll('#navbarResponsive .nav-link.nav-item-highlight').forEach(el => el.classList.remove('nav-item-highlight'));
-            document.querySelectorAll('.dropdown-item-highlight').forEach(el => el.classList.remove('dropdown-item-highlight'));
-            // Also ensure all dropdowns are closed when clearing highlights, unless a search specifically opens them
-            const allDropdowns = document.getElementsByClassName("dropdown-menu");
-            for (let i = 0; i < allDropdowns.length; i++) {
-                allDropdowns[i].classList.add('hidden');
-            }
-        }
-
-        // Combined search and highlight function
-        function performSearchAndHighlight(query) {
-            showSpinner();
-            removeTextHighlights(); // Clear general text highlights
-            removeNavHighlights(); // Clear nav/dropdown highlights
-
-            if (!query) {
-                hideSpinner();
-                return;
-            }
-
-            // Increment search count
-            incrementSearchCount();
-
-            const regex = new RegExp(query, 'gi'); // Case-insensitive global search
-
-            // 1. Highlight main content (excluding navbar)
-            function highlightNode(node) {
-                if (node.nodeType === Node.TEXT_NODE) {
-                    const parentTagName = node.parentNode.tagName;
-                    if (parentTagName !== 'SCRIPT' && parentTagName !== 'STYLE') {
-                        const match = node.nodeValue.match(regex);
-                        if (match) {
-                            const fragment = document.createDocumentFragment();
-                            let lastIndex = 0;
-                            node.nodeValue.replace(regex, (match, offset) => {
-                                fragment.appendChild(document.createTextNode(node.nodeValue.substring(lastIndex, offset)));
-                                const span = document.createElement('span');
-                                span.className = 'highlight';
-                                span.textContent = match;
-                                fragment.appendChild(span);
-                                lastIndex = offset + match.length;
-                                return match;
-                            });
-                            fragment.appendChild(document.createTextNode(node.nodeValue.substring(lastIndex)));
-                            node.parentNode.replaceChild(fragment, node);
-                        }
-                    }
-                } else if (node.nodeType === Node.ELEMENT_NODE) {
-                    if (node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE' && node.tagName !== 'NOSCRIPT' && node.id !== 'mainNav') { // Exclude mainNav from general content search
-                        for (let i = 0; i < node.childNodes.length; i++) {
-                            highlightNode(node.childNodes[i]);
-                        }
-                    }
-                }
-            }
-            highlightNode(document.body); // Start from body
-
-            // 2. Highlight Nav Items and Dropdown Items specifically
-            const navItems = document.querySelectorAll('#navbarResponsive .nav-item');
-            navItems.forEach(navItem => {
-                const navLink = navItem.querySelector('.nav-link');
-                const dropdownMenu = navItem.querySelector('.dropdown-menu');
-                let navItemMatched = false;
-
-                // Get only the text content of the navLink, excluding child elements like the icon
-                let navLinkText = '';
-                if (navLink) {
-                    for (let child of navLink.childNodes) {
-                        if (child.nodeType === Node.TEXT_NODE) {
-                            navLinkText += child.nodeValue;
-                        }
-                    }
-                }
-
-                if (navLinkText.match(regex)) {
-                    navLink.classList.add('nav-item-highlight');
-                    navItemMatched = true;
-                }
-
-                // Check dropdown items if it's a dropdown
-                if (dropdownMenu) {
-                    const dropdownLinks = dropdownMenu.querySelectorAll('a');
-                    dropdownLinks.forEach(dropdownLink => {
-                        if (dropdownLink.textContent.match(regex)) {
-                            dropdownLink.classList.add('dropdown-item-highlight');
-                            // Ensure parent dropdown is open
-                            dropdownMenu.classList.remove('hidden');
-                            // Highlight the parent nav item if not already
-                            if (!navItemMatched) {
-                                navLink.classList.add('nav-item-highlight');
-                            }
-                        }
-                    });
-                }
-            });
-
-            // Highlight the social media section links (only the remaining ones)
-            const socialLinksSection = document.querySelector('main .page-section .flex.flex-wrap');
-            if (socialLinksSection) {
-                const socialLinks = socialLinksSection.querySelectorAll('a');
-                socialLinks.forEach(link => {
-                    if (link.textContent.match(regex) || (link.getAttribute('aria-label') && link.getAttribute('aria-label').match(regex))) {
-                        link.classList.add('highlight'); // Use general highlight for these buttons
-                    }
-                });
-            }
-
-
-            setTimeout(() => {
-                hideSpinner();
-            }, 50); // Small delay to show spinner
-        }
-
-        // Function to clear search and highlights
-        function clearSearch() {
-            searchInput.value = '';
-            removeTextHighlights();
-            removeNavHighlights(); // Clear nav and dropdown highlights
-            // Also remove highlights from social media section
-            document.querySelectorAll('main .page-section .flex.flex-wrap .highlight').forEach(el => el.classList.remove('highlight'));
-            clearSearchIcon.classList.add('hidden');
-            searchIcon.classList.remove('hidden');
-        }
-
-        // Event listener for search action button click
-        searchActionButton.addEventListener('click', () => {
-            if (clearSearchIcon.classList.contains('hidden')) { // If search icon is visible, perform search
-                performSearchAndHighlight(searchInput.value);
-            } else { // If clear icon is visible, clear search
-                clearSearch();
-            }
-        });
-
-        // Event listener for Enter key in search input
-        searchInput.addEventListener('keypress', (event) => {
-            if (event.key === 'Enter') {
-                performSearchAndHighlight(searchInput.value);
-            }
-        });
-
-        // Event listener for input changes to show/hide clear icon
-        searchInput.addEventListener('input', () => {
-            if (searchInput.value.length > 0) {
-                searchIcon.classList.add('hidden');
-                clearSearchIcon.classList.remove('hidden');
-            } else {
-                searchIcon.classList.remove('hidden');
-                clearSearchIcon.classList.add('hidden');
-                removeTextHighlights(); // Also remove highlights when input is cleared manually
-                removeNavHighlights(); // Clear nav and dropdown highlights when input is cleared
-                // Also remove highlights from social media section when input is cleared
-                document.querySelectorAll('main .page-section .flex.flex-wrap .highlight').forEach(el => el.classList.remove('highlight'));
-            }
-        });
-
-        // Close dropdowns and navbar if the user clicks outside of them
-        window.onclick = function(event) {
-            // Close dropdowns
-            if (!event.target.matches('.nav-link') && !event.target.closest('.dropdown-menu') && !event.target.closest('.search-container')) {
-                const dropdowns = document.getElementsByClassName("dropdown-menu");
-                for (let i = 0; i < dropdowns.length; i++) {
-                    const openDropdown = dropdowns[i];
-                    if (!openDropdown.classList.contains('hidden')) {
-                        openDropdown.classList.add('hidden');
-                    }
-                }
-                // Also remove nav/dropdown highlights if clicking outside
-                removeNavHighlights();
-            }
-
-            // Close navbar if click is outside navbar and it's open
-            const navbar = document.getElementById("mainNav");
-            const navbarResponsive = document.getElementById("navbarResponsive");
-            const navbarToggler = document.querySelector('.navbar-toggler');
-            const searchContainer = document.querySelector('.search-container');
-
-            if (!navbar.contains(event.target) && !navbarToggler.contains(event.target) && !searchContainer.contains(event.target)) {
-                if (!navbarResponsive.classList.contains('hidden')) {
-                    navbarResponsive.classList.add('hidden');
-                    navbarResponsive.classList.remove('flex', 'flex-col');
-                }
-            }
-        }
-
-        // --- Dashboard Logic ---
-
-        // Initialize or retrieve stats from localStorage
+        // Initialize or retrieve stats from localStorage (local stats for device/area)
         let stats = JSON.parse(localStorage.getItem('websiteStats')) || {
-            totalVisits: 0,
+            totalVisits: 0, // This will be updated from Firestore
             totalSearches: 0,
             deviceCounts: { desktop: 0, mobile: 0, tablet: 0 },
             areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 }
         };
 
-        // Function to save stats to localStorage
-        function saveStats() {
+        // Function to save local stats to localStorage
+        function saveLocalStats() {
             localStorage.setItem('websiteStats', JSON.stringify(stats));
         }
 
@@ -870,52 +656,417 @@
             document.getElementById('areaStats').innerHTML = areaStatsHtml;
         }
 
-        // Function to increment total visits and simulate device/area
-        function incrementVisitCount() {
-            stats.totalVisits++;
+        // Function to get device type
+        function getDeviceType() {
+            if (window.innerWidth < 768) {
+                return 'mobile';
+            } else if (window.innerWidth >= 768 && window.innerWidth < 1024) {
+                return 'tablet';
+            } else {
+                return 'desktop';
+            }
+        }
 
-            // Simulate device type based on window width
-            if (window.innerWidth < 768) { // Mobile
-                stats.deviceCounts.mobile++;
-            } else if (window.innerWidth >= 768 && window.innerWidth < 1024) { // Tablet
-                stats.deviceCounts.tablet++;
-            } else { // Desktop
-                stats.deviceCounts.desktop++;
+        // Function to get random area (for simulation)
+        function getRandomArea() {
+            const areas = ['kathmandu', 'pokhara', 'baglung', 'other'];
+            return areas[Math.floor(Math.random() * areas.length)];
+        }
+
+        // Initialize Firebase and authenticate
+        async function initializeFirebaseAndAuth() {
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // Authenticate user
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // Listen for auth state changes and then proceed with Firestore operations
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        console.log("Authenticated with Firebase. User ID:", userId);
+                        await handleNewVisit(); // Handle visit count after successful auth
+                        setupFirestoreListeners(); // Setup real-time listeners
+                    } else {
+                        console.log("Not authenticated or signed out.");
+                        // If not authenticated, dashboard will show default 0s or last local stats
+                        document.getElementById('dashboardLoading').classList.add('hidden');
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error initializing Firebase or signing in:", error);
+                document.getElementById('dashboardLoading').classList.add('hidden');
+                // Fallback to local-only stats for device/area if Firebase init fails
+                // Note: totalVisits will not be globally unique without Firestore
+                updateDashboardUI();
+            }
+        }
+
+        // Handles incrementing global visit count in Firestore
+        async function handleNewVisit() {
+            if (!db || !auth || !auth.currentUser) {
+                console.warn("Firestore or Auth not ready for visit handling.");
+                return;
             }
 
-            // Simulate area (randomly for demonstration)
-            const areas = ['kathmandu', 'pokhara', 'baglung', 'other'];
-            const randomArea = areas[Math.floor(Math.random() * areas.length)];
-            stats.areaCounts[randomArea]++;
+            const globalStatsRef = doc(db, 'artifacts', appId, 'public', 'data', 'appStats', 'global_stats');
+            const uniqueUserRef = doc(db, 'artifacts', appId, 'public', 'data', 'appStats', 'uniqueUsers', auth.currentUser.uid);
 
-            saveStats();
-            updateDashboardUI();
+            const currentTime = Date.now();
+
+            try {
+                const uniqueUserDoc = await getDoc(uniqueUserRef);
+                let shouldIncrementGlobalVisit = false;
+
+                if (!uniqueUserDoc.exists()) {
+                    // First time visit from this unique user ID
+                    shouldIncrementGlobalVisit = true;
+                } else {
+                    const lastVisitTimestamp = uniqueUserDoc.data().lastVisitTimestamp;
+                    // Check if lastVisitTimestamp is a Firestore Timestamp object
+                    const lastVisitMillis = lastVisitTimestamp && typeof lastVisitTimestamp.toMillis === 'function'
+                                            ? lastVisitTimestamp.toMillis()
+                                            : lastVisitTimestamp; // Fallback if not a Timestamp object
+
+                    if (currentTime - lastVisitMillis > SESSION_TIMEOUT_MS) {
+                        // Existing user, but session expired
+                        shouldIncrementGlobalVisit = true;
+                    }
+                }
+
+                if (shouldIncrementGlobalVisit) {
+                    // Increment global totalVisits in Firestore
+                    await updateDoc(globalStatsRef, {
+                        totalVisits: increment(1)
+                    }, { merge: true }); // Use merge:true to create if not exists
+
+                    // Update unique user's last visit timestamp in Firestore
+                    await setDoc(uniqueUserRef, {
+                        lastVisitTimestamp: new Date(), // Store as Firestore Timestamp
+                        deviceType: getDeviceType(),
+                        area: getRandomArea()
+                    }, { merge: true });
+                    console.log("Global visit count incremented.");
+                } else {
+                    console.log("Not a new unique visit or session active.");
+                }
+
+                // Always update local device and area stats for the current user's view
+                stats.deviceCounts[getDeviceType()]++;
+                stats.areaCounts[getRandomArea()]++;
+                saveLocalStats(); // Save local stats
+                // updateDashboardUI() will be called by the onSnapshot listener for global stats
+                // and here for local stats.
+                updateDashboardUI();
+
+            } catch (error) {
+                console.error("Error handling new visit with Firestore:", error);
+                // Fallback for local device/area stats if Firestore fails
+                stats.deviceCounts[getDeviceType()]++;
+                stats.areaCounts[getRandomArea()]++;
+                saveLocalStats();
+                updateDashboardUI();
+            }
         }
 
-        // Function to increment search count
+        // Function to set up Firestore real-time listeners for global stats
+        function setupFirestoreListeners() {
+            if (!db) {
+                console.warn("Firestore not initialized for listeners.");
+                return;
+            }
+            const globalStatsRef = doc(db, 'artifacts', appId, 'public', 'data', 'appStats', 'global_stats');
+
+            onSnapshot(globalStatsRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    stats.totalVisits = docSnap.data().totalVisits || 0;
+                    stats.totalSearches = docSnap.data().totalSearches || 0; // Assuming global searches also tracked
+                    // Note: deviceCounts and areaCounts remain local, not fetched globally here
+                } else {
+                    // Document doesn't exist, initialize it in Firestore
+                    setDoc(globalStatsRef, { totalVisits: 0, totalSearches: 0 }, { merge: true })
+                        .then(() => console.log("Global stats document initialized in Firestore."))
+                        .catch(error => console.error("Error initializing global stats document:", error));
+                }
+                updateDashboardUI(); // Update UI with latest global and local stats
+                document.getElementById('dashboardLoading').classList.add('hidden'); // Hide loading after data is available
+            }, (error) => {
+                console.error("Error listening to global stats from Firestore:", error);
+                document.getElementById('dashboardLoading').classList.add('hidden'); // Hide loading even on error
+                // If Firestore listener fails, totalVisits will show its last known value or 0
+                updateDashboardUI();
+            });
+        }
+
+        // Function to increment search count (this remains local for each user's search activity)
         function incrementSearchCount() {
             stats.totalSearches++;
-            saveStats();
+            saveLocalStats();
             updateDashboardUI();
         }
 
-        // Ensure DOM is fully loaded before interacting with elements
-        document.addEventListener('DOMContentLoaded', () => {
-            // On page load: increment visit and update dashboard
-            incrementVisitCount();
+        // General UI functions (dropdown, navbar, search highlight)
+        // These are copied from previous versions and remain client-side.
+        // JavaScript for toggling the dropdown menu
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            const allDropdowns = document.getElementsByClassName("dropdown-menu");
 
-            // Event listener for Reset Stats button
+            for (let i = 0; i < allDropdowns.length; i++) {
+                let openDropdown = allDropdowns[i];
+                if (openDropdown.id !== dropdownId && !openDropdown.classList.contains('hidden')) {
+                    openDropdown.classList.add('hidden');
+                }
+            }
+            dropdown.classList.toggle("hidden");
+        }
+
+        // JavaScript for toggling the main navbar on mobile
+        function toggleNavbar() {
+            const navbar = document.getElementById("navbarResponsive");
+            navbar.classList.toggle("hidden");
+            navbar.classList.toggle("flex");
+            navbar.classList.toggle("flex-col");
+        }
+
+        const searchInput = document.getElementById('searchInput');
+        const searchActionButton = document.getElementById('searchActionButton');
+        const searchIcon = document.getElementById('searchIcon');
+        const clearSearchIcon = document.getElementById('clearSearchIcon');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        function showSpinner() {
+            searchIcon.classList.add('hidden');
+            clearSearchIcon.classList.add('hidden');
+            loadingSpinner.classList.remove('hidden');
+        }
+
+        function hideSpinner() {
+            loadingSpinner.classList.add('hidden');
+            if (searchInput.value.length > 0) {
+                clearSearchIcon.classList.remove('hidden');
+            } else {
+                searchIcon.classList.remove('hidden');
+            }
+        }
+
+        function removeTextHighlights() {
+            const highlights = document.querySelectorAll('.highlight');
+            highlights.forEach(span => {
+                const parent = span.parentNode;
+                parent.replaceChild(document.createTextNode(span.textContent), span);
+                parent.normalize();
+            });
+        }
+
+        function removeNavHighlights() {
+            document.querySelectorAll('#navbarResponsive .nav-link.nav-item-highlight').forEach(el => el.classList.remove('nav-item-highlight'));
+            document.querySelectorAll('.dropdown-item-highlight').forEach(el => el.classList.remove('dropdown-item-highlight'));
+            const allDropdowns = document.getElementsByClassName("dropdown-menu");
+            for (let i = 0; i < allDropdowns.length; i++) {
+                allDropdowns[i].classList.add('hidden');
+            }
+        }
+
+        function performSearchAndHighlight(query) {
+            showSpinner();
+            removeTextHighlights();
+            removeNavHighlights();
+
+            if (!query) {
+                hideSpinner();
+                return;
+            }
+
+            incrementSearchCount(); // This increments local search count
+
+            const regex = new RegExp(query, 'gi');
+
+            function highlightNode(node) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const parentTagName = node.parentNode.tagName;
+                    if (parentTagName !== 'SCRIPT' && parentTagName !== 'STYLE') {
+                        const match = node.nodeValue.match(regex);
+                        if (match) {
+                            const fragment = document.createDocumentFragment();
+                            let lastIndex = 0;
+                            node.nodeValue.replace(regex, (match, offset) => {
+                                fragment.appendChild(document.createTextNode(node.nodeValue.substring(lastIndex, offset)));
+                                const span = document.createElement('span');
+                                span.className = 'highlight';
+                                span.textContent = match;
+                                fragment.appendChild(span);
+                                lastIndex = offset + match.length;
+                                return match;
+                            });
+                            fragment.appendChild(document.createTextNode(node.nodeValue.substring(lastIndex)));
+                            node.parentNode.replaceChild(fragment, node);
+                        }
+                    }
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    if (node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE' && node.tagName !== 'NOSCRIPT' && node.id !== 'mainNav') {
+                        for (let i = 0; i < node.childNodes.length; i++) {
+                            highlightNode(node.childNodes[i]);
+                        }
+                    }
+                }
+            }
+            highlightNode(document.body);
+
+            const navItems = document.querySelectorAll('#navbarResponsive .nav-item');
+            navItems.forEach(navItem => {
+                const navLink = navItem.querySelector('.nav-link');
+                const dropdownMenu = navItem.querySelector('.dropdown-menu');
+                let navItemMatched = false;
+
+                let navLinkText = '';
+                if (navLink) {
+                    for (let child of navLink.childNodes) {
+                        if (child.nodeType === Node.TEXT_NODE) {
+                            navLinkText += child.nodeValue;
+                        }
+                    }
+                }
+
+                if (navLinkText.match(regex)) {
+                    navLink.classList.add('nav-item-highlight');
+                    navItemMatched = true;
+                }
+
+                if (dropdownMenu) {
+                    const dropdownLinks = dropdownMenu.querySelectorAll('a');
+                    dropdownLinks.forEach(dropdownLink => {
+                        if (dropdownLink.textContent.match(regex)) {
+                            dropdownLink.classList.add('dropdown-item-highlight');
+                            dropdownMenu.classList.remove('hidden');
+                            if (!navItemMatched) {
+                                navLink.classList.add('nav-item-highlight');
+                            }
+                        }
+                    });
+                }
+            });
+
+            const socialLinksSection = document.querySelector('main .page-section .flex.flex-wrap');
+            if (socialLinksSection) {
+                const socialLinks = socialLinksSection.querySelectorAll('a');
+                socialLinks.forEach(link => {
+                    if (link.textContent.match(regex) || (link.getAttribute('aria-label') && link.getAttribute('aria-label').match(regex))) {
+                        link.classList.add('highlight');
+                    }
+                });
+            }
+
+            setTimeout(() => {
+                hideSpinner();
+            }, 50);
+        }
+
+        function clearSearch() {
+            searchInput.value = '';
+            removeTextHighlights();
+            removeNavHighlights();
+            document.querySelectorAll('main .page-section .flex.flex-wrap .highlight').forEach(el => el.classList.remove('highlight'));
+            clearSearchIcon.classList.add('hidden');
+            searchIcon.classList.remove('hidden');
+        }
+
+        searchActionButton.addEventListener('click', () => {
+            if (clearSearchIcon.classList.contains('hidden')) {
+                performSearchAndHighlight(searchInput.value);
+            } else {
+                clearSearch();
+            }
+        });
+
+        searchInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                performSearchAndHighlight(searchInput.value);
+            }
+        });
+
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value.length > 0) {
+                searchIcon.classList.add('hidden');
+                clearSearchIcon.classList.remove('hidden');
+            } else {
+                searchIcon.classList.remove('hidden');
+                clearSearchIcon.classList.add('hidden');
+                removeTextHighlights();
+                removeNavHighlights();
+                document.querySelectorAll('main .page-section .flex.flex-wrap .highlight').forEach(el => el.classList.remove('highlight'));
+            }
+        });
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.nav-link') && !event.target.closest('.dropdown-menu') && !event.target.closest('.search-container')) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (!openDropdown.classList.contains('hidden')) {
+                        openDropdown.classList.add('hidden');
+                    }
+                }
+                removeNavHighlights();
+            }
+
+            const navbar = document.getElementById("mainNav");
+            const navbarResponsive = document.getElementById("navbarResponsive");
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const searchContainer = document.querySelector('.search-container');
+
+            if (!navbar.contains(event.target) && !navbarToggler.contains(event.target) && !searchContainer.contains(event.target)) {
+                if (!navbarResponsive.classList.contains('hidden')) {
+                    navbarResponsive.classList.add('hidden');
+                    navbarResponsive.classList.remove('flex', 'flex-col');
+                }
+            }
+        }
+
+        // Event listener for Reset Stats button
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Show loading spinner for dashboard
+            document.getElementById('dashboardLoading').classList.remove('hidden');
+
+            // Initialize Firebase and authenticate first
+            await initializeFirebaseAndAuth();
+
             const resetStatsButton = document.getElementById('resetStatsButton');
-            if (resetStatsButton) { // Check if the element exists
-                resetStatsButton.addEventListener('click', () => {
+            if (resetStatsButton) {
+                resetStatsButton.addEventListener('click', async () => {
+                    // Reset local stats
                     stats = {
                         totalVisits: 0,
                         totalSearches: 0,
                         deviceCounts: { desktop: 0, mobile: 0, tablet: 0 },
                         areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 }
                     };
-                    saveStats();
-                    updateDashboardUI();
+                    localStorage.removeItem('uniqueDeviceId'); // Clear local unique device ID
+                    localStorage.removeItem('lastVisitTimestamp'); // Clear local session timestamp
+                    saveLocalStats(); // Save local reset
+
+                    // Attempt to reset global stats in Firestore
+                    if (db && auth && auth.currentUser) {
+                        const globalStatsRef = doc(db, 'artifacts', appId, 'public', 'data', 'appStats', 'global_stats');
+                        const uniqueUserRef = doc(db, 'artifacts', appId, 'public', 'data', 'appStats', 'uniqueUsers', auth.currentUser.uid);
+                        try {
+                            await setDoc(globalStatsRef, { totalVisits: 0, totalSearches: 0 }); // Overwrite global stats
+                            // Delete the current user's unique visit record to ensure they are counted again on next visit
+                            await deleteDoc(uniqueUserRef);
+                            console.log("Global stats reset successfully.");
+                        } catch (error) {
+                            console.error("Error resetting global stats in Firestore:", error);
+                        }
+                    }
+                    updateDashboardUI(); // Update UI after reset
                 });
             } else {
                 console.error("Error: 'resetStatsButton' element not found.");
