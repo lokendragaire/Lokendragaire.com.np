@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ne">
-<head> 
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Lokendra_Gaire</title>
@@ -18,9 +18,9 @@
   gtag('config', 'G-LPGL4SRW14');
 </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Lato:wght@400;700;400italic;700italic&display=swap" rel="stylesheet" />
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom styles for social buttons and background colors not directly in Tailwind */
@@ -87,7 +87,7 @@
             background-position: center;
             background-repeat: no-repeat;
             background-color: #cceeff; /* Changed to a slightly more blue color */
-            
+
             padding: 8rem 0 0; /* Changed padding-bottom to 0 */
             text-align: center;
             position: relative;
@@ -107,7 +107,7 @@
             background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent dark overlay */
             z-index: 1; /* Below content, above background image */
         }
-        
+
         .masthead-content {
             z-index: 2; /* Ensure content is above the overlay */
             position: relative; /* Ensure z-index works */
@@ -296,14 +296,62 @@
             background-color: #bfdbfe; /* Light blue for dropdown item */
             border-radius: 4px;
         }
+
+        /* Dashboard specific styles - Updated for smaller and more attractive boxes */
+        .dashboard-card {
+            background: linear-gradient(145deg, #e0e0e0, #f8f8f8); /* Subtle gradient background */
+            border-radius: 1rem; /* More rounded corners */
+            padding: 1rem; /* Slightly reduced padding */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1); /* Enhanced shadow */
+            text-align: center;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Smooth transition on hover */
+            border: 1px solid #dcdcdc; /* Light border */
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px); /* Lift effect on hover */
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2), 0 6px 12px rgba(0, 0, 0, 0.15); /* More pronounced shadow on hover */
+        }
+        .dashboard-card h3 {
+            font-size: 1rem; /* Smaller font size for title */
+            font-weight: bold;
+            color: #228B22; /* Forest Green */
+            margin-bottom: 0.25rem; /* Reduced margin */
+        }
+        .dashboard-card p {
+            font-size: 1.8rem; /* Slightly smaller font size for value */
+            font-weight: 700;
+            color: #333;
+        }
+        .dashboard-card ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 0.75rem; /* Reduced margin */
+            text-align: left;
+        }
+        .dashboard-card ul li {
+            font-size: 0.9rem; /* Smaller font size for list items */
+            color: #555;
+            margin-bottom: 0.15rem; /* Reduced margin */
+        }
+        /* Adjust grid for smaller screens to make cards appear smaller */
+        @media (min-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
+            }
+        }
+        @media (min-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(4, 1fr); /* 4 columns on large screens */
+            }
+        }
     </style>
 </head>
 <body id="page-top">
     <!-- Navigation (Copied from index.html for consistency) -->
-    <nav class="navbar fixed-top py-3" id="mainNav"> 
+    <nav class="navbar fixed-top py-3" id="mainNav">
         <div class="container mx-auto px-4 flex justify-between items-center">
             <a class="navbar-brand text-2xl font-bold" href="index.html">You Can Visit</a>
-            
+
             <!-- Search Bar -->
             <div class="search-container relative flex items-center ml-4">
                 <input type="text" id="searchInput" placeholder="Search..." class="form-control rounded-full py-2 px-4 pr-18 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm w-full lg:w-48">
@@ -319,10 +367,10 @@
                 <i class="fas fa-bars text-3xl text-gray-700"></i>
             </button>
 
-            <div class="hidden lg:flex items-center w-auto" id="navbarResponsive"> 
-                <ul class="navbar-nav flex space-x-4 ml-auto"> 
+            <div class="hidden lg:flex items-center w-auto" id="navbarResponsive">
+                <ul class="navbar-nav flex space-x-4 ml-auto">
                     <li class="nav-item"><a class="nav-link py-2 px-3 block" href="About.html">About</a></li>
-                    
+
                     <!-- First Column of Dropdowns -->
                     <ul class="navbar-nav flex lg:space-x-4 lg:ml-auto">
                         <!-- Portfolio Dropdown -->
@@ -345,10 +393,10 @@
                                 <a href="#" class="flex items-center"><i class="fas fa-running mr-2 text-purple-700"></i>जनजागृति युवा क्लब: सहसचिव</a>
                                 <a href="#" class="flex items-center"><i class="fas fa-hand-holding-heart mr-2 text-orange-700"></i>लायन्स क्लब अफ गलकोट घुम्टे: Charter Member</a>
                                 <a href="#" class="flex items-center"><i class="fas fa-globe-americas mr-2 text-red-700"></i>रोट्र्याक्ट क्लब अफ गलकोट बागलुङ: International Development Chair</a>
-                               
+
                             </div>
                         </li>
-                        
+
                         <!-- Trading Dropdown -->
                         <li class="nav-item relative group">
                             <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('tradingDropdown')">Trading <i class="fas fa-caret-down ml-1"></i></a>
@@ -366,7 +414,7 @@
                         <!-- Banking services Dropdown -->
                         <li class="nav-item relative group">
                             <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('Banking servicesDropdown')">Banking services <i class="fas fa-caret-down ml-1"></i></a>
-                            <div id="Banking servicesDropdown" class="dropdown-menu hidden"> 
+                            <div id="Banking servicesDropdown" class="dropdown-menu hidden">
                                  <a href="commercialbank.html" class="flex items-center"><i class="fas fa-building mr-2 text-blue-600"></i>वाणिज्य बैँहरुको सेवा</a>
                                  <a href="developmentbank.html" class="flex items-center"><i class="fas fa-building mr-2 text-green-600"></i>विकास बैँक बैँहरुको सेवा</a>
 <a href="wallet.html" class="flex items-center"><i class="fas fa-building mr-2 text-green-900"></i>Wallet service</a>
@@ -376,7 +424,7 @@
                         <!-- Government Uses sites Dropdown -->
                         <li class="nav-item relative group">
                             <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('governmentSitesDropdown')">Government Uses sites <i class="fas fa-caret-down ml-1"></i></a>
-                            <div id="governmentSitesDropdown" class="dropdown-menu hidden"> 
+                            <div id="governmentSitesDropdown" class="dropdown-menu hidden">
                                 <a href="e-services.html" class="flex items-center"><i class="fas fa-earth mr-2 text-blue-600"></i>विद्युतिय सेवाहरु</a>
                                 <a href="https://sutra.fcgo.gov.np" target="_blank" class="flex items-center"><i class="fas fa-globe mr-2 text-indigo-600"></i>सूत्र (Sutra)</a>
                                 <a href="https://ipfms.fcgo.gov.np" target="_blank" class="flex items-center"><i class="fas fa-building mr-2 text-green-600"></i>IPFMS</a>
@@ -388,12 +436,10 @@
                                 <a href="https://lmbis.gov.np//#/Login" target="_blank" class="flex items-center"><i class="fas fa-sign-in-alt mr-2 text-blue-500"></i>New PAMS Login</a>
                                 <a href="https://hmis.gov.np/hmis/dhis-web-commons/security/login.action/Login" target="_blank" class="flex items-center"><i class="fas fa-sign-in-alt mr-2 text-blue-500"></i>स्वास्थ्य व्यवस्थापन सूचना प्रणाली</a>
                                 <a href="https://ehmishttps://ehmis.org/" target="_blank" class="flex items-center"><i class="fas fa-sign-in-alt mr-2 text-blue-500"></i>ehmis portal</a>
-                                
 
-                                
-                                
+
                             </div>
-                        </li> 
+                        </li>
 
                         <!-- Important Links Dropdown -->
                         <li class="nav-item relative group">
@@ -407,7 +453,7 @@
                                 <a href="bi.html" class="flex items-center"><i class="fas fa-building mr-2 text-indigo-600"></i>बैँक, विमा कम्पनी तथा पुनर्विमा कम्पनीहरु</a>
                             </div>
                         </li>
-                        
+
                         <!-- Direct Contact Dropdown -->
                         <li class="nav-item relative group">
                             <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('directContactDropdown')">Direct Contact <i class="fas fa-caret-down ml-1"></i></a>
@@ -462,14 +508,52 @@
                 </div>
             </div>
         </section>
+
+        <h2 class="text-3xl font-bold mb-6 text-gray-800">विभिन्न पत्रका लागी यहाँ जान सक्नुहुन्छ </h2>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="renew.html" class="flex items-center"><i class="fas fa-briefcase mr-2 text-blue-600"></i>सामाजिक सुरक्षा भत्ता नविकरण दर्ता निवेदन </a>
+            <a href="letter.html" class="flex items-center"><i class="fas fa-briefcase mr-2 text-blue-600"></i>सामाजिक सुरक्षा भत्ता सम्बन्धी पत्र </a>
+            <a href="tamsuk.html" class="flex items-center"><i class="fas fa-briefcase mr-2 text-blue-600"></i>कपाली तमसुक तयार गर्नुहोस </a>
+            <a href="birth.html" class="flex items-center"><i class="fas fa-briefcase mr-2 text-blue-600"></i>जन्म प्रमाणित प्रमाणपत्र </a>
+            <a href="application.html" class="flex items-center"><i class="fas fa-briefcase mr-2 text-blue-600"></i>आवेदन फारामर </a>
+        </div>
+
+        <!-- Dashboard Section -->
+        <section class="page-section py-8">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800">Website Traffic Insights</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3>कुल आगन्तुक</h3>
+                        <p id="totalVisits">0</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>कुल खोज</h3>
+                        <p id="totalSearches">0</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>प्रयोग गरिएका उपकरणहरू</h3>
+                        <ul id="deviceStats">
+                            <li>डेस्कटप: 0%</li>
+                            <li>मोबाइल: 0%</li>
+                            <li>ट्याब्लेट: 0%</li>
+                        </ul>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>पहुँच गरिएका क्षेत्रहरू</h3>
+                        <ul id="areaStats">
+                            <li>काठमाडौं: 0%</li>
+                            <li>पोखरा: 0%</li>
+                            <li>बागलुङ: 0%</li>
+                            <li>अन्य: 0%</li>
+                        </ul>
+                    </div>
+                </div>
+                
+            </div>
+        </section>
     </main>
-<h2 class="text-3xl font-bold mb-6 text-gray-800">विभिन्न पत्रका लागी यहाँ जान सक्नुहुन्छ </h2>
-                <div class="flex flex-wrap justify-center gap-4">
-                               <a href="renew.html" class="flex items-center"><i class="fas fa-briefcase mr-2 text-blue-600"></i>;सामाजिक सुरक्षा भत्ता नविकरण दर्ता निवेदन </a>
-                    <a href="letter.html" class="flex items-center"><i class="fas fa-briefcase mr-2 text-blue-600"></i>;सामाजिक सुरक्षा भत्ता सम्बन्धी पत्र </a>
-                    <a href="tamsuk.html" class="flex items-center"><i class="fas fa-briefcase mr-2 text-blue-600"></i>;कपाली तमसुक तयार गर्नुहोस </a>
-<a href="birth.html" class="flex items-center"><i class="fas fa-briefcase mr-2 text-blue-600"></i>;जन्म प्रमाणित प्रमाणपत्र </a>
-                    <a href="application.html" class="flex items-center"><i class="fas fa-briefcase mr-2 text-blue-600"></i>;आवेदन फारामर </a>
+
     <!-- Footer (Copied from index.html for consistency) -->
     <footer class="footer py-2">
         <div class="container mx-auto px-4">
@@ -481,7 +565,7 @@
                         <br />
                         Galkot, Baglung, Nepal
                     </p>
-                    <div class="mt-4"> 
+                    <div class="mt-4">
                         <a href="https://www.google.com/maps/search/Galkot+Municipality-2,+Baglung,+Nepal" target="_blank" title="View Galkot Municipality on Google Maps">
                             <img src="image_f958e4.png" alt="Map of Galkot Municipality-2, Baglung" class="mx-auto rounded-lg shadow-md" style="max-width: 300px;">
                         </a>
@@ -495,11 +579,11 @@
             </div>
         </div>
     </footer>
-    
+
     <div class="copyright py-2 text-center text-gray-700">
         <div class="container mx-auto"><small>Copyright © Lokendra Gaire 2024</small></div>
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // JavaScript for toggling the dropdown menu
@@ -583,6 +667,9 @@
                 hideSpinner();
                 return;
             }
+
+            // Increment search count
+            incrementSearchCount();
 
             const regex = new RegExp(query, 'gi'); // Case-insensitive global search
 
@@ -744,6 +831,96 @@
                 }
             }
         }
+
+        // --- Dashboard Logic ---
+
+        // Initialize or retrieve stats from localStorage
+        let stats = JSON.parse(localStorage.getItem('websiteStats')) || {
+            totalVisits: 0,
+            totalSearches: 0,
+            deviceCounts: { desktop: 0, mobile: 0, tablet: 0 },
+            areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 }
+        };
+
+        // Function to save stats to localStorage
+        function saveStats() {
+            localStorage.setItem('websiteStats', JSON.stringify(stats));
+        }
+
+        // Function to update the dashboard UI
+        function updateDashboardUI() {
+            document.getElementById('totalVisits').textContent = stats.totalVisits;
+            document.getElementById('totalSearches').textContent = stats.totalSearches;
+
+            const totalDevices = stats.deviceCounts.desktop + stats.deviceCounts.mobile + stats.deviceCounts.tablet;
+            const deviceStatsHtml = `
+                <li>डेस्कटप: ${totalDevices > 0 ? ((stats.deviceCounts.desktop / totalDevices) * 100).toFixed(1) : 0}%</li>
+                <li>मोबाइल: ${totalDevices > 0 ? ((stats.deviceCounts.mobile / totalDevices) * 100).toFixed(1) : 0}%</li>
+                <li>ट्याब्लेट: ${totalDevices > 0 ? ((stats.deviceCounts.tablet / totalDevices) * 100).toFixed(1) : 0}%</li>
+            `;
+            document.getElementById('deviceStats').innerHTML = deviceStatsHtml;
+
+            const totalAreas = stats.areaCounts.kathmandu + stats.areaCounts.pokhara + stats.areaCounts.baglung + stats.areaCounts.other;
+            const areaStatsHtml = `
+                <li>काठमाडौं: ${totalAreas > 0 ? ((stats.areaCounts.kathmandu / totalAreas) * 100).toFixed(1) : 0}%</li>
+                <li>पोखरा: ${totalAreas > 0 ? ((stats.areaCounts.pokhara / totalAreas) * 100).toFixed(1) : 0}%</li>
+                <li>बागलुङ: ${totalAreas > 0 ? ((stats.areaCounts.baglung / totalAreas) * 100).toFixed(1) : 0}%</li>
+                <li>अन्य: ${totalAreas > 0 ? ((stats.areaCounts.other / totalAreas) * 100).toFixed(1) : 0}%</li>
+            `;
+            document.getElementById('areaStats').innerHTML = areaStatsHtml;
+        }
+
+        // Function to increment total visits and simulate device/area
+        function incrementVisitCount() {
+            stats.totalVisits++;
+
+            // Simulate device type based on window width
+            if (window.innerWidth < 768) { // Mobile
+                stats.deviceCounts.mobile++;
+            } else if (window.innerWidth >= 768 && window.innerWidth < 1024) { // Tablet
+                stats.deviceCounts.tablet++;
+            } else { // Desktop
+                stats.deviceCounts.desktop++;
+            }
+
+            // Simulate area (randomly for demonstration)
+            const areas = ['kathmandu', 'pokhara', 'baglung', 'other'];
+            const randomArea = areas[Math.floor(Math.random() * areas.length)];
+            stats.areaCounts[randomArea]++;
+
+            saveStats();
+            updateDashboardUI();
+        }
+
+        // Function to increment search count
+        function incrementSearchCount() {
+            stats.totalSearches++;
+            saveStats();
+            updateDashboardUI();
+        }
+
+        // Ensure DOM is fully loaded before interacting with elements
+        document.addEventListener('DOMContentLoaded', () => {
+            // On page load: increment visit and update dashboard
+            incrementVisitCount();
+
+            // Event listener for Reset Stats button
+            const resetStatsButton = document.getElementById('resetStatsButton');
+            if (resetStatsButton) { // Check if the element exists
+                resetStatsButton.addEventListener('click', () => {
+                    stats = {
+                        totalVisits: 0,
+                        totalSearches: 0,
+                        deviceCounts: { desktop: 0, mobile: 0, tablet: 0 },
+                        areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 }
+                    };
+                    saveStats();
+                    updateDashboardUI();
+                });
+            } else {
+                console.error("Error: 'resetStatsButton' element not found.");
+            }
+        });
     </script>
 </body>
 </html>
