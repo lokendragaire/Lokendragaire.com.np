@@ -710,12 +710,24 @@
             // Corrected Firestore references
             const appStatsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'appStats');
             const globalStatsDocRef = doc(appStatsCollectionRef, 'global_stats');
-            const uniqueUsersCollectionRef = collection(appStatsCollectionRef, 'uniqueUsers');
+            const uniqueUsersCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'uniqueUsers'); // Corrected path for uniqueUsers
             const uniqueUserDocRef = doc(uniqueUsersCollectionRef, auth.currentUser.uid);
 
             const currentTime = Date.now();
 
             try {
+                // Ensure global_stats document exists before updating
+                const globalStatsDocSnap = await getDoc(globalStatsDocRef);
+                if (!globalStatsDocSnap.exists()) {
+                    await setDoc(globalStatsDocRef, {
+                        totalVisits: 0,
+                        totalSearches: 0,
+                        deviceCounts: { desktop: 0, mobile: 0, tablet: 0 },
+                        areaCounts: { kathmandu: 0, pokhara: 0, baglung: 0, other: 0 }
+                    });
+                    console.log("global_stats document initialized as it did not exist.");
+                }
+
                 const uniqueUserDoc = await getDoc(uniqueUserDocRef);
                 let shouldIncrementGlobalVisit = false;
 
