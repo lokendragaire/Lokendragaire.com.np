@@ -77,10 +77,6 @@
                 pointer-events: none;
                 z-index: 1;
             }
-            /* .dotted-line-bottom {
-                border-bottom: 1px dotted #999 !important;
-                text-align: initial !important;
-            } */
             .field-value {
                 white-space: normal !important;
                 overflow: visible !important;
@@ -120,18 +116,6 @@
             flex-direction: column; /* Stack children vertically */
             flex-grow: 1; /* Allow it to grow and fill the .a4-paper height */
         }
-        /* Custom styles for dotted lines and layout */
-        /* .dotted-line-bottom {
-            border-bottom: 1px dotted #999;
-            padding-bottom: 2px;
-            display: inline-block;
-            text-align: left;
-            box-sizing: border-box;
-            margin-left: 1px;
-            margin-right: 1px;
-            flex-grow: 1;
-            flex-shrink: 1;
-        } */
         .field-row {
             display: flex;
             align-items: baseline;
@@ -460,15 +444,15 @@
                         <span style="margin-left: 2em;"></span>गलकोट, बागलुङ।
                     </p>
 
-                    <p class="mb-4">
+                    <p class="mb-4 text-justify">
                         <span style="margin-left: 2em;"></span>उपरोक्त विषयमा गलकोट नगरपालिका वडा नं.<span id="displayWardNo"></span>&nbsp;निवासी
-                        सामाजिक सुरक्षा भत्ता परिचयपत्र नं.<span id="displaySsbId"></span>&nbsp;भएका श्री <span id="displayPersonName"></span>को
-                        मिति <span id="displayDeathDate"></span>&nbsp;गते मृत्यु भएको र मिति <span id="displayDeathRegDate"></span>&nbsp;गते
+                        सामाजिक सुरक्षा भत्ता परिचयपत्र नं.<span id="displaySsbId"></span>&nbsp;भएका श्री <span id="displayPersonName"></span>&nbsp;को
+                        मिति <span id="displayDeathDate"></span>&nbsp;मा मृत्यु भएको र मिति<span id="displayDeathRegDate"></span>&nbsp;मा
                         मृत्युदर्ता गरी लगत कट्टा गरिएको हुदाँ निज जिवित हुदाँ सम्मको प्राप्त
                         गर्नुपर्ने आ.व.(<span id="displayFiscalYear"></span>)&nbsp;को <span id="displayQuarter"></span>&nbsp;त्रैमासिकको
-                        रकम रु. <span id="displayAmount"></span>/-&nbsp;निजको <span id="displayRelationship"></span>&nbsp;<span id="displayRelatedPersonName"></span>&nbsp;(ना.प्र.नं. <span id="displayCitizenshipNo"></span>,&nbsp;जारी मिति <span id="displayCitizenshipIssueDate"></span>)लाइ
+                        रकम रु. <span id="displayAmount"></span>/-&nbsp;निजको <span id="displayRelationship"></span>&nbsp;<span id="displayRelatedPersonName"></span>&nbsp;(ना.प्र.नं. <span id="displayCitizenshipNo"></span>,&nbsp;जारी मिति<span id="displayCitizenshipIssueDate"></span>)लाइ
                         भुक्तानी दिनुहुन साथै मृत्यु मिति पछी खातामा बाँकी रहन आउने रकम रु. <span id="displayRemainingAmount"></span>/-
-                        (अक्षेरुपीःरु. <span id="displayRemainingAmountAksharu"></span> मात्र।)&nbsp;<span id="displayDepositAccount"></span>मा दाखिला गरिदिनुहुन अनुरोध
+                        (अक्षेरुपीःरु<span id="displayRemainingAmountAksharu"></span>मात्र)&nbsp;<span id="displayDepositAccount"></span>मा दाखिला गरिदिनुहुन अनुरोध
                         छ।
                     </p>
 
