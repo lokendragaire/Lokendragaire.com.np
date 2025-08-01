@@ -1,533 +1,674 @@
-<!DOCTYPE html>
-<html lang="ne">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>सामाजिक सुरक्षा आवेदन फारम</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-        }
-        input[type="text"], input[type="email"], input[type="tel"], textarea, select {
-            transition: all 0.2s ease-in-out;
-            border-color: #d1d5db;
-        }
-        input[type="text"]:focus, input[type="email"]:focus, input[type="tel"]:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
-        }
-        .table-data-center {
-            text-align: center;
-        }
-        .table-header-center {
-            text-align: center;
-        }
-        .table-cell-actions {
-            white-space: nowrap;
-        }
-        .container {
-            display: none;
-        }
-        .active-container {
-            display: block;
-        }
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            .printable, .printable * {
-                visibility: visible;
-            }
-            .printable {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-            }
-            .no-print {
-                display: none;
-            }
-        }
-    </style>
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+import React, { useState, useRef } from 'react';
 
-    <!-- मुख्य फारम कन्टेनर (Main Form Container) -->
-    <div id="form-container" class="active-container bg-white p-8 rounded-2xl shadow-xl w-full max-w-4xl no-print">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">सामाजिक सुरक्षा आवेदन फारम</h1>
-            <p class="mt-2 text-gray-600">कृपया तलको फारम सावधानीपूर्वक भर्नुहोस्।</p>
-        </div>
+// Main App component
+const App = () => {
+    // State to manage form data
+    const [formData, setFormData] = useState({
+        fullName: '',
+        fullNameEnglish: '',
+        gender: '',
+        maritalStatus: '',
+        citizenshipNo: '',
+        citizenshipIssuedDistrict: '',
+        permanentAddressWard: '',
+        permanentAddressMunicipality: '',
+        permanentAddressDistrict: '',
+        correspondenceAddressWard: '',
+        correspondenceAddressMunicipality: '',
+        correspondenceAddressDistrict: '',
+        fatherMotherName: '',
+        dob: '',
+        email: '',
+        phoneNumber: '',
+        religion: '',
+        caste: '',
+        appliedPosition: '',
+        appliedLevel: '',
+        applicationDate: '',
+    });
 
-        <form id="social-security-form" class="space-y-6">
+    // State to manage dynamic education and experience entries
+    const [educationEntries, setEducationEntries] = useState([{}]);
+    const [experienceEntries, setExperienceEntries] = useState([{}]);
 
-            <!-- १. व्यक्तिगत विवरण (Personal Details) -->
-            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-700 mb-4">१. व्यक्तिगत विवरण</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="full-name" class="block text-sm font-medium text-gray-700">पूरा नाम (नेपालीमा):</label>
-                        <input type="text" id="full-name" name="fullName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500" placeholder="जस्तै: राम बहादुर थापा">
-                    </div>
-                    <div>
-                        <label for="full-name-en" class="block text-sm font-medium text-gray-700">Full Name (in English):</label>
-                        <input type="text" id="full-name-en" name="fullNameEn" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Ram Bahadur Thapa">
-                    </div>
-                    <div>
-                        <label for="dob" class="block text-sm font-medium text-gray-700">जन्म मिति (वि.सं.):</label>
-                        <input type="text" id="dob" name="dob" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500" placeholder="yyyy/mm/dd">
-                    </div>
-                    <div>
-                        <label for="gender" class="block text-sm font-medium text-gray-700">लिङ्ग:</label>
-                        <select id="gender" name="gender" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">छान्नुहोस्</option>
-                            <option value="पुरुष">पुरुष</option>
-                            <option value="महिला">महिला</option>
-                            <option value="अन्य">अन्य</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+    // State for photo preview visibility. Note: The photo upload functionality is removed as per the user's request,
+    // but we keep this state for potential future use or if the user provides a photo in another way.
+    const [passportPhoto, setPassportPhoto] = useState(null);
+    const [previewVisible, setPreviewVisible] = useState(false);
 
-            <!-- २. ठेगाना विवरण (Address Details) -->
-            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-700 mb-4">२. ठेगाना विवरण</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- स्थायी ठेगाना -->
-                    <div class="space-y-4">
-                        <h3 class="font-medium text-gray-600">स्थायी ठेगाना</h3>
-                        <label for="p-province" class="block text-sm font-medium text-gray-700">प्रदेश:</label>
-                        <input type="text" id="p-province" name="pProvince" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="जस्तै: बागमती">
-                        <label for="p-district" class="block text-sm font-medium text-gray-700">जिल्ला:</label>
-                        <input type="text" id="p-district" name="pDistrict" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="जस्तै: काठमाडौं">
-                        <label for="p-municipality" class="block text-sm font-medium text-gray-700">गाउँ/नगरपालिका:</label>
-                        <input type="text" id="p-municipality" name="pMunicipality" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="जस्तै: ललितपुर महानगरपालिका">
-                        <label for="p-ward" class="block text-sm font-medium text-gray-700">वडा नं.:</label>
-                        <input type="text" id="p-ward" name="pWard" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="जस्तै: ५">
-                    </div>
-                    <!-- पत्राचार गर्ने ठेगाना -->
-                    <div class="space-y-4">
-                        <h3 class="font-medium text-gray-600">पत्राचार गर्ने ठेगाना</h3>
-                        <label for="c-province" class="block text-sm font-medium text-gray-700">प्रदेश:</label>
-                        <input type="text" id="c-province" name="cProvince" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="जस्तै: बागमती">
-                        <label for="c-district" class="block text-sm font-medium text-gray-700">जिल्ला:</label>
-                        <input type="text" id="c-district" name="cDistrict" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="जस्तै: काठमाडौं">
-                        <label for="c-municipality" class="block text-sm font-medium text-gray-700">गाउँ/नगरपालिका:</label>
-                        <input type="text" id="c-municipality" name="cMunicipality" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="जस्तै: ललितपुर महानगरपालिका">
-                        <label for="c-ward" class="block text-sm font-medium text-gray-700">वडा नं.:</label>
-                        <input type="text" id="c-ward" name="cWard" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="जस्तै: ५">
-                    </div>
-                </div>
-            </div>
+    // Handle all form input changes
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevData => ({ ...prevData, [name]: value }));
+    };
 
-            <!-- ३. सम्पर्क विवरण (Contact Details) -->
-            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-700 mb-4">३. सम्पर्क विवरण</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="phone" class="block text-sm font-medium text-gray-700">फोन नम्बर:</label>
-                        <input type="tel" id="phone" name="phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="जस्तै: ९८xxxxxxxx">
-                    </div>
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700">इमेल:</label>
-                        <input type="email" id="email" name="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="जस्तै: example@email.com">
-                    </div>
-                </div>
-            </div>
+    // Handle adding a new education entry
+    const handleAddEducation = () => {
+        setEducationEntries([...educationEntries, {}]);
+    };
 
-            <!-- ४. शैक्षिक योग्यता (Educational Qualification) -->
-            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-700 mb-4">४. शैक्षिक योग्यता</h2>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead>
-                            <tr class="bg-gray-200">
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">शैक्षिक उपाधि</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">सम्पन्न गरेको शिक्षण संस्था</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">पास गरेको वर्ष</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">कार्यहरू</th>
-                            </tr>
-                        </thead>
-                        <tbody id="education-table-body" class="bg-white divide-y divide-gray-200">
-                            <!-- Rows will be added dynamically here -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4 flex justify-end">
-                    <button type="button" onclick="addEducationRow()" class="px-4 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition">
-                        शैक्षिक योग्यता थप्नुहोस्
-                    </button>
-                </div>
-            </div>
+    // Handle removing an education entry
+    const handleRemoveEducation = (indexToRemove) => {
+        setEducationEntries(educationEntries.filter((_, index) => index !== indexToRemove));
+    };
 
-            <!-- ५. कार्य अनुभव (Work Experience) -->
-            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-700 mb-4">५. कार्य अनुभव</h2>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead>
-                            <tr class="bg-gray-200">
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">पद</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">कार्यालय</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">प्रकार</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">मिति देखि</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">मिति सम्म</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">अवधि</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">कार्यहरू</th>
-                            </tr>
-                        </thead>
-                        <tbody id="experience-table-body" class="bg-white divide-y divide-gray-200">
-                            <!-- Rows will be added dynamically here -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4 flex justify-end">
-                    <button type="button" onclick="addExperienceRow()" class="px-4 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition">
-                        कार्य अनुभव थप्नुहोस्
-                    </button>
-                </div>
-            </div>
+    // Handle changes in education entries
+    const handleEducationChange = (index, e) => {
+        const { name, value } = e.target;
+        const updatedEntries = educationEntries.map((entry, i) =>
+            i === index ? { ...entry, [name.split('[')[0]]: value } : entry
+        );
+        setEducationEntries(updatedEntries);
+    };
 
-            <!-- ६. नागरिकता र अन्य कागजात (Citizenship & Other Documents) -->
-            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-700 mb-4">६. नागरिकता र अन्य कागजात</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="citizenship-number" class="block text-sm font-medium text-gray-700">नागरिकता नम्बर:</label>
-                        <input type="text" id="citizenship-number" name="citizenshipNumber" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="जस्तै: ०१-०२-७६-०१२३४">
-                    </div>
-                    <div>
-                        <label for="citizenship-district" class="block text-sm font-medium text-gray-700">नागरिकता जारी गर्ने जिल्ला:</label>
-                        <input type="text" id="citizenship-district" name="citizenshipDistrict" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="जस्तै: काठमाडौं">
-                    </div>
-                    <div>
-                        <label for="citizenship-date" class="block text-sm font-medium text-gray-700">नागरिकता जारी मिति (वि.सं.):</label>
-                        <input type="text" id="citizenship-date" name="citizenshipDate" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="yyyy/mm/dd">
-                    </div>
-                </div>
-            </div>
+    // Handle adding a new experience entry
+    const handleAddExperience = () => {
+        setExperienceEntries([...experienceEntries, {}]);
+    };
 
-            <!-- Submit Button -->
-            <div class="text-center mt-8">
-                <button type="submit" class="w-full md:w-auto px-8 py-3 bg-blue-600 text-white font-semibold rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition transform hover:scale-105">
-                    पेश गर्नुहोस्
-                </button>
-            </div>
-        </form>
+    // Handle removing an experience entry
+    const handleRemoveExperience = (indexToRemove) => {
+        setExperienceEntries(experienceEntries.filter((_, index) => index !== indexToRemove));
+    };
 
-        <div id="message-box" class="mt-8 p-4 text-center text-white font-semibold rounded-lg hidden"></div>
-    </div>
-    
-    <!-- फारम प्रिभ्यु कन्टेनर (Form Preview Container) -->
-    <div id="preview-container" class="container bg-white p-8 rounded-2xl shadow-xl w-full max-w-4xl printable">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">आवेदन फारमको विवरण</h1>
-            <p class="mt-2 text-gray-600">तपाईँले भरेका विवरणहरू तल दिइएका छन्।</p>
-        </div>
+    // Handle changes in experience entries
+    const handleExperienceChange = (index, e) => {
+        const { name, value } = e.target;
+        const updatedEntries = experienceEntries.map((entry, i) =>
+            i === index ? { ...entry, [name.split('[')[0]]: value } : entry
+        );
+        setExperienceEntries(updatedEntries);
+    };
 
-        <div id="preview-content" class="space-y-6 text-gray-700">
-            <!-- Filled form data will be rendered here by JavaScript -->
-        </div>
+    // Function to convert a Gregorian date to a simple Bikram Sambat approximation
+    const gregorianToNepali = (gregorianDateString) => {
+      if (!gregorianDateString) return 'N/A';
 
-        <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8 no-print">
-            <button onclick="printForm()" class="px-6 py-2 bg-gray-600 text-white font-semibold rounded-md shadow hover:bg-gray-700 transition">फारम प्रिन्ट गर्नुहोस्</button>
-            <button onclick="showAdmitCard()" class="px-6 py-2 bg-yellow-600 text-white font-semibold rounded-md shadow hover:bg-yellow-700 transition">प्रवेश पत्र देखाउनुहोस्</button>
-            <button onclick="goBackToForm()" class="px-6 py-2 bg-red-600 text-white font-semibold rounded-md shadow hover:bg-red-700 transition">पछाडि जानुहोस्</button>
-        </div>
-    </div>
+      const date = new Date(gregorianDateString);
+      const gregorianYear = date.getFullYear();
+      const gregorianMonth = date.getMonth() + 1;
+      const gregorianDay = date.getDate();
 
-    <!-- प्रवेश पत्र कन्टेनर (Admit Card Container) -->
-    <div id="admit-card-container" class="container bg-white p-8 rounded-2xl shadow-xl w-full max-w-lg printable">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">प्रवेश पत्र</h1>
-            <p class="mt-2 text-gray-600">परीक्षा केन्द्रमा अनिवार्य रूपमा यो प्रवेश पत्र लिएर जानुहोला।</p>
-        </div>
+      // Simple offset-based approximation
+      let bsYear = gregorianYear + 56;
+      let bsMonth = gregorianMonth + 8;
+      let bsDay = gregorianDay + 17; // A common offset
 
-        <div id="admit-card-content" class="space-y-4 text-gray-700">
-            <!-- Admit card data will be rendered here by JavaScript -->
-        </div>
+      // Adjust for month and day overflows
+      if (bsDay > 30) {
+        bsDay -= 30;
+        bsMonth += 1;
+      }
+      if (bsMonth > 12) {
+        bsMonth -= 12;
+        bsYear += 1;
+      }
 
-        <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8 no-print">
-            <button onclick="printAdmitCard()" class="px-6 py-2 bg-gray-600 text-white font-semibold rounded-md shadow hover:bg-gray-700 transition">प्रवेश पत्र प्रिन्ट गर्नुहोस्</button>
-            <button onclick="goBackToPreview()" class="px-6 py-2 bg-red-600 text-white font-semibold rounded-md shadow hover:bg-red-700 transition">पछाडि जानुहोस्</button>
-        </div>
-    </div>
+      // Ensure month and day are padded with leading zeros
+      const formattedMonth = String(bsMonth).padStart(2, '0');
+      const formattedDay = String(bsDay).padStart(2, '0');
 
+      return `${bsYear}/${formattedMonth}/${formattedDay}`;
+    };
 
-    <script>
-        // Function to convert Bikram Sambat date (yyyy/mm/dd) to JavaScript Date object
-        // NOTE: This is a simplified placeholder and not a full conversion library.
-        function bsToDate(bsDate) {
-            const parts = bsDate.split('/').map(Number);
-            if (parts.length !== 3 || parts.some(isNaN)) return null;
+    // Function to format date to YYYY/MM/DD (Gregorian)
+    const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}/${month}/${day}`;
+    };
 
-            const [year, month, day] = parts;
-            // A very rough approximation for calculation. A real app would use a library like 'nepali-date-converter'.
-            const adYear = year - 56;
-            const adMonth = month - 8;
-            const adDay = day - 17;
-            const adDate = new Date(adYear, adMonth, adDay);
-            return adDate;
-        }
-
-        // Function to calculate duration between two Bikram Sambat dates
-        function calculateDuration(fromBs, toBs) {
-            if (!fromBs || !toBs) return "० वर्ष ० महिना";
-
-            const fromDate = bsToDate(fromBs);
-            const toDate = bsToDate(toBs);
-
-            if (!fromDate || !toDate || fromDate > toDate) {
-                return "अमान्य मिति";
-            }
-
-            let years = toDate.getFullYear() - fromDate.getFullYear();
-            let months = toDate.getMonth() - fromDate.getMonth();
-            let days = toDate.getDate() - fromDate.getDate();
-
-            if (days < 0) {
-                months--;
-                days += new Date(toDate.getFullYear(), toDate.getMonth(), 0).getDate();
-            }
-
-            if (months < 0) {
-                years--;
-                months += 12;
-            }
-            
-            return `${years} वर्ष ${months} महिना`;
-        }
-
-        // Function to add a new row to the Education table
-        function addEducationRow() {
-            const tableBody = document.getElementById('education-table-body');
-            const newRow = document.createElement('tr');
-            newRow.classList.add('hover:bg-gray-100');
-
-            newRow.innerHTML = `
-                <td class="px-6 py-4 table-data-center"><input type="text" class="w-full p-2 border rounded-md" name="educationDegree[]" placeholder="शैक्षिक उपाधि"></td>
-                <td class="px-6 py-4 table-data-center"><input type="text" class="w-full p-2 border rounded-md" name="educationInstitution[]" placeholder="शिक्षण संस्था"></td>
-                <td class="px-6 py-4 table-data-center"><input type="text" class="w-full p-2 border rounded-md" name="educationYear[]" placeholder="२०७५"></td>
-                <td class="px-6 py-4 table-cell-actions table-data-center">
-                    <button type="button" onclick="removeRow(this)" class="px-3 py-1 bg-red-500 text-white rounded-md text-sm hover:bg-red-600 transition">हटाउनुहोस्</button>
-                </td>
-            `;
-            tableBody.appendChild(newRow);
-        }
-
-        // Function to add a new row to the Work Experience table
-        function addExperienceRow() {
-            const tableBody = document.getElementById('experience-table-body');
-            const newRow = document.createElement('tr');
-            newRow.classList.add('hover:bg-gray-100');
-
-            newRow.innerHTML = `
-                <td class="px-6 py-4 table-data-center"><input type="text" class="w-full p-2 border rounded-md" name="expPosition[]" placeholder="पद"></td>
-                <td class="px-6 py-4 table-data-center"><input type="text" class="w-full p-2 border rounded-md" name="expOffice[]" placeholder="कार्यालय"></td>
-                <td class="px-6 py-4 table-data-center">
-                    <select class="w-full p-2 border rounded-md" name="expType[]">
-                        <option value="स्थायी">स्थायी</option>
-                        <option value="अस्थायी">अस्थायी</option>
-                        <option value="करार">करार</option>
-                    </select>
-                </td>
-                <td class="px-6 py-4 table-data-center"><input type="text" class="w-full p-2 border rounded-md from-date" name="expFrom[]" placeholder="yyyy/mm/dd" oninput="updateDuration(this)"></td>
-                <td class="px-6 py-4 table-data-center"><input type="text" class="w-full p-2 border rounded-md to-date" name="expTo[]" placeholder="yyyy/mm/dd" oninput="updateDuration(this)"></td>
-                <td class="px-6 py-4 table-data-center"><input type="text" class="w-full p-2 border rounded-md duration-field" name="expDuration[]" readonly value="० वर्ष ० महिना"></td>
-                <td class="px-6 py-4 table-cell-actions table-data-center">
-                    <button type="button" onclick="removeRow(this)" class="px-3 py-1 bg-red-500 text-white rounded-md text-sm hover:bg-red-600 transition">हटाउनुहोस्</button>
-                </td>
-            `;
-            tableBody.appendChild(newRow);
-        }
-
-        // Function to update the duration field when 'from' or 'to' dates change
-        function updateDuration(input) {
-            const row = input.closest('tr');
-            const fromDateInput = row.querySelector('.from-date');
-            const toDateInput = row.querySelector('.to-date');
-            const durationInput = row.querySelector('.duration-field');
-
-            const fromDate = fromDateInput.value;
-            const toDate = toDateInput.value;
-
-            durationInput.value = calculateDuration(fromDate, toDate);
-        }
-
-        // Function to remove a row from a table
-        function removeRow(button) {
-            button.closest('tr').remove();
-        }
-
-        // Function to show a specific container and hide others
-        function showContainer(containerId) {
-            const containers = document.querySelectorAll('.container, #form-container');
-            containers.forEach(container => container.classList.remove('active-container'));
-            document.getElementById(containerId).classList.add('active-container');
-        }
-
-        // Function to generate and display form preview
-        function generatePreview(data) {
-            const previewContent = document.getElementById('preview-content');
-            previewContent.innerHTML = ''; // Clear previous content
-
-            // HTML for the form preview
-            let html = `
-                <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">व्यक्तिगत विवरण</h2>
-                    <p><strong>नाम:</strong> ${data.fullName || ''}</p>
-                    <p><strong>Name (Eng):</strong> ${data.fullNameEn || ''}</p>
-                    <p><strong>जन्म मिति:</strong> ${data.dob || ''}</p>
-                    <p><strong>लिङ्ग:</strong> ${data.gender || ''}</p>
-                </div>
-                <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">ठेगाना विवरण</h2>
-                    <p><strong>स्थायी ठेगाना:</strong> ${data.pProvince || ''}, ${data.pDistrict || ''}, ${data.pMunicipality || ''}, वडा नं. ${data.pWard || ''}</p>
-                    <p><strong>पत्राचार गर्ने ठेगाना:</strong> ${data.cProvince || ''}, ${data.cDistrict || ''}, ${data.cMunicipality || ''}, वडा नं. ${data.cWard || ''}</p>
-                </div>
-                <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">सम्पर्क विवरण</h2>
-                    <p><strong>फोन नम्बर:</strong> ${data.phone || ''}</p>
-                    <p><strong>इमेल:</strong> ${data.email || ''}</p>
-                </div>
-                <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">शैक्षिक योग्यता</h2>
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead>
-                            <tr class="bg-gray-200">
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">शैक्षिक उपाधि</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">सम्पन्न गरेको शिक्षण संस्था</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">पास गरेको वर्ष</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            ${(data.educationDegree || []).map((degree, index) => `
-                                <tr>
-                                    <td class="px-6 py-4 table-data-center">${degree}</td>
-                                    <td class="px-6 py-4 table-data-center">${data.educationInstitution[index]}</td>
-                                    <td class="px-6 py-4 table-data-center">${data.educationYear[index]}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">कार्य अनुभव</h2>
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead>
-                            <tr class="bg-gray-200">
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">पद</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">कार्यालय</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">प्रकार</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">मिति देखि</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">मिति सम्म</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider table-header-center">अवधि</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            ${(data.expPosition || []).map((position, index) => `
-                                <tr>
-                                    <td class="px-6 py-4 table-data-center">${position}</td>
-                                    <td class="px-6 py-4 table-data-center">${data.expOffice[index]}</td>
-                                    <td class="px-6 py-4 table-data-center">${data.expType[index]}</td>
-                                    <td class="px-6 py-4 table-data-center">${data.expFrom[index]}</td>
-                                    <td class="px-6 py-4 table-data-center">${data.expTo[index]}</td>
-                                    <td class="px-6 py-4 table-data-center">${data.expDuration[index]}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">नागरिकता विवरण</h2>
-                    <p><strong>नागरिकता नम्बर:</strong> ${data.citizenshipNumber || ''}</p>
-                    <p><strong>जारी गर्ने जिल्ला:</strong> ${data.citizenshipDistrict || ''}</p>
-                    <p><strong>जारी मिति:</strong> ${data.citizenshipDate || ''}</p>
-                </div>
-            `;
-            previewContent.innerHTML = html;
-            showContainer('preview-container');
-        }
-
-        // Function to generate and display the admit card
-        function generateAdmitCard(data) {
-            const admitCardContent = document.getElementById('admit-card-content');
-            admitCardContent.innerHTML = '';
-
-            let html = `
-                <div class="border-2 border-gray-400 p-6 rounded-lg text-center">
-                    <p class="text-xl font-bold">सामाजिक सुरक्षा कोष</p>
-                    <p class="text-lg">प्रवेश पत्र</p>
-                    <hr class="my-4 border-gray-300">
-                    <div class="space-y-2 text-left">
-                        <p><strong>आवेदकको नाम:</strong> ${data.fullName || ''}</p>
-                        <p><strong>जन्म मिति:</strong> ${data.dob || ''}</p>
-                        <p><strong>नागरिकता नं:</strong> ${data.citizenshipNumber || ''}</p>
-                        <p><strong>परीक्षा केन्द्र:</strong> सामाजिक सुरक्षा कोष, कार्यालय</p>
-                        <p><strong>मिति:</strong> (परीक्षाको मिति)</p>
-                    </div>
-                </div>
-            `;
-            admitCardContent.innerHTML = html;
-            showContainer('admit-card-container');
-        }
-
-        // Function to go back to the form
-        function goBackToForm() {
-            showContainer('form-container');
-        }
-        
-        // Function to go back from admit card to preview
-        function goBackToPreview() {
-            showContainer('preview-container');
-        }
-        
-        // Function to show the admit card from the preview
-        function showAdmitCard() {
-            // Re-use the collected form data
-            const formData = new FormData(document.getElementById('social-security-form'));
-            const data = {};
-            formData.forEach((value, key) => data[key] = value);
-            generateAdmitCard(data);
-        }
-
-        // Function to print the form preview
-        function printForm() {
-            window.print();
-        }
-        
-        // Function to print the admit card
-        function printAdmitCard() {
-            window.print();
-        }
-
-        document.getElementById('social-security-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevents form from submitting normally
-
-            const formData = new FormData(event.target);
-            const data = {};
-            // Collect all form data including dynamic rows
-            formData.forEach((value, key) => {
-                if (key.includes('[]')) {
-                    const cleanKey = key.replace('[]', '');
-                    if (!data[cleanKey]) {
-                        data[cleanKey] = [];
+    return (
+        <>
+            <style>
+                {`
+                    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+                    body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; color: #333; }
+                    .form-section-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: #1a202c; border-bottom: 2px solid #edf2f7; padding-bottom: 0.5rem; }
+                    .form-group label { font-weight: 500; color: #4a5568; }
+                    .btn-primary { background-color: #4299e1; color: #fff; border: none; }
+                    .btn-primary:hover { background-color: #3182ce; transform: translateY(-1px); }
+                    .btn-secondary { background-color: #e2e8f0; color: #2d3748; border: 1px solid #cbd5e0; }
+                    .btn-secondary:hover { background-color: #cbd5e0; transform: translateY(-1px); }
+                    .photo-paste-box {
+                        border: 2px dashed #a0aec0; padding: 1.5rem; border-radius: 0.5rem;
+                        text-align: center; color: #718096;
+                        height: 150px;
+                        display: flex; flex-direction: column; align-items: center; justify-content: center;
                     }
-                    data[cleanKey].push(value);
-                } else {
-                    data[key] = value;
-                }
-            });
+                    .admission-card {
+                        border: 2px solid #2b6cb0; border-radius: 12px; padding: 1.5rem; margin-top: 2rem; background-color: #ebf8ff; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); position: relative; overflow: hidden;
+                        display: flex; flex-direction: column; gap: 1rem;
+                    }
+                    .admission-card .header-top {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-start;
+                        gap: 1rem;
+                    }
+                    .admission-card .header-center {
+                        text-align: center;
+                        flex-grow: 1;
+                    }
+                    .admission-card .header-details {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        font-size: 0.95rem;
+                        margin-top: -0.5rem; /* Reduce space */
+                    }
+                    .admission-card .photo-box {
+                        border: 1px solid #ccc; width: 120px; height: 150px; display: flex; align-items: center; justify-content: center; background-color: #fff; overflow: hidden; text-align: center;
+                    }
+                    .admission-card .photo-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+                    .admission-card h3 { font-size: 1.7rem; font-weight: 700; color: #2b6cb0; margin-bottom: 0.5rem; text-align: center; }
+                    .admission-card p { font-size: 1.1rem; margin-bottom: 0.3rem; color: #2d3748; }
+                    .admission-card .logo { max-width: 80px; height: auto; }
+                    .preview-form-layout { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; font-size: 0.95rem; }
+                    .preview-form-layout .full-width { grid-column: 1 / -1; }
+                    .preview-form-layout .section-heading { grid-column: 1 / -1; font-weight: bold; margin-top: 0.5rem; margin-bottom: 0.25rem; border-bottom: 1px solid #ccc; padding-bottom: 0.25rem; }
+                    .preview-form-layout table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; grid-column: 1 / -1; }
+                    .preview-form-layout table th, .preview-form-layout table td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; vertical-align: top; }
+                    .preview-form-layout table th { background-color: #e2e8f0; font-weight: 600; }
+                    /* Updated CSS for the preview photo box */
+                    .photo-box-preview {
+                        border: 1px solid #000;
+                        width: 35mm;
+                        height: 45mm;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        background-color: #fff;
+                        overflow: hidden;
+                        text-align: center;
+                        font-size: 0.7rem;
+                        padding: 5px;
+                        line-height: 1.2;
+                    }
+                    .preview-form-header {
+                        display: grid;
+                        grid-template-columns: 1fr 2fr 1fr;
+                        align-items: start;
+                        gap: 1rem;
+                        margin-bottom: 1rem;
+                        position: relative;
+                    }
+                    .preview-form-header .header-text {
+                        text-align: center;
+                    }
+                    .preview-form-header .header-right-column {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-end;
+                    }
+                    .preview-form-header h3 { font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem; color: #2d3748; }
+                    .preview-form-header p { font-size: 0.9rem; color: #4a5568; }
+                    .preview-form-header .municipality-logo {
+                        justify-self: start;
+                        width: 80px; height: auto;
+                    }
+                    .thumbprint-box { border: 1px solid #000; width: 3cm; height: 3cm; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.75rem; line-height: 1.2; padding: 5px; }
+                    @media print {
+                        body * { visibility: hidden; }
+                        .print-area, .print-area * { visibility: visible; }
+                        .print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 1rem; }
+                        .container { box-shadow: none; border: none; margin: 0; padding: 0; }
+                        .preview-section { display: block; margin: 0; padding: 0; border: none; background-color: #fff; }
+                        .button-group { display: none; }
+                        .admission-card { page-break-before: always; border: 1px solid #000; padding: 1rem; margin-top: 1rem; }
+                        .admission-card .photo-box { border: 1px solid #000; }
+                        .preview-form-layout table th, .preview-form-layout table td { border: 1px solid #000; }
+                        .preview-form-layout .photo-box-preview { border: 1px solid #000; }
+                    }
+                    /* Adjusted CSS to place the photo box on the right */
+                    .admission-details-grid {
+                      display: grid;
+                      grid-template-columns: 1fr auto; /* This will place the photo on the right */
+                      gap: 1rem;
+                      align-items: start;
+                    }
+                `}
+            </style>
+            <div className="container">
+                <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">अनलाइन फाराम</h1>
 
-            generatePreview(data);
-        });
+                {!previewVisible && (
+                    <form className="space-y-6">
+                        <div className="flex flex-col md:flex-row gap-6">
+                            {/* Photo paste box on the left */}
+                            <div className="md:w-1/4">
+                                <div className="form-section-title">फोटो</div>
+                                <div className="photo-paste-box">
+                                    <span>फाराम प्रिन्ट गरेपछि यहाँ पासपोर्ट साइजको फोटो टाँस्नुहोस्।</span>
+                                    <span className="mt-2 text-xs text-center">(फोटो टाँसेपछि फोटोमाथि हस्ताक्षर गर्नुपर्नेछ।)</span>
+                                </div>
+                            </div>
+                            {/* Personal details on the right */}
+                            <div className="md:w-3/4 space-y-6">
+                                <div className="form-section-title">व्यक्तिगत विवरण</div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="form-group">
+                                        <label htmlFor="fullName">नाम, थर (देवनागरीमा): <span className="text-red-500">*</span></label>
+                                        <input type="text" id="fullName" name="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="पूरा नाम प्रविष्ट गर्नुहोस्" className="rounded-lg p-2 border border-gray-300 w-full" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="fullNameEnglish">नाम (अंग्रेजी ठूलो अक्षरमा):</label>
+                                        <input type="text" id="fullNameEnglish" name="fullNameEnglish" value={formData.fullNameEnglish} onChange={handleInputChange} placeholder="FULL NAME IN ENGLISH" className="rounded-lg p-2 border border-gray-300 w-full uppercase" />
+                                    </div>
+                                </div>
 
-        // Initialize with one row for each table
-        addEducationRow();
-        addExperienceRow();
-    </script>
-</body>
-</html>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="form-group">
+                                        <label>लिङ्ग: <span className="text-red-500">*</span></label>
+                                        <div className="flex items-center space-x-4">
+                                            <label className="inline-flex items-center">
+                                                <input type="radio" name="gender" value="पुरुष" checked={formData.gender === 'पुरुष'} onChange={handleInputChange} className="form-radio text-blue-600" />
+                                                <span className="ml-2">पुरुष</span>
+                                            </label>
+                                            <label className="inline-flex items-center">
+                                                <input type="radio" name="gender" value="महिला" checked={formData.gender === 'महिला'} onChange={handleInputChange} className="form-radio text-blue-600" />
+                                                <span className="ml-2">महिला</span>
+                                            </label>
+                                            <label className="inline-flex items-center">
+                                                <input type="radio" name="gender" value="अन्य" checked={formData.gender === 'अन्य'} onChange={handleInputChange} className="form-radio text-blue-600" />
+                                                <span className="ml-2">अन्य</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>विवाहित/अविवाहित: <span className="text-red-500">*</span></label>
+                                        <div className="flex items-center space-x-4">
+                                            <label className="inline-flex items-center">
+                                                <input type="radio" name="maritalStatus" value="विवाहित" checked={formData.maritalStatus === 'विवाहित'} onChange={handleInputChange} className="form-radio text-blue-600" />
+                                                <span className="ml-2">विवाहित</span>
+                                            </label>
+                                            <label className="inline-flex items-center">
+                                                <input type="radio" name="maritalStatus" value="अविवाहित" checked={formData.maritalStatus === 'अविवाहित'} onChange={handleInputChange} className="form-radio text-blue-600" />
+                                                <span className="ml-2">अविवाहित</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="form-group">
+                                        <label htmlFor="citizenshipNo">नागरिकता नम्बर: <span className="text-red-500">*</span></label>
+                                        <input type="text" id="citizenshipNo" name="citizenshipNo" value={formData.citizenshipNo} onChange={handleInputChange} placeholder="नागरिकता नम्बर प्रविष्ट गर्नुहोस्" className="rounded-lg p-2 border border-gray-300 w-full" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="citizenshipIssuedDistrict">जारी जिल्ला:</label>
+                                        <input type="text" id="citizenshipIssuedDistrict" name="citizenshipIssuedDistrict" value={formData.citizenshipIssuedDistrict} onChange={handleInputChange} placeholder="जारी जिल्ला" className="rounded-lg p-2 border border-gray-300 w-full" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="permanentAddress">स्थायी ठेगाना: <span className="text-red-500">*</span></label>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <input type="text" id="permanentAddressWard" name="permanentAddressWard" value={formData.permanentAddressWard} onChange={handleInputChange} placeholder="वडा नं." className="rounded-lg p-2 border border-gray-300 w-full" />
+                                <input type="text" id="permanentAddressMunicipality" name="permanentAddressMunicipality" value={formData.permanentAddressMunicipality} onChange={handleInputChange} placeholder="गा.पा./न.पा." className="rounded-lg p-2 border border-gray-300 w-full" />
+                                <input type="text" id="permanentAddressDistrict" name="permanentAddressDistrict" value={formData.permanentAddressDistrict} onChange={handleInputChange} placeholder="जिल्ला" className="rounded-lg p-2 border border-gray-300 w-full" />
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="correspondenceAddress">पत्राचार गर्ने ठेगाना:</label>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <input type="text" id="correspondenceAddressWard" name="correspondenceAddressWard" value={formData.correspondenceAddressWard} onChange={handleInputChange} placeholder="वडा नं." className="rounded-lg p-2 border border-gray-300 w-full" />
+                                <input type="text" id="correspondenceAddressMunicipality" name="correspondenceAddressMunicipality" value={formData.correspondenceAddressMunicipality} onChange={handleInputChange} placeholder="गा.पा./न.पा." className="rounded-lg p-2 border border-gray-300 w-full" />
+                                <input type="text" id="correspondenceAddressDistrict" name="correspondenceAddressDistrict" value={formData.correspondenceAddressDistrict} onChange={handleInputChange} placeholder="जिल्ला" className="rounded-lg p-2 border border-gray-300 w-full" />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="form-group">
+                                <label htmlFor="fatherMotherName">बाबु/आमाको नाम, थर:</label>
+                                <input type="text" id="fatherMotherName" name="fatherMotherName" value={formData.fatherMotherName} onChange={handleInputChange} placeholder="बाबु/आमाको पूरा नाम" className="rounded-lg p-2 border border-gray-300 w-full" />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="dob">जन्म मिति (वि.सं.): <span className="text-red-500">*</span></label>
+                                <input type="date" id="dob" name="dob" value={formData.dob} onChange={handleInputChange} className="rounded-lg p-2 border border-gray-300 w-full" />
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="form-group">
+                                <label htmlFor="email">इमेल:</label>
+                                <input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="इमेल प्रविष्ट गर्नुहोस्" className="rounded-lg p-2 border border-gray-300 w-full" />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="phoneNumber">फोन नं:</label>
+                                <input type="text" id="phoneNumber" name="phoneNumber" value={formData.phoneNumber} onChange={handleInputChange} placeholder="फोन नम्बर" className="rounded-lg p-2 border border-gray-300 w-full" />
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="form-group">
+                                <label htmlFor="religion">धर्म:</label>
+                                <input type="text" id="religion" name="religion" value={formData.religion} onChange={handleInputChange} placeholder="धर्म" className="rounded-lg p-2 border border-gray-300 w-full" />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="caste">जात:</label>
+                                <input type="text" id="caste" name="caste" value={formData.caste} onChange={handleInputChange} placeholder="जात" className="rounded-lg p-2 border border-gray-300 w-full" />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="form-group">
+                                <label htmlFor="appliedPosition">आवेदन दिइएको पद:</label>
+                                <input type="text" id="appliedPosition" name="appliedPosition" value={formData.appliedPosition} onChange={handleInputChange} placeholder="आवेदन दिइएको पद प्रविष्ट गर्नुहोस्" className="rounded-lg p-2 border border-gray-300 w-full" />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="appliedLevel">आवेदन दिइएको तह:</label>
+                                <input type="text" id="appliedLevel" name="appliedLevel" value={formData.appliedLevel} onChange={handleInputChange} placeholder="आवेदन दिइएको तह प्रविष्ट गर्नुहोस्" className="rounded-lg p-2 border border-gray-300 w-full" />
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="applicationDate">फाराम भरेको मिति (वि.सं.): <span className="text-red-500">*</span></label>
+                            <input type="date" id="applicationDate" name="applicationDate" value={formData.applicationDate} onChange={handleInputChange} className="rounded-lg p-2 border border-gray-300 w-full" />
+                        </div>
+
+                        {/* --- Table for Educational Qualification/Training in the main form --- */}
+                        <div className="form-section-title">शैक्षिक योग्यता/तालिम</div>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm table-fixed border-collapse border border-gray-300">
+                                <thead>
+                                    <tr className="bg-gray-100">
+                                        <th className="p-2 border">शैक्षिक योग्यता</th>
+                                        <th className="p-2 border">विद्यालय/बोर्ड/तालिम दिने संस्था</th>
+                                        <th className="p-2 border">शैक्षिक उपाधि/तालिम</th>
+                                        <th className="p-2 border">संकाय</th>
+                                        <th className="p-2 border">श्रेणी/अंकिकृत</th>
+                                        <th className="p-2 border">मुख्य विषय</th>
+                                        <th className="p-2 border">उत्तीर्ण साल</th>
+                                        <th className="p-2 border">प्रतिशत</th>
+                                        <th className="p-2 border w-10"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {educationEntries.map((entry, index) => (
+                                        <tr key={index} className="education-entry">
+                                            <td className="p-2 border">
+                                                <select name={`educationLevel[${index}]`} value={entry.educationLevel || ''} onChange={(e) => handleEducationChange(index, e)} className="rounded-lg w-full p-2">
+                                                    <option value="">छान्नुहोस्</option>
+                                                    <option value="SLC/SEE">SLC/SEE</option>
+                                                    <option value="10+2">१०+२</option>
+                                                    <option value="Bachelor">स्नातक</option>
+                                                    <option value="Master">स्नातकोत्तर</option>
+                                                    <option value="PhD">पीएच.डी.</option>
+                                                </select>
+                                            </td>
+                                            <td className="p-2 border"><input type="text" name={`institution[${index}]`} value={entry.institution || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="संस्था" className="rounded-lg w-full p-2" /></td>
+                                            <td className="p-2 border"><input type="text" name={`educationalTitle[${index}]`} value={entry.educationalTitle || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="उपाधि" className="rounded-lg w-full p-2" /></td>
+                                            <td className="p-2 border"><input type="text" name={`faculty[${index}]`} value={entry.faculty || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="संकाय" className="rounded-lg w-full p-2" /></td>
+                                            <td className="p-2 border"><input type="text" name={`grade[${index}]`} value={entry.grade || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="श्रेणी" className="rounded-lg w-full p-2" /></td>
+                                            <td className="p-2 border"><input type="text" name={`majorSubject[${index}]`} value={entry.majorSubject || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="मुख्य विषय" className="rounded-lg w-full p-2" /></td>
+                                            <td className="p-2 border"><input type="text" name={`passingYear[${index}]`} value={entry.passingYear || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="साल" className="rounded-lg w-full p-2" /></td>
+                                            <td className="p-2 border"><input type="text" name={`percentage[${index}]`} value={entry.percentage || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="प्रतिशत" className="rounded-lg w-full p-2" /></td>
+                                            <td className="p-2 border"><button type="button" onClick={() => handleRemoveEducation(index)} className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">हटाउनुहोस्</button></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="button" onClick={handleAddEducation} className="btn btn-secondary mt-4">थप शैक्षिक योग्यता थप्नुहोस्</button>
+
+                        {/* --- Table for Work Experience in the main form --- */}
+                        <div className="form-section-title">कार्य अनुभव</div>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm table-fixed border-collapse border border-gray-300">
+                                <thead>
+                                    <tr className="bg-gray-100">
+                                        <th className="p-2 border">कार्यालय</th>
+                                        <th className="p-2 border">पद</th>
+                                        <th className="p-2 border">सेवा/समूह/उपसमूह</th>
+                                        <th className="p-2 border">श्रेणी/तह</th>
+                                        <th className="p-2 border">स्थायी/अस्थायी/करार</th>
+                                        <th className="p-2 border">देखि</th>
+                                        <th className="p-2 border">अवधि</th>
+                                        <th className="p-2 border w-10"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {experienceEntries.map((entry, index) => (
+                                        <tr key={index} className="experience-entry">
+                                            <td className="p-2 border"><input type="text" name={`organization[${index}]`} value={entry.organization || ''} onChange={(e) => handleExperienceChange(index, e)} placeholder="कार्यालय" className="rounded-lg w-full p-2" /></td>
+                                            <td className="p-2 border"><input type="text" name={`position[${index}]`} value={entry.position || ''} onChange={(e) => handleExperienceChange(index, e)} placeholder="पद" className="rounded-lg w-full p-2" /></td>
+                                            <td className="p-2 border"><input type="text" name={`serviceGroup[${index}]`} value={entry.serviceGroup || ''} onChange={(e) => handleExperienceChange(index, e)} placeholder="सेवा/समूह" className="rounded-lg w-full p-2" /></td>
+                                            <td className="p-2 border"><input type="text" name={`level[${index}]`} value={entry.level || ''} onChange={(e) => handleExperienceChange(index, e)} placeholder="श्रेणी/तह" className="rounded-lg w-full p-2" /></td>
+                                            <td className="p-2 border">
+                                                <select name={`employmentType[${index}]`} value={entry.employmentType || ''} onChange={(e) => handleExperienceChange(index, e)} className="rounded-lg w-full p-2">
+                                                    <option value="">छान्नुहोस्</option>
+                                                    <option value="स्थायी">स्थायी</option>
+                                                    <option value="अस्थायी">अस्थायी</option>
+                                                    <option value="करार">करार</option>
+                                                </select>
+                                            </td>
+                                            <td className="p-2 border"><input type="date" name={`fromDate[${index}]`} value={entry.fromDate || ''} onChange={(e) => handleExperienceChange(index, e)} className="rounded-lg w-full p-2" /></td>
+                                            <td className="p-2 border"><input type="text" name={`duration[${index}]`} value={entry.duration || ''} onChange={(e) => handleExperienceChange(index, e)} placeholder="अवधि" className="rounded-lg w-full p-2" /></td>
+                                            <td className="p-2 border"><button type="button" onClick={() => handleRemoveExperience(index)} className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">हटाउनुहोस्</button></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="button" onClick={handleAddExperience} className="btn btn-secondary mt-4">थप कार्य अनुभव थप्नुहोस्</button>
+
+                        <div className="flex justify-end gap-4 mt-8">
+                            <button type="button" onClick={() => setPreviewVisible(true)} className="btn btn-primary">पूर्वावलोकन देखाउनुहोस्</button>
+                            <button type="reset" onClick={() => {
+                                setFormData({
+                                    fullName: '', fullNameEnglish: '', gender: '', maritalStatus: '', citizenshipNo: '', citizenshipIssuedDistrict: '', permanentAddressWard: '', permanentAddressMunicipality: '', permanentAddressDistrict: '', correspondenceAddressWard: '', correspondenceAddressMunicipality: '', correspondenceAddressDistrict: '', fatherMotherName: '', dob: '', email: '', phoneNumber: '', religion: '', caste: '', appliedPosition: '', appliedLevel: '', applicationDate: '',
+                                });
+                                setEducationEntries([{}]);
+                                setExperienceEntries([{}]);
+                            }} className="btn btn-secondary">फाराम खाली गर्नुहोस्</button>
+                        </div>
+                    </form>
+                )}
+
+                {previewVisible && (
+                    <div id="previewSection" className="mt-8 p-8 bg-gray-50 rounded-xl shadow-lg border border-gray-200">
+                        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">फाराम पूर्वावलोकन र प्रवेशपत्र</h2>
+                        <div className="print-area">
+                            <div className="preview-content p-6 bg-white rounded-lg border border-dashed border-gray-400">
+                                <div className="preview-form-header">
+                                    <img src="https://placehold.co/80x80/A0DCF0/000000?text=LOGO" alt="नगरपालिका लोगो" className="municipality-logo" />
+                                    <div className="header-text">
+                                        <h3 className="text-xl font-bold">गलकोट नगरपालिका</h3>
+                                        <p className="text-sm">नगर कार्यपालिकाको कार्यालय</p>
+                                        <p className="text-sm">गण्डकी प्रदेश, नेपाल</p>
+                                        <h4 className="text-lg font-bold w-full text-center mt-4">करारको लागि दरखास्त फाराम</h4>
+                                    </div>
+                                    <div className="header-right-column">
+                                        <div className="photo-box-preview">
+                                            <span>हालसालै खिचेको पासपोर्ट साइजको <br /> फोटो टाँस्ने र फोटो र फाराममा <br /> पनि सही गर्ने उम्मेदवारले</span>
+                                        </div>
+                                        <p className="mt-2 text-sm text-right">मिति: <span id="previewFormDate">{gregorianToNepali(formData.applicationDate)}</span></p>
+                                    </div>
+                                </div>
+
+                                <div className="preview-form-layout mt-4">
+                                    <div className="section-heading">क) बैयक्तिक विवरण</div>
+                                    <div><strong>नाम, थर (देवनागरीमा):</strong> {formData.fullName || 'N/A'}</div>
+                                    <div><strong>नाम (अंग्रेजी ठूलो अक्षरमा):</strong> {formData.fullNameEnglish || 'N/A'}</div>
+                                    <div><strong>लिङ्ग:</strong> {formData.gender || 'N/A'}</div>
+                                    <div><strong>विवाहित/अविवाहित:</strong> {formData.maritalStatus || 'N/A'}</div>
+                                    <div>
+                                        <strong>नागरिकता नं:</strong> {formData.citizenshipNo || 'N/A'}<br />
+                                        (क) जिल्ला: {formData.citizenshipIssuedDistrict || 'N/A'}
+                                    </div>
+                                    <div>
+                                        <strong>स्थायी ठेगाना:</strong> <br />
+                                        (क) जिल्ला: {formData.permanentAddressDistrict || 'N/A'} (ख) गा.पा./न.पा.: {formData.permanentAddressMunicipality || 'N/A'} (ग) वडा नं.: {formData.permanentAddressWard || 'N/A'}
+                                    </div>
+                                    <div className="full-width">
+                                        <strong>पत्राचार गर्ने ठेगाना:</strong> <br />
+                                        (क) जिल्ला: {formData.correspondenceAddressDistrict || 'N/A'} (ख) गा.पा./न.पा.: {formData.correspondenceAddressMunicipality || 'N/A'} (ग) वडा नं.: {formData.correspondenceAddressWard || 'N/A'}
+                                    </div>
+                                    <div><strong>बाबुको नाम, थर:</strong> {formData.fatherMotherName || 'N/A'}</div>
+                                    <div><strong>जन्म मिति (वि.सं.मा):</strong> {gregorianToNepali(formData.dob)}</div>
+                                    <div><strong>इमेल:</strong> {formData.email || 'N/A'}</div>
+                                    <div><strong>फोन नं:</strong> {formData.phoneNumber || 'N/A'}</div>
+                                    <div><strong>धर्म:</strong> {formData.religion || 'N/A'}</div>
+                                    <div><strong>जात:</strong> {formData.caste || 'N/A'}</div>
+                                </div>
+
+                                <div className="section-heading full-width mt-4">ख) शैक्षिक योग्यता/तालिम</div>
+                                <table className="w-full text-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>शैक्षिक योग्यता</th>
+                                            <th>विद्यालय/बोर्ड/तालिम दिने संस्था</th>
+                                            <th>शैक्षिक उपाधि/तालिम</th>
+                                            <th>संकाय</th>
+                                            <th>श्रेणी/अंकिकृत</th>
+                                            <th>मुख्य विषय</th>
+                                            <th>उत्तीर्ण साल</th>
+                                            <th>प्रतिशत</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {educationEntries.map((entry, index) => (
+                                            <tr key={index}>
+                                                <td>{entry.educationLevel || 'N/A'}</td>
+                                                <td>{entry.institution || 'N/A'}</td>
+                                                <td>{entry.educationalTitle || 'N/A'}</td>
+                                                <td>{entry.faculty || 'N/A'}</td>
+                                                <td>{entry.grade || 'N/A'}</td>
+                                                <td>{entry.majorSubject || 'N/A'}</td>
+                                                <td>{entry.passingYear || 'N/A'}</td>
+                                                <td>{entry.percentage || 'N/A'}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+
+                                <div className="section-heading full-width mt-4">ग) अनुभव सम्बन्धी विवरण</div>
+                                <table className="w-full text-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>कार्यालय</th>
+                                            <th>पद</th>
+                                            <th>सेवा/समूह/उपसमूह</th>
+                                            <th>श्रेणी/तह</th>
+                                            <th>स्थायी/अस्थायी/करार</th>
+                                            <th>देखि</th>
+                                            <th>अवधि</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {experienceEntries.map((entry, index) => (
+                                            <tr key={index}>
+                                                <td>{entry.organization || 'N/A'}</td>
+                                                <td>{entry.position || 'N/A'}</td>
+                                                <td>{entry.serviceGroup || 'N/A'}</td>
+                                                <td>{entry.level || 'N/A'}</td>
+                                                <td>{entry.employmentType || 'N/A'}</td>
+                                                <td>{gregorianToNepali(entry.fromDate) || 'N/A'}</td>
+                                                <td>{entry.duration || 'N/A'}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+
+                                <div className="full-width mt-4 text-sm">
+                                    <p>मैले यस दरखास्तमा खुलाएका सम्पूर्ण विवरणहरु सत्य छन् । दरखास्त बुझाएको पदको सूचनाको लागि अनुरोध गरिएको कुनै कुरा फारामा खुलेको छैन र दरखास्तको दस्तुरमा प्रमाणित कानून बमोजिम बुझाएको छु । उम्मेदवारले फाराम भर्दा कुनै अनिमित कुरा भए यस दरखास्त फाराममा उल्लेखित शर्त तथा नियमहरु पालना गर्ने मन्जुर गर्दछु । साथै करारमा उल्लेखित शर्तहरु पूर्ण रुपमा पालना गर्नेछु र करारको समयसम्म जेजति कार्यहरु गर्नु पर्नेछ सो सबै गर्नेछु भनी यसै दरखास्त फाराम मार्फत कबुल गर्दछु ।</p>
+                                    <p className="mt-4">उम्मेदवारको ब्याले सहिछाप:</p>
+                                    <p className="mt-2">उम्मेदवारको दस्तखत:</p>
+                                    <div className="flex justify-start gap-4 mt-4">
+                                        <div className="flex flex-col items-center">
+                                            <div className="thumbprint-box">दायाँ ल्याप्चे सहिछाप</div>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <div className="thumbprint-box">बायाँ ल्याप्चे सहिछाप</div>
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4 mt-4">
+                                        <div><strong>दर्ता नं:</strong></div>
+                                        <div className="text-right"><strong>मिति:</strong> {gregorianToNepali(formData.applicationDate)}</div>
+                                        <div><strong>चलानी नं:</strong></div>
+                                        <div className="text-right"><strong>रोल नं:</strong> _________________________</div>
+                                    </div>
+                                    <p className="mt-4"><strong>दरखास्त स्वीकृतिको लागि भा. को कलम:</strong></p>
+                                    <div className="grid grid-cols-2 gap-4 mt-2">
+                                        <div>दरखास्त स्वीकृत/अस्वीकृत गर्नेको:</div>
+                                        <div>दस्तखत:</div>
+                                        <div>दरखास्त स्वीकृत/अस्वीकृत गर्नेको नाम र दस्तखत:</div>
+                                        <div>मिति:</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="admission-card">
+                                <div className="header-top">
+                                    <div className="text-center">
+                                        <img src="https://placehold.co/80x80/A0DCF0/000000?text=LOGO" alt="संस्थाको लोगो" className="logo" />
+                                    </div>
+                                    <div className="header-center">
+                                        <p className="text-xs">(अनुसूची २)</p>
+                                        <p className="text-xs">(दफा ५ को उपदफा (१) सँग सम्बन्धित)</p>
+                                        <h2 className="text-xl font-bold text-blue-800">गलकोट नगरपालिका</h2>
+                                        <p className="text-lg font-semibold">नगर कार्यपालिकाको कार्यालय</p>
+                                        <p className="text-md">गलकोट, बागलुङ</p>
+                                    </div>
+                                </div>
+                                
+                                <div className="header-details">
+                                    <div>
+                                        <p><strong>पत्र संख्या:</strong> २०७७/०७८</p>
+                                        <p><strong>चलानी नम्बर:</strong></p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p>गण्डकी प्रदेश, नेपाल</p>
+                                    </div>
+                                </div>
+
+                                <h3 className="text-2xl font-bold text-center mt-2 mb-2">प्रवेश-पत्र</h3>
+
+                                {/* Adjusted grid to place the photo box on the right, next to the details */}
+                                <div className="admission-details-grid">
+                                    <div className="text-base">
+                                        <p><strong>नाम, थर:</strong> <span className="font-bold text-blue-700">{formData.fullName || 'N/A'}</span></p>
+                                        <p><strong>पद:</strong> <span className="font-bold text-blue-700">{formData.appliedPosition || 'N/A'}</span></p>
+                                        <p><strong>तह:</strong> <span className="font-bold text-blue-700">{formData.appliedLevel || 'N/A'}</span></p>
+                                        <p><strong>रोल नम्बर:</strong> _________________________</p>
+                                    </div>
+                                    <div className="photo-box">
+                                        <span className="text-sm text-gray-500">पासपोर्ट साइजको फोटो</span>
+                                    </div>
+                                </div>
+
+                                <div className="description col-span-full mt-4">
+                                    <p><strong>उम्मेदवारको दस्तखत नमुना :</strong></p>
+                                    <p>नगर कार्यपालिकाको कार्यालयले भने : यस कार्यालयबाट लिइने उक्तपदको परीक्षामा तपाइँलाई सम्मिलित हुन अनुमति दिइएको छ । विज्ञापनमा तोकिएको शर्त नपुगेको ठहर भएमा जुनसुकै अवस्थामा पनि यो अनुमति रद्द हुनेछ ।</p>
+                                </div>
+
+                                <div className="roll-no col-span-full mt-4">
+                                    <div className="border border-gray-400 w-32 h-16 mt-2"></div>
+                                </div>
+
+                                <div className="footer-left text-sm mt-8">
+                                    <p>(कार्यालयको छाप)</p>
+                                </div>
+                                <div className="footer-right text-sm mt-8">
+                                    <p>(प्रमाणित गर्नेको दस्तखत)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-4 mt-8">
+                            <button type="button" onClick={() => setPreviewVisible(false)} className="btn btn-secondary">सम्पादन गर्नुहोस्</button>
+                            <button type="button" onClick={() => window.print()} className="btn btn-primary">प्रिन्ट गर्नुहोस्</button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </>
+    );
+};
+
+export default App;
