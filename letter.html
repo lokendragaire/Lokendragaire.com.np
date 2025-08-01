@@ -67,10 +67,10 @@
             .watermark-positioned {
                 display: block !important;
                 position: absolute;
-                top: 55% !important; /* Adjusted for print */
+                top: 50% !important;
                 left: 50% !important;
                 transform: translate(-50%, -50%) !important;
-                width: 80% !important;
+                width: 90% !important; /* Increased watermark size for print */
                 height: auto !important;
                 opacity: 0.08 !important;
                 pointer-events: none;
@@ -95,7 +95,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 60%;
+            width: 90%; /* Increased watermark size for screen */
             height: auto;
             opacity: 0.08;
             object-fit: contain;
@@ -108,6 +108,7 @@
             display: flex;
             flex-direction: column;
             flex-grow: 1;
+            font-size: 1rem;
         }
         .field-row {
             display: flex;
@@ -381,7 +382,7 @@
 
         <!-- Preview Section -->
         <div id="previewSection" class="preview-section">
-            <div class="letter-content text-gray-800 leading-relaxed text-sm relative">
+            <div class="letter-content text-gray-800 leading-relaxed text-base relative">
                 <!-- Watermark Image - Using emblem.png for watermark -->
                 <!-- NOTE: तपाईंको emblem.png फाइललाई वेबमा होस्ट (जस्तै GitHub Pages, Imgur, वा तपाईंको आफ्नै सर्भर) गरेपछि,
                     src="emblem.png" को सट्टा होस्ट गरिएको URL प्रयोग गर्नुहोस्।
