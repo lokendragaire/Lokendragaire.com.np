@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ne">
 <head>
@@ -65,14 +64,14 @@
                 position: relative;
                 z-index: 10;
             }
-            .watermark {
+            .watermark-positioned {
                 display: block !important;
                 position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 80%;
-                height: auto;
+                top: 55% !important; /* Adjusted for print */
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                width: 80% !important;
+                height: auto !important;
                 opacity: 0.08 !important;
                 pointer-events: none;
                 z-index: 1;
@@ -91,30 +90,24 @@
         }
 
         /* Watermark styling */
-        .watermark-container {
+        .watermark-positioned {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            z-index: 1;
-        }
-        .watermark {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             width: 60%;
             height: auto;
             opacity: 0.08;
             object-fit: contain;
+            pointer-events: none;
+            z-index: 1; /* Ensure it's behind the text */
         }
         .letter-content {
-            position: relative;
+            position: relative; /* This is crucial for positioning the watermark */
             z-index: 10;
-            display: flex; /* Make it a flex container */
-            flex-direction: column; /* Stack children vertically */
-            flex-grow: 1; /* Allow it to grow and fill the .a4-paper height */
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
         }
         .field-row {
             display: flex;
@@ -388,18 +381,16 @@
 
         <!-- Preview Section -->
         <div id="previewSection" class="preview-section">
-            <div class="watermark-container">
+            <div class="letter-content text-gray-800 leading-relaxed text-sm relative">
                 <!-- Watermark Image - Using emblem.png for watermark -->
                 <!-- NOTE: तपाईंको emblem.png फाइललाई वेबमा होस्ट (जस्तै GitHub Pages, Imgur, वा तपाईंको आफ्नै सर्भर) गरेपछि,
                     src="emblem.png" को सट्टा होस्ट गरिएको URL प्रयोग गर्नुहोस्।
                     उदाहरण: src="https://raw.githubusercontent.com/your-username/your-repo/main/emblem.png"
                 -->
-                <img src="emblem.png" alt="Watermark" class="watermark" onerror="this.onerror=null;this.src='https://placehold.co/80x80/E0E0E0/000000?text=LOGO'; console.error('Error loading watermark image.');">
-            </div>
+                <img src="emblem.png" alt="Watermark" class="watermark-positioned" onerror="this.onerror=null;this.src='https://placehold.co/80x80/E0E0E0/000000?text=LOGO'; console.error('Error loading watermark image.');">
                 
-            <div class="letter-content text-gray-800 leading-relaxed text-sm">
                 <!-- This div will contain all content that should push the footer down -->
-                <div class="flex-grow-content">
+                <div class="flex-grow-content z-10">
                     <div class="header-main-row mb-4">
                         <!-- Emblem -->
                         <div class="header-flex-item left">
@@ -422,7 +413,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-3 w-full items-end mb-6">
+                    <div class="grid grid-cols-3 w-full items-end mb-2">
                         <div class="col-span-2 flex flex-col text-left">
                             <p class="text-sm">प.सं.(Ref.No.) <span id="displayPatraSankhya"></span></p>
                             <p class="text-sm">च.नं.(Des.No.) <span id="displayChalanNo"></span></p>
@@ -433,9 +424,9 @@
                     </div>
 
                     <!-- New horizontal line -->
-                    <div class="border-b border-gray-400 my-4"></div>
+                    <div class="border-b border-gray-400 my-2"></div>
 
-                    <h3 class="text-xl font-bold text-center mb-6">सामाजिक सुरक्षा भत्ता सम्बन्धमा।</h3>
+                    <h3 class="text-xl font-bold text-center mb-2">सामाजिक सुरक्षा भत्ता सम्बन्धमा।</h3>
 
                     <p class="mb-1">
                         <span style="margin-left: 2em;"></span>श्री <strong><span id="displayBankName"></span></strong> गलकोट शाखा,
@@ -447,27 +438,27 @@
                     <p class="mb-4 text-justify">
                         <span style="margin-left: 2em;"></span>उपरोक्त विषयमा गलकोट नगरपालिका वडा नं.<span id="displayWardNo"></span>&nbsp;निवासी
                         सामाजिक सुरक्षा भत्ता परिचयपत्र नं.<span id="displaySsbId"></span>&nbsp;भएका श्री <span id="displayPersonName"></span>&nbsp;को
-                        मिति <span id="displayDeathDate"></span>&nbsp;गते मृत्यु भएको र मिति<span id="displayDeathRegDate"></span>&nbsp;गते
+                        मिति <span id="displayDeathDate"></span>&nbsp;मा मृत्यु भएको र मिति<span id="displayDeathRegDate"></span>&nbsp;मा
                         मृत्युदर्ता गरी लगत कट्टा गरिएको हुदाँ निज जिवित हुदाँ सम्मको प्राप्त
-                        गर्नुपर्ने आ.व. (<span id="displayFiscalYear"></span>)&nbsp;को <span id="displayQuarter"></span>&nbsp;त्रैमासिकको
-                        रकम रु. <span id="displayAmount"></span>/-&nbsp;निजको <span id="displayRelationship"></span>&nbsp;<span id="displayRelatedPersonName"></span>&nbsp;(ना.प्र.नं. <span id="displayCitizenshipNo"></span>,&nbsp; जारी मिति<span id="displayCitizenshipIssueDate"></span>) लाइ
+                        गर्नुपर्ने आ.व.(<span id="displayFiscalYear"></span>)&nbsp;को <span id="displayQuarter"></span>&nbsp;त्रैमासिकको
+                        रकम रु. <span id="displayAmount"></span>/-&nbsp;निजको <span id="displayRelationship"></span>&nbsp;<span id="displayRelatedPersonName"></span>&nbsp;(ना.प्र.नं. <span id="displayCitizenshipNo"></span>,&nbsp;जारी मिति<span id="displayCitizenshipIssueDate"></span>)लाइ
                         भुक्तानी दिनुहुन साथै मृत्यु मिति पछी खातामा बाँकी रहन आउने रकम रु. <span id="displayRemainingAmount"></span>/-
-                        (अक्षेरुपीःरु.<span id="displayRemainingAmountAksharu"></span> मात्र)&nbsp;<span id="displayDepositAccount"></span>मा दाखिला गरिदिनुहुन अनुरोध
+                        (अक्षेरुपीःरु<span id="displayRemainingAmountAksharu"></span>मात्र)&nbsp;<span id="displayDepositAccount"></span>मा दाखिला गरिदिनुहुन अनुरोध
                         छ।
                     </p>
 
                     <div class="mt-12 flex justify-end items-end">
                         <div class="text-right">
                             <p class="font-bold">.......................</p>
-                          
                             <p class="font-semibold" id="displaySignerName"></p>
-                      <p class="mt-4 font-bold"> </p>
+                            <p class="mt-4 font-bold"> </p>
                             <p class="font-semibold" id="displaySignerPost"></p>
                         </div>
                     </div>
-
-                    
-
+                </div>
+            </div>
+        </div>
+        
         <div class="buttons-container flex justify-center space-x-4 mt-8">
             <button id="printBtn" class="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-200">
                 प्रिन्ट गर्नुहोस्
