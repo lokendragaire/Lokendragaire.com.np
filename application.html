@@ -23,6 +23,9 @@
     const App = () => {
         // State to manage form data
         const [formData, setFormData] = React.useState({
+            advertisementNumber: '', // New field for advertisement number
+            appliedPosition: '', // Moved from a separate section
+            appliedLevel: '',    // Moved from a separate section
             fullName: '',
             fullNameEnglish: '',
             gender: '',
@@ -41,8 +44,6 @@
             phoneNumber: '',
             religion: '',
             caste: '',
-            appliedPosition: '',
-            appliedLevel: '',
             applicationDate: '',
         });
 
@@ -300,6 +301,22 @@
 
                     {!previewVisible && (
                         <form className="space-y-6">
+                            {/* New fields for Advertisement Number, Position, and Level */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="form-group">
+                                    <label htmlFor="advertisementNumber">विज्ञापन नं.:</label>
+                                    <input type="text" id="advertisementNumber" name="advertisementNumber" value={formData.advertisementNumber} onChange={handleInputChange} placeholder="विज्ञापन नम्बर" className="rounded-lg p-2 border border-gray-300 w-full" />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="appliedPosition">आवेदन दिइएको पद:</label>
+                                    <input type="text" id="appliedPosition" name="appliedPosition" value={formData.appliedPosition} onChange={handleInputChange} placeholder="आवेदन दिइएको पद प्रविष्ट गर्नुहोस्" className="rounded-lg p-2 border border-gray-300 w-full" />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="appliedLevel">आवेदन दिइएको तह:</label>
+                                    <input type="text" id="appliedLevel" name="appliedLevel" value={formData.appliedLevel} onChange={handleInputChange} placeholder="आवेदन दिइएको तह प्रविष्ट गर्नुहोस्" className="rounded-lg p-2 border border-gray-300 w-full" />
+                                </div>
+                            </div>
+                            
                             <div className="flex flex-col md:flex-row gap-6">
                                 {/* Photo paste box on the left */}
                                 <div className="md:w-1/4">
@@ -419,16 +436,6 @@
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="form-group">
-                                    <label htmlFor="appliedPosition">आवेदन दिइएको पद:</label>
-                                    <input type="text" id="appliedPosition" name="appliedPosition" value={formData.appliedPosition} onChange={handleInputChange} placeholder="आवेदन दिइएको पद प्रविष्ट गर्नुहोस्" className="rounded-lg p-2 border border-gray-300 w-full" />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="appliedLevel">आवेदन दिइएको तह:</label>
-                                    <input type="text" id="appliedLevel" name="appliedLevel" value={formData.appliedLevel} onChange={handleInputChange} placeholder="आवेदन दिइएको तह प्रविष्ट गर्नुहोस्" className="rounded-lg p-2 border border-gray-300 w-full" />
-                                </div>
-                            </div>
                             <div className="form-group">
                                 <label htmlFor="applicationDate">फाराम भरेको मिति (वि.सं.): <span className="text-red-500">*</span></label>
                                 {/* Changed input type to 'text' and added placeholder */}
@@ -537,7 +544,7 @@
                                 <button type="button" onClick={() => setPreviewVisible(true)} className="btn btn-primary">पूर्वावलोकन देखाउनुहोस्</button>
                                 <button type="reset" onClick={() => {
                                     setFormData({
-                                        fullName: '', fullNameEnglish: '', gender: '', maritalStatus: '', citizenshipNo: '', citizenshipIssuedDistrict: '', permanentAddressWard: '', permanentAddressMunicipality: '', permanentAddressDistrict: '', correspondenceAddressWard: '', correspondenceAddressMunicipality: '', correspondenceAddressDistrict: '', fatherMotherName: '', dob: '', email: '', phoneNumber: '', religion: '', caste: '', appliedPosition: '', appliedLevel: '', applicationDate: '',
+                                        advertisementNumber: '', appliedPosition: '', appliedLevel: '', fullName: '', fullNameEnglish: '', gender: '', maritalStatus: '', citizenshipNo: '', citizenshipIssuedDistrict: '', permanentAddressWard: '', permanentAddressMunicipality: '', permanentAddressDistrict: '', correspondenceAddressWard: '', correspondenceAddressMunicipality: '', correspondenceAddressDistrict: '', fatherMotherName: '', dob: '', email: '', phoneNumber: '', religion: '', caste: '', applicationDate: '',
                                     });
                                     setEducationEntries([{}]);
                                     setExperienceEntries([{}]);
@@ -565,6 +572,13 @@
                                             </div>
                                             <p className="mt-2 text-sm text-right">मिति: <span id="previewFormDate">{gregorianToNepali(formData.applicationDate)}</span></p>
                                         </div>
+                                    </div>
+                                    
+                                    {/* New details section for Advertisement No., Position, and Level */}
+                                    <div className="full-width mt-4 text-sm font-semibold">
+                                        <p>विज्ञापन नं.: {formData.advertisementNumber || 'N/A'}</p>
+                                        <p>आवेदन दिइएको पद: {formData.appliedPosition || 'N/A'}</p>
+                                        <p>तह: {formData.appliedLevel || 'N/A'}</p>
                                     </div>
 
                                     <div className="preview-form-layout mt-4">
@@ -717,8 +731,10 @@
                                     {/* This grid positions the details on the left and the photo on the right. */}
                                     <div className="admission-details-grid">
                                         <div className="text-base">
+                                           
                                             <p><strong>नाम, थर:</strong> <span className="font-bold text-blue-700">{formData.fullName || 'N/A'}</span></p>
-                                            <p><strong>पद:</strong> <span className="font-bold text-blue-700">{formData.appliedPosition || 'N/A'}</span></p>
+                                            <p><strong>विज्ञापन नं.:</strong> <span className="font-bold text-blue-700">{formData.advertisementNumber || 'N/A'}</span></p>
+                                             <p><strong>पद:</strong> <span className="font-bold text-blue-700">{formData.appliedPosition || 'N/A'}</span></p>
                                             <p><strong>तह:</strong> <span className="font-bold text-blue-700">{formData.appliedLevel || 'N/A'}</span></p>
                                             <p><strong>रोल नम्बर:</strong> _________________________</p>
                                         </div>
