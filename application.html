@@ -98,39 +98,19 @@
             );
             setExperienceEntries(updatedEntries);
         };
-
-        // Function to convert a Gregorian date to a simple Bikram Sambat approximation
-        // Note: This is a simplified approximation and may not be 100% accurate for all dates.
-        const gregorianToNepali = (gregorianDateString) => {
-            if (!gregorianDateString) return 'N/A';
-
-            const date = new Date(gregorianDateString);
-            const gregorianYear = date.getFullYear();
-            const gregorianMonth = date.getMonth() + 1;
-            const gregorianDay = date.getDate();
-
-            // Simple offset-based approximation
-            let bsYear = gregorianYear + 56;
-            let bsMonth = gregorianMonth + 8;
-            let bsDay = gregorianDay + 17; // A common offset
-
-            // Adjust for month and day overflows
-            if (bsDay > 30) {
-                bsDay -= 30;
-                bsMonth += 1;
-            }
-            if (bsMonth > 12) {
-                bsMonth -= 12;
-                bsYear += 1;
-            }
-
-            // Ensure month and day are padded with leading zeros
-            const formattedMonth = String(bsMonth).padStart(2, '0');
-            const formattedDay = String(bsDay).padStart(2, '0');
-
-            return `${bsYear}/${formattedMonth}/${formattedDay}`;
+        
+        // Function to convert a number to its Nepali numeral equivalent
+        const toNepaliNumber = (number) => {
+            if (typeof number !== 'string' && typeof number !== 'number') return '';
+            const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+            return String(number).split('').map(digit => {
+                if (digit >= '0' && digit <= '9') {
+                    return nepaliDigits[parseInt(digit, 10)];
+                }
+                return digit;
+            }).join('');
         };
-
+        
         // The following CSS is for styling the application, including form elements,
         // the preview section, and the print-specific styles.
         return (
@@ -564,7 +544,7 @@
                             <div className="print-area">
                                 <div className="preview-content p-6 bg-white rounded-lg border border-dashed border-gray-400">
                                     <div className="preview-form-header">
-                                        <img src="" alt="" className="municipality-logo" />
+                                        <img src="https://placehold.co/80x80/E5E7EB/4B5563?text=Logo" alt="संस्थाको लोगो" className="municipality-logo" />
                                         <div className="header-text">
                                             <h3 className="text-xl font-bold">गलकोट नगरपालिका</h3>
                                             <p className="text-sm">नगर कार्यपालिकाको कार्यालय</p>
@@ -575,13 +555,14 @@
                                             <div className="photo-box-preview">
                                                 <span>हालसालै खिचेको पासपोर्ट साइजको <br /> फोटो टाँस्ने र फोटो र फाराममा <br /> पनि सही गर्ने उम्मेदवारले</span>
                                             </div>
-                                            <p className="mt-2 text-sm text-right">मिति: <span id="previewFormDate">{gregorianToNepali(formData.applicationDate)}</span></p>
+                                            {/* Corrected: Using toNepaliNumber directly on the user-entered date */}
+                                            <p className="mt-2 text-sm text-right">मिति: <span id="previewFormDate">{toNepaliNumber(formData.applicationDate) || 'N/A'}</span></p>
                                         </div>
                                     </div>
                                     
                                     {/* New details section for Advertisement No., Position, and Level */}
                                     <div className="full-width mt-4 text-sm font-semibold">
-                                        <p>विज्ञापन नं.: {formData.advertisementNumber || 'N/A'}</p>
+                                        <p>विज्ञापन नं.: {toNepaliNumber(formData.advertisementNumber) || 'N/A'}</p>
                                         <p>आवेदन दिइएको पद: {formData.appliedPosition || 'N/A'}</p>
                                         <p>तह: {formData.appliedLevel || 'N/A'}</p>
                                     </div>
@@ -593,21 +574,22 @@
                                         <div><strong>लिङ्ग:</strong> {formData.gender || 'N/A'}</div>
                                         <div><strong>विवाहित/अविवाहित:</strong> {formData.maritalStatus || 'N/A'}</div>
                                         <div>
-                                            <strong>नागरिकता नं:</strong> {formData.citizenshipNo || 'N/A'}<br />
+                                            <strong>नागरिकता नं:</strong> {toNepaliNumber(formData.citizenshipNo) || 'N/A'}<br />
                                             (क) जिल्ला: {formData.citizenshipIssuedDistrict || 'N/A'}
                                         </div>
                                         <div>
                                             <strong>स्थायी ठेगाना:</strong> <br />
-                                            (क) जिल्ला: {formData.permanentAddressDistrict || 'N/A'} (ख) गा.पा./न.पा.: {formData.permanentAddressMunicipality || 'N/A'} (ग) वडा नं.: {formData.permanentAddressWard || 'N/A'}
+                                            (क) जिल्ला: {formData.permanentAddressDistrict || 'N/A'} (ख) गा.पा./न.पा.: {formData.permanentAddressMunicipality || 'N/A'} (ग) वडा नं.: {toNepaliNumber(formData.permanentAddressWard) || 'N/A'}
                                         </div>
                                         <div className="full-width">
                                             <strong>पत्राचार गर्ने ठेगाना:</strong> <br />
-                                            (क) जिल्ला: {formData.correspondenceAddressDistrict || 'N/A'} (ख) गा.पा./न.पा.: {formData.correspondenceAddressMunicipality || 'N/A'} (ग) वडा नं.: {formData.correspondenceAddressWard || 'N/A'}
+                                            (क) जिल्ला: {formData.correspondenceAddressDistrict || 'N/A'} (ख) गा.पा./न.पा.: {formData.correspondenceAddressMunicipality || 'N/A'} (ग) वडा नं.: {toNepaliNumber(formData.correspondenceAddressWard) || 'N/A'}
                                         </div>
                                         <div><strong>बाबुको नाम, थर:</strong> {formData.fatherMotherName || 'N/A'}</div>
-                                        <div><strong>जन्म मिति (वि.सं.मा):</strong> {gregorianToNepali(formData.dob)}</div>
+                                        {/* Corrected: Using toNepaliNumber directly on the user-entered date */}
+                                        <div><strong>जन्म मिति (वि.सं.मा):</strong> {toNepaliNumber(formData.dob) || 'N/A'}</div>
                                         <div><strong>इमेल:</strong> {formData.email || 'N/A'}</div>
-                                        <div><strong>फोन नं:</strong> {formData.phoneNumber || 'N/A'}</div>
+                                        <div><strong>फोन नं:</strong> {toNepaliNumber(formData.phoneNumber) || 'N/A'}</div>
                                         <div><strong>धर्म:</strong> {formData.religion || 'N/A'}</div>
                                         <div><strong>जात:</strong> {formData.caste || 'N/A'}</div>
                                     </div>
@@ -635,8 +617,8 @@
                                                     <td className="p-2 border">{entry.faculty || 'N/A'}</td>
                                                     <td className="p-2 border">{entry.grade || 'N/A'}</td>
                                                    <td className="p-2 border">{entry.majorSubject || 'N/A'}</td>
-                                                   <td className="p-2 border">{entry.passingYear || 'N/A'}</td>
-                                                    <td className="p-2 border">{entry.percentage || 'N/A'}</td>
+                                                   <td className="p-2 border">{toNepaliNumber(entry.passingYear) || 'N/A'}</td>
+                                                    <td className="p-2 border">{toNepaliNumber(entry.percentage) || 'N/A'}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -663,7 +645,8 @@
                                                     <td className="p-2 border">{entry.serviceGroup || 'N/A'}</td>
                                                     <td className="p-2 border">{entry.level || 'N/A'}</td>
                                                     <td className="p-2 border">{entry.employmentType || 'N/A'}</td>
-                                                    <td className="p-2 border">{gregorianToNepali(entry.fromDate) || 'N/A'}</td>
+                                                    {/* Corrected: Using toNepaliNumber directly on the user-entered date */}
+                                                    <td className="p-2 border">{toNepaliNumber(entry.fromDate) || 'N/A'}</td>
                                                     <td className="p-2 border">{entry.duration || 'N/A'}</td>
                                                 </tr>
                                             ))}
@@ -692,7 +675,7 @@
                                             <div><strong>कार्यालयले भर्ने:</strong></div>
                                             <div><strong>रोल नं:</strong> _________________________</div>
                                         </div>
-                                        <div className="text-right"><strong>मिति:</strong> {gregorianToNepali(formData.applicationDate)}</div>
+                                        <div className="text-right"><strong>मिति:</strong> {toNepaliNumber(formData.applicationDate) || 'N/A'}</div>
                                         <div className="flex justify-between gap-4 mt-1">
                                             <div><strong>रसिद वा भौचर नं.</strong></div>
                                         </div>
@@ -711,7 +694,7 @@
                                     {/* Updated header with grid layout for perfect centering */}
                                     <div className="header-top">
                                         {/* Placeholder for the logo with 2cm x 2cm size */}
-                                        <img src="emblem.png" alt="संस्थाको लोगो" className="emblem-logo" />
+                                        <img src="https://placehold.co/80x80/E5E7EB/4B5563?text=Logo" alt="संस्थाको लोगो" className="emblem-logo" />
                                         <div className="header-center">
                                             <p className="text-xs">(अनुसूची २)</p>
                                             <p className="text-xs">(दफा ५ को उपदफा (१) सँग सम्बन्धित)</p>
@@ -725,7 +708,7 @@
                                     
                                     <div className="header-details">
                                         <div>
-                                            <p><strong>पत्र संख्या:</strong> </p>
+                                            <p><strong>पत्र संख्या:</strong> {toNepaliNumber(2077)}/{toNepaliNumber(78)}</p>
                                             <p><strong>चलानी नम्बर:</strong></p>
                                         </div>
                                         <div className="text-right">
@@ -740,7 +723,7 @@
                                         <div className="text-base">
                                            
                                             <p><strong>नाम, थर:</strong> <span className="font-bold text-blue-700">{formData.fullName || 'N/A'}</span></p>
-                                            <p><strong>विज्ञापन नं.:</strong> <span className="font-bold text-blue-700">{formData.advertisementNumber || 'N/A'}</span></p>
+                                            <p><strong>विज्ञापन नं.:</strong> <span className="font-bold text-blue-700">{toNepaliNumber(formData.advertisementNumber) || 'N/A'}</span></p>
                                              <p><strong>पद:</strong> <span className="font-bold text-blue-700">{formData.appliedPosition || 'N/A'}</span></p>
                                             <p><strong>तह:</strong> <span className="font-bold text-blue-700">{formData.appliedLevel || 'N/A'}</span></p>
                                             <p><strong>रोल नम्बर:</strong> _________________________</p>
