@@ -72,8 +72,9 @@
         // Handle changes in education entries
         const handleEducationChange = (index, e) => {
             const { name, value } = e.target;
+            const fieldName = name.split('[')[0]; // Extract the field name (e.g., 'educationLevel' or 'otherEducationalTitle')
             const updatedEntries = educationEntries.map((entry, i) =>
-                i === index ? { ...entry, [name.split('[')[0]]: value } : entry
+                i === index ? { ...entry, [fieldName]: value } : entry
             );
             setEducationEntries(updatedEntries);
         };
@@ -98,9 +99,10 @@
         };
 
         // Function to convert a Gregorian date to a simple Bikram Sambat approximation
+        // Note: This is a simplified approximation and may not be 100% accurate for all dates.
         const gregorianToNepali = (gregorianDateString) => {
             if (!gregorianDateString) return 'N/A';
-            
+
             const date = new Date(gregorianDateString);
             const gregorianYear = date.getFullYear();
             const gregorianMonth = date.getMonth() + 1;
@@ -257,6 +259,40 @@
                             margin-bottom: 0.25rem;
                             height: 1em;
                         }
+                        /* New styling for the table in the form */
+                        .form-table-container {
+                            margin-top: 1rem;
+                            margin-bottom: 1rem;
+                        }
+                        .form-table-container table {
+                            width: 100%;
+                            border-collapse: collapse;
+                        }
+                        .form-table-container th, .form-table-container td {
+                            border: 1px solid #ccc;
+                            padding: 0.5rem;
+                            text-align: left;
+                        }
+                        .form-table-container th {
+                            background-color: #e2e8f0;
+                            font-weight: 600;
+                            font-size: 0.875rem; /* text-sm */
+                        }
+                        .form-table-container td input,
+                        .form-table-container td select {
+                            border: 1px solid #e2e8f0;
+                            padding: 0.25rem;
+                            width: 100%;
+                            border-radius: 0.25rem;
+                        }
+                        .form-table-container .remove-button {
+                            background-color: #ef4444; /* red-500 */
+                            color: white;
+                            padding: 0.25rem 0.5rem;
+                            border-radius: 0.25rem;
+                            font-size: 0.75rem;
+                            line-height: 1;
+                        }
                     `}
                 </style>
                 <div className="container">
@@ -358,7 +394,8 @@
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="dob">जन्म मिति (वि.सं.): <span className="text-red-500">*</span></label>
-                                    <input type="date" id="dob" name="dob" value={formData.dob} onChange={handleInputChange} className="rounded-lg p-2 border border-gray-300 w-full" />
+                                    {/* Changed input type to 'text' and added placeholder */}
+                                    <input type="text" id="dob" name="dob" value={formData.dob} onChange={handleInputChange} placeholder="yyyy/mm/dd" className="rounded-lg p-2 border border-gray-300 w-full" />
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -394,13 +431,14 @@
                             </div>
                             <div className="form-group">
                                 <label htmlFor="applicationDate">फाराम भरेको मिति (वि.सं.): <span className="text-red-500">*</span></label>
-                                <input type="date" id="applicationDate" name="applicationDate" value={formData.applicationDate} onChange={handleInputChange} className="rounded-lg p-2 border border-gray-300 w-full" />
+                                {/* Changed input type to 'text' and added placeholder */}
+                                <input type="text" id="applicationDate" name="applicationDate" value={formData.applicationDate} onChange={handleInputChange} placeholder="yyyy/mm/dd" className="rounded-lg p-2 border border-gray-300 w-full" />
                             </div>
 
                             {/* --- Table for Educational Qualification/Training in the main form --- */}
                             <div className="form-section-title">शैक्षिक योग्यता/तालिम</div>
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-sm table-fixed border-collapse border border-gray-300">
+                            <div className="overflow-x-auto form-table-container">
+                                <table className="w-full text-sm table-auto">
                                     <thead>
                                         <tr className="bg-gray-100">
                                             <th className="p-2 border">शैक्षिक योग्यता</th>
@@ -416,36 +454,48 @@
                                     </thead>
                                     <tbody>
                                         {educationEntries.map((entry, index) => (
-                                            <tr key={index} className="education-entry">
+                                            <tr key={index}>
                                                 <td className="p-2 border">
-                                                    <select name={`educationLevel[${index}]`} value={entry.educationLevel || ''} onChange={(e) => handleEducationChange(index, e)} className="rounded-lg w-full p-2">
+                                                    <select name={`educationLevel[${index}]`} value={entry.educationLevel || ''} onChange={(e) => handleEducationChange(index, e)}>
                                                         <option value="">छान्नुहोस्</option>
                                                         <option value="SLC/SEE">SLC/SEE</option>
                                                         <option value="10+2">१०+२</option>
                                                         <option value="Bachelor">स्नातक</option>
                                                         <option value="Master">स्नातकोत्तर</option>
                                                         <option value="PhD">पीएच.डी.</option>
+                                                        <option value="Other">अन्य</option> {/* Added 'Other' option */}
                                                     </select>
+                                                    {/* Conditionally render the input for 'Other' */}
+                                                    {entry.educationLevel === 'Other' && (
+                                                        <input
+                                                            type="text"
+                                                            name={`otherEducationalTitle[${index}]`}
+                                                            value={entry.otherEducationalTitle || ''}
+                                                            onChange={(e) => handleEducationChange(index, e)}
+                                                            placeholder="अन्य योग्यता उल्लेख गर्नुहोस्"
+                                                            className="mt-2 rounded-lg p-2 border border-gray-300 w-full text-sm"
+                                                        />
+                                                    )}
                                                 </td>
-                                                <td className="p-2 border"><input type="text" name={`institution[${index}]`} value={entry.institution || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="संस्था" className="rounded-lg w-full p-2" /></td>
-                                                <td className="p-2 border"><input type="text" name={`educationalTitle[${index}]`} value={entry.educationalTitle || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="उपाधि" className="rounded-lg w-full p-2" /></td>
-                                                <td className="p-2 border"><input type="text" name={`faculty[${index}]`} value={entry.faculty || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="संकाय" className="rounded-lg w-full p-2" /></td>
-                                                <td className="p-2 border"><input type="text" name={`grade[${index}]`} value={entry.grade || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="श्रेणी" className="rounded-lg w-full p-2" /></td>
-                                                <td className="p-2 border"><input type="text" name={`majorSubject[${index}]`} value={entry.majorSubject || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="मुख्य विषय" className="rounded-lg w-full p-2" /></td>
-                                                <td className="p-2 border"><input type="text" name={`passingYear[${index}]`} value={entry.passingYear || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="साल" className="rounded-lg w-full p-2" /></td>
-                                                <td className="p-2 border"><input type="text" name={`percentage[${index}]`} value={entry.percentage || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="प्रतिशत" className="rounded-lg w-full p-2" /></td>
-                                                <td className="p-2 border"><button type="button" onClick={() => handleRemoveEducation(index)} className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">हटाउनुहोस्</button></td>
+                                                <td className="p-2 border"><input type="text" name={`institution[${index}]`} value={entry.institution || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="संस्था" /></td>
+                                                <td className="p-2 border"><input type="text" name={`educationalTitle[${index}]`} value={entry.educationalTitle || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="उपाधि" /></td>
+                                                <td className="p-2 border"><input type="text" name={`faculty[${index}]`} value={entry.faculty || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="संकाय" /></td>
+                                                <td className="p-2 border"><input type="text" name={`grade[${index}]`} value={entry.grade || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="श्रेणी" /></td>
+                                                <td className="p-2 border"><input type="text" name={`majorSubject[${index}]`} value={entry.majorSubject || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="मुख्य विषय" /></td>
+                                                <td className="p-2 border"><input type="text" name={`passingYear[${index}]`} value={entry.passingYear || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="साल" /></td>
+                                                <td className="p-2 border"><input type="text" name={`percentage[${index}]`} value={entry.percentage || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="प्रतिशत" /></td>
+                                                <td className="p-2 border"><button type="button" onClick={() => handleRemoveEducation(index)} className="remove-button">हटाउनुहोस्</button></td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
                             </div>
-                            <button type="button" onClick={handleAddEducation} className="btn btn-secondary mt-4">थप शैक्षिक योग्यता थप्नुहोस्</button>
+                            <button type="button" onClick={handleAddEducation} className="btn btn-secondary mt-2">थप शैक्षिक योग्यता थप्नुहोस्</button>
 
                             {/* --- Table for Work Experience in the main form --- */}
                             <div className="form-section-title">कार्य अनुभव</div>
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-sm table-fixed border-collapse border border-gray-300">
+                            <div className="overflow-x-auto form-table-container">
+                                <table className="w-full text-sm table-auto">
                                     <thead>
                                         <tr className="bg-gray-100">
                                             <th className="p-2 border">कार्यालय</th>
@@ -460,28 +510,28 @@
                                     </thead>
                                     <tbody>
                                         {experienceEntries.map((entry, index) => (
-                                            <tr key={index} className="experience-entry">
-                                                <td className="p-2 border"><input type="text" name={`organization[${index}]`} value={entry.organization || ''} onChange={(e) => handleExperienceChange(index, e)} placeholder="कार्यालय" className="rounded-lg w-full p-2" /></td>
-                                                <td className="p-2 border"><input type="text" name={`position[${index}]`} value={entry.position || ''} onChange={(e) => handleExperienceChange(index, e)} placeholder="पद" className="rounded-lg w-full p-2" /></td>
-                                                <td className="p-2 border"><input type="text" name={`serviceGroup[${index}]`} value={entry.serviceGroup || ''} onChange={(e) => handleExperienceChange(index, e)} placeholder="सेवा/समूह" className="rounded-lg w-full p-2" /></td>
-                                                <td className="p-2 border"><input type="text" name={`level[${index}]`} value={entry.level || ''} onChange={(e) => handleExperienceChange(index, e)} placeholder="श्रेणी/तह" className="rounded-lg w-full p-2" /></td>
+                                            <tr key={index}>
+                                                <td className="p-2 border"><input type="text" name={`organization[${index}]`} value={entry.organization || ''} onChange={(e) => handleExperienceChange(index, e)} placeholder="कार्यालय" /></td>
+                                                <td className="p-2 border"><input type="text" name={`position[${index}]`} value={entry.position || ''} onChange={(e) => handleExperienceChange(index, e)} placeholder="पद" /></td>
+                                                <td className="p-2 border"><input type="text" name={`serviceGroup[${index}]`} value={entry.serviceGroup || ''} onChange={(e) => handleExperienceChange(index, e)} placeholder="सेवा/समूह" /></td>
+                                                <td className="p-2 border"><input type="text" name={`level[${index}]`} value={entry.level || ''} onChange={(e) => handleExperienceChange(index, e)} placeholder="श्रेणी/तह" /></td>
                                                 <td className="p-2 border">
-                                                    <select name={`employmentType[${index}]`} value={entry.employmentType || ''} onChange={(e) => handleExperienceChange(index, e)} className="rounded-lg w-full p-2">
+                                                    <select name={`employmentType[${index}]`} value={entry.employmentType || ''} onChange={(e) => handleExperienceChange(index, e)}>
                                                         <option value="">छान्नुहोस्</option>
                                                         <option value="स्थायी">स्थायी</option>
                                                         <option value="अस्थायी">अस्थायी</option>
                                                         <option value="करार">करार</option>
                                                     </select>
                                                 </td>
-                                                <td className="p-2 border"><input type="date" name={`fromDate[${index}]`} value={entry.fromDate || ''} onChange={(e) => handleExperienceChange(index, e)} className="rounded-lg w-full p-2" /></td>
-                                                <td className="p-2 border"><input type="text" name={`duration[${index}]`} value={entry.duration || ''} onChange={(e) => handleExperienceChange(index, e)} placeholder="अवधि" className="rounded-lg w-full p-2" /></td>
-                                                <td className="p-2 border"><button type="button" onClick={() => handleRemoveExperience(index)} className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">हटाउनुहोस्</button></td>
+                                                <td className="p-2 border"><input type="text" name={`fromDate[${index}]`} value={entry.fromDate || ''} onChange={(e) => handleExperienceChange(index, e)} placeholder="yyyy/mm/dd" /></td>
+                                                <td className="p-2 border"><input type="text" name={`duration[${index}]`} value={entry.duration || ''} onChange={(e) => handleExperienceChange(index, e)} placeholder="अवधि" /></td>
+                                                <td className="p-2 border"><button type="button" onClick={() => handleRemoveExperience(index)} className="remove-button">हटाउनुहोस्</button></td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
                             </div>
-                            <button type="button" onClick={handleAddExperience} className="btn btn-secondary mt-4">थप कार्य अनुभव थप्नुहोस्</button>
+                            <button type="button" onClick={handleAddExperience} className="btn btn-secondary mt-2">थप कार्य अनुभव थप्नुहोस्</button>
 
                             <div className="flex justify-end gap-4 mt-8">
                                 <button type="button" onClick={() => setPreviewVisible(true)} className="btn btn-primary">पूर्वावलोकन देखाउनुहोस्</button>
@@ -547,27 +597,27 @@
                                     <table className="w-full text-sm">
                                         <thead>
                                             <tr>
-                                                <th>शैक्षिक योग्यता</th>
-                                                <th>विद्यालय/बोर्ड/तालिम दिने संस्था</th>
-                                                <th>शैक्षिक उपाधि/तालिम</th>
-                                                <th>संकाय</th>
-                                                <th>श्रेणी/अंकिकृत</th>
-                                                <th>मुख्य विषय</th>
-                                                <th>उत्तीर्ण साल</th>
-                                                <th>प्रतिशत</th>
+                                               <th className="p-2 border">शैक्षिक योग्यता</th>
+                                                <th className="p-2 border">विद्यालय/बोर्ड/तालिम दिने संस्था</th>
+                                                <th className="p-2 border">शैक्षिक उपाधि/तालिम</th>
+                                               <th className="p-2 border">संकाय</th>
+                                                <th className="p-2 border">श्रेणी/अंकिकृत</th>
+                                                <th className="p-2 border">मुख्य विषय</th>
+                                                <th className="p-2 border">उत्तीर्ण साल</th>
+                                                <th className="p-2 border">प्रतिशत</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {educationEntries.map((entry, index) => (
                                                 <tr key={index}>
-                                                    <td>{entry.educationLevel || 'N/A'}</td>
-                                                    <td>{entry.institution || 'N/A'}</td>
-                                                    <td>{entry.educationalTitle || 'N/A'}</td>
-                                                    <td>{entry.faculty || 'N/A'}</td>
-                                                    <td>{entry.grade || 'N/A'}</td>
-                                                    <td>{entry.majorSubject || 'N/A'}</td>
-                                                    <td>{entry.passingYear || 'N/A'}</td>
-                                                    <td>{entry.percentage || 'N/A'}</td>
+                                                    <td className="p-2 border">{entry.educationLevel === 'Other' ? (entry.otherEducationalTitle || 'N/A') : (entry.educationLevel || 'N/A')}</td>
+                                                    <td className="p-2 border">{entry.institution || 'N/A'}</td>
+                                                    <td className="p-2 border">{entry.educationalTitle || 'N/A'}</td>
+                                                    <td className="p-2 border">{entry.faculty || 'N/A'}</td>
+                                                    <td className="p-2 border">{entry.grade || 'N/A'}</td>
+                                                   <td className="p-2 border">{entry.majorSubject || 'N/A'}</td>
+                                                   <td className="p-2 border">{entry.passingYear || 'N/A'}</td>
+                                                    <td className="p-2 border">{entry.percentage || 'N/A'}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -577,57 +627,62 @@
                                     <table className="w-full text-sm">
                                         <thead>
                                             <tr>
-                                                <th>कार्यालय</th>
-                                                <th>पद</th>
-                                                <th>सेवा/समूह/उपसमूह</th>
-                                                <th>श्रेणी/तह</th>
-                                                <th>स्थायी/अस्थायी/करार</th>
-                                                <th>देखि</th>
-                                                <th>अवधि</th>
+                                               <th className="p-2 border">कार्यालय/संस्था</th>
+                                                <th className="p-2 border">पद</th>
+                                                <th className="p-2 border">सेवा/समूह/उपसमूह</th>
+                                                 <th className="p-2 border">श्रेणी/तह</th>
+                                                <th className="p-2 border">स्थायी/अस्थायी/करार</th>
+                                               <th className="p-2 border">देखि</th>
+                                               <th className="p-2 border">अवधि</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {experienceEntries.map((entry, index) => (
                                                 <tr key={index}>
-                                                    <td>{entry.organization || 'N/A'}</td>
-                                                    <td>{entry.position || 'N/A'}</td>
-                                                    <td>{entry.serviceGroup || 'N/A'}</td>
-                                                    <td>{entry.level || 'N/A'}</td>
-                                                    <td>{entry.employmentType || 'N/A'}</td>
-                                                    <td>{gregorianToNepali(entry.fromDate) || 'N/A'}</td>
-                                                    <td>{entry.duration || 'N/A'}</td>
+                                                    <td className="p-2 border">{entry.organization || 'N/A'}</td>
+                                                    <td className="p-2 border">{entry.position || 'N/A'}</td>
+                                                    <td className="p-2 border">{entry.serviceGroup || 'N/A'}</td>
+                                                    <td className="p-2 border">{entry.level || 'N/A'}</td>
+                                                    <td className="p-2 border">{entry.employmentType || 'N/A'}</td>
+                                                    <td className="p-2 border">{gregorianToNepali(entry.fromDate) || 'N/A'}</td>
+                                                    <td className="p-2 border">{entry.duration || 'N/A'}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
 
                                     <div className="full-width mt-4 text-sm">
-                                        <p>मैले यस दरखास्तमा खुलाएका सम्पूर्ण विवरणहरु सत्य छन् । दरखास्त बुझाएको पदको सूचनाको लागि अनुरोध गरिएको कुनै कुरा फारामा खुलेको छैन र दरखास्तको दस्तुरमा प्रमाणित कानून बमोजिम बुझाएको छु । उम्मेदवारले फाराम भर्दा कुनै अनिमित कुरा भए यस दरखास्त फाराममा उल्लेखित शर्त तथा नियमहरु पालना गर्ने मन्जुर गर्दछु । साथै करारमा उल्लेखित शर्तहरु पूर्ण रुपमा पालना गर्नेछु र करारको समयसम्म जेजति कार्यहरु गर्नु पर्नेछ सो सबै गर्नेछु भनी यसै दरखास्त फाराम मार्फत कबुल गर्दछु ।</p>
-                                        <p className="mt-4">उम्मेदवारको ब्याले सहिछाप:</p>
-                                        <p className="mt-2">उम्मेदवारको दस्तखत:</p>
-                                        <div className="flex justify-start gap-4 mt-4">
+                                        <p>मैले यस दरखास्तमा खुलाएका सम्पूर्ण विवरणहरु सत्य छन् । दरखास्त बुझाएको पदको सूचनाको लागि अयोग्अय ठहरिने गरी कुनै सजाय पाएको छैन। कुनै कुरा ढाँटे वा लुकाएको ठहरिएमा प्रचलित कानून बमोजिम सहने छु/बुझाउने छु। उम्मेद्वारले पालना गर्ने भनी प्रचलित कानून तथा यस दरखासत फारामका पृष्ठहरुमा उल्लेखित सबै शर्त तथा नियमहरु पालना गर्न मन्जुर गर्दछु। साथै करारमा उल्लेखित शर्तहरु पूर्ण रुपमा पालना गर्नेछु र करारको समयभन्दा अगावै करारको समयभन्दा अगावै करारको अन्त्य गर्दा कम्तिमा ३ महिनाको पूर्व सूचना दिई कार्यालयमा निवेदन दिनेछु ।</p>
+                                        
+                                        {/* Updated section to place signature and thumbprints on the same line */}
+                                        <div className="flex justify-between mt-8">
                                             <div className="flex flex-col items-center">
-                                                <div className="thumbprint-box">दायाँ ल्याप्चे सहिछाप</div>
+                                                <div className="flex gap-4">
+                                                    <div className="thumbprint-box">दायाँ ल्याप्चे सहिछाप</div>
+                                                    <div className="thumbprint-box">बायाँ ल्याप्चे सहिछाप</div>
+                                                </div>
+                                                <p className="text-center mt-1">उम्मेदवारको सहिछाप</p>
                                             </div>
                                             <div className="flex flex-col items-center">
-                                                <div className="thumbprint-box">बायाँ ल्याप्चे सहिछाप</div>
+                                                <div className="signature-line w-48 h-8"></div>
+                                                <p className="text-center mt-1">उम्मेदवारको दस्तखत</p>
                                             </div>
                                         </div>
-                                        <div className="flex justify-between gap-4 mt-4">
-                                            <div><strong>दर्ता नं:</strong></div>
+
+                                        <div className="flex justify-between gap-4 mt-8">
+                                            <div><strong>कार्यालयले भर्ने:</strong></div>
                                             <div><strong>रोल नं:</strong> _________________________</div>
                                         </div>
                                         <div className="text-right"><strong>मिति:</strong> {gregorianToNepali(formData.applicationDate)}</div>
                                         <div className="flex justify-between gap-4 mt-1">
-                                            <div><strong>चलानी नं:</strong></div>
+                                            <div><strong>रसिद वा भौचर नं.</strong></div>
                                         </div>
                                         
-                                        {/* Updated section as per user's request */}
-                                        <p className="mt-4"><strong>दरखास्त स्वीकृतिको लागि भा. को कलम:</strong></p>
+                                        <p className="mt-4"><strong>दरखास्त अस्वीकृत भए सोको कारण:</strong></p>
                                         <div className="grid grid-cols-2 gap-4 mt-2">
-                                            <div><strong>नाम:</strong></div>
-                                            <div><strong>दस्तखत:</strong></div>
-                                            <div><strong>पद:</strong></div>
+                                            <div><strong>दरखास्त रुजु गर्नेको नाम र दस्तखत:</strong></div>
+                                            <div><strong>दरखास्त स्वीकृत/अस्वीकृत गर्नेको दस्तखत:</strong></div>
+                                            <div><strong>मितिः</strong></div>
                                             <div><strong>मिति:</strong></div>
                                         </div>
                                     </div>
