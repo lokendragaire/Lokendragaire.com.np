@@ -8,9 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React and ReactDOM from CDN -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Babel for JSX transformation -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 </head>
 <body>
 
@@ -217,6 +216,21 @@
                             .admission-card .photo-box { border: 1px solid #000; }
                             .preview-form-layout table th, .preview-form-layout table td { border: 1px solid #000; }
                             .preview-form-layout .photo-box-preview { border: 1px solid #000; }
+                            
+                            /* START OF FIX: Ensure the personal details grid layout and boxes are preserved on print */
+                            .preview-content .grid {
+                                display: grid !important;
+                                grid-template-columns: repeat(3, 1fr) !important;
+                                gap: 0.5rem !important;
+                            }
+                            .preview-content .grid > div {
+                                border: 1px solid #000 !important;
+                                padding: 0.5rem !important;
+                            }
+                            .preview-content .grid .col-span-full {
+                                grid-column: 1 / -1 !important;
+                            }
+                            /* END OF FIX */
                         }
                         /* Adjusted CSS to place the photo box on the right and reduced the gap */
                         .admission-details-grid {
@@ -442,7 +456,7 @@
                                             <th className="p-2 border">श्रेणी/अंकिकृत</th>
                                             <th className="p-2 border">मुख्य विषय</th>
                                             <th className="p-2 border">उत्तीर्ण साल</th>
-                                            <th className="p-2 border">प्रतिशत/जिपिए</th>
+                                            <th className="p-2 border">प्रतिशत</th>
                                             <th className="p-2 border w-10"></th>
                                         </tr>
                                     </thead>
@@ -477,7 +491,7 @@
                                                 <td className="p-2 border"><input type="text" name={`grade[${index}]`} value={entry.grade || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="श्रेणी" /></td>
                                                 <td className="p-2 border"><input type="text" name={`majorSubject[${index}]`} value={entry.majorSubject || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="मुख्य विषय" /></td>
                                                 <td className="p-2 border"><input type="text" name={`passingYear[${index}]`} value={entry.passingYear || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="साल" /></td>
-                                                <td className="p-2 border"><input type="text" name={`percentage[${index}]`} value={entry.percentage || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="प्रतिशत/जिपिए" /></td>
+                                                <td className="p-2 border"><input type="text" name={`percentage[${index}]`} value={entry.percentage || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="प्रतिशत" /></td>
                                                 <td className="p-2 border"><button type="button" onClick={() => handleRemoveEducation(index)} className="remove-button">हटाउनुहोस्</button></td>
                                             </tr>
                                         ))}
@@ -546,7 +560,7 @@
                             <div className="print-area">
                                 <div className="preview-content p-6 bg-white rounded-lg border border-dashed border-gray-400">
                                     <div className="preview-form-header">
-                                        <img src="" alt="" className="municipality-logo" />
+                                        <img src="https://placehold.co/80x80/E5E7EB/4B5563?text=Logo" alt="संस्थाको लोगो" className="municipality-logo" />
                                         <div className="header-text">
                                             <h3 className="text-xl font-bold">गलकोट नगरपालिका</h3>
                                             <p className="text-sm">नगर कार्यपालिकाको कार्यालय</p>
@@ -629,7 +643,7 @@
                                                 <th className="p-2 border">श्रेणी/अंकिकृत</th>
                                                 <th className="p-2 border">मुख्य विषय</th>
                                                 <th className="p-2 border">उत्तीर्ण साल</th>
-                                                <th className="p-2 border">प्रतिशत/जिपिए</th>
+                                                <th className="p-2 border">प्रतिशत</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -718,7 +732,7 @@
                                     {/* Updated header with grid layout for perfect centering */}
                                     <div className="header-top">
                                         {/* Placeholder for the logo with 2cm x 2cm size */}
-                                        <img src="emblem.png" alt="संस्थाको लोगो" className="emblem-logo" />
+                                        <img src="https://placehold.co/80x80/E5E7EB/4B5563?text=Logo" alt="संस्थाको लोगो" className="emblem-logo" />
                                         <div className="header-center">
                                             <p className="text-xs">(अनुसूची २)</p>
                                             <p className="text-xs">(दफा ५ को उपदफा (१) सँग सम्बन्धित)</p>
