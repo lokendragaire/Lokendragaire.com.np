@@ -159,7 +159,8 @@
                         .admission-card .photo-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
                         .admission-card h3 { font-size: 1.7rem; font-weight: 700; color: #2b6cb0; margin-bottom: 0.5rem; text-align: center; }
                         .admission-card p { font-size: 1.1rem; margin-bottom: 0.3rem; color: #2d3748; }
-                        .preview-form-layout { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; font-size: 0.95rem; }
+                        /* Updated preview-form-layout to reduce gap between elements */
+                        .preview-form-layout { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem 1rem; font-size: 0.95rem; }
                         .preview-form-layout .full-width { grid-column: 1 / -1; }
                         .preview-form-layout .section-heading { grid-column: 1 / -1; font-weight: bold; margin-top: 0.5rem; margin-bottom: 0.25rem; border-bottom: 1px solid #ccc; padding-bottom: 0.25rem; }
                         .preview-form-layout table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; grid-column: 1 / -1; }
@@ -181,11 +182,12 @@
                             padding: 5px;
                             line-height: 1.2;
                         }
+                        /* Adjusted preview-form-header to reduce gap */
                         .preview-form-header {
                             display: grid;
                             grid-template-columns: 1fr 2fr 1fr;
                             align-items: start;
-                            gap: 1rem;
+                            gap: 0.5rem;
                             margin-bottom: 1rem;
                             position: relative;
                         }
@@ -216,11 +218,11 @@
                             .preview-form-layout table th, .preview-form-layout table td { border: 1px solid #000; }
                             .preview-form-layout .photo-box-preview { border: 1px solid #000; }
                         }
-                        /* Adjusted CSS to place the photo box on the right */
+                        /* Adjusted CSS to place the photo box on the right and reduced the gap */
                         .admission-details-grid {
                           display: grid;
                           grid-template-columns: 1fr auto; /* This will place the photo on the right */
-                          gap: 1rem;
+                          gap: 0.5rem;
                           align-items: start;
                         }
                         /* Signature and Stamp footer styling */
@@ -544,7 +546,7 @@
                             <div className="print-area">
                                 <div className="preview-content p-6 bg-white rounded-lg border border-dashed border-gray-400">
                                     <div className="preview-form-header">
-                                        <img src="https://placehold.co/80x80/E5E7EB/4B5563?text=Logo" alt="संस्थाको लोगो" className="municipality-logo" />
+                                        <img src="" alt="" className="municipality-logo" />
                                         <div className="header-text">
                                             <h3 className="text-xl font-bold">गलकोट नगरपालिका</h3>
                                             <p className="text-sm">नगर कार्यपालिकाको कार्यालय</p>
@@ -567,31 +569,53 @@
                                         <p>तह: {formData.appliedLevel || 'N/A'}</p>
                                     </div>
 
-                                    <div className="preview-form-layout mt-4">
-                                        <div className="section-heading">क) बैयक्तिक विवरण</div>
-                                        <div><strong>नाम, थर (देवनागरीमा):</strong> {formData.fullName || 'N/A'}</div>
-                                        <div><strong>नाम (अंग्रेजी ठूलो अक्षरमा):</strong> {formData.fullNameEnglish || 'N/A'}</div>
-                                        <div><strong>लिङ्ग:</strong> {formData.gender || 'N/A'}</div>
-                                        <div><strong>विवाहित/अविवाहित:</strong> {formData.maritalStatus || 'N/A'}</div>
-                                        <div>
-                                            <strong>नागरिकता नं:</strong> {toNepaliNumber(formData.citizenshipNo) || 'N/A'}<br />
-                                            (क) जिल्ला: {formData.citizenshipIssuedDistrict || 'N/A'}
+                                    {/* Updated Section: Personal details now displayed in bordered boxes */}
+                                    <div className="section-heading full-width mt-4">क) बैयक्तिक विवरण</div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mt-2 text-sm">
+                                        <div className="border border-gray-300 rounded-md p-2 bg-gray-50">
+                                            <strong>नाम, थर (देवनागरीमा):</strong> {formData.fullName || 'N/A'}
                                         </div>
-                                        <div>
+                                        <div className="border border-gray-300 rounded-md p-2 bg-gray-50">
+                                            <strong>नाम (अंग्रेजी ठूलो अक्षरमा):</strong> {formData.fullNameEnglish || 'N/A'}
+                                        </div>
+                                        <div className="border border-gray-300 rounded-md p-2 bg-gray-50">
+                                            <strong>लिङ्ग:</strong> {formData.gender || 'N/A'}
+                                        </div>
+                                        <div className="border border-gray-300 rounded-md p-2 bg-gray-50">
+                                            <strong>विवाहित/अविवाहित:</strong> {formData.maritalStatus || 'N/A'}
+                                        </div>
+                                        <div className="border border-gray-300 rounded-md p-2 bg-gray-50">
+                                            <strong>नागरिकता नं:</strong> {toNepaliNumber(formData.citizenshipNo) || 'N/A'}
+                                        </div>
+                                        <div className="border border-gray-300 rounded-md p-2 bg-gray-50">
+                                            <strong>जारी जिल्ला:</strong> {formData.citizenshipIssuedDistrict || 'N/A'}
+                                        </div>
+                                        <div className="border border-gray-300 rounded-md p-2 bg-gray-50 col-span-full">
                                             <strong>स्थायी ठेगाना:</strong> <br />
-                                            (क) जिल्ला: {formData.permanentAddressDistrict || 'N/A'} (ख) गा.पा./न.पा.: {formData.permanentAddressMunicipality || 'N/A'} (ग) वडा नं.: {toNepaliNumber(formData.permanentAddressWard) || 'N/A'}
+                                            जिल्ला: {formData.permanentAddressDistrict || 'N/A'}, गा.पा./न.पा.: {formData.permanentAddressMunicipality || 'N/A'}, वडा नं.: {toNepaliNumber(formData.permanentAddressWard) || 'N/A'}
                                         </div>
-                                        <div className="full-width">
+                                        <div className="border border-gray-300 rounded-md p-2 bg-gray-50 col-span-full">
                                             <strong>पत्राचार गर्ने ठेगाना:</strong> <br />
-                                            (क) जिल्ला: {formData.correspondenceAddressDistrict || 'N/A'} (ख) गा.पा./न.पा.: {formData.correspondenceAddressMunicipality || 'N/A'} (ग) वडा नं.: {toNepaliNumber(formData.correspondenceAddressWard) || 'N/A'}
+                                            जिल्ला: {formData.correspondenceAddressDistrict || 'N/A'}, गा.पा./न.पा.: {formData.correspondenceAddressMunicipality || 'N/A'}, वडा नं.: {toNepaliNumber(formData.correspondenceAddressWard) || 'N/A'}
                                         </div>
-                                        <div><strong>बाबुको नाम, थर:</strong> {formData.fatherMotherName || 'N/A'}</div>
-                                        {/* Corrected: Using toNepaliNumber directly on the user-entered date */}
-                                        <div><strong>जन्म मिति (वि.सं.मा):</strong> {toNepaliNumber(formData.dob) || 'N/A'}</div>
-                                        <div><strong>इमेल:</strong> {formData.email || 'N/A'}</div>
-                                        <div><strong>फोन नं:</strong> {toNepaliNumber(formData.phoneNumber) || 'N/A'}</div>
-                                        <div><strong>धर्म:</strong> {formData.religion || 'N/A'}</div>
-                                        <div><strong>जात:</strong> {formData.caste || 'N/A'}</div>
+                                        <div className="border border-gray-300 rounded-md p-2 bg-gray-50">
+                                            <strong>बाबु/आमाको नाम, थर:</strong> {formData.fatherMotherName || 'N/A'}
+                                        </div>
+                                        <div className="border border-gray-300 rounded-md p-2 bg-gray-50">
+                                            <strong>जन्म मिति (वि.सं.मा):</strong> {toNepaliNumber(formData.dob) || 'N/A'}
+                                        </div>
+                                        <div className="border border-gray-300 rounded-md p-2 bg-gray-50">
+                                            <strong>इमेल:</strong> {formData.email || 'N/A'}
+                                        </div>
+                                        <div className="border border-gray-300 rounded-md p-2 bg-gray-50">
+                                            <strong>फोन नं:</strong> {toNepaliNumber(formData.phoneNumber) || 'N/A'}
+                                        </div>
+                                        <div className="border border-gray-300 rounded-md p-2 bg-gray-50">
+                                            <strong>धर्म:</strong> {formData.religion || 'N/A'}
+                                        </div>
+                                        <div className="border border-gray-300 rounded-md p-2 bg-gray-50">
+                                            <strong>जात:</strong> {formData.caste || 'N/A'}
+                                        </div>
                                     </div>
 
                                     <div className="section-heading full-width mt-4">ख) शैक्षिक योग्यता/तालिम</div>
@@ -694,7 +718,7 @@
                                     {/* Updated header with grid layout for perfect centering */}
                                     <div className="header-top">
                                         {/* Placeholder for the logo with 2cm x 2cm size */}
-                                        <img src="https://placehold.co/80x80/E5E7EB/4B5563?text=Logo" alt="संस्थाको लोगो" className="emblem-logo" />
+                                        <img src="emblem.png" alt="संस्थाको लोगो" className="emblem-logo" />
                                         <div className="header-center">
                                             <p className="text-xs">(अनुसूची २)</p>
                                             <p className="text-xs">(दफा ५ को उपदफा (१) सँग सम्बन्धित)</p>
