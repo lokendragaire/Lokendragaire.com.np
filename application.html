@@ -231,6 +231,19 @@
                                 grid-column: 1 / -1 !important;
                             }
                             /* END OF FIX */
+
+                            /* START OF NEW FIX: Remove borders from the "Office Use Only" section for printing */
+                            .office-use-only {
+                                display: block !important;
+                            }
+                            .office-use-only p, .office-use-only div {
+                                border: none !important;
+                                background-color: transparent !important;
+                            }
+                            .office-use-only .grid > div {
+                                border: none !important;
+                            }
+                            /* END OF NEW FIX */
                         }
                         /* Adjusted CSS to place the photo box on the right and reduced the gap */
                         .admission-details-grid {
@@ -295,6 +308,36 @@
                             height: 2cm;
                             object-fit: contain; /* Ensures the image fits without distortion */
                         }
+                        /* START OF FIX: Add a print-specific rule to make the "Office Use Only" section invisible when printing */
+                        @media print {
+                            /* NOTE: This rule is specifically for the 'office-use-only' section
+                             * to remove borders from its nested elements during printing,
+                             * while keeping the borders for the main form.
+                             */
+                            .office-use-only .grid > div {
+                                border: none !important;
+                                background-color: transparent !important;
+                                padding: 0 !important;
+                            }
+                            .office-use-only strong {
+                                font-weight: normal !important;
+                            }
+                            /* Updated styles for the signature lines and spaces, so they print properly. */
+                            .preview-content .full-width > p:nth-of-type(1) + div > div:nth-child(2) > .signature-line {
+                                display: block;
+                                border-bottom: 1px solid #000;
+                            }
+                            .preview-content .full-width > p:nth-of-type(1) + div > div:nth-child(2) > p {
+                                margin-top: 0;
+                            }
+                            .preview-content .full-width > div:nth-child(3) > div:nth-child(2) {
+                                display: none;
+                            }
+                            .preview-content .full-width > div:nth-child(3) > div:nth-child(1) {
+                                margin-right: 0;
+                            }
+                        }
+                        /* END OF FIX */
                     `}
                 </style>
                 <div className="container">
@@ -560,7 +603,7 @@
                             <div className="print-area">
                                 <div className="preview-content p-6 bg-white rounded-lg border border-dashed border-gray-400">
                                     <div className="preview-form-header">
-                                        <img src="" alt="" className="municipality-logo" />
+                                        <img src="https://placehold.co/80x80/E5E7EB/4B5563?text=Logo" alt="संस्थाको लोगो" className="municipality-logo" />
                                         <div className="header-text">
                                             <h3 className="text-xl font-bold">गलकोट नगरपालिका</h3>
                                             <p className="text-sm">नगर कार्यपालिकाको कार्यालय</p>
@@ -709,21 +752,23 @@
                                             </div>
                                         </div>
 
-                                        <div className="flex justify-between gap-4 mt-8">
-                                            <div><strong>कार्यालयले भर्ने:</strong></div>
-                                            <div><strong>रोल नं:</strong> _________________________</div>
-                                        </div>
-                                        <div className="text-right"><strong>मिति:</strong> {toNepaliNumber(formData.applicationDate) || 'N/A'}</div>
-                                        <div className="flex justify-between gap-4 mt-1">
-                                            <div><strong>रसिद वा भौचर नं.</strong></div>
-                                        </div>
-                                        
-                                        <p className="mt-4"><strong>दरखास्त अस्वीकृत भए सोको कारण:</strong></p>
-                                        <div className="grid grid-cols-2 gap-4 mt-2">
-                                            <div><strong>दरखास्त रुजु गर्नेको नाम र दस्तखत:</strong></div>
-                                            <div><strong>दरखास्त स्वीकृत/अस्वीकृत गर्नेको दस्तखत:</strong></div>
-                                            <div><strong>मितिः</strong></div>
-                                            <div><strong>मिति:</strong></div>
+                                        <div className="office-use-only">
+                                            <div className="flex justify-between gap-4 mt-8">
+                                                <div><strong>कार्यालयले भर्ने:</strong></div>
+                                                <div><strong>रोल नं:</strong> _________________________</div>
+                                            </div>
+                                            <div className="text-right"><strong>मिति:</strong> {toNepaliNumber(formData.applicationDate) || 'N/A'}</div>
+                                            <div className="flex justify-between gap-4 mt-1">
+                                                <div><strong>रसिद वा भौचर नं.</strong></div>
+                                            </div>
+                                            
+                                            <p className="mt-4"><strong>दरखास्त अस्वीकृत भए सोको कारण:</strong></p>
+                                            <div className="grid grid-cols-2 gap-4 mt-2">
+                                                <div><strong>दरखास्त रुजु गर्नेको नाम र दस्तखत:</strong></div>
+                                                <div><strong>दरखास्त स्वीकृत/अस्वीकृत गर्नेको दस्तखत:</strong></div>
+                                                <div><strong>मितिः</strong></div>
+                                                <div><strong>मिति:</strong></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -732,7 +777,7 @@
                                     {/* Updated header with grid layout for perfect centering */}
                                     <div className="header-top">
                                         {/* Placeholder for the logo with 2cm x 2cm size */}
-                                        <img src="emblem.png" alt="संस्थाको लोगो" className="emblem-logo" />
+                                        <img src="https://placehold.co/80x80/E5E7EB/4B5563?text=Logo" alt="संस्थाको लोगो" className="emblem-logo" />
                                         <div className="header-center">
                                             <p className="text-xs">(अनुसूची २)</p>
                                             <p className="text-xs">(दफा ५ को उपदफा (१) सँग सम्बन्धित)</p>
