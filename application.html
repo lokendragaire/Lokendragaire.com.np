@@ -156,16 +156,15 @@
                             border: 2px solid #2b6cb0; border-radius: 12px; padding: 1.5rem; margin-top: 2rem; background-color: #ebf8ff; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); position: relative; overflow: hidden;
                             display: flex; flex-direction: column; gap: 1rem;
                         }
+                        /* Updated CSS for the admission card header to use a grid for perfect centering */
                         .admission-card .header-top {
-                            display: flex;
-                            justify-content: center;
+                            display: grid;
+                            grid-template-columns: 2cm 1fr 2cm; /* Logo column, centered text column, and a blank column for balance */
                             align-items: center;
-                            gap: 1rem;
-                            position: relative; /* This is key for absolute positioning of the logo */
                         }
                         .admission-card .header-center {
                             text-align: center;
-                            flex-grow: 1;
+                            /* No need for padding-left or absolute positioning */
                         }
                         .admission-card .header-details {
                             display: flex;
@@ -296,18 +295,9 @@
                         }
                         /* New style for the logo in the admission card */
                         .emblem-logo {
-                            position: absolute;
-                            left: 0;
-                            top: 0;
                             width: 2cm;
                             height: 2cm;
                             object-fit: contain; /* Ensures the image fits without distortion */
-                        }
-                        /* Adjusted header-center to not be pushed by the logo */
-                        .admission-card .header-center {
-                            text-align: center;
-                            flex-grow: 1;
-                            padding-left: 2cm; /* Add padding to prevent text overlap with the logo */
                         }
                     `}
                 </style>
@@ -718,7 +708,7 @@
                                 </div>
 
                                 <div className="admission-card">
-                                    {/* Updated header with absolute positioned logo */}
+                                    {/* Updated header with grid layout for perfect centering */}
                                     <div className="header-top">
                                         {/* Placeholder for the logo with 2cm x 2cm size */}
                                         <img src="emblem.png" alt="संस्थाको लोगो" className="emblem-logo" />
@@ -729,6 +719,8 @@
                                             <p className="text-lg font-semibold">नगर कार्यपालिकाको कार्यालय</p>
                                             <p className="text-md">गलकोट, बागलुङ</p>
                                         </div>
+                                        {/* Empty div to balance the logo's width and center the text */}
+                                        <div></div>
                                     </div>
                                     
                                     <div className="header-details">
