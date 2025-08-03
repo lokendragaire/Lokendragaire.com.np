@@ -158,9 +158,10 @@
                         }
                         .admission-card .header-top {
                             display: flex;
-                            justify-content: space-between;
-                            align-items: flex-start;
+                            justify-content: center;
+                            align-items: center;
                             gap: 1rem;
+                            position: relative; /* This is key for absolute positioning of the logo */
                         }
                         .admission-card .header-center {
                             text-align: center;
@@ -292,6 +293,21 @@
                             border-radius: 0.25rem;
                             font-size: 0.75rem;
                             line-height: 1;
+                        }
+                        /* New style for the logo in the admission card */
+                        .emblem-logo {
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+                            width: 2cm;
+                            height: 2cm;
+                            object-fit: contain; /* Ensures the image fits without distortion */
+                        }
+                        /* Adjusted header-center to not be pushed by the logo */
+                        .admission-card .header-center {
+                            text-align: center;
+                            flex-grow: 1;
+                            padding-left: 2cm; /* Add padding to prevent text overlap with the logo */
                         }
                     `}
                 </style>
@@ -702,10 +718,10 @@
                                 </div>
 
                                 <div className="admission-card">
+                                    {/* Updated header with absolute positioned logo */}
                                     <div className="header-top">
-                                        <div className="text-center">
-                                            <img src="emblem.png" alt="संस्थाको लोगो" className="logo" />
-                                        </div>
+                                        {/* Placeholder for the logo with 2cm x 2cm size */}
+                                        <img src="emblem.png" alt="संस्थाको लोगो" className="emblem-logo" />
                                         <div className="header-center">
                                             <p className="text-xs">(अनुसूची २)</p>
                                             <p className="text-xs">(दफा ५ को उपदफा (१) सँग सम्बन्धित)</p>
