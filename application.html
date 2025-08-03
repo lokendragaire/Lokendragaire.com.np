@@ -499,7 +499,7 @@
                                             <th className="p-2 border">श्रेणी/अंकिकृत</th>
                                             <th className="p-2 border">मुख्य विषय</th>
                                             <th className="p-2 border">उत्तीर्ण साल</th>
-                                            <th className="p-2 border">प्रतिशत</th>
+                                            <th className="p-2 border">प्रतिशत/जिपिए</th>
                                             <th className="p-2 border w-10"></th>
                                         </tr>
                                     </thead>
@@ -534,7 +534,7 @@
                                                 <td className="p-2 border"><input type="text" name={`grade[${index}]`} value={entry.grade || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="श्रेणी" /></td>
                                                 <td className="p-2 border"><input type="text" name={`majorSubject[${index}]`} value={entry.majorSubject || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="मुख्य विषय" /></td>
                                                 <td className="p-2 border"><input type="text" name={`passingYear[${index}]`} value={entry.passingYear || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="साल" /></td>
-                                                <td className="p-2 border"><input type="text" name={`percentage[${index}]`} value={entry.percentage || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="प्रतिशत" /></td>
+                                                <td className="p-2 border"><input type="text" name={`percentage[${index}]`} value={entry.percentage || ''} onChange={(e) => handleEducationChange(index, e)} placeholder="प्रतिशत/जिपिए" /></td>
                                                 <td className="p-2 border"><button type="button" onClick={() => handleRemoveEducation(index)} className="remove-button">हटाउनुहोस्</button></td>
                                             </tr>
                                         ))}
@@ -686,7 +686,7 @@
                                                 <th className="p-2 border">श्रेणी/अंकिकृत</th>
                                                 <th className="p-2 border">मुख्य विषय</th>
                                                 <th className="p-2 border">उत्तीर्ण साल</th>
-                                                <th className="p-2 border">प्रतिशत</th>
+                                                <th className="p-2 border">प्रतिशत/जिपिए</th>
                                             </tr>
                                         </thead>
                                         <tbody>
