@@ -839,8 +839,10 @@
             document.querySelectorAll('main .page-section .flex.flex-wrap .highlight').forEach(el => el.classList.remove('highlight'));
             clearSearchIcon.classList.add('hidden');
             searchIcon.classList.remove('hidden');
-        }
 
+
+
+            
         // Event listener for search action button click
         searchActionButton.addEventListener('click', () => {
             if (clearSearchIcon.classList.contains('hidden')) { // If search icon is visible, perform search
@@ -920,7 +922,7 @@
 
             // GitHub repository details
             const githubRepoOwner = 'Lokendra-Gaire-2024';
-            const githubRepoName = 'Galkot';
+            const githubRepoName = 'lokendragaire';
             const githubBranch = 'main';
             const githubBaseUrl = `https://raw.githubusercontent.com/${githubRepoOwner}/${githubRepoName}/${githubBranch}/`;
             const githubLoginUrl = `https://github.com/login?return_to=/${githubRepoOwner}/${githubRepoName}/settings/pages`;
