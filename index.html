@@ -1,3 +1,4 @@
+<!-- यो HTML कोडले व्यवसाय दर्ताका लागि निवेदन पत्रको ढाँचा तयार गर्छ -->
 <!DOCTYPE html>
 <html lang="ne">
 <head> 
@@ -7,7 +8,7 @@
     <meta name="description" content="Lokendra Gaire's social and community engagement." />
     <meta name="keywords" content="Lokendra Gaire, social engagement, community, politics, Nepal" />
     <link rel="canonical" href="https://lokendragaire.com.np/politicaleng.html" />
-   <link rel="icon" type="image/x-icon" href="lok.ico" />
+    <link rel="icon" type="image/x-icon" href="lok.ico" />
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-LPGL4SRW14"></script>
 <script>
@@ -296,6 +297,107 @@
             background-color: #bfdbfe; /* Light blue for dropdown item */
             border-radius: 4px;
         }
+
+        /* Advertisement Slider Styles */
+        #adDisplayContainer {
+            position: relative;
+            width: 100%;
+            max-width: 250px; /* Thinner width for the ad */
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 150px; /* Set a fixed height for a consistent look */
+        }
+
+        .slide {
+            min-width: 100%;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Prevents image cropping */
+            display: block;
+        }
+
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 0.5rem;
+        }
+
+        .nav-btn {
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 0.5rem;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .dot.active {
+            background-color: white;
+        }
+
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            padding: 2rem;
+            border: 1px solid #888;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 <body id="page-top">
@@ -390,9 +492,6 @@
                                 <a href="https://hmis.gov.np/hmis/dhis-web-commons/security/login.action/Login" target="_blank" class="flex items-center"><i class="fas fa-sign-in-alt mr-2 text-blue-500"></i>स्वास्थ्य व्यवस्थापन सूचना प्रणाली</a>
                                 <a href="https://ehmishttps://ehmis.org/" target="_blank" class="flex items-center"><i class="fas fa-sign-in-alt mr-2 text-blue-500"></i>ehmis portal</a>
                                 
-
-                                
-                                
                             </div>
                         </li> 
 
@@ -414,11 +513,17 @@
                             <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('directContactDropdown')">Direct Contact <i class="fas fa-caret-down ml-1"></i></a>
                             <div id="directContactDropdown" class="dropdown-menu hidden">
                                 <a href="tel:+9779869065252" class="flex items-center"><i class="fas fa-phone mr-2 text-green-500"></i>+977 9869065252</a>
-                                <a href="mailto:lokendra.gaire.70@gmail.com" class="flex items-center"><i class="fas fa-envelope mr-2 text-red-500"></i>lokendra.gaire.70@gmail.com</a>
+                                <a href="/cdn-cgi/l/email-protection#d0bcbfbbb5beb4a2b1feb7b1b9a2b5fee7e090b7bdb1b9bcfeb3bfbd" class="flex items-center"><i class="fas fa-envelope mr-2 text-red-500"></i><span class="__cf_email__" data-cfemail="9af6f5f1fff4fee8fbb4fdfbf3e8ffb4adaadafdf7fbf3f6b4f9f5f7">[email&#160;protected]</span></a>
                                 <a href="https://maps.google.com/?q=Galkot+Municipality-2,+Baglung,+Nepal" target="_blank" class="flex items-center"><i class="fas fa-map-marker-alt mr-2 text-blue-500"></i>Galkot Municipality-2, Baglung</a>
                             </div>
                         </li>
                     </ul>
+                    <!-- Login/Logout button -->
+                    <li class="nav-item">
+                        <button id="loginButton" class="nav-link py-2 px-3 block text-blue-700 font-bold hover:bg-blue-100 rounded-md">
+                            <i class="fas fa-sign-in-alt mr-1"></i> लगइन
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -463,6 +568,30 @@
                 </div>
             </div>
         </section>
+
+        <!-- Login Modal -->
+        <div id="loginModal" class="modal hidden">
+            <div class="modal-content">
+                <h3 class="text-2xl font-bold mb-4 text-center text-gray-800">लगइन गर्नुहोस्</h3>
+                <form id="loginForm">
+                    <div class="mb-4">
+                        <label for="usernameInput" class="block text-sm font-medium text-gray-700 mb-1">प्रयोगकर्ता नाम:</label>
+                        <input type="text" id="usernameInput" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="passwordInput" class="block text-sm font-medium text-gray-700 mb-1">पासवर्ड:</label>
+                        <input type="password" id="passwordInput" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                    <div id="loginError" class="text-red-500 text-sm mb-4 hidden">गलत प्रयोगकर्ता नाम वा पासवर्ड।</div>
+                    <button type="submit" class="w-full bg-green-500 text-white py-2 px-4 rounded-md font-semibold hover:bg-green-600 transition-colors">
+                        लगइन
+                    </button>
+                    <button type="button" id="closeModalBtn" class="w-full bg-gray-300 text-gray-800 py-2 px-4 rounded-md font-semibold hover:bg-gray-400 transition-colors mt-2">
+                        रद्द गर्नुहोस्
+                    </button>
+                </form>
+            </div>
+        </div>
     </main>
 <h2 class="text-3xl font-bold mb-6 text-gray-800">विभिन्न निवेदन तथा पत्र तयार गर्न यहाँ जानु होस</h2>
                 <div class="flex flex-wrap justify-center gap-4">
@@ -498,11 +627,36 @@
         </div>
     </footer>
     
-    <div class="copyright py-2 text-center text-gray-700">
-        <div class="container mx-auto"><small>Copyright © Lokendra Gaire 2024</small></div>
+    <!-- This container holds the copyright and the newly positioned advertisement section -->
+    <div class="bg-gray-100 flex flex-col lg:flex-row justify-between items-center py-2 px-4">
+        <!-- The original copyright section -->
+        <div class="text-center text-gray-700 w-full lg:w-auto mb-4 lg:mb-0">
+            <small>Copyright © Lokendra Gaire 2024</small>
+        </div>
+        
+        <!-- Ad Slider Display Container - Now always visible to show the space -->
+        <div id="adDisplayContainer" class="w-full lg:w-1/4 max-w-sm mx-auto my-4 lg:my-0 lg:ml-4">
+             <!-- Advertisement Management Section - Only visible if logged in -->
+            <div id="adSection" class="mb-4 hidden">
+                <h3 class="text-sm font-bold mb-2 text-gray-800">विज्ञापन तथा समाचार</h3>
+                <p class="text-xs text-gray-600 mt-2">यो भागमा विज्ञापन तथा समाचारहरू देखाइनेछन्। नयाँ फोटोहरू थप्नको लागि, कृपया आफ्नो GitHub repository मा `photo1.jpg`, `photo2.jpg` जस्ता नाममा फोटोहरू अपलोड गर्नुहोस्।</p>
+            </div>
+            
+            <div class="slider-container">
+                <div id="adSlider" class="slider">
+                    <!-- Default placeholder images or uploaded images will be added here by JS -->
+                    <div class="slide"><img src="https://placehold.co/800x400/FFC0CB/000000?text=फोटो+अपलोड+गर्नुहोस्" alt="Placeholder Advertisement"></div>
+                </div>
+                <div class="slider-nav">
+                    <button class="nav-btn" id="prevAdBtn"><i class="fas fa-chevron-left"></i></button>
+                    <button class="nav-btn" id="nextAdBtn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="slider-dots" id="adDots"></div>
+            </div>
+        </div>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // JavaScript for toggling the dropdown menu
         function toggleDropdown(dropdownId) {
@@ -746,6 +900,224 @@
                 }
             }
         }
+        
+        // ==========================================
+        //  Advertisement Slider & Login Logic
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const adSlider = document.getElementById('adSlider');
+            const prevAdBtn = document.getElementById('prevAdBtn');
+            const nextAdBtn = document.getElementById('nextAdBtn');
+            const adDots = document.getElementById('adDots');
+            const adSection = document.getElementById('adSection');
+            const adDisplayContainer = document.getElementById('adDisplayContainer');
+
+            const loginButton = document.getElementById('loginButton');
+            const loginModal = document.getElementById('loginModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const loginForm = document.getElementById('loginForm');
+            const loginError = document.getElementById('loginError');
+
+            // GitHub repository details
+            const githubRepoOwner = 'Lokendra-Gaire-2024';
+            const githubRepoName = 'Galkot';
+            const githubBranch = 'main';
+            const githubBaseUrl = `https://raw.githubusercontent.com/${githubRepoOwner}/${githubRepoName}/${githubBranch}/`;
+            const githubLoginUrl = `https://github.com/login?return_to=/${githubRepoOwner}/${githubRepoName}/settings/pages`;
+
+            let images = []; // Array to store image URLs
+            let currentSlideIndex = 0;
+            let slideInterval;
+
+            // Login Modal Functions
+            const openLoginModal = () => {
+                loginModal.classList.remove('hidden');
+            };
+
+            const closeLoginModal = () => {
+                loginModal.classList.add('hidden');
+                loginError.classList.add('hidden');
+                loginForm.reset();
+            };
+
+            // Login form submission handler
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const username = document.getElementById('usernameInput').value;
+                const password = document.getElementById('passwordInput').value;
+
+                // Hardcoded credentials for demonstration
+                // Replace with a real authentication system if needed
+                if (username === 'lokendra' && password === 'password123') {
+                    // Simulate successful login
+                    localStorage.setItem('isLoggedIn', 'true');
+                    closeLoginModal();
+                    // Open a new tab to the GitHub repository page where they can manage files
+                    window.open(githubLoginUrl, '_blank');
+                    checkLoginStatus();
+                } else {
+                    loginError.classList.remove('hidden');
+                }
+            });
+
+            closeModalBtn.addEventListener('click', closeLoginModal);
+
+            // Function to handle the logout
+            const handleLogout = () => {
+                localStorage.removeItem('isLoggedIn');
+                checkLoginStatus();
+            };
+
+            // Function to check login status from localStorage and update UI
+            const checkLoginStatus = () => {
+                const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+                
+                if (isLoggedIn) {
+                    loginButton.innerHTML = '<i class="fas fa-sign-out-alt mr-1"></i> लगआउट';
+                    loginButton.classList.remove('text-blue-700', 'hover:bg-blue-100');
+                    loginButton.classList.add('text-red-700', 'hover:bg-red-100');
+                    adSection.classList.remove('hidden'); // Show ad management for logged-in user
+                    loginButton.onclick = handleLogout; // Set logout function
+                } else {
+                    loginButton.innerHTML = '<i class="fas fa-sign-in-alt mr-1"></i> लगइन';
+                    loginButton.classList.remove('text-red-700', 'hover:bg-red-100');
+                    loginButton.classList.add('text-blue-700', 'hover:bg-blue-100');
+                    adSection.classList.add('hidden'); // Hide ad management for logged-out user
+                    loginButton.onclick = openLoginModal; // Open modal for login
+                }
+                
+                // Always fetch images to display the slider, regardless of login status
+                fetchImagesFromGitHub();
+            };
+
+            // Function to fetch images from GitHub based on filenames
+            const fetchImagesFromGitHub = async () => {
+                images = []; // Clear existing images
+                const imageFilenames = [];
+                for (let i = 1; i <= 10; i++) { // Check for photo1.jpg to photo10.jpg
+                    imageFilenames.push(`photo${i}.jpg`);
+                }
+
+                const promises = imageFilenames.map(filename => {
+                    const imageUrl = `${githubBaseUrl}${filename}`;
+                    return fetch(imageUrl)
+                        .then(response => {
+                            if (response.ok) {
+                                return imageUrl;
+                            } else {
+                                // console.log(`GitHub बाट फोटो '${filename}' लोड गर्न सकिएन। (स्थिति: ${response.status})`);
+                                return null;
+                            }
+                        })
+                        .catch(error => {
+                            console.log(`फोटो '${filename}' लोड गर्दा समस्या आयो:`, error);
+                            return null;
+                        });
+                });
+
+                const loadedImages = await Promise.all(promises);
+                images = loadedImages.filter(url => url !== null); // Keep only valid URLs
+                renderSlider();
+                
+                // Start auto-slide only if there are images
+                if (images.length > 1) {
+                    startAutoSlide();
+                } else {
+                    clearInterval(slideInterval);
+                }
+            };
+            
+            // Function to render the slider based on the images array
+            const renderSlider = () => {
+                adSlider.innerHTML = '';
+                adDots.innerHTML = '';
+                
+                if (images.length > 0) {
+                    images.forEach((src, index) => {
+                        const slide = document.createElement('div');
+                        slide.className = 'slide relative'; 
+                        
+                        const img = document.createElement('img');
+                        img.src = src;
+                        img.alt = `Advertisement Image ${index + 1}`;
+                        img.onerror = () => {
+                            // Display a placeholder if the image link is broken
+                            img.src = 'https://placehold.co/800x400/FFC0CB/000000?text=फोटो+उपलब्ध+छैन';
+                        };
+                        slide.appendChild(img);
+                        adSlider.appendChild(slide);
+
+                        const dot = document.createElement('span');
+                        dot.className = 'dot';
+                        dot.addEventListener('click', () => {
+                            currentSlideIndex = index;
+                            showSlide();
+                        });
+                        adDots.appendChild(dot);
+                    });
+                    
+                    showSlide(); // Show the first slide
+                    prevAdBtn.style.display = 'block';
+                    nextAdBtn.style.display = 'block';
+                } else {
+                    // Display placeholder if no images and hide controls
+                    adSlider.innerHTML = '<div class="slide"><img src="https://placehold.co/800x400/FFC0CB/000000?text=फोटो+उपलब्ध+छैन" alt="Placeholder Advertisement"></div>';
+                    prevAdBtn.style.display = 'none';
+                    nextAdBtn.style.display = 'none';
+                }
+            };
+
+            // Function to show a specific slide
+            const showSlide = () => {
+                const slides = document.querySelectorAll('#adSlider .slide');
+                const dots = document.querySelectorAll('#adDots .dot');
+
+                if (slides.length === 0) return;
+
+                // Loop the index if it goes out of bounds
+                if (currentSlideIndex >= slides.length) {
+                    currentSlideIndex = 0;
+                }
+                if (currentSlideIndex < 0) {
+                    currentSlideIndex = slides.length - 1;
+                }
+
+                adSlider.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+
+                // Update active dot
+                dots.forEach(dot => dot.classList.remove('active'));
+                if(dots[currentSlideIndex]) {
+                    dots[currentSlideIndex].classList.add('active');
+                }
+            };
+
+            // Function to go to the next slide
+            const nextSlide = () => {
+                currentSlideIndex++;
+                showSlide();
+            };
+
+            // Function to go to the previous slide
+            const prevSlide = () => {
+                currentSlideIndex--;
+                showSlide();
+            };
+
+            // Start the auto-slide interval
+            const startAutoSlide = () => {
+                clearInterval(slideInterval);
+                if (images.length > 1) {
+                    slideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+                }
+            };
+
+            // Event listeners for navigation buttons
+            nextAdBtn.addEventListener('click', nextSlide);
+            prevAdBtn.addEventListener('click', prevSlide);
+
+            // Initial check and render on page load
+            checkLoginStatus();
+        });
     </script>
 </body>
 </html>
