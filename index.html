@@ -327,6 +327,7 @@
             height: 100%;
             object-fit: contain; /* Prevents image cropping */
             display: block;
+            cursor: pointer; /* Add a pointer cursor to indicate clickability */
         }
 
         .slider-nav {
@@ -645,15 +646,7 @@
             <div class="slider-container">
                 <div id="adSlider" class="slider">
                     <!-- Default placeholder images or uploaded images will be added here by JS -->
-                    <div class="slide"><img src="photo1.jpg" alt="Placeholder Advertisement"></div>
-                    <div class="slide"><img src="photo2.jpg" alt="Placeholder Advertisement"></div>
-                    <div class="slide"><img src="photo.jpg" alt="Placeholder Advertisement"></div>
-                    <div class="slide"><img src="photo.jpg" alt="Placeholder Advertisement"></div>
-                    <div class="slide"><img src="photo.jpg" alt="Placeholder Advertisement"></div>
-                    <div class="slide"><img src="photo.jpg" alt="Placeholder Advertisement"></div>
-                    <div class="slide"><img src="photo.jpg" alt="Placeholder Advertisement"></div>
-                    <div class="slide"><img src="photo.jpg" alt="Placeholder Advertisement"></div>
-
+                    <div class="slide"><img src="https://placehold.co/800x400/FFC0CB/000000?text=फोटो+उपलब्ध+छैन" alt="Placeholder Advertisement"></div>
                 </div>
                 <div class="slider-nav">
                     <button class="nav-btn" id="prevAdBtn"><i class="fas fa-chevron-left"></i></button>
@@ -847,10 +840,8 @@
             document.querySelectorAll('main .page-section .flex.flex-wrap .highlight').forEach(el => el.classList.remove('highlight'));
             clearSearchIcon.classList.add('hidden');
             searchIcon.classList.remove('hidden');
+        }
 
-
-
-            
         // Event listener for search action button click
         searchActionButton.addEventListener('click', () => {
             if (clearSearchIcon.classList.contains('hidden')) { // If search icon is visible, perform search
@@ -927,17 +918,25 @@
             const closeModalBtn = document.getElementById('closeModalBtn');
             const loginForm = document.getElementById('loginForm');
             const loginError = document.getElementById('loginError');
+            
+            // This is the interval ID for the automatic slide.
+            let slideInterval;
 
-            // GitHub repository details
-            const githubRepoOwner = 'Lokendra-Gaire-2024';
-            const githubRepoName = 'lokendragaire';
+            // GitHub repository details - **IMPORTANT: These must match your repo's details**
+            // **महत्त्वपूर्ण: यी मानहरू तपाईंको वास्तविक GitHub रिपोजिटरीको विवरणसँग मिल्नुपर्छ।**
+            // <<== यहाँ आफ्नो GitHub username राख्नुहोस्
+            const githubRepoOwner = 'Lokendra-Gaire-2024'; 
+            // <<== यहाँ आफ्नो रिपोजिटरीको नाम राख्नुहोस्
+            const githubRepoName = 'Galkot'; 
             const githubBranch = 'main';
             const githubBaseUrl = `https://raw.githubusercontent.com/${githubRepoOwner}/${githubRepoName}/${githubBranch}/`;
-            const githubLoginUrl = `https://github.com/login?return_to=/${githubRepoOwner}/${githubRepoName}/settings/pages`;
+            const githubLoginUrl = `https://github.com/${githubRepoOwner}/${githubRepoName}/`; // Changed to the repo's main page
+            
+            // Log the constructed URL for debugging purposes
+            console.log(`Debug: The base URL being used is: ${githubBaseUrl}`);
 
             let images = []; // Array to store image URLs
             let currentSlideIndex = 0;
-            let slideInterval;
 
             // Login Modal Functions
             const openLoginModal = () => {
@@ -1010,29 +1009,41 @@
 
                 const promises = imageFilenames.map(filename => {
                     const imageUrl = `${githubBaseUrl}${filename}`;
+                    
+                    // Log the URL being fetched for debugging
+                    console.log(`Fetching image from: ${imageUrl}`);
+
                     return fetch(imageUrl)
                         .then(response => {
                             if (response.ok) {
+                                console.log(`Successfully loaded image from: ${imageUrl}`);
                                 return imageUrl;
                             } else {
-                                // console.log(`GitHub बाट फोटो '${filename}' लोड गर्न सकिएन। (स्थिति: ${response.status})`);
+                                console.error(`Failed to load image from: ${imageUrl} (Status: ${response.status})`);
                                 return null;
                             }
                         })
                         .catch(error => {
-                            console.log(`फोटो '${filename}' लोड गर्दा समस्या आयो:`, error);
+                            console.error(`Error fetching image from ${imageUrl}:`, error);
                             return null;
                         });
                 });
 
                 const loadedImages = await Promise.all(promises);
                 images = loadedImages.filter(url => url !== null); // Keep only valid URLs
+                
+                if (images.length === 0) {
+                    console.warn("No valid images found on GitHub. Displaying placeholder.");
+                }
+                
                 renderSlider();
                 
                 // Start auto-slide only if there are images
+                // यदि १ भन्दा बढी फोटो छ भने मात्र स्लाइडर चलाउने
                 if (images.length > 1) {
                     startAutoSlide();
                 } else {
+                    // यदि १ वा सो भन्दा कम फोटो छ भने, स्लाइडर रोक्ने
                     clearInterval(slideInterval);
                 }
             };
@@ -1050,9 +1061,12 @@
                         const img = document.createElement('img');
                         img.src = src;
                         img.alt = `Advertisement Image ${index + 1}`;
+                        img.onclick = () => {
+                            window.open(src, '_blank');
+                        };
+                        // यदि छवि लोड हुन सकेन भने, त्रुटि सन्देशसहितको खाली (placeholder) छवि देखाउनुहोस्।
                         img.onerror = () => {
-                            // Display a placeholder if the image link is broken
-                            img.src = 'https://placehold.co/800x400/FFC0CB/000000?text=फोटो+उपलब्ध+छैन';
+                            img.src = `https://placehold.co/800x400/CCCCCC/333333?text=Photo+Not+Found`;
                         };
                         slide.appendChild(img);
                         adSlider.appendChild(slide);
@@ -1071,7 +1085,7 @@
                     nextAdBtn.style.display = 'block';
                 } else {
                     // Display placeholder if no images and hide controls
-                    adSlider.innerHTML = '<div class="slide"><img src="https://placehold.co/800x400/FFC0CB/000000?text=फोटो+उपलब्ध+छैन" alt="Placeholder Advertisement"></div>';
+                    adSlider.innerHTML = '<div class="slide"><img src="https://placehold.co/800x400/CCCCCC/333333?text=No+Photos+Found" alt="Placeholder Advertisement"></div>';
                     prevAdBtn.style.display = 'none';
                     nextAdBtn.style.display = 'none';
                 }
@@ -1103,6 +1117,7 @@
 
             // Function to go to the next slide
             const nextSlide = () => {
+                console.log(`Debug: Advancing to next slide. Current index: ${currentSlideIndex}`);
                 currentSlideIndex++;
                 showSlide();
             };
@@ -1115,9 +1130,13 @@
 
             // Start the auto-slide interval
             const startAutoSlide = () => {
-                clearInterval(slideInterval);
+                console.log("Debug: Attempting to start auto-slide interval.");
+                clearInterval(slideInterval); // Clear any existing interval
                 if (images.length > 1) {
                     slideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+                    console.log("Debug: Auto-slide started successfully.");
+                } else {
+                    console.log("Debug: Not enough images to start auto-slide.");
                 }
             };
 
