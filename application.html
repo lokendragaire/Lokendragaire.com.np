@@ -18,13 +18,17 @@
 <script type="text/babel">
     'use strict';
 
+    // **महत्वपूर्ण: यो URL लाई तपाईंले Google Apps Script वेब एप डिप्लॉय गरेपछि प्राप्त हुने URL ले बदल्नुहोस्।**
+    // **IMPORTANT: Replace this URL with the URL you get after deploying your Google Apps Script web app.**
+    const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'YOUR_DEPLOYED_GOOGLE_APPS_SCRIPT_URL_HERE'; 
+
     // Main App component
     const App = () => {
         // State to manage form data
         const [formData, setFormData] = React.useState({
-            advertisementNumber: '', // New field for advertisement number
-            appliedPosition: '', // Moved from a separate section
-            appliedLevel: '',    // Moved from a separate section
+            advertisementNumber: '',
+            appliedPosition: '',
+            appliedLevel: '',
             fullName: '',
             fullNameEnglish: '',
             gender: '',
@@ -52,6 +56,10 @@
 
         // State for photo preview visibility.
         const [previewVisible, setPreviewVisible] = React.useState(false);
+        
+        // State for submission status and messages
+        const [isSubmitting, setIsSubmitting] = React.useState(false);
+        const [submissionMessage, setSubmissionMessage] = React.useState({ type: '', text: '' });
 
         // Handle all form input changes
         const handleInputChange = (e) => {
@@ -109,6 +117,57 @@
                 return digit;
             }).join('');
         };
+
+        // Handle form submission to Google Apps Script
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+
+            // Validate required fields
+            if (!formData.fullName || !formData.gender || !formData.maritalStatus || !formData.citizenshipNo || !formData.dob || !formData.applicationDate) {
+                setSubmissionMessage({ type: 'error', text: 'कृपया ताराङ्कित (*) गरिएका सबै अनिवार्य क्षेत्रहरू भर्नुहोस्।' });
+                return;
+            }
+
+            setIsSubmitting(true);
+            setSubmissionMessage({ type: '', text: '' }); // Clear previous message
+
+            // Collect all data, including the nested arrays
+            const dataToSend = {
+                ...formData,
+                educationEntries: educationEntries.filter(entry => Object.values(entry).some(val => val)), // Filter out empty entries
+                experienceEntries: experienceEntries.filter(entry => Object.values(entry).some(val => val)) // Filter out empty entries
+            };
+
+            try {
+                const response = await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Using 'no-cors' for simplicity with Apps Script.
+                                     // If you need to read the Apps Script response (e.g., success/error status from server),
+                                     // you'll need to configure CORS headers in Apps Script and use 'cors' mode here.
+                    headers: {
+                        'Content-Type': 'application/json', // IMPORTANT: Sending as JSON
+                    },
+                    body: JSON.stringify(dataToSend), // IMPORTANT: Send as JSON string
+                });
+
+                // In 'no-cors' mode, we cannot inspect the response content or status directly.
+                // We assume success if the fetch operation itself doesn't throw an error.
+                setSubmissionMessage({ type: 'success', text: 'तपाईंको आवेदन सफलतापूर्वक बुझाइएको छ! धन्यवाद।' });
+                
+                // Reset form state after successful submission
+                setFormData({
+                    advertisementNumber: '', appliedPosition: '', appliedLevel: '', fullName: '', fullNameEnglish: '', gender: '', maritalStatus: '', citizenshipNo: '', citizenshipIssuedDistrict: '', permanentAddressWard: '', permanentAddressMunicipality: '', permanentAddressDistrict: '', correspondenceAddressWard: '', correspondenceAddressMunicipality: '', correspondenceAddressDistrict: '', fatherMotherName: '', dob: '', email: '', phoneNumber: '', religion: '', caste: '', applicationDate: '',
+                });
+                setEducationEntries([{}]);
+                setExperienceEntries([{}]);
+
+            } catch (error) {
+                console.error('फारम बुझाउँदा त्रुटि भयो:', error);
+                setSubmissionMessage({ type: 'error', text: 'आवेदन बुझाउँदा त्रुटि भयो। कृपया पुन: प्रयास गर्नुहोस्।' });
+            } finally {
+                setIsSubmitting(false);
+            }
+        };
         
         // The following CSS is for styling the application, including form elements,
         // the preview section, and the print-specific styles.
@@ -132,7 +191,7 @@
                             display: flex; flex-direction: column; align-items: center; justify-content: center;
                         }
                         .admission-card {
-                            border: 2px solid #2b6cb0; border-radius: 12px; padding: 1.5rem; margin-top: 2rem; background-color: #ebf8ff; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); position: relative; overflow: hidden;
+                            border: 2px solid #2b6cb0; border-radius: 12px; padding: 1.5rem; margin-top: 2rem; background-color: #ebf8ff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); position: relative; overflow: hidden;
                             display: flex; flex-direction: column; gap: 1rem;
                         }
                         /* Updated CSS for the admission card header to use a grid for perfect centering */
@@ -338,13 +397,40 @@
                             }
                         }
                         /* END OF FIX */
+                        .spinner {
+                            border: 4px solid rgba(255, 255, 255, 0.3);
+                            border-top: 4px solid #ffffff;
+                            border-radius: 50%;
+                            width: 24px;
+                            height: 24px;
+                            animation: spin 1s linear infinite;
+                        }
+                        @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+                        .message-box {
+                            padding: 1rem;
+                            margin-top: 1rem;
+                            border-radius: 0.375rem;
+                            font-weight: 600;
+                            text-align: center;
+                        }
+                        .message-box.success {
+                            background-color: #d1fae5; /* Light green */
+                            color: #065f46; /* Dark green text */
+                        }
+                        .message-box.error {
+                            background-color: #fee2e2; /* Light red */
+                            color: #991b1b; /* Dark red text */
+                        }
                     `}
                 </style>
                 <div className="container">
                     <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">अनलाइन फाराम</h1>
 
                     {!previewVisible && (
-                        <form className="space-y-6">
+                        <form className="space-y-6" onSubmit={handleSubmit}> {/* Added onSubmit handler */}
                             {/* New fields for Advertisement Number, Position, and Level */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div className="form-group">
@@ -376,7 +462,7 @@
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="form-group">
                                             <label htmlFor="fullName">नाम, थर (देवनागरीमा): <span className="text-red-500">*</span></label>
-                                            <input type="text" id="fullName" name="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="पूरा नाम प्रविष्ट गर्नुहोस्" className="rounded-lg p-2 border border-gray-300 w-full" />
+                                            <input type="text" id="fullName" name="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="पूरा नाम प्रविष्ट गर्नुहोस्" className="rounded-lg p-2 border border-gray-300 w-full" required/>
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="fullNameEnglish">नाम (अंग्रेजी ठूलो अक्षरमा):</label>
@@ -389,7 +475,7 @@
                                             <label>लिङ्ग: <span className="text-red-500">*</span></label>
                                             <div className="flex items-center space-x-4">
                                                 <label className="inline-flex items-center">
-                                                    <input type="radio" name="gender" value="पुरुष" checked={formData.gender === 'पुरुष'} onChange={handleInputChange} className="form-radio text-blue-600" />
+                                                    <input type="radio" name="gender" value="पुरुष" checked={formData.gender === 'पुरुष'} onChange={handleInputChange} className="form-radio text-blue-600" required/>
                                                     <span className="ml-2">पुरुष</span>
                                                 </label>
                                                 <label className="inline-flex items-center">
@@ -406,7 +492,7 @@
                                             <label>विवाहित/अविवाहित: <span className="text-red-500">*</span></label>
                                             <div className="flex items-center space-x-4">
                                                 <label className="inline-flex items-center">
-                                                    <input type="radio" name="maritalStatus" value="विवाहित" checked={formData.maritalStatus === 'विवाहित'} onChange={handleInputChange} className="form-radio text-blue-600" />
+                                                    <input type="radio" name="maritalStatus" value="विवाहित" checked={formData.maritalStatus === 'विवाहित'} onChange={handleInputChange} className="form-radio text-blue-600" required/>
                                                     <span className="ml-2">विवाहित</span>
                                                 </label>
                                                 <label className="inline-flex items-center">
@@ -420,7 +506,7 @@
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="form-group">
                                             <label htmlFor="citizenshipNo">नागरिकता नम्बर: <span className="text-red-500">*</span></label>
-                                            <input type="text" id="citizenshipNo" name="citizenshipNo" value={formData.citizenshipNo} onChange={handleInputChange} placeholder="नागरिकता नम्बर प्रविष्ट गर्नुहोस्" className="rounded-lg p-2 border border-gray-300 w-full" />
+                                            <input type="text" id="citizenshipNo" name="citizenshipNo" value={formData.citizenshipNo} onChange={handleInputChange} placeholder="नागरिकता नम्बर प्रविष्ट गर्नुहोस्" className="rounded-lg p-2 border border-gray-300 w-full" required/>
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="citizenshipIssuedDistrict">जारी जिल्ला:</label>
@@ -433,9 +519,9 @@
                             <div className="form-group">
                                 <label htmlFor="permanentAddress">स्थायी ठेगाना: <span className="text-red-500">*</span></label>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <input type="text" id="permanentAddressWard" name="permanentAddressWard" value={formData.permanentAddressWard} onChange={handleInputChange} placeholder="वडा नं." className="rounded-lg p-2 border border-gray-300 w-full" />
-                                    <input type="text" id="permanentAddressMunicipality" name="permanentAddressMunicipality" value={formData.permanentAddressMunicipality} onChange={handleInputChange} placeholder="गा.पा./न.पा." className="rounded-lg p-2 border border-gray-300 w-full" />
-                                    <input type="text" id="permanentAddressDistrict" name="permanentAddressDistrict" value={formData.permanentAddressDistrict} onChange={handleInputChange} placeholder="जिल्ला" className="rounded-lg p-2 border border-gray-300 w-full" />
+                                    <input type="text" id="permanentAddressWard" name="permanentAddressWard" value={formData.permanentAddressWard} onChange={handleInputChange} placeholder="वडा नं." className="rounded-lg p-2 border border-gray-300 w-full" required/>
+                                    <input type="text" id="permanentAddressMunicipality" name="permanentAddressMunicipality" value={formData.permanentAddressMunicipality} onChange={handleInputChange} placeholder="गा.पा./न.पा." className="rounded-lg p-2 border border-gray-300 w-full" required/>
+                                    <input type="text" id="permanentAddressDistrict" name="permanentAddressDistrict" value={formData.permanentAddressDistrict} onChange={handleInputChange} placeholder="जिल्ला" className="rounded-lg p-2 border border-gray-300 w-full" required/>
                                 </div>
                             </div>
 
@@ -455,8 +541,7 @@
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="dob">जन्म मिति (वि.सं.): <span className="text-red-500">*</span></label>
-                                    {/* Changed input type to 'text' and added placeholder */}
-                                    <input type="text" id="dob" name="dob" value={formData.dob} onChange={handleInputChange} placeholder="yyyy/mm/dd" className="rounded-lg p-2 border border-gray-300 w-full" />
+                                    <input type="text" id="dob" name="dob" value={formData.dob} onChange={handleInputChange} placeholder="yyyy/mm/dd" className="rounded-lg p-2 border border-gray-300 w-full" required/>
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -482,8 +567,7 @@
 
                             <div className="form-group">
                                 <label htmlFor="applicationDate">फाराम भरेको मिति (वि.सं.): <span className="text-red-500">*</span></label>
-                                {/* Changed input type to 'text' and added placeholder */}
-                                <input type="text" id="applicationDate" name="applicationDate" value={formData.applicationDate} onChange={handleInputChange} placeholder="yyyy/mm/dd" className="rounded-lg p-2 border border-gray-300 w-full" />
+                                <input type="text" id="applicationDate" name="applicationDate" value={formData.applicationDate} onChange={handleInputChange} placeholder="yyyy/mm/dd" className="rounded-lg p-2 border border-gray-300 w-full" required/>
                             </div>
 
                             {/* --- Table for Educational Qualification/Training in the main form --- */}
@@ -585,6 +669,16 @@
                             <button type="button" onClick={handleAddExperience} className="btn btn-secondary mt-2">थप कार्य अनुभव थप्नुहोस्</button>
 
                             <div className="flex justify-end gap-4 mt-8">
+                                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                                    {isSubmitting ? (
+                                        <>
+                                            <div className="spinner"></div>
+                                            <span className="ml-2">बुझाउँदै...</span>
+                                        </>
+                                    ) : (
+                                        'बुझाउनुहोस्'
+                                    )}
+                                </button>
                                 <button type="button" onClick={() => setPreviewVisible(true)} className="btn btn-primary">पूर्वावलोकन देखाउनुहोस्</button>
                                 <button type="reset" onClick={() => {
                                     setFormData({
@@ -592,8 +686,14 @@
                                     });
                                     setEducationEntries([{}]);
                                     setExperienceEntries([{}]);
+                                    setSubmissionMessage({ type: '', text: '' }); // Clear message on reset
                                 }} className="btn btn-secondary">फाराम खाली गर्नुहोस्</button>
                             </div>
+                            {submissionMessage.text && (
+                                <div className={`message-box ${submissionMessage.type === 'success' ? 'success' : 'error'}`}>
+                                    {submissionMessage.text}
+                                </div>
+                            )}
                         </form>
                     )}
 
@@ -791,7 +891,7 @@
                                     
                                     <div className="header-details">
                                         <div>
-                                            <p><strong>पत्र संख्या:</strong> {toNepaliNumber()}{toNepaliNumber()}</p>
+                                            <p><strong>पत्र संख्या:</strong> {toNepaliNumber(2077)}/{toNepaliNumber(78)}</p>
                                             <p><strong>चलानी नम्बर:</strong></p>
                                         </div>
                                         <div className="text-right">
