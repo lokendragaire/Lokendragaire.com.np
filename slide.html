@@ -1,3 +1,4 @@
+
 <!-- यो कोडले तस्विरमा देखाइए अनुसारको आकर्षक फोटो स्लाइडशो बनाउँछ। -->
 <!-- This code creates an attractive photo slideshow as shown in the image. -->
 
@@ -26,8 +27,8 @@
         .slideshow-container {
             position: relative;
             width: 100%;
-            max-width: 1200px; /* कन्टेनरको साइज बढाइयो */
-            height: 70vh; /* उचाईलाई responsive बनाइयो */
+            max-width: 900px; /* कन्टेनरको साइज बढाइयो */
+            height: 500px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -38,11 +39,9 @@
         /* फोटोहरूको साझा स्टाइल */
         .mySlides {
             position: absolute;
-            max-width: 80%; /* फोटोको अधिकतम चौडाइ */
-            max-height: 80%; /* फोटोको अधिकतम उचाइ */
-            background-repeat: no-repeat;
-            /* तस्बिरहरू काटिने नगरी पूरै देखाउनको लागि `contain` राखिएको छ। */
-            background-size: contain; 
+            width: 500px; /* फोटोको साइज */
+            height: 400px;
+            background-size: cover;
             background-position: center;
             border-radius: 1rem;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
@@ -51,14 +50,14 @@
 
         /* ठूलो र केन्द्रमा रहेको फोटो */
         .mySlides.active {
-            transform: translateX(0) scale(1); /* स्केललाई १ मा सेट गरियो */
+            transform: translateX(0) scale(1.0);
             z-index: 2;
             opacity: 1;
         }
 
         /* बायाँ तर्फको आधा देखिने फोटो */
         .mySlides.prev {
-            transform: translateX(-300px) scale(0.8);
+            transform: translateX(-200px) scale(0.8);
             z-index: 1;
             opacity: 0.7;
             filter: blur(2px);
@@ -66,7 +65,7 @@
 
         /* दायाँ तर्फको आधा देखिने फोटो */
         .mySlides.next {
-            transform: translateX(300px) scale(0.8);
+            transform: translateX(200px) scale(0.8);
             z-index: 1;
             opacity: 0.7;
             filter: blur(2px);
@@ -75,9 +74,9 @@
 </head>
 <body class="p-8">
     <div class="slideshow-container">
-        <!-- यहाँ काम गर्ने सार्वजनिक तस्बिरका URL हरू छन्। तपाईंले यी URL हरूलाई आफ्ना तस्बिरका URL हरूसँग बदल्न सक्नुहुन्छ। -->
-        <!-- These are public image URLs that work. You can replace them with your own image URLs. -->
-  <div class="mySlides" style="background-image: url('1.jpg');"></div>
+        <!-- फोटोहरू यहाँ छन् -->
+        <!-- The photos are here -->
+        <div class="mySlides" style="background-image: url('1.jpg');"></div>
          <div class="mySlides" style="background-image: url('2.jpg');"></div>
          <div class="mySlides" style="background-image: url('3.jpg');"></div>
          <div class="mySlides" style="background-image: url('4.jpeg');"></div>
