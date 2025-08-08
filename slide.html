@@ -1,0 +1,119 @@
+<!-- यो कोडले तस्विरमा देखाइए अनुसारको आकर्षक फोटो स्लाइडशो बनाउँछ। -->
+<!-- This code creates an attractive photo slideshow as shown in the image. -->
+
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>आकर्षक फोटो स्लाइडशो</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* स्लाइडशो कन्टेनरको स्टाइल */
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px; /* कन्टेनरको साइज बढाइयो */
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px; /* 3D प्रभावको लागि */
+            overflow: hidden;
+        }
+
+        /* फोटोहरूको साझा स्टाइल */
+        .mySlides {
+            position: absolute;
+            width: 500px; /* फोटोको साइज */
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 1rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out, z-index 0.8s ease-in-out;
+        }
+
+        /* ठूलो र केन्द्रमा रहेको फोटो */
+        .mySlides.active {
+            transform: translateX(0) scale(1.2);
+            z-index: 2;
+            opacity: 1;
+        }
+
+        /* बायाँ तर्फको आधा देखिने फोटो */
+        .mySlides.prev {
+            transform: translateX(-200px) scale(0.8);
+            z-index: 1;
+            opacity: 0.7;
+            filter: blur(2px);
+        }
+
+        /* दायाँ तर्फको आधा देखिने फोटो */
+        .mySlides.next {
+            transform: translateX(200px) scale(0.8);
+            z-index: 1;
+            opacity: 0.7;
+            filter: blur(2px);
+        }
+    </style>
+</head>
+<body class="p-8">
+    <div class="slideshow-container">
+        <!-- फोटोहरू यहाँ छन् -->
+        <!-- The photos are here -->
+        <div class="mySlides" style="background-image: url('photo1.jpg');"></div>
+        <div class="mySlides" style="background-image: url('photo1.jpg');"></div>
+        <div class="mySlides" style="background-image: url('photo1.jpg');"></div>
+        <div class="mySlides" style="background-image: url('photo1.jpg');"></div>
+        <div class="mySlides" style="background-image: url('photo1.jpg');"></div>
+    </div>
+
+    <script>
+        // स्लाइडशो चलाउनको लागि JavaScript
+        let slideIndex = 0;
+        let slides = document.getElementsByClassName("mySlides");
+
+        function updateSlides() {
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].classList.remove('active', 'prev', 'next');
+            }
+
+            // वर्तमान, अघिल्लो र पछिल्लो स्लाइडको इन्डेक्स गणना गर्ने
+            const current = slideIndex % slides.length;
+            const prev = (slideIndex - 1 + slides.length) % slides.length;
+            const next = (slideIndex + 1) % slides.length;
+
+            // क्लासहरू थप्ने
+            slides[current].classList.add('active');
+            slides[prev].classList.add('prev');
+            slides[next].classList.add('next');
+        }
+
+        function nextSlide() {
+            slideIndex++;
+            updateSlides();
+            setTimeout(nextSlide, 3000);
+        }
+
+        // पृष्ठ लोड भएपछि स्लाइडशो सुरु गर्ने
+        window.onload = function() {
+            updateSlides();
+            setTimeout(nextSlide, 3000);
+        };
+    </script>
+</body>
+</html>
