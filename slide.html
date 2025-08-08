@@ -1,4 +1,3 @@
-
 <!-- यो कोडले तस्विरमा देखाइए अनुसारको आकर्षक फोटो स्लाइडशो बनाउँछ। -->
 <!-- This code creates an attractive photo slideshow as shown in the image. -->
 
@@ -46,6 +45,7 @@
             border-radius: 1rem;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out, z-index 0.8s ease-in-out;
+            cursor: pointer; /* क्लिक गर्न मिल्ने संकेत दिनको लागि */
         }
 
         /* ठूलो र केन्द्रमा रहेको फोटो */
@@ -76,8 +76,9 @@
     <div class="slideshow-container">
         <!-- फोटोहरू यहाँ छन् -->
         <!-- The photos are here -->
-        <div class="mySlides" style="background-image: url('1.jpg');"></div>
-         <div class="mySlides" style="background-image: url('2.jpg');"></div>
+        <!-- तपाईंले 'background-image' भित्रका URL हरूलाई आफ्ना तस्बिरका URL हरूसँग बदल्न सक्नुहुन्छ। -->
+        <!-- You can replace the URLs inside 'background-image' with your own image URLs. -->
+       <div class="mySlides" style="background-image: url('2.jpg');"></div>
          <div class="mySlides" style="background-image: url('3.jpg');"></div>
          <div class="mySlides" style="background-image: url('4.jpeg');"></div>
          <div class="mySlides" style="background-image: url('5.jpg');"></div>
@@ -116,17 +117,34 @@
             slides[next].classList.add('next');
         }
 
+        // प्रत्येक स्लाइडमा क्लिक गर्दा नयाँ ट्याबमा तस्बिर खोल्ने
+        function addClickListener() {
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].addEventListener('click', function(event) {
+                    // क्लिक गरिएको स्लाइडको background-image URL प्राप्त गर्ने
+                    const backgroundImage = event.target.style.backgroundImage;
+                    const imageUrl = backgroundImage.slice(5, -2); // 'url("...' र '")' हटाउन
+
+                    if (imageUrl) {
+                        window.open(imageUrl, '_blank');
+                    }
+                });
+            }
+        }
+
         function nextSlide() {
             slideIndex++;
             updateSlides();
             setTimeout(nextSlide, 3000);
         }
 
-        // पृष्ठ लोड भएपछि स्लाइडशो सुरु गर्ने
+        // पृष्ठ लोड भएपछि स्लाइडशो सुरु गर्ने र क्लिक Listener थप्ने
         window.onload = function() {
             updateSlides();
+            addClickListener();
             setTimeout(nextSlide, 3000);
         };
     </script>
 </body>
 </html>
+
