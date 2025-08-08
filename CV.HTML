@@ -74,15 +74,16 @@
     <div class="container">
         <div class="grid grid-cols-1 md:grid-cols-3">
             <!-- Left Column -->
-            <div class="md:col-span-1 p-6 text-center main-section">
-                <div class="flex flex-col items-center">
+            <div class="md:col-span-1 p-6 main-section">
+                <!-- This part is intentionally centered. -->
+                <div class="flex flex-col items-center text-center">
                     <img src="brp.jpg" alt="Profile Picture" class="profile-pic">
                     <h1 class="font-bold mt-3 text-blue-900">Lokendra Gaire</h1>
                     <p class="text-blue-800">MIS. Operator</p>
                     <p class="text-black-800">Head of Vital registration and social security department</p>
                 </div>
 <!-- Profile Details -->
-                <section class="content-section" style="transition-delay: 0.2s;">
+                <section class="content-section text-left" style="transition-delay: 0.2s;">
                     <h2 class="text-2xl font-semibold mb-4 border-b-2 border-blue-600 pb-2">Profile</h2>
                     <ul class="text-sm space-y-2">
                         <li><strong class="font-medium">Address:</strong> Galkot Municipality-2, Baglung (Permanent)</li>
@@ -286,7 +287,8 @@
                                <p class="text-gray-700">Galkot MUnicipality-2, Narethanti, Baglung 
 <p class="text-gray-500 text-sm">2014 - 2018</p>
                             </div>
-                             <i class="fas fa-circle text-blue-500 mt-1 mr-2"></i>
+                             <div class="flex items-start">
+                            <i class="fas fa-circle text-blue-500 mt-1 mr-2"></i>
                             <div>
                                 <h3 class="font-bold text-gray-800">STUDIED UNDER SLC</h3>
                                 <p class="text-gray-700">Navayoubak Lower Secondary School</p>
@@ -309,7 +311,8 @@
                             <div>
                                 <h3 class="font-bold text-gray-800">MIS Operator</h3>
                                 <h3 class="font-bold text-gray-800">(Galkot Municipality Office)</h3>
-                                <p class="text-gray-700">Responsible for managing and maintaining Management Information Systems. Tasks include data entry, report generation, system updates, and ensuring data accuracy to support organizational decision-making.</p>
+                                <!-- Added text-justify class here -->
+                                <p class="text-gray-700 leading-relaxed text-justify">Responsible for managing and maintaining Management Information Systems. Tasks include data entry, report generation, system updates, and ensuring data accuracy to support organizational decision-making.</p>
                                 <p class="text-gray-500 text-sm">February 13, 2024 To til Now</p>
                             </div>
                         </div>
@@ -318,15 +321,18 @@
                             <div>
                                 <h3 class="font-bold text-gray-800">Computer Operator</h3>
                                  <h3 class="font-bold text-gray-800">(Galkot Mnicipality Office)</h3>
-                                <p class="text-gray-700">Handles daily computer operations, data entry, system backups, and printing tasks. Ensures proper functioning of hardware/software and assists in maintaining digital records efficiently.</p>
+                                 <!-- Added text-justify class here -->
+                                <p class="text-gray-700 leading-relaxed text-justify">Handles daily computer operations, data entry, system backups, and printing tasks. Ensures proper functioning of hardware/software and assists in maintaining digital records efficiently.</p>
                                 <p class="text-gray-500 text-sm">February 13, 2022 To February 13, 2024</p>
-                            </div> <div class="space-y-3">
+                            </div>
+                        </div>
                         <div class="flex items-start">
                             <i class="fas fa-circle text-blue-500 mt-1 mr-2"></i>
                             <div>
                                 <h3 class="font-bold text-gray-800">Financial Literacy Facilator</h3>
-                                    <h3 class="font-bold text-gray-800">(In Galkot Municipality office from BYC))</h3>
-                                <p class="text-gray-700">Facilitation of Workshops: Conducted interactive workshops and training sessions for diverse groups, including youth, women, and small business owners, enhancing their understanding of financial concepts and practices.</p>
+                                <h3 class="font-bold text-gray-800">(In Galkot Municipality office from BYC))</h3>
+                                <!-- Added text-justify class here -->
+                                <p class="text-gray-700 leading-relaxed text-justify">Facilitation of Workshops: Conducted interactive workshops and training sessions for diverse groups, including youth, women, and small business owners, enhancing their understanding of financial concepts and practices.</p>
                                 <p class="text-gray-500 text-sm">December 29, 2019 To February 12, 2022</p>
                             </div>
                         </div>
@@ -335,8 +341,10 @@
                             <div>
                                 <h3 class="font-bold text-gray-800">Teacher</h3>
                                 <h3 class="font-bold text-gray-800">(Sambuddha Education Academy)</h3>
-                                <p class="text-gray-700">Delivers subject-specific lessons, prepares teaching materials, evaluates student performance, and fosters a positive learning environment. Encourages critical thinking and student engagement.</p>
+                                <!-- Added text-justify class here -->
+                                <p class="text-gray-700 leading-relaxed text-justify">Delivers subject-specific lessons, prepares teaching materials, evaluates student performance, and fosters a positive learning environment. Encourages critical thinking and student engagement.</p>
                                 <p class="text-gray-500 text-sm">December 13, 2018 To December 29, 2019</p>
+                            </div>
                         </div>
                     </div>
                 </div>
