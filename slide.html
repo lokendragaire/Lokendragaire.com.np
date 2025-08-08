@@ -26,8 +26,8 @@
         .slideshow-container {
             position: relative;
             width: 100%;
-            max-width: 900px; /* कन्टेनरको साइज बढाइयो */
-            height: 500px;
+            max-width: 1200px; /* कन्टेनरको साइज बढाइयो */
+            height: 70vh; /* उचाईलाई responsive बनाइयो */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -38,9 +38,11 @@
         /* फोटोहरूको साझा स्टाइल */
         .mySlides {
             position: absolute;
-            width: 500px; /* फोटोको साइज */
-            height: 400px;
-            background-size: cover;
+            max-width: 80%; /* फोटोको अधिकतम चौडाइ */
+            max-height: 80%; /* फोटोको अधिकतम उचाइ */
+            background-repeat: no-repeat;
+            /* तस्बिरहरू काटिने नगरी पूरै देखाउनको लागि `contain` राखिएको छ। */
+            background-size: contain; 
             background-position: center;
             border-radius: 1rem;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
@@ -49,14 +51,14 @@
 
         /* ठूलो र केन्द्रमा रहेको फोटो */
         .mySlides.active {
-            transform: translateX(0) scale(1.2);
+            transform: translateX(0) scale(1); /* स्केललाई १ मा सेट गरियो */
             z-index: 2;
             opacity: 1;
         }
 
         /* बायाँ तर्फको आधा देखिने फोटो */
         .mySlides.prev {
-            transform: translateX(-200px) scale(0.8);
+            transform: translateX(-300px) scale(0.8);
             z-index: 1;
             opacity: 0.7;
             filter: blur(2px);
@@ -64,7 +66,7 @@
 
         /* दायाँ तर्फको आधा देखिने फोटो */
         .mySlides.next {
-            transform: translateX(200px) scale(0.8);
+            transform: translateX(300px) scale(0.8);
             z-index: 1;
             opacity: 0.7;
             filter: blur(2px);
@@ -75,22 +77,22 @@
     <div class="slideshow-container">
         <!-- फोटोहरू यहाँ छन् -->
         <!-- The photos are here -->
-        <div class="mySlides" style="background-image: url('1.jpg');"></div>
-         <div class="mySlides" style="background-image: url('2.jpg');"></div>
-         <div class="mySlides" style="background-image: url('3.jpg');"></div>
-         <div class="mySlides" style="background-image: url('4.jpeg');"></div>
-         <div class="mySlides" style="background-image: url('5.jpg');"></div>
-         <div class="mySlides" style="background-image: url('6.jpg');"></div>
-         <div class="mySlides" style="background-image: url('7.jpg');"></div>
-         <div class="mySlides" style="background-image: url('8.jpg');"></div>
-         <div class="mySlides" style="background-image: url('9.jpg');"></div>
-         <div class="mySlides" style="background-image: url('10.jpg');"></div>
-         <div class="mySlides" style="background-image: url('11.jpg');"></div>
-         <div class="mySlides" style="background-image: url('12jpg');"></div>
-         <div class="mySlides" style="background-image: url('13.jpg');"></div>
-         <div class="mySlides" style="background-image: url('14.jpg');"></div>
-         <div class="mySlides" style="background-image: url('brp.jpg');"></div>
-         <div class="mySlides" style="background-image: url('15.jpg');"></div>
+        <div class="mySlides" style="background-image: url('https://placehold.co/1920x1080/EFEFEF/grey?text=Image+1');"></div>
+        <div class="mySlides" style="background-image: url('https://placehold.co/1920x1080/EFEFEF/grey?text=Image+2');"></div>
+        <div class="mySlides" style="background-image: url('https://placehold.co/1920x1080/EFEFEF/grey?text=Image+3');"></div>
+        <div class="mySlides" style="background-image: url('https://placehold.co/1920x1080/EFEFEF/grey?text=Image+4');"></div>
+        <div class="mySlides" style="background-image: url('https://placehold.co/1920x1080/EFEFEF/grey?text=Image+5');"></div>
+        <div class="mySlides" style="background-image: url('https://placehold.co/1920x1080/EFEFEF/grey?text=Image+6');"></div>
+        <div class="mySlides" style="background-image: url('https://placehold.co/1920x1080/EFEFEF/grey?text=Image+7');"></div>
+        <div class="mySlides" style="background-image: url('https://placehold.co/1920x1080/EFEFEF/grey?text=Image+8');"></div>
+        <div class="mySlides" style="background-image: url('https://placehold.co/1920x1080/EFEFEF/grey?text=Image+9');"></div>
+        <div class="mySlides" style="background-image: url('https://placehold.co/1920x1080/EFEFEF/grey?text=Image+10');"></div>
+        <div class="mySlides" style="background-image: url('https://placehold.co/1920x1080/EFEFEF/grey?text=Image+11');"></div>
+        <div class="mySlides" style="background-image: url('https://placehold.co/1920x1080/EFEFEF/grey?text=Image+12');"></div>
+        <div class="mySlides" style="background-image: url('https://placehold.co/1920x1080/EFEFEF/grey?text=Image+13');"></div>
+        <div class="mySlides" style="background-image: url('https://placehold.co/1920x1080/EFEFEF/grey?text=Image+14');"></div>
+        <div class="mySlides" style="background-image: url('https://placehold.co/1920x1080/EFEFEF/grey?text=Image+15');"></div>
+        <div class="mySlides" style="background-image: url('https://placehold.co/1920x1080/EFEFEF/grey?text=Image+16');"></div>
          
     </div>
 
