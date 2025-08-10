@@ -18,9 +18,8 @@
 <script type="text/babel">
     'use strict';
 
-    // **महत्वपूर्ण: यो URL लाई तपाईंले Google Apps Script वेब एप डिप्लॉय गरेपछि प्राप्त हुने URL ले बदल्नुहोस्।**
     // **IMPORTANT: Replace this URL with the URL you get after deploying your Google Apps Script web app.**
-    const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'YOUR_DEPLOYED_GOOGLE_APPS_SCRIPT_URL_HERE'; 
+    const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyXcm2LwD05otpp9tpLvaEKXBANX_Idl0ikiblAkWMKMHx10UQYnuBIcnlfC9ZkIYGc9g/exec'; 
 
     // Main App component
     const App = () => {
@@ -127,31 +126,35 @@
                 setSubmissionMessage({ type: 'error', text: 'कृपया ताराङ्कित (*) गरिएका सबै अनिवार्य क्षेत्रहरू भर्नुहोस्।' });
                 return;
             }
+            
+            // Check if the URL is set. If not, inform the user.
+            if (GOOGLE_APPS_SCRIPT_WEB_APP_URL.includes('YOUR_DEPLOYED_GOOGLE_APPS_SCRIPT_URL_HERE')) {
+                setSubmissionMessage({ type: 'error', text: 'कृपया Google Apps Script URL कोडमा राख्नुहोस्।' });
+                return;
+            }
 
             setIsSubmitting(true);
             setSubmissionMessage({ type: '', text: '' }); // Clear previous message
 
-            // Collect all data, including the nested arrays
+            // Collect all data, including the nested arrays, and stringify them for transport
             const dataToSend = {
                 ...formData,
-                educationEntries: educationEntries.filter(entry => Object.values(entry).some(val => val)), // Filter out empty entries
-                experienceEntries: experienceEntries.filter(entry => Object.values(entry).some(val => val)) // Filter out empty entries
+                educationEntries: JSON.stringify(educationEntries.filter(entry => Object.values(entry).some(val => val))),
+                experienceEntries: JSON.stringify(experienceEntries.filter(entry => Object.values(entry).some(val => val)))
             };
 
             try {
+                // We use 'no-cors' mode which is standard for Google Apps Script web app submissions.
+                // It means we can't read the response, but we can assume success if the fetch doesn't fail.
                 const response = await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
                     method: 'POST',
-                    mode: 'no-cors', // Using 'no-cors' for simplicity with Apps Script.
-                                     // If you need to read the Apps Script response (e.g., success/error status from server),
-                                     // you'll need to configure CORS headers in Apps Script and use 'cors' mode here.
+                    mode: 'no-cors', 
                     headers: {
-                        'Content-Type': 'application/json', // IMPORTANT: Sending as JSON
+                        'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: JSON.stringify(dataToSend), // IMPORTANT: Send as JSON string
+                    body: new URLSearchParams(dataToSend).toString(), // Send as form data
                 });
 
-                // In 'no-cors' mode, we cannot inspect the response content or status directly.
-                // We assume success if the fetch operation itself doesn't throw an error.
                 setSubmissionMessage({ type: 'success', text: 'तपाईंको आवेदन सफलतापूर्वक बुझाइएको छ! धन्यवाद।' });
                 
                 // Reset form state after successful submission
@@ -430,7 +433,7 @@
                     <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">अनलाइन फाराम</h1>
 
                     {!previewVisible && (
-                        <form className="space-y-6" onSubmit={handleSubmit}> {/* Added onSubmit handler */}
+                        <form className="space-y-6" onSubmit={handleSubmit}>
                             {/* New fields for Advertisement Number, Position, and Level */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div className="form-group">
