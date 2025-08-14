@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ne">
 <head>
@@ -311,6 +312,10 @@
                     <input type="text" id="deathRegDate" name="deathRegDate" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="YYYY/MM/DD (वि.सं.)" maxlength="10">
                 </div>
                 <div>
+                    <label for="citizenshipIssueDate1" class="block text-sm font-medium text-gray-700">हिसाब मिलान:</label>
+                    <input type="text" id="citizenshipIssueDate1" name="citizenshipIssueDate1" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="YYYY/YY (वि.सं.)" maxlength="10">
+                </div>
+                <div>
                     <label for="quarter" class="block text-sm font-medium text-gray-700">त्रैमासिक:</label>
                     <select id="quarter" name="quarter" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                         <option value="">त्रैमासिक छान्नुहोस्</option>
@@ -443,7 +448,7 @@
                         सामाजिक सुरक्षा भत्ता परिचयपत्र नं. <span id="displaySsbId"></span>&nbsp;भएका श्री <span id="displayPersonName"></span>&nbsp;को
                         मिति <span id="displayDeathDate"></span>&nbsp;गते मृत्यु भएको र मिति <span id="displayDeathRegDate"></span>&nbsp;गते
                         मृत्युदर्ता गरी लगत कट्टा गरिएको हुदाँ निज जिवित हुदाँ सम्मको प्राप्त
-                        गर्नुपर्ने आ.व. (<span id="displayFiscalYear1"></span>)&nbsp;को <span id="displayQuarter"></span>&nbsp;त्रैमासिकको
+                        गर्नुपर्ने आ.व. <span id="displayCitizenshipIssueDate1"></span>को <span id="displayQuarter"></span>&nbsp;त्रैमासिकको
                         रकम रु. <span id="displayAmount"></span>/-&nbsp;निजको <span id="displayRelationship"></span>&nbsp;<span id="displayRelatedPersonName"></span>&nbsp;(ना.प्र.नं. <span id="displayCitizenshipNo"></span>,&nbsp;जारी मिति <span id="displayCitizenshipIssueDate"></span>) लाइ
                         भुक्तानी दिनुहुन साथै मृत्यु मिति पछी खातामा बाँकी रहन आउने रकम रु. <span id="displayRemainingAmount"></span>/-
                         (अक्षेरुपीःरु. <span id="displayRemainingAmountAksharu"></span>मात्र) &nbsp;<span id="displayDepositAccount"></span>मा दाखिला गरिदिनुहुन अनुरोध
@@ -707,7 +712,6 @@
                 'personName': 'व्यक्तिगत नाम',
                 'deathDate': 'मृत्यु मिति',
                 'deathRegDate': 'मृत्युदर्ता मिति',
-                'fiscal year1': 'आ.व.',
                 'quarter': 'त्रैमासिक',
                 'amount': 'रकम रु.',
                 'relationship': 'सम्बन्ध',
