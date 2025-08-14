@@ -342,8 +342,15 @@
                     <input type="text" id="relatedPersonName" name="relatedPersonName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="सम्बन्धित व्यक्तिको नाम">
                 </div>
                  <div>
-                    <label for="citizenshipIssueDate1" class="block text-sm font-medium text-gray-700">हिसाब मिलान आ.व.:</label>
-                    <input type="text" id="citizenshipIssueDate1" name="citizenshipIssueDate1" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="YYYY/MM/DD (वि.सं.)" maxlength="10">
+                    <label for="hisabMilanFiscalYear" class="block text-sm font-medium text-gray-700">हिसाब मिलान आ.व.:</label>
+                    <select id="hisabMilanFiscalYear" name="hisabMilanFiscalYear" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        <option value="">आ.व. छान्नुहोस्</option>
+                        <option value="२०७९/८०">२०७९/८०</option>
+                        <option value="२०८०/८१">२०८०/८१</option>
+                        <option value="२०८१/८२">२०८१/८२</option>
+                        <option value="२०८२/८३">२०८२/८३</option>
+                        <option value="२०८३/८४">२०८३/८४</option>
+                    </select>
                 </div>
                 <div>
                     <label for="citizenshipNo" class="block text-sm font-medium text-gray-700">ना.प्र.नं.:</label>
@@ -447,7 +454,7 @@
                         सामाजिक सुरक्षा भत्ता परिचयपत्र नं. <span id="displaySsbId"></span>&nbsp;भएका श्री <span id="displayPersonName"></span>&nbsp;को
                         मिति <span id="displayDeathDate"></span>&nbsp;गते मृत्यु भएको र मिति <span id="displayDeathRegDate"></span>&nbsp;गते
                         मृत्युदर्ता गरी लगत कट्टा गरिएको हुदाँ निज जिवित हुदाँ सम्मको प्राप्त
-                        गर्नुपर्ने आ.व. (<span id=""displayCitizenshipIssueDate"></span>"></span>)&nbsp;को <span id="displayQuarter"></span>&nbsp;त्रैमासिकको
+                        गर्नुपर्ने आ.व. (<span id="displayHisabMilanFiscalYear"></span>)&nbsp;को <span id="displayQuarter"></span>&nbsp;त्रैमासिकको
                         रकम रु. <span id="displayAmount"></span>/-&nbsp;निजको <span id="displayRelationship"></span>&nbsp;<span id="displayRelatedPersonName"></span>&nbsp;(ना.प्र.नं. <span id="displayCitizenshipNo"></span>,&nbsp;जारी मिति <span id="displayCitizenshipIssueDate"></span>) लाइ
                         भुक्तानी दिनुहुन साथै मृत्यु मिति पछी खातामा बाँकी रहन आउने रकम रु. <span id="displayRemainingAmount"></span>/-
                         (अक्षेरुपीःरु. <span id="displayRemainingAmountAksharu"></span>मात्र) &nbsp;<span id="displayDepositAccount"></span>मा दाखिला गरिदिनुहुन अनुरोध
@@ -711,7 +718,7 @@
                 'personName': 'व्यक्तिगत नाम',
                 'deathDate': 'मृत्यु मिति',
                 'deathRegDate': 'मृत्युदर्ता मिति',
-                'citizenshipIssueDate1': 'जारी मिति',
+                'hisabMilanFiscalYear': 'हिसाब मिलान आ.व.',
                 'quarter': 'त्रैमासिक',
                 'amount': 'रकम रु.',
                 'relationship': 'सम्बन्ध',
@@ -808,13 +815,13 @@
                 document.getElementById('displayPersonName').textContent = document.getElementById('personName').value;
                 document.getElementById('displayDeathDate').textContent = document.getElementById('deathDate').value;
                 document.getElementById('displayDeathRegDate').textContent = document.getElementById('deathRegDate').value;
-                document.getElementById('displayFiscalYear').textContent = document.getElementById('fiscalYear').value;
+                document.getElementById('displayHisabMilanFiscalYear').textContent = document.getElementById('hisabMilanFiscalYear').value;
                 document.getElementById('displayQuarter').textContent = document.getElementById('quarter').value;
                 document.getElementById('displayAmount').textContent = convertEnglishToNepaliDigits(document.getElementById('amount').value);
                 document.getElementById('displayRelationship').textContent = document.getElementById('relationship').value;
                 document.getElementById('displayRelatedPersonName').textContent = document.getElementById('relatedPersonName').value;
                 document.getElementById('displayCitizenshipNo').textContent = convertEnglishToNepaliDigits(document.getElementById('citizenshipNo').value);
-                document.getElementById('displayCitizenshipIssueDate').textContent = convertEnglishToNepaliDigits(document.getElementById('citizenshipIssueDate').value); /* Converted to Nepali digits */
+                document.getElementById('displayCitizenshipIssueDate').textContent = document.getElementById('citizenshipIssueDate').value; 
                 document.getElementById('displayRemainingAmount').textContent = convertEnglishToNepaliDigits(document.getElementById('remainingAmount').value);
                 document.getElementById('displayRemainingAmountAksharu').textContent = document.getElementById('remainingAmountAksharu').value;
                 document.getElementById('displayDepositAccount').textContent = document.getElementById('depositAccount').value;
