@@ -92,7 +92,26 @@
         <div id="formSection" class="form-section active">
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">सामाजिक सुरक्षा भत्ता विवरण प्रविष्ट गर्नुहोस्</h2>
             <form id="letterForm" class="space-y-6">
-                <div>
+                <div> <!-- Preview Section -->
+        <div id="previewSection" class="preview-section">
+            <div class="letter-content text-gray-800 leading-relaxed text-base relative">
+                <!-- NOTE: तपाईंको emblem.png फाइललाई वेबमा होस्ट (जस्तै GitHub Pages, Imgur, वा तपाईंको आफ्नै सर्भर) गरेपछि,
+                    src="emblem.png" को सट्टा होस्ट गरिएको URL प्रयोग गर्नुहोस्।
+                    उदाहरण: src="https://raw.githubusercontent.com/your-username/your-repo/main/emblem.png"
+                -->
+                <img src="emblem.png" alt="Watermark" class="watermark-positioned" onerror="this.onerror=null;this.src='https://placehold.co/80x80/E0E0E0/000000?text=LOGO'; console.error('Error loading watermark image.');">
+                
+                <!-- This div will contain all content that should push the footer down -->
+                <div class="flex-grow-content z-10">
+                    <div class="header-main-row mb-4">
+                        <!-- Emblem -->
+                        <div class="header-flex-item left">
+                            <!-- NOTE: तपाईंको emblem.png फाइललाई वेबमा होस्ट (जस्तै GitHub Pages, Imgur, वा तपाईंको आफ्नै सर्भर) गरेपछि,
+                                src="emblem.png" को सट्टा होस्ट गरिएको URL प्रयोग गर्नुहोस्।
+                                उदाहरण: src="https://raw.githubusercontent.com/your-username/your-repo/main/emblem.png"
+                            -->
+                            <img src="emblem.png" alt="Emblem" class="w-28 h-28 object-contain" onerror="this.onerror=null;this.src='https://placehold.co/80x80/E0E0E0/000000?text=LOGO'; console.error('Error loading logo image.');">
+                        </div>
                     <label for="officeName" class="block text-sm font-medium text-gray-700">कार्यालयको नाम:</label>
                     <input type="text" id="officeName" name="officeName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="उदाहरण: वडा कार्यालय">
                 </div>
