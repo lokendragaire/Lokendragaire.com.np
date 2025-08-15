@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>सामाजिक सुरक्षा भत्ता पत्र</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Inter फन्ट प्रयोग गर्नका लागि */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* हल्का खैरो पृष्ठभूमि */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 850px; /* अलिकति फराकिलो */
+            margin: 20px 0;
+        }
+        .form-section.active, .preview-section.active {
+            display: block;
+        }
+        .form-section, .preview-section {
+            display: none;
+        }
+        .buttons-container {
+            display: none; /* सुरुमा बटनहरू लुकाउने */
+        }
+        .buttons-container.active {
+            display: flex; /* पूर्वावलोकन देखाउँदा बटनहरू देखाउने */
+        }
+        /* प्रिन्ट गर्दाको लागि स्टाइल */
+        @media print {
+            body {
+                background: none;
+                margin: 0;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                width: 210mm; /* A4 चौडाइ */
+                min-height: 297mm; /* A4 उचाइ */
+                margin: 0 auto;
+                padding: 15mm;
+                page-break-after: always;
+            }
+            .form-section, .buttons-container, #errorModal {
+                display: none !important;
+            }
+            .preview-section {
+                display: block !important;
+            }
+        }
+        /* त्रुटि सन्देशको लागि मोडल स्टाइल */
+        #errorModal {
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- फारम खण्ड -->
+        <div id="formSection" class="form-section active">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">सामाजिक सुरक्षा भत्ता पत्रको विवरण भर्नुहोस्</h2>
+            <form id="letterForm" class="space-y-6">
+                <!-- दुई कोलम लेआउट -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="patraSankhya" class="block text-sm font-medium text-gray-700">पत्र संख्या (प.सं.):</label>
+                        <input type="text" id="patraSankhya" name="patraSankhya" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="उदाहरण: २०८०/८१">
+                    </div>
+                    <div>
+                        <label for="chalanNo" class="block text-sm font-medium text-gray-700">चलानी नं. (च.नं.):</label>
+                        <input type="text" id="chalanNo" name="chalanNo" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="चलानी नं.">
+                    </div>
+                    <div>
+                        <label for="miti" class="block text-sm font-medium text-gray-700">मिति:</label>
+                        <input type="text" id="miti" name="miti" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="YYYY/MM/DD (वि.सं.)">
+                    </div>
+                    <div>
+                        <label for="bankName" class="block text-sm font-medium text-gray-700">बैंकको नाम:</label>
+                        <input type="text" id="bankName" name="bankName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="उदाहरण: प्रभु बैंक लि.">
+                    </div>
+                    <div>
+                        <label for="bankAddress" class="block text-sm font-medium text-gray-700">बैंकको ठेगाना:</label>
+                        <input type="text" id="bankAddress" name="bankAddress" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="उदाहरण: गलकोट, बागलुङ">
+                    </div>
+                    <div>
+                        <label for="wardNo" class="block text-sm font-medium text-gray-700">वडा नं.:</label>
+                        <input type="text" id="wardNo" name="wardNo" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="वडा नं.">
+                    </div>
+                    <div>
+                        <label for="personName" class="block text-sm font-medium text-gray-700">लाभग्राहीको नाम:</label>
+                        <input type="text" id="personName" name="personName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="पूरा नाम">
+                    </div>
+                    <div>
+                        <label for="ssbId" class="block text-sm font-medium text-gray-700">परिचयपत्र नं.:</label>
+                        <input type="text" id="ssbId" name="ssbId" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="सामाजिक सुरक्षा भत्ता परिचयपत्र नं.">
+                    </div>
+                     <div>
+                        <label for="allowanceType" class="block text-sm font-medium text-gray-700">भत्ताको किसिम:</label>
+                        <input type="text" id="allowanceType" name="allowanceType" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="उदाहरण: जेष्ठ नागरिक भत्ता">
+                    </div>
+                    <div>
+                        <label for="signerName" class="block text-sm font-medium text-gray-700">हस्ताक्षर गर्नेको नाम:</label>
+                        <input type="text" id="signerName" name="signerName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="नाम">
+                    </div>
+                    <div>
+                        <label for="signerPost" class="block text-sm font-medium text-gray-700">पद:</label>
+                        <input type="text" id="signerPost" name="signerPost" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="उदाहरण: प्रशासकीय अधिकृत">
+                    </div>
+                </div>
+
+                <div class="flex justify-center pt-4">
+                    <button type="submit" class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200">
+                        पत्र हेर्नुहोस्
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- पूर्वावलोकन खण्ड -->
+        <div id="previewSection" class="preview-section">
+            <div class="letter-content text-gray-800 leading-relaxed text-base">
+                <!-- हेडर -->
+                <div class="flex justify-between items-start mb-4">
+                    <!-- लोगो -->
+                    <div class="w-24 h-24">
+                         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Coat_of_arms_of_Nepal.svg/1200px-Coat_of_arms_of_Nepal.svg.png" alt="Nepal Emblem" class="w-24 h-auto object-contain" onerror="this.onerror=null;this.src='https://placehold.co/80x80/E0E0E0/000000?text=LOGO';">
+                    </div>
+                    <!-- कार्यालयको विवरण -->
+                    <div class="text-center text-red-600">
+                        <p class="text-2xl font-bold">गलकोट नगरपालिका</p>
+                        <p class="text-xl font-bold">नगर कार्यपालिकाको कार्यालय</p>
+                        <p class="text-lg">गलकोट, बागलुङ</p>
+                    </div>
+                    <!-- QR कोड -->
+                    <div class="w-24 h-24">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://galkotmun.gov.np/" alt="QR Code" class="w-24 h-auto" onerror="this.onerror=null;this.src='https://placehold.co/80x80/E0E0E0/000000?text=QR';">
+                    </div>
+                </div>
+                <div class="flex justify-between items-end mb-2">
+                    <div class="text-left">
+                        <p>प.सं.: <span id="displayPatraSankhya"></span></p>
+                        <p>च.नं.: <span id="displayChalanNo"></span></p>
+                    </div>
+                    <div class="text-right">
+                        <p>गण्डकी प्रदेश, नेपाल</p>
+                        <p>मिति: <span id="displayMiti"></span></p>
+                    </div>
+                </div>
+
+                <hr class="border-gray-400 my-4">
+
+                <!-- पत्रको व्यहोरा -->
+                <p class="mb-4">श्री <span id="displayBankName" class="font-bold"></span>,</p>
+                <p class="mb-4"><span id="displayBankAddress"></span>।</p>
+
+                <h3 class="text-lg font-bold text-center mb-4 underline">विषय: सामाजिक सुरक्षा भत्ता बारे।</h3>
+
+                <p class="mb-4 text-justify leading-loose">
+                    <span class="ml-8"></span>प्रस्तुत विषयमा गलकोट नगरपालिका वडा नं. <span id="displayWardNo" class="font-semibold"></span> निवासी <span id="displayPersonName" class="font-semibold"></span> (सुरक्षा भत्ता परिचय पत्र नं. <span id="displaySsbId" class="font-semibold"></span>) ले प्राप्त गर्ने <span id="displayAllowanceType" class="font-semibold"></span> विगत वर्षदेखि खातामा जम्मा भई सोही बैंक देखी नझिकेको हुंदा निजको खातामा नियमानुसार जम्मा भएको सामाजिक सुरक्षा भत्ताको रकम स्वयं लाभग्राहीको उपस्थितिमा उपलब्ध गराईदिनुहुन सिफारिसका साथ अनुरोध छ।
+                </p>
+                
+                <!-- हस्ताक्षर -->
+                <div class="mt-24 flex justify-end">
+                    <div class="text-center">
+                        <p>.......................</p>
+                        <p class="font-semibold" id="displaySignerName"></p>
+                        <p id="displaySignerPost"></p>
+                    </div>
+                </div>
+
+                 <!-- फुटर -->
+                <div class="mt-16 pt-4 border-t-2 border-gray-400 text-center text-sm text-gray-600">
+                    <p>"कृषि, पर्यटन, जलस्रोत, स्थानीय सीप र पूर्वाधार: समृद्ध गलकोट निर्माणको मुल आधार"</p>
+                    <p class="mt-1">galkotmunicipality@gmail.com | facebook.com/hellegalakot | www.galkotmun.gov.np</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- बटनहरू -->
+        <div class="buttons-container flex justify-center space-x-4 mt-8">
+            <button id="printBtn" class="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-200">
+                प्रिन्ट गर्नुहोस्
+            </button>
+            <button id="backBtn" class="px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-200">
+                पछाडि जानुहोस्
+            </button>
+        </div>
+    </div>
+
+    <!-- त्रुटि सन्देश मोडल -->
+    <div id="errorModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
+            <h3 class="text-xl font-bold text-red-600 mb-4">त्रुटि !</h3>
+            <p id="errorModalMessage" class="text-gray-700 mb-6"></p>
+            <button id="closeErrorModal" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full">बन्द गर्नुहोस्</button>
+        </div>
+    </div>
+
+    <script>
+        // नेपाली अंकमा रूपान्तरण गर्ने function
+        function convertToNepaliDigits(input) {
+            if (typeof input !== 'string') input = String(input);
+            const englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+            return input.split('').map(char => {
+                const index = englishDigits.indexOf(char);
+                return index !== -1 ? nepaliDigits[index] : char;
+            }).join('');
+        }
+
+        // मिति इनपुटमा स्वचालित रूपमा स्ल्याश (/) थप्ने function
+        function setupDateInput(elementId) {
+            const inputElement = document.getElementById(elementId);
+            inputElement.addEventListener('input', function(e) {
+                let value = this.value.replace(/[^\d]/g, ''); // अंक बाहेक अरु हटाउने
+                if (value.length > 4) {
+                    value = value.slice(0, 4) + '/' + value.slice(4);
+                }
+                if (value.length > 7) {
+                    value = value.slice(0, 7) + '/' + value.slice(7, 9);
+                }
+                this.value = value;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setupDateInput('miti');
+
+            const form = document.getElementById('letterForm');
+            const formSection = document.getElementById('formSection');
+            const previewSection = document.getElementById('previewSection');
+            const buttonsContainer = document.querySelector('.buttons-container');
+            const errorModal = document.getElementById('errorModal');
+            const errorModalMessage = document.getElementById('errorModalMessage');
+            const closeErrorModal = document.getElementById('closeErrorModal');
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const requiredFields = {
+                    'patraSankhya': 'पत्र संख्या',
+                    'miti': 'मिति',
+                    'bankName': 'बैंकको नाम',
+                    'bankAddress': 'बैंकको ठेगाना',
+                    'wardNo': 'वडा नं.',
+                    'personName': 'लाभग्राहीको नाम',
+                    'ssbId': 'परिचयपत्र नं.',
+                    'allowanceType': 'भत्ताको किसिम',
+                    'signerName': 'हस्ताक्षर गर्नेको नाम',
+                    'signerPost': 'पद'
+                };
+
+                let missingFields = [];
+                let allFieldsValid = true;
+
+                // सबै आवश्यक फिल्डहरू भरिएको छ कि छैन जाँच गर्ने
+                for (const fieldId in requiredFields) {
+                    const inputElement = document.getElementById(fieldId);
+                    if (inputElement.value.trim() === '') {
+                        missingFields.push(requiredFields[fieldId]);
+                        inputElement.style.borderColor = 'red';
+                        allFieldsValid = false;
+                    } else {
+                        inputElement.style.borderColor = '';
+                    }
+                }
+                
+                // मितिको ढाँचा (format) जाँच गर्ने
+                const mitiInput = document.getElementById('miti');
+                if (mitiInput.value && !/^\d{4}\/\d{2}\/\d{2}$/.test(mitiInput.value)) {
+                    missingFields.push('मिति (ढाँचा YYYY/MM/DD हुनुपर्छ)');
+                    mitiInput.style.borderColor = 'red';
+                    allFieldsValid = false;
+                }
+
+                if (allFieldsValid) {
+                    // फारमबाट डाटा लिएर पूर्वावलोकनमा देखाउने
+                    document.getElementById('displayPatraSankhya').textContent = convertToNepaliDigits(document.getElementById('patraSankhya').value);
+                    document.getElementById('displayChalanNo').textContent = convertToNepaliDigits(document.getElementById('chalanNo').value);
+                    document.getElementById('displayMiti').textContent = convertToNepaliDigits(document.getElementById('miti').value);
+                    document.getElementById('displayBankName').textContent = document.getElementById('bankName').value;
+                    document.getElementById('displayBankAddress').textContent = document.getElementById('bankAddress').value;
+                    document.getElementById('displayWardNo').textContent = convertToNepaliDigits(document.getElementById('wardNo').value);
+                    document.getElementById('displayPersonName').textContent = document.getElementById('personName').value;
+                    document.getElementById('displaySsbId').textContent = convertToNepaliDigits(document.getElementById('ssbId').value);
+                    document.getElementById('displayAllowanceType').textContent = document.getElementById('allowanceType').value;
+                    document.getElementById('displaySignerName').textContent = document.getElementById('signerName').value;
+                    document.getElementById('displaySignerPost').textContent = document.getElementById('signerPost').value;
+
+                    // फारम लुकाउने र पूर्वावलोकन देखाउने
+                    formSection.classList.remove('active');
+                    previewSection.classList.add('active');
+                    buttonsContainer.classList.add('active');
+                } else {
+                    // त्रुटि सन्देश देखाउने
+                    errorModalMessage.innerHTML = `कृपया निम्न फिल्डहरू भर्नुहोस् वा सुधार्नुहोस्: <br> ${missingFields.join(', ')}।`;
+                    errorModal.classList.remove('hidden');
+                }
+            });
+
+            // त्रुटि मोडल बन्द गर्ने
+            closeErrorModal.addEventListener('click', function() {
+                errorModal.classList.add('hidden');
+            });
+
+            // प्रिन्ट बटन
+            document.getElementById('printBtn').addEventListener('click', function() {
+                window.print();
+            });
+
+            // पछाडि जाने बटन
+            document.getElementById('backBtn').addEventListener('click', function() {
+                previewSection.classList.remove('active');
+                formSection.classList.add('active');
+                buttonsContainer.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
