@@ -53,6 +53,7 @@
                 min-height: 297mm; /* A4 उचाइ */
                 margin: 0 auto;
                 padding: 15mm;
+                position: relative;
                 page-break-after: always;
             }
             .form-section, .buttons-container, #errorModal {
@@ -60,10 +61,10 @@
             }
             .preview-section {
                 display: block !important;
+                position: static;
             }
             .letter-content {
-                position: relative;
-                min-height: 260mm; /* Ensure content fits within A4 without overflowing the footer */
+                min-height: calc(297mm - 30mm); /* A4 उचाइ - माथिको र तलको मार्जिन */
             }
             .footer-print {
                 position: absolute;
@@ -153,7 +154,7 @@
                 </div>
                  <div>
                     <label for="duration" class="block text-sm font-medium text-gray-700">अवधी:</label>
-                    <input type="number" id="duration" name="duration" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="कति वर्षदेखि" min="1">
+                    <input type="text" id="duration" name="duration" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="कति वर्षदेखि">
                 </div>
                 <div>
                     <label for="allowanceType" class="block text-sm font-medium text-gray-700">भत्ताको किसिम:</label>
@@ -181,7 +182,7 @@
             <div class="letter-content text-gray-800 leading-relaxed text-base">
                 <!-- हेडर -->
                 <div class="flex justify-between items-start mb-4">
-                    <!-- लोगो (हाललाई खाली राखिएको छ किनकि स्थानीय फाइल 'emblem.png' यहाँबाट लोड हुन सक्दैन) -->
+                    <!-- लोगोको लागि खाली ठाउँ -->
                     <div class="w-24 h-24">
                          <!-- <img src="emblem.png" alt="Nepal Emblem" class="w-24 h-auto object-contain"> -->
                     </div>
@@ -191,16 +192,16 @@
                             <p class="text-base"><span id="displayOfficeAddress"></span>, बागलुङ</p>
                         </div>
                         <div class="header-flex-item right w-24">
-                            <!-- empty div for alignment -->
+                            <!-- खाली ठाउँ -->
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-3 w-full items-end mb-2">
+                    <div class="grid grid-cols-2 w-full items-end mb-2">
                         <div class="col-span-1 flex flex-col text-left">
                             <p class="text-sm">प.सं.(Ref.No.) <span id="displayPatraSankhya"></span></p>
                             <p class="text-sm">च.नं.(Des.No.) <span id="displayChalanNo"></span></p>
                         </div>
-                        <div class="col-span-2 flex flex-col justify-end items-end h-full text-sm">
+                        <div class="col-span-1 flex flex-col justify-end items-end h-full text-sm">
                             <p>गण्डकी प्रदेश, नेपाल</p>
                             <p>मिति(Date): <span id="displayMiti"></span></p>
                         </div>
@@ -279,12 +280,17 @@
                 }).join('');
             }
 
-            // मिति इनपुटमा स्वचालित रूपमा स्ल्याश (/) थप्ने function
+            // मिति इनपुटमा स्वचालित रूपमा स्ल्याश (/) थप्ने function र अंकलाई नेपालीमा देखाउने
             function setupDateInput(elementId) {
                 const inputElement = document.getElementById(elementId);
                 inputElement.addEventListener('input', function(e) {
-                    let value = this.value.replace(/[^\d०-९]/g, ''); // अंक बाहेक अरु हटाउने
-                    value = convertToEnglishDigits(value);
+                    let value = this.value;
+                    const lastChar = value.slice(-1);
+                    if (/[०-९]/.test(lastChar)) {
+                        value = convertToEnglishDigits(value);
+                    }
+                    value = value.replace(/[^\d]/g, ''); // अंक बाहेक अरु हटाउने
+                    
                     if (value.length > 4) {
                         value = value.slice(0, 4) + '/' + value.slice(4);
                     }
