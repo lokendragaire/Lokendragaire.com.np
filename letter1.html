@@ -61,11 +61,27 @@
             .preview-section {
                 display: block !important;
             }
+            .letter-content {
+                position: relative;
+                min-height: 260mm; /* Ensure content fits within A4 without overflowing the footer */
+            }
+            .footer-print {
+                position: absolute;
+                bottom: 15mm;
+                left: 0;
+                right: 0;
+                text-align: center;
+            }
         }
         /* त्रुटि सन्देशको लागि मोडल स्टाइल */
         #errorModal {
             background-color: rgba(0, 0, 0, 0.6);
             z-index: 100;
+        }
+        .divider {
+            height: 1px;
+            background-color: black;
+            margin: 1rem 0;
         }
     </style>
 </head>
@@ -73,7 +89,6 @@
     <div class="container">
         <!-- फारम खण्ड -->
         <div id="formSection" class="form-section active">
-             <div id="formSection" class="form-section active">
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">सामाजिक सुरक्षा भत्ता विवरण प्रविष्ट गर्नुहोस्</h2>
             <form id="letterForm" class="space-y-6">
                 <div>
@@ -92,7 +107,7 @@
                         <option value="२०८०/८१">२०८०/८१</option>
                         <option value="२०८१/८२">२०८१/८२</option>
                         <option value="२०८२/८३">२०८२/८३</option>
-                         <option value="२०८३/८४">२०८३/८४</option>
+                        <option value="२०८३/८४">२०८३/८४</option>
                     </select>
                 </div>
                 <div>
@@ -107,6 +122,7 @@
                     <label for="chalanNo" class="block text-sm font-medium text-gray-700">च.नं.:</label>
                     <input type="text" id="chalanNo" name="chalanNo" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="चलानी नं.">
                 </div>
+                <div class="divider"></div>
                 <div>
                     <label for="bankName" class="block text-sm font-medium text-gray-700">बैंकको नाम:</label>
                     <select id="bankName" name="bankName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
@@ -115,15 +131,16 @@
                         <option value="नेपाल बैँक लि.">नेपाल बैँक लि.</option>
                         <option value="कामना सेवा विकास बैँक लि.">कामना सेवा विकास बैँक लि.</option>
                         <option value="ग्लोबल आइएमइ बैँक लि">ग्लोबल आइएमइ बैँक लि</option>
-                    </select><div>
+                    </select>
+                </div>
+                <div>
+                    <label for="bankAddress" class="block text-sm font-medium text-gray-700">बैंकको ठेगाना:</label>
+                    <input type="text" id="bankAddress" name="bankAddress" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="उदाहरण: गल्कोट-५ हटिया">
+                </div>
+                <div>
                     <label for="wardNo" class="block text-sm font-medium text-gray-700">वडा नं.:</label>
                     <select id="wardNo" name="wardNo" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                         <option value="">वडा नं. छान्नुहोस्</option>
-                        <script>
-                            for (let i = 1; i <= 11; i++) {
-                                document.write(`<option value="${i}">${i}</option>`);
-                            }
-                        </script>
                     </select>
                 </div>
                 <div>
@@ -134,17 +151,21 @@
                     <label for="personName" class="block text-sm font-medium text-gray-700">व्यक्तिगत नाम:</label>
                     <input type="text" id="personName" name="personName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="श्री/श्रीमती/कुमारी">
                 </div>
-                        <label for="allowanceType" class="block text-sm font-medium text-gray-700">भत्ताको किसिम:</label>
-                        <input type="text" id="allowanceType" name="allowanceType" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="उदाहरण: जेष्ठ नागरिक भत्ता">
-                    </div>
-                    <div>
-                        <label for="signerName" class="block text-sm font-medium text-gray-700">हस्ताक्षर गर्नेको नाम:</label>
-                        <input type="text" id="signerName" name="signerName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="नाम">
-                    </div>
-                    <div>
-                        <label for="signerPost" class="block text-sm font-medium text-gray-700">पद:</label>
-                        <input type="text" id="signerPost" name="signerPost" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="उदाहरण: प्रशासकीय अधिकृत">
-                    </div>
+                 <div>
+                    <label for="duration" class="block text-sm font-medium text-gray-700">अवधी:</label>
+                    <input type="number" id="duration" name="duration" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="कति वर्षदेखि" min="1">
+                </div>
+                <div>
+                    <label for="allowanceType" class="block text-sm font-medium text-gray-700">भत्ताको किसिम:</label>
+                    <input type="text" id="allowanceType" name="allowanceType" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="उदाहरण: जेष्ठ नागरिक भत्ता">
+                </div>
+                <div>
+                    <label for="signerName" class="block text-sm font-medium text-gray-700">हस्ताक्षर गर्नेको नाम:</label>
+                    <input type="text" id="signerName" name="signerName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="नाम">
+                </div>
+                <div>
+                    <label for="signerPost" class="block text-sm font-medium text-gray-700">पद:</label>
+                    <input type="text" id="signerPost" name="signerPost" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="उदाहरण: प्रशासकीय अधिकृत">
                 </div>
 
                 <div class="flex justify-center pt-4">
@@ -160,32 +181,31 @@
             <div class="letter-content text-gray-800 leading-relaxed text-base">
                 <!-- हेडर -->
                 <div class="flex justify-between items-start mb-4">
-                    <!-- लोगो -->
+                    <!-- लोगो (हाललाई खाली राखिएको छ किनकि स्थानीय फाइल 'emblem.png' यहाँबाट लोड हुन सक्दैन) -->
                     <div class="w-24 h-24">
-                         <img src="emblem.png" alt="Nepal Emblem" class="w-24 h-auto object-contain" onerror="this.onerror=null;this.src='emblem.png';">
+                         <!-- <img src="emblem.png" alt="Nepal Emblem" class="w-24 h-auto object-contain"> -->
                     </div>
-                   <div class="header-flex-item center text-red-600">
+                   <div class="header-flex-item center text-red-600 text-center">
                             <p class="text-lg font-bold">गलकोट नगरपालिका</p>
                             <p class="text-base font-bold"><span id="displayOfficeName"></span> कार्यालय</p>
                             <p class="text-base"><span id="displayOfficeAddress"></span>, बागलुङ</p>
-                            <p class="text-base">गण्डकी प्रदेश, नेपाल</p>
                         </div>
-
-                        <div class="header-flex-item right">
-                            <!-- Empty div to push content to center/left -->
+                        <div class="header-flex-item right w-24">
+                            <!-- empty div for alignment -->
                         </div>
                     </div>
 
                     <div class="grid grid-cols-3 w-full items-end mb-2">
-                        <div class="col-span-2 flex flex-col text-left">
+                        <div class="col-span-1 flex flex-col text-left">
                             <p class="text-sm">प.सं.(Ref.No.) <span id="displayPatraSankhya"></span></p>
                             <p class="text-sm">च.नं.(Des.No.) <span id="displayChalanNo"></span></p>
                         </div>
-                        <div class="col-span-1 flex flex-col justify-end h-full">
-                            <p class="text-sm text-right">मिति(Date): <span id="displayMiti"></span></p>
+                        <div class="col-span-2 flex flex-col justify-end items-end h-full text-sm">
+                            <p>गण्डकी प्रदेश, नेपाल</p>
+                            <p>मिति(Date): <span id="displayMiti"></span></p>
                         </div>
                     </div>
-
+                    <div class="divider"></div>
 
                 <!-- पत्रको व्यहोरा -->
                 <p class="mb-4">श्री <span id="displayBankName" class="font-bold"></span>,</p>
@@ -194,9 +214,9 @@
                 <h3 class="text-lg font-bold text-center mb-4 underline">विषय: सामाजिक सुरक्षा भत्ता बारे।</h3>
 
                 <p class="mb-4 text-justify leading-loose">
-                    <span class="ml-8"></span>प्रस्तुत विषयमा गलकोट नगरपालिका वडा नं. <span id="displayWardNo" class="font-semibold"></span> निवासी <span id="displayPersonName" class="font-semibold"></span> (सुरक्षा भत्ता परिचय पत्र नं. <span id="displaySsbId" class="font-semibold"></span>) ले प्राप्त गर्ने <span id="displayAllowanceType" class="font-semibold"></span> विगत वर्षदेखि खातामा जम्मा भई सोही बैंक देखी नझिकेको हुंदा निजको खातामा नियमानुसार जम्मा भएको सामाजिक सुरक्षा भत्ताको रकम स्वयं लाभग्राहीको उपस्थितिमा उपलब्ध गराईदिनुहुन सिफारिसका साथ अनुरोध छ।
+                    <span class="ml-8"></span>प्रस्तुत विषयमा गलकोट नगरपालिका वडा नं. <span id="displayWardNo" class="font-semibold"></span> निवासी <span id="displayPersonName" class="font-semibold"></span> (सुरक्षा भत्ता परिचय पत्र नं. <span id="displaySsbId" class="font-semibold"></span>) ले प्राप्त गर्ने <span id="displayAllowanceType" class="font-semibold"></span> विगत <span id="displayDuration" class="font-semibold"></span> वर्षदेखि खातामा जम्मा भई सोही बैंक देखी नझिकेको हुंदा निजको खातामा नियमानुसार जम्मा भएको सामाजिक सुरक्षा भत्ताको रकम स्वयं लाभग्राहीको उपस्थितिमा उपलब्ध गराईदिनुहुन सिफारिसका साथ अनुरोध छ।
                 </p>
-                
+
                 <!-- हस्ताक्षर -->
                 <div class="mt-24 flex justify-end">
                     <div class="text-center">
@@ -207,13 +227,13 @@
                 </div>
 
                  <!-- फुटर -->
-                <div class="mt-16 pt-4 border-t-2 border-gray-400 text-center text-sm text-gray-600">
+                <div class="footer-print mt-16 pt-4 border-t-2 border-gray-400 text-center text-sm text-gray-600">
                     <p>"कृषि, पर्यटन, जलस्रोत, स्थानीय सीप र पूर्वाधार: समृद्ध गलकोट निर्माणको मुल आधार"</p>
                     <p class="mt-1">galkotmunicipality@gmail.com | facebook.com/hellegalakot | www.galkotmun.gov.np</p>
                 </div>
             </div>
         </div>
-        
+
         <!-- बटनहरू -->
         <div class="buttons-container flex justify-center space-x-4 mt-8">
             <button id="printBtn" class="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-200">
@@ -235,34 +255,56 @@
     </div>
 
     <script>
-        // नेपाली अंकमा रूपान्तरण गर्ने function
-        function convertToNepaliDigits(input) {
-            if (typeof input !== 'string') input = String(input);
-            const englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-            const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
-            return input.split('').map(char => {
-                const index = englishDigits.indexOf(char);
-                return index !== -1 ? nepaliDigits[index] : char;
-            }).join('');
-        }
-
-        // मिति इनपुटमा स्वचालित रूपमा स्ल्याश (/) थप्ने function
-        function setupDateInput(elementId) {
-            const inputElement = document.getElementById(elementId);
-            inputElement.addEventListener('input', function(e) {
-                let value = this.value.replace(/[^\d]/g, ''); // अंक बाहेक अरु हटाउने
-                if (value.length > 4) {
-                    value = value.slice(0, 4) + '/' + value.slice(4);
-                }
-                if (value.length > 7) {
-                    value = value.slice(0, 7) + '/' + value.slice(7, 9);
-                }
-                this.value = value;
-            });
-        }
-
         document.addEventListener('DOMContentLoaded', function() {
+
+            // नेपाली अंकमा रूपान्तरण गर्ने function
+            function convertToNepaliDigits(input) {
+                if (typeof input !== 'string') input = String(input);
+                const englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+                const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+                return input.split('').map(char => {
+                    const index = englishDigits.indexOf(char);
+                    return index !== -1 ? nepaliDigits[index] : char;
+                }).join('');
+            }
+            
+            // अंग्रेजी अंकमा रूपान्तरण गर्ने function
+            function convertToEnglishDigits(input) {
+                if (typeof input !== 'string') input = String(input);
+                const englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+                const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+                return input.split('').map(char => {
+                    const index = nepaliDigits.indexOf(char);
+                    return index !== -1 ? englishDigits[index] : char;
+                }).join('');
+            }
+
+            // मिति इनपुटमा स्वचालित रूपमा स्ल्याश (/) थप्ने function
+            function setupDateInput(elementId) {
+                const inputElement = document.getElementById(elementId);
+                inputElement.addEventListener('input', function(e) {
+                    let value = this.value.replace(/[^\d०-९]/g, ''); // अंक बाहेक अरु हटाउने
+                    value = convertToEnglishDigits(value);
+                    if (value.length > 4) {
+                        value = value.slice(0, 4) + '/' + value.slice(4);
+                    }
+                    if (value.length > 7) {
+                        value = value.slice(0, 7) + '/' + value.slice(7, 9);
+                    }
+                    this.value = convertToNepaliDigits(value);
+                });
+            }
+
             setupDateInput('miti');
+
+            // वडा नं. विकल्पहरू स्वतः थप्ने
+            const wardNoSelect = document.getElementById('wardNo');
+            for (let i = 1; i <= 11; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                wardNoSelect.appendChild(option);
+            }
 
             const form = document.getElementById('letterForm');
             const formSection = document.getElementById('formSection');
@@ -272,10 +314,31 @@
             const errorModalMessage = document.getElementById('errorModalMessage');
             const closeErrorModal = document.getElementById('closeErrorModal');
 
+            // आ.व. परिवर्तन हुँदा पत्र संख्या स्वतः सेट गर्ने
+            const fiscalYearSelect = document.getElementById('fiscalYear');
+            fiscalYearSelect.addEventListener('change', function() {
+                const fiscalYear = this.value;
+                const patraSankhyaInput = document.getElementById('patraSankhya');
+                if (fiscalYear) {
+                    const years = fiscalYear.split('/');
+                    if (years.length === 2) {
+                        const formattedPatraSankhya = `${years[0].slice(-2)}/${years[1].slice(-2)}`;
+                        patraSankhyaInput.value = formattedPatraSankhya;
+                    } else {
+                        patraSankhyaInput.value = '';
+                    }
+                } else {
+                    patraSankhyaInput.value = '';
+                }
+            });
+
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
 
                 const requiredFields = {
+                    'officeName': 'कार्यालयको नाम',
+                    'officeAddress': 'कार्यालयको ठेगाना',
+                    'fiscalYear': 'आ.व.',
                     'patraSankhya': 'पत्र संख्या',
                     'miti': 'मिति',
                     'bankName': 'बैंकको नाम',
@@ -283,6 +346,7 @@
                     'wardNo': 'वडा नं.',
                     'personName': 'लाभग्राहीको नाम',
                     'ssbId': 'परिचयपत्र नं.',
+                    'duration': 'अवधी',
                     'allowanceType': 'भत्ताको किसिम',
                     'signerName': 'हस्ताक्षर गर्नेको नाम',
                     'signerPost': 'पद'
@@ -294,25 +358,41 @@
                 // सबै आवश्यक फिल्डहरू भरिएको छ कि छैन जाँच गर्ने
                 for (const fieldId in requiredFields) {
                     const inputElement = document.getElementById(fieldId);
-                    if (inputElement.value.trim() === '') {
+                    if (inputElement && inputElement.value.trim() === '') {
                         missingFields.push(requiredFields[fieldId]);
                         inputElement.style.borderColor = 'red';
                         allFieldsValid = false;
-                    } else {
+                    } else if (inputElement) {
                         inputElement.style.borderColor = '';
                     }
                 }
                 
                 // मितिको ढाँचा (format) जाँच गर्ने
                 const mitiInput = document.getElementById('miti');
-                if (mitiInput.value && !/^\d{4}\/\d{2}\/\d{2}$/.test(mitiInput.value)) {
-                    missingFields.push('मिति (ढाँचा YYYY/MM/DD हुनुपर्छ)');
-                    mitiInput.style.borderColor = 'red';
-                    allFieldsValid = false;
+                const englishMiti = convertToEnglishDigits(mitiInput.value);
+                if (englishMiti && !/^\d{4}\/\d{2}\/\d{2}$/.test(englishMiti)) {
+                    if (!missingFields.includes(requiredFields['miti'])) {
+                        missingFields.push('मिति (ढाँचा YYYY/MM/DD हुनुपर्छ)');
+                        mitiInput.style.borderColor = 'red';
+                        allFieldsValid = false;
+                    }
+                }
+
+                // ssbId को वैधता जाँच गर्ने
+                const ssbIdInput = document.getElementById('ssbId');
+                const ssbIdValue = convertToEnglishDigits(ssbIdInput.value.trim());
+                if (ssbIdValue && (ssbIdValue.length !== 13 || isNaN(ssbIdValue))) {
+                    if (!missingFields.includes(requiredFields['ssbId'])) {
+                         missingFields.push('सामाजिक सुरक्षा भत्ता परिचयपत्र नं. (१३ अंकको हुनुपर्छ र अंक मात्र हुनुपर्छ)');
+                        ssbIdInput.style.borderColor = 'red';
+                        allFieldsValid = false;
+                    }
                 }
 
                 if (allFieldsValid) {
                     // फारमबाट डाटा लिएर पूर्वावलोकनमा देखाउने
+                    document.getElementById('displayOfficeName').textContent = document.getElementById('officeName').value;
+                    document.getElementById('displayOfficeAddress').textContent = document.getElementById('officeAddress').value;
                     document.getElementById('displayPatraSankhya').textContent = convertToNepaliDigits(document.getElementById('patraSankhya').value);
                     document.getElementById('displayChalanNo').textContent = convertToNepaliDigits(document.getElementById('chalanNo').value);
                     document.getElementById('displayMiti').textContent = convertToNepaliDigits(document.getElementById('miti').value);
@@ -321,6 +401,7 @@
                     document.getElementById('displayWardNo').textContent = convertToNepaliDigits(document.getElementById('wardNo').value);
                     document.getElementById('displayPersonName').textContent = document.getElementById('personName').value;
                     document.getElementById('displaySsbId').textContent = convertToNepaliDigits(document.getElementById('ssbId').value);
+                    document.getElementById('displayDuration').textContent = convertToNepaliDigits(document.getElementById('duration').value);
                     document.getElementById('displayAllowanceType').textContent = document.getElementById('allowanceType').value;
                     document.getElementById('displaySignerName').textContent = document.getElementById('signerName').value;
                     document.getElementById('displaySignerPost').textContent = document.getElementById('signerPost').value;
@@ -356,26 +437,3 @@
     </script>
 </body>
 </html>
-onst fiscalYearSelect = document.getElementById('fiscalYear');
-            fiscalYearSelect.addEventListener('change', function() {
-                const fiscalYear = this.value;
-                const patraSankhyaInput = document.getElementById('patraSankhya');
-                if (fiscalYear) {
-                    const years = fiscalYear.split('/');
-                    if (years.length === 2) {
-                        const formattedPatraSankhya = `${years[0].slice(-2)}/${years[1].slice(-2)}`;
-                        patraSankhyaInput.value = formattedPatraSankhya;
-                    } else {
-                        patraSankhyaInput.value = '';
-                    }
-                } else {
-                    patraSankhyaInput.value = '';
-                }
-            });
- }
-
-            const ssbIdInput = document.getElementById('ssbId');
-            const ssbIdValue = convertNepaliToEnglishDigits(ssbIdInput.value.trim());
-            if (ssbIdValue.length !== 13 || isNaN(ssbIdValue)) {
-                if (!missingFields.includes(requiredFields['ssbId'])) {
-                    missingFields.push(`सामाजिक सुरक्षा भत्ता परिचयपत्र नं. (१३ अंकको हुनुपर्छ र अंक मात्र हुनुपर्छ)`);
