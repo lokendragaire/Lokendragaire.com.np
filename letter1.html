@@ -356,3 +356,26 @@
     </script>
 </body>
 </html>
+onst fiscalYearSelect = document.getElementById('fiscalYear');
+            fiscalYearSelect.addEventListener('change', function() {
+                const fiscalYear = this.value;
+                const patraSankhyaInput = document.getElementById('patraSankhya');
+                if (fiscalYear) {
+                    const years = fiscalYear.split('/');
+                    if (years.length === 2) {
+                        const formattedPatraSankhya = `${years[0].slice(-2)}/${years[1].slice(-2)}`;
+                        patraSankhyaInput.value = formattedPatraSankhya;
+                    } else {
+                        patraSankhyaInput.value = '';
+                    }
+                } else {
+                    patraSankhyaInput.value = '';
+                }
+            });
+ }
+
+            const ssbIdInput = document.getElementById('ssbId');
+            const ssbIdValue = convertNepaliToEnglishDigits(ssbIdInput.value.trim());
+            if (ssbIdValue.length !== 13 || isNaN(ssbIdValue)) {
+                if (!missingFields.includes(requiredFields['ssbId'])) {
+                    missingFields.push(`सामाजिक सुरक्षा भत्ता परिचयपत्र नं. (१३ अंकको हुनुपर्छ र अंक मात्र हुनुपर्छ)`);
