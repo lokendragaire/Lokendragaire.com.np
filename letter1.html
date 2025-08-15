@@ -92,26 +92,7 @@
         <div id="formSection" class="form-section active">
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">सामाजिक सुरक्षा भत्ता विवरण प्रविष्ट गर्नुहोस्</h2>
             <form id="letterForm" class="space-y-6">
-                <div> <!-- Preview Section -->
-        <div id="previewSection" class="preview-section">
-            <div class="letter-content text-gray-800 leading-relaxed text-base relative">
-                <!-- NOTE: तपाईंको emblem.png फाइललाई वेबमा होस्ट (जस्तै GitHub Pages, Imgur, वा तपाईंको आफ्नै सर्भर) गरेपछि,
-                    src="emblem.png" को सट्टा होस्ट गरिएको URL प्रयोग गर्नुहोस्।
-                    उदाहरण: src="https://raw.githubusercontent.com/your-username/your-repo/main/emblem.png"
-                -->
-                <img src="emblem.png" alt="Watermark" class="watermark-positioned" onerror="this.onerror=null;this.src='https://placehold.co/80x80/E0E0E0/000000?text=LOGO'; console.error('Error loading watermark image.');">
-                
-                <!-- This div will contain all content that should push the footer down -->
-                <div class="flex-grow-content z-10">
-                    <div class="header-main-row mb-4">
-                        <!-- Emblem -->
-                        <div class="header-flex-item left">
-                            <!-- NOTE: तपाईंको emblem.png फाइललाई वेबमा होस्ट (जस्तै GitHub Pages, Imgur, वा तपाईंको आफ्नै सर्भर) गरेपछि,
-                                src="emblem.png" को सट्टा होस्ट गरिएको URL प्रयोग गर्नुहोस्।
-                                उदाहरण: src="https://raw.githubusercontent.com/your-username/your-repo/main/emblem.png"
-                            -->
-                            <img src="emblem.png" alt="Emblem" class="w-28 h-28 object-contain" onerror="this.onerror=null;this.src='https://placehold.co/80x80/E0E0E0/000000?text=LOGO'; console.error('Error loading logo image.');">
-                        </div>
+                <div>
                     <label for="officeName" class="block text-sm font-medium text-gray-700">कार्यालयको नाम:</label>
                     <input type="text" id="officeName" name="officeName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="उदाहरण: वडा कार्यालय">
                 </div>
@@ -201,17 +182,17 @@
             <div class="letter-content text-gray-800 leading-relaxed text-base">
                 <!-- हेडर -->
                 <div class="flex justify-between items-start mb-4">
-                    <!-- लोगोको लागि खाली ठाउँ -->
+                    <!-- लोगो -->
                     <div class="w-24 h-24">
-                         <!-- <img src="emblem.png" alt="Nepal Emblem" class="w-24 h-auto object-contain"> -->
+                        <img src="emblem.png" alt="Placeholder Logo" class="w-24 h-auto object-contain">
                     </div>
-                   <div class="header-flex-item center text-red-600 text-center">
+                   <div class="text-red-600 text-center flex-grow">
                             <p class="text-lg font-bold">गलकोट नगरपालिका</p>
                             <p class="text-base font-bold"><span id="displayOfficeName"></span> कार्यालय</p>
                             <p class="text-base"><span id="displayOfficeAddress"></span>, बागलुङ</p>
                         </div>
-                        <div class="header-flex-item right w-24">
-                            <!-- खाली ठाउँ -->
+                        <div class="w-24">
+                           <!-- Empty div for alignment -->
                         </div>
                     </div>
 
@@ -310,24 +291,43 @@
                     }
                     value = value.replace(/[^\d]/g, ''); // अंक बाहेक अरु हटाउने
                     
+                    let formattedValue = '';
+                    if (value.length > 0) {
+                        formattedValue = value.slice(0, 4);
+                    }
                     if (value.length > 4) {
-                        value = value.slice(0, 4) + '/' + value.slice(4);
+                        formattedValue += '/' + value.slice(4, 6);
                     }
-                    if (value.length > 7) {
-                        value = value.slice(0, 7) + '/' + value.slice(7, 9);
+                    if (value.length > 6) {
+                        formattedValue += '/' + value.slice(6, 8);
                     }
-                    this.value = convertToNepaliDigits(value);
+                    
+                    this.value = convertToNepaliDigits(formattedValue);
                 });
             }
 
             setupDateInput('miti');
+
+            // अंक मात्र लिने फिल्डमा नेपाली वा अंग्रेजी दुवै अंकलाई स्वीकार गर्ने function
+            function setupNumberInput(elementId) {
+                const inputElement = document.getElementById(elementId);
+                inputElement.addEventListener('input', function() {
+                    const englishValue = convertToEnglishDigits(this.value);
+                    const nepaliValue = convertToNepaliDigits(englishValue);
+                    this.value = nepaliValue;
+                });
+            }
+
+            setupNumberInput('chalanNo');
+            setupNumberInput('ssbId');
+            setupNumberInput('duration');
 
             // वडा नं. विकल्पहरू स्वतः थप्ने
             const wardNoSelect = document.getElementById('wardNo');
             for (let i = 1; i <= 11; i++) {
                 const option = document.createElement('option');
                 option.value = i;
-                option.textContent = i;
+                option.textContent = convertToNepaliDigits(i);
                 wardNoSelect.appendChild(option);
             }
 
@@ -347,7 +347,7 @@
                 if (fiscalYear) {
                     const years = fiscalYear.split('/');
                     if (years.length === 2) {
-                        const formattedPatraSankhya = `${years[0].slice(-2)}/${years[1].slice(-2)}`;
+                        const formattedPatraSankhya = `${convertToNepaliDigits(years[0].slice(-2))}/${convertToNepaliDigits(years[1].slice(-2))}`;
                         patraSankhyaInput.value = formattedPatraSankhya;
                     } else {
                         patraSankhyaInput.value = '';
