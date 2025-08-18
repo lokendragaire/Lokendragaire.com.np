@@ -23,10 +23,54 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /*
+         * यो CSS कोडले विभिन्न मोड (लाइट, डार्क, नाइट) को लागि रङहरू परिभाषित गर्दछ।
+         * हामी CSS वेरिएबल्स (--variable-name) प्रयोग गर्छौं ताकि JavaScript ले सजिलैसँग रङहरू परिवर्तन गर्न सकोस्।
+         */
+        :root {
+            /* लाइट मोड (पूर्वनिर्धारित) */
+            --bg-color: #FFFFFF;
+            --text-color: #333;
+            --navbar-bg: #FFC0CB;
+            --navbar-brand-color: #228B22;
+            --navbar-link-color: #333;
+            --footer-bg: #F8F8F8;
+            --footer-text-color: #333;
+            --button-color: #f3f4f6;
+            --button-text-color: #333;
+            --button-hover-bg: #e5e7eb;
+        }
+        
+        /* डार्क मोड */
+        .dark-mode {
+            --bg-color: #1a202c; /* Tailwind's gray-900 */
+            --text-color: #f7fafc; /* Tailwind's gray-100 */
+            --navbar-bg: #2d3748;
+            --navbar-brand-color: #a7f3d0; /* Light green */
+            --navbar-link-color: #f7fafc;
+            --footer-bg: #2d3748;
+            --footer-text-color: #f7fafc;
+            --button-color: #2d3748;
+            --button-text-color: #e2e8f0;
+            --button-hover-bg: #4a5568;
+        }
+        
+        /* नाइट मोड (सेपिया जस्तै) */
+        .night-mode {
+            --bg-color: #f4f0e9;
+            --text-color: #4a413a;
+            --navbar-bg: #e5e0d3;
+            --navbar-brand-color: #4a413a;
+            --navbar-link-color: #4a413a;
+            --footer-bg: #d4cfc1;
+            --footer-text-color: #4a413a;
+            --button-color: #e5e0d3;
+            --button-text-color: #4a413a;
+            --button-hover-bg: #d4cfc1;
+        }
+
         /* Custom styles for social buttons and background colors not directly in Tailwind */
         .btn-social {
-            /* Increased size: w-32 h-32 (96px) */
-            /* Increased icon font size: text-5xl (3rem) */
             @apply inline-flex items-center justify-center w-32 h-32 rounded-full text-white text-5xl mx-1 transition-all duration-300 ease-in-out;
         }
         .btn-youtube { background-color: #FF0000; }
@@ -47,21 +91,22 @@
         .btn-map:hover { background-color: #e0a800; transform: scale(1.1); }
 
         body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: #FFFFFF; /* White background */
-            color: #333; /* Dark text for contrast */
-            min-height: 100vh; /* Ensure enough height for scrolling */
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
+            font-family: 'Montserrat', sans-serif;
         }
         main {
             flex: 1; /* Allow main content to grow and push footer down */
         }
         #mainNav {
-            background-color: #FFC0CB; /* Pink background for navbar */
+            background-color: var(--navbar-bg);
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: padding-top 0.3s ease-in-out, padding-bottom 0.3s ease-in-out;
-            z-index: 1000; /* Ensure navbar is on top */
+            transition: padding-top 0.3s ease-in-out, padding-bottom 0.3s ease-in-out, background-color 0.3s;
+            z-index: 1000;
         }
         #mainNav.navbar-shrink {
             padding-top: 0.5rem;
@@ -70,29 +115,27 @@
         #mainNav .navbar-brand {
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
-            color: #228B22; /* Forest Green for brand */
+            color: var(--navbar-brand-color);
         }
         #mainNav .nav-link {
-            color: #333; /* Dark text for links */
+            color: var(--navbar-link-color);
             font-weight: 600;
             transition: color 0.3s ease-in-out;
         }
         #mainNav .nav-link:hover, #mainNav .nav-link.active {
-            color: #228B22; /* Forest Green Accent */
+            color: var(--navbar-brand-color); /* Use the same brand color for hover */
         }
         header.masthead {
-            /* Background image for the entire hero section */
-            background-image: url('https://raw.githubusercontent.com/lokendragaire/Lokendragaire.com.np/main/brp.jpg'); /* Updated background image URL */
-            background-size: contain; /* Ensures the entire image is visible without cropping */
+            background-image: url('https://raw.githubusercontent.com/lokendragaire/Lokendragaire.com.np/main/brp.jpg');
+            background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
-            background-color: #cceeff; /* Changed to a slightly more blue color */
-            
-            padding: 8rem 0 0; /* Changed padding-bottom to 0 */
+            background-color: #cceeff;
+            padding: 8rem 0 0;
             text-align: center;
             position: relative;
             overflow: hidden;
-            border-radius: 0 0 20px 20px; /* Rounded bottom corners */
+            border-radius: 0 0 20px 20px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
@@ -104,21 +147,21 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent dark overlay */
-            z-index: 1; /* Below content, above background image */
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 1;
         }
         
         .masthead-content {
-            z-index: 2; /* Ensure content is above the overlay */
-            position: relative; /* Ensure z-index works */
-            color: #FFFFFF; /* White text for contrast against potential dark image */
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5); /* Optional: add shadow for better readability */
+            z-index: 2;
+            position: relative;
+            color: #FFFFFF;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
         }
         .masthead-heading,
         .masthead-subheading,
         .masthead-bio,
-        .masthead-content h2 { /* Targeting all text elements in masthead */
-            color: #FFFFFF; /* Ensure all text within masthead is white */
+        .masthead-content h2 {
+            color: #FFFFFF;
         }
 
         .masthead-heading {
@@ -140,23 +183,24 @@
         }
         .page-section {
             padding: 4rem 0;
-            background-color: #FFFFFF;
+            background-color: var(--bg-color);
         }
         .page-section h2 {
             font-size: 2.5rem;
             text-align: center;
             margin-bottom: 2rem;
-            color: #228B22;
+            color: var(--text-color);
         }
         .footer {
-            background-color: #F8F8F8;
+            background-color: var(--footer-bg);
             padding: 2rem 0;
-            color: #333;
+            color: var(--footer-text-color);
             border-radius: 20px 20px 0 0;
             box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            transition: background-color 0.3s, color 0.3s;
         }
         .footer h4 {
-            color: #228B22;
+            color: var(--navbar-brand-color);
             font-weight: 700;
             margin-bottom: 0.75rem;
         }
@@ -173,7 +217,7 @@
         /* Custom styles for dropdown */
         .dropdown-menu {
             position: absolute;
-            background-color: #FFC0CB; /* Same as navbar background */
+            background-color: var(--navbar-bg); /* Same as navbar background */
             min-width: 160px;
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
             z-index: 1;
@@ -184,7 +228,7 @@
             transform: translateX(-50%); /* Adjust for perfect centering */
         }
         .dropdown-menu a {
-            color: #333;
+            color: var(--navbar-link-color);
             padding: 12px 16px;
             text-decoration: none;
             display: block;
@@ -192,73 +236,73 @@
             transition: background-color 0.3s ease;
         }
         .dropdown-menu a:hover {
-            background-color: #e0e0e0; /* Lighter shade on hover */
-            color: #228B22; /* Forest Green Accent */
+            background-color: var(--button-hover-bg);
+            color: var(--navbar-brand-color);
         }
 
         /* Responsive adjustments */
         @media (max-width: 1023px) { /* For screens smaller than lg (1024px) */
             #mainNav .navbar-brand {
-                margin-right: auto; /* Push brand to left */
+                margin-right: auto;
             }
             #navbarResponsive {
-                width: 100%; /* Full width when collapsed */
-                flex-basis: 100%; /* Take full width */
+                width: 100%;
+                flex-basis: 100%;
                 flex-grow: 1;
-                align-items: flex-start; /* Align items to start */
+                align-items: flex-start;
             }
             #navbarResponsive ul {
-                flex-direction: column; /* Stack items vertically */
-                width: 100%; /* Full width for columns */
-                margin-left: 0; /* Remove auto margin */
+                flex-direction: column;
+                width: 100%;
+                margin-left: 0;
             }
             #navbarResponsive ul li {
-                width: 100%; /* Full width for list items */
-                text-align: left; /* Align text to left */
+                width: 100%;
+                text-align: left;
             }
             .dropdown-menu {
-                position: static; /* Remove absolute positioning */
-                transform: none; /* Remove transform */
-                width: 100%; /* Make it full width */
-                box-shadow: none; /* Remove shadow for cleaner look */
-                border-radius: 0; /* Remove border-radius */
-                margin-top: 0; /* Remove margin-top */
-                background-color: #f0f0f0; /* Slightly different background for nested items */
+                position: static;
+                transform: none;
+                width: 100%;
+                box-shadow: none;
+                border-radius: 0;
+                margin-top: 0;
+                background-color: #f0f0f0;
             }
             .dropdown-menu a {
-                padding-left: 2.5rem; /* Indent nested items */
+                padding-left: 2.5rem;
             }
             .navbar-toggler {
-                display: block; /* Show hamburger button on small screens */
+                display: block;
             }
             .search-container {
-                width: 100%; /* Full width for search on small screens */
-                margin-top: 1rem; /* Add some space */
+                width: 100%;
+                margin-top: 1rem;
             }
-            .search-container input { /* Adjust padding for icons */
-                padding-right: 4.5rem; /* Make space for both search and clear icons */
+            .search-container input {
+                padding-right: 4.5rem;
             }
             .search-container #searchActionButton {
-                right: 0.75rem; /* Adjust position for mobile */
+                right: 0.75rem;
             }
             .search-container #clearSearchIcon {
-                right: 2.5rem; /* Adjust position for mobile */
+                right: 2.5rem;
             }
         }
         @media (min-width: 1024px) { /* For large screens (lg) and up */
             .navbar-toggler {
-                display: none; /* Hide hamburger button on large screens */
+                display: none;
             }
             #navbarResponsive {
-                display: flex !important; /* Ensure it's flex on large screens */
+                display: flex !important;
             }
             .search-container {
-                width: auto; /* Auto width on large screens */
+                width: auto;
                 margin-top: 0;
-                margin-left: 1rem; /* Space from other elements */
+                margin-left: 1rem;
             }
             .search-container input {
-                padding-right: 4.5rem; /* Space for both icons */
+                padding-right: 4.5rem;
             }
             .search-container #searchActionButton {
                 right: 0.75rem;
@@ -273,11 +317,11 @@
         }
         /* Spinner styles */
         .spinner {
-            border: 2px solid rgba(0, 0, 0, 0.1); /* Smaller border for smaller spinner */
-            border-left-color: #228B22; /* Forest Green */
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #228B22;
             border-radius: 50%;
-            width: 16px; /* Smaller size */
-            height: 16px; /* Smaller size */
+            width: 16px;
+            height: 16px;
             animation: spin 1s linear infinite;
         }
 
@@ -288,12 +332,12 @@
 
         /* New highlight styles for nav items and dropdown items */
         .nav-item-highlight {
-            background-color: #a7f3d0; /* Light green for nav item */
+            background-color: #a7f3d0;
             border-radius: 8px;
-            padding: 0.5rem 0.75rem; /* Add padding to the highlighted link */
+            padding: 0.5rem 0.75rem;
         }
         .dropdown-item-highlight {
-            background-color: #bfdbfe; /* Light blue for dropdown item */
+            background-color: #bfdbfe;
             border-radius: 4px;
         }
 
@@ -301,7 +345,7 @@
         #adDisplayContainer {
             position: relative;
             width: 100%;
-            max-width: 250px; /* Thinner width for the ad */
+            max-width: 250px;
             overflow: hidden;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -310,7 +354,7 @@
         .slider {
             display: flex;
             transition: transform 0.5s ease-in-out;
-            height: 150px; /* Set a fixed height for a consistent look */
+            height: 150px;
         }
 
         .slide {
@@ -324,9 +368,9 @@
         .slide img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Prevents image cropping */
+            object-fit: contain;
             display: block;
-            cursor: pointer; /* Add a pointer cursor to indicate clickability */
+            cursor: pointer;
         }
 
         .slider-nav {
@@ -397,6 +441,38 @@
             width: 90%;
             max-width: 400px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* मोड परिवर्तन बटनहरूका लागि */
+        .mode-toggle {
+            display: flex;
+            gap: 0.5rem; /* बटनहरू बीचको दूरी कम गरियो */
+            margin-left: 0.5rem; /* लगइन बटनबाट अलिकति दूरीमा राखियो */
+            padding: 0.5rem; /* प्याडिङ कम गरियो */
+            background-color: var(--button-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .mode-toggle button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem; /* प्याडिङ कम गरियो */
+            color: var(--button-text-color);
+            font-size: 1.25rem; /* आइकन साइज सानो गरियो */
+            transition: transform 0.2s ease-in-out, background-color 0.2s;
+            border-radius: 50%;
+        }
+
+        .mode-toggle button:hover {
+            transform: scale(1.1);
+            background-color: var(--button-hover-bg);
+        }
+
+        .mode-toggle button.active {
+            transform: scale(1.2);
+            color: #3b82f6;
         }
     </style>
 </head>
@@ -520,9 +596,23 @@
                     </ul>
                     <!-- Login/Logout button -->
                     <li class="nav-item">
-                        <button id="loginButton" class="nav-link py-2 px-3 block text-blue-700 font-bold hover:bg-blue-100 rounded-md">
-                            <i class="fas fa-sign-in-alt mr-1"></i> लगइन
-                        </button>
+                        <div class="flex items-center">
+                            <button id="loginButton" class="nav-link py-2 px-3 block text-blue-700 font-bold hover:bg-blue-100 rounded-md">
+                                <i class="fas fa-sign-in-alt mr-1"></i> लगइन
+                            </button>
+                            <!-- Mode Switcher Buttons -->
+                            <div class="mode-toggle">
+                                <button id="light-mode-btn" data-mode="light" aria-label="Light Mode">
+                                    <i class="fas fa-sun"></i>
+                                </button>
+                                <button id="dark-mode-btn" data-mode="dark" aria-label="Dark Mode">
+                                    <i class="fas fa-moon"></i>
+                                </button>
+                                <button id="night-mode-btn" data-mode="night" aria-label="Night Mode (Sepia)">
+                                    <i class="fas fa-cloud-moon"></i>
+                                </button>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -1132,8 +1222,44 @@
             // Initial check and render on page load
             checkLoginStatus();
         });
+        
+        // ==========================================
+        //  मोड परिवर्तनको लागि JavaScript
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeButtons = document.querySelectorAll('.mode-toggle button');
+            const storedTheme = localStorage.getItem('theme') || 'light';
+
+            // Function to set theme for the entire page
+            function setTheme(theme) {
+                document.body.classList.remove('dark-mode', 'night-mode');
+                
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-mode');
+                } else if (theme === 'night') {
+                    document.body.classList.add('night-mode');
+                }
+                
+                themeButtons.forEach(btn => btn.classList.remove('active'));
+                const activeBtn = document.querySelector(`button[data-mode="${theme}"]`);
+                if (activeBtn) {
+                    activeBtn.classList.add('active');
+                }
+                
+                localStorage.setItem('theme', theme);
+            }
+
+            // Set the theme on page load
+            setTheme(storedTheme);
+
+            // Add click event listeners to the buttons
+            themeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const newTheme = button.getAttribute('data-mode');
+                    setTheme(newTheme);
+                });
+            });
+        });
     </script>
 </body>
 </html>
-
-
