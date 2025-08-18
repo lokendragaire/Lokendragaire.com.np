@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mode Switcher</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /*
+         * यो CSS कोडले विभिन्न मोड (लाइट, डार्क, नाइट) को लागि रङहरू परिभाषित गर्दछ।
+         * हामी CSS वेरिएबल्स (--variable-name) प्रयोग गर्छौं ताकि JavaScript ले सजिलैसँग रङहरू परिवर्तन गर्न सकोस्।
+         */
+        :root {
+            /* लाइट मोड (पूर्वनिर्धारित) */
+            --bg-color: #FFFFFF;
+            --text-color: #333;
+            --button-color: #f3f4f6;
+            --button-text-color: #333;
+            --button-hover-bg: #e5e7eb;
+        }
+
+        /* डार्क मोड */
+        .dark-mode {
+            --bg-color: #1a202c; /* Tailwind's gray-900 */
+            --text-color: #f7fafc; /* Tailwind's gray-100 */
+            --button-color: #2d3748;
+            --button-text-color: #e2e8f0;
+            --button-hover-bg: #4a5568;
+        }
+
+        /* नाइट मोड (सेपिया जस्तै) */
+        .night-mode {
+            --bg-color: #f4f0e9;
+            --text-color: #4a413a;
+            --button-color: #e5e0d3;
+            --button-text-color: #4a413a;
+            --button-hover-bg: #d4cfc1;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            font-family: sans-serif;
+        }
+
+        .mode-toggle {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: var(--button-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .mode-toggle button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.75rem;
+            color: var(--button-text-color);
+            font-size: 1.5rem;
+            transition: transform 0.2s ease-in-out, background-color 0.2s;
+            border-radius: 50%;
+        }
+
+        .mode-toggle button:hover {
+            transform: scale(1.1);
+            background-color: var(--button-hover-bg);
+        }
+
+        .mode-toggle button.active {
+            transform: scale(1.2);
+            color: #3b82f6; /* नीलो रङ */
+        }
+    </style>
+</head>
+<body>
+    <div class="p-8 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold mb-4">मोड परिवर्तन गर्नुहोस्</h1>
+        <p class="text-lg">तपाईं आफ्नो प्राथमिकता अनुसार दिन, रात वा अँध्यारो मोड रोज्न सक्नुहुन्छ।</p>
+    </div>
+
+    <!-- बटनहरू -->
+    <div class="mode-toggle">
+        <button id="light-mode-btn" data-mode="light" aria-label="Light Mode">
+            <i class="fas fa-sun"></i>
+        </button>
+        <button id="dark-mode-btn" data-mode="dark" aria-label="Dark Mode">
+            <i class="fas fa-moon"></i>
+        </button>
+        <button id="night-mode-btn" data-mode="night" aria-label="Night Mode (Sepia)">
+            <i class="fas fa-cloud-moon"></i>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeButtons = document.querySelectorAll('.mode-toggle button');
+            // localStorage बाट अन्तिम प्रयोग गरिएको थिम लिने, यदि छैन भने 'light'
+            const storedTheme = localStorage.getItem('theme') || 'light';
+
+            // थिम सेट गर्ने फङ्सन
+            function setTheme(theme) {
+                // पहिले सबै मोडका क्लासहरू हटाउने
+                document.body.classList.remove('light-mode', 'dark-mode', 'night-mode');
+                
+                // नयाँ क्लास थप्ने
+                if (theme !== 'light') {
+                    document.body.classList.add(theme + '-mode');
+                }
+                
+                // सक्रिय बटन अपडेट गर्ने
+                themeButtons.forEach(btn => btn.classList.remove('active'));
+                const activeBtn = document.querySelector(`button[data-mode="${theme}"]`);
+                if (activeBtn) {
+                    activeBtn.classList.add('active');
+                }
+                
+                // localStorage मा थिम बचत गर्ने
+                localStorage.setItem('theme', theme);
+            }
+
+            // पृष्ठ लोड हुँदा पूर्वनिर्धारित थिम सेट गर्ने
+            setTheme(storedTheme);
+
+            // बटनहरूमा क्लिक घटना थप्ने
+            themeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const newTheme = button.getAttribute('data-mode');
+                    setTheme(newTheme);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
