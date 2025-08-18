@@ -1137,8 +1137,6 @@
 </html>
 
 
-
-                
 <!DOCTYPE html>
 <html lang="ne">
 <head> 
@@ -1165,8 +1163,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /*
-        * यो CSS कोडमा विभिन्न मोड (light, dark, night) का लागि रङ्गहरू परिभाषित गरिएको छ।
-        * हामीले CSS variables (--variable-name) प्रयोग गरेका छौँ ताकि JavaScript ले सजिलै रङ्ग परिवर्तन गर्न सकोस्।
+        * This CSS code defines the colors for various modes (light, dark, night).
+        * We use CSS variables (--variable-name) so that JavaScript can easily change the colors.
         */
 
         :root {
@@ -1734,7 +1732,7 @@
                         </li>
                     </ul>
                     
-                    <!-- New Mode Toggle buttons -->
+                    <!-- New Mode Toggle buttons positioned right before the login button -->
                     <div class="mode-toggle">
                         <button id="light-mode-btn" data-mode="light" aria-label="Light Mode">
                             <i class="fas fa-sun"></i>
@@ -1845,7 +1843,7 @@
                     </p>
                     <div class="mt-4"> 
                         <a href="https://www.google.com/maps/search/Galkot+Municipality-2,+Baglung,+Nepal" target="_blank" title="View Galkot Municipality on Google Maps">
-                            <img src="image_f958e4.png" alt="Map of Galkot Municipality-2, Baglung" class="mx-auto rounded-lg shadow-md" style="max-width: 300px;">
+                            
                         </a>
                         <p class="text-xs text-gray-600 mt-2">Click the map to view location on Google Maps.</p>
                     </div>
@@ -2138,14 +2136,11 @@
             let slideInterval;
 
             // GitHub repository details - **IMPORTANT: These must match your repo's details**
-            // **महत्त्वपूर्ण: यी मानहरू तपाईंको वास्तविक GitHub रिपोजिटरीको विवरणसँग मिल्नुपर्छ।**
-            // <<== यहाँ आफ्नो GitHub username राख्नुहोस्
             const githubRepoOwner = 'lokendragaire'; 
-            // <<== यहाँ आफ्नो रिपोजिटरीको नाम राख्नुहोस्
             const githubRepoName = 'lokendragaire'; 
             const githubBranch = 'main';
             const githubBaseUrl = `https://raw.githubusercontent.com/${githubRepoOwner}/${githubRepoName}/${githubBranch}/`;
-            const githubLoginUrl = `https://github.com/${githubRepoOwner}/${githubRepoName}/`; // Changed to the repo's main page
+            const githubLoginUrl = `https://github.com/${githubRepoOwner}/${githubRepoName}/`; 
             
             // Log the constructed URL for debugging purposes
             console.log(`Debug: The base URL being used is: ${githubBaseUrl}`);
@@ -2254,11 +2249,10 @@
                 renderSlider();
                 
                 // Start auto-slide only if there are images
-                // यदि १ भन्दा बढी फोटो छ भने मात्र स्लाइडर चलाउने
                 if (images.length > 1) {
                     startAutoSlide();
                 } else {
-                    // यदि १ वा सो भन्दा कम फोटो छ भने, स्लाइडर रोक्ने
+                    // If there is 1 or fewer photos, stop the slider.
                     clearInterval(slideInterval);
                 }
             };
@@ -2279,7 +2273,7 @@
                         img.onclick = () => {
                             window.open(src, '_blank');
                         };
-                        // यदि छवि लोड हुन सकेन भने, त्रुटि सन्देशसहितको खाली (placeholder) छवि देखाउनुहोस्।
+                        // If image fails to load, display a placeholder image with an error message.
                         img.onerror = () => {
                             img.src = `NO Advertisement Avaliable`;
                         };
