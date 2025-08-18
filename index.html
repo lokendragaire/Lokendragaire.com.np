@@ -1135,3 +1135,1272 @@
     </script>
 </body>
 </html>
+
+
+
+                
+<!DOCTYPE html>
+<html lang="ne">
+<head> 
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Lokendra_Gaire</title>
+    <meta name="description" content="Lokendra Gaire's social and community engagement." />
+    <meta name="keywords" content="Lokendra Gaire, social engagement, community, politics, Nepal" />
+    <link rel="canonical" href="https://lokendragaire.com.np/politicaleng.html" />
+    <link rel="icon" type="image/x-icon" href="lok.ico" />
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LPGL4SRW14"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-LPGL4SRW14');
+</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Lato:wght@400;700;400italic;700italic&display=swap" rel="stylesheet" />
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /*
+        * यो CSS कोडमा विभिन्न मोड (light, dark, night) का लागि रङ्गहरू परिभाषित गरिएको छ।
+        * हामीले CSS variables (--variable-name) प्रयोग गरेका छौँ ताकि JavaScript ले सजिलै रङ्ग परिवर्तन गर्न सकोस्।
+        */
+
+        :root {
+            /* Light Mode (Default) */
+            --bg-color: #FFFFFF;
+            --text-color: #333;
+            --navbar-bg: #FFC0CB;
+            --navbar-text: #333;
+            --brand-color: #228B22;
+            --hero-bg: #cceeff;
+            --hero-text: #FFFFFF;
+            --social-bg: #F8F8F8;
+            --social-text: #333;
+            --footer-bg: #F8F8F8;
+            --footer-text: #333;
+            --footer-border: #E6E6E6;
+            --highlight-bg-primary: #a7f3d0;
+            --highlight-bg-secondary: #bfdbfe;
+            --ad-dot-active: white;
+            --ad-dot-inactive: rgba(255, 255, 255, 0.5);
+            --ad-nav-btn: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Dark Mode */
+        .dark-mode {
+            --bg-color: #1a202c; /* Tailwind's gray-900 */
+            --text-color: #f7fafc; /* Tailwind's gray-100 */
+            --navbar-bg: #2d3748; /* Tailwind's gray-800 */
+            --navbar-text: #e2e8f0; /* Tailwind's gray-200 */
+            --brand-color: #48bb78; /* Tailwind's green-500 */
+            --hero-bg: #4a5568; /* Tailwind's gray-700 */
+            --hero-text: #f7fafc;
+            --social-bg: #2d3748;
+            --social-text: #e2e8f0;
+            --footer-bg: #2d3748;
+            --footer-text: #e2e8f0;
+            --footer-border: #4a5568;
+            --highlight-bg-primary: #2f855a;
+            --highlight-bg-secondary: #2b6cb0;
+            --ad-dot-active: #f7fafc;
+            --ad-dot-inactive: rgba(247, 250, 252, 0.5);
+            --ad-nav-btn: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Night Mode (Sepia-like) */
+        .night-mode {
+            --bg-color: #f4f0e9;
+            --text-color: #4a413a;
+            --navbar-bg: #e5e0d3;
+            --navbar-text: #4a413a;
+            --brand-color: #5d534a;
+            --hero-bg: #e0d9c9;
+            --hero-text: #4a413a;
+            --social-bg: #e5e0d3;
+            --social-text: #4a413a;
+            --footer-bg: #e5e0d3;
+            --footer-text: #4a413a;
+            --footer-border: #d4cfc1;
+            --highlight-bg-primary: #c9bda5;
+            --highlight-bg-secondary: #b5a494;
+            --ad-dot-active: #4a413a;
+            --ad-dot-inactive: rgba(74, 65, 58, 0.5);
+            --ad-nav-btn: rgba(74, 65, 58, 0.5);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color); /* Use CSS variable */
+            color: var(--text-color); /* Use CSS variable */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+        }
+        main {
+            flex: 1;
+        }
+        #mainNav {
+            background-color: var(--navbar-bg); /* Use CSS variable */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: padding-top 0.3s ease-in-out, padding-bottom 0.3s ease-in-out, background-color 0.3s;
+            z-index: 1000;
+        }
+        #mainNav.navbar-shrink {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+        #mainNav .navbar-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--brand-color); /* Use CSS variable */
+        }
+        #mainNav .nav-link {
+            color: var(--navbar-text); /* Use CSS variable */
+            font-weight: 600;
+            transition: color 0.3s ease-in-out;
+        }
+        #mainNav .nav-link:hover, #mainNav .nav-link.active {
+            color: var(--brand-color); /* Use CSS variable */
+        }
+        header.masthead {
+            background-image: url('https://raw.githubusercontent.com/lokendragaire/Lokendragaire.com.np/main/brp.jpg');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: var(--hero-bg); /* Use CSS variable */
+            padding: 8rem 0 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        header.masthead::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        
+        .masthead-content {
+            z-index: 2;
+            position: relative;
+            color: var(--hero-text); /* Use CSS variable */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+        .masthead-heading,
+        .masthead-subheading,
+        .masthead-bio,
+        .masthead-content h2 {
+            color: var(--hero-text); /* Ensure all text within masthead is using the variable */
+        }
+
+        .masthead-heading {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+        }
+        .masthead-subheading {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .masthead-bio {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        .social-links h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .page-section {
+            padding: 4rem 0;
+            background-color: var(--bg-color); /* Use CSS variable */
+        }
+        .page-section h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--brand-color); /* Use CSS variable */
+        }
+        .footer {
+            background-color: var(--footer-bg); /* Use CSS variable */
+            padding: 2rem 0;
+            color: var(--footer-text); /* Use CSS variable */
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+        }
+        .footer h4 {
+            color: var(--brand-color); /* Use CSS variable */
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        .footer p.lead {
+            color: var(--footer-text); /* Use CSS variable */
+            font-size: 0.95rem;
+        }
+        .copyright {
+            background-color: var(--footer-border); /* Use CSS variable */
+            color: var(--footer-text); /* Use CSS variable */
+            padding: 1rem 0;
+            font-size: 0.8rem;
+        }
+        /* Custom styles for dropdown */
+        .dropdown-menu {
+            position: absolute;
+            background-color: var(--navbar-bg); /* Use CSS variable */
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 8px;
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .dropdown-menu a {
+            color: var(--navbar-text); /* Use CSS variable */
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            transition: background-color 0.3s ease;
+        }
+        .dropdown-menu a:hover {
+            background-color: var(--footer-border); /* Lighter shade on hover */
+            color: var(--brand-color); /* Forest Green Accent */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1023px) {
+            #mainNav .navbar-brand {
+                margin-right: auto;
+            }
+            #navbarResponsive {
+                width: 100%;
+                flex-basis: 100%;
+                flex-grow: 1;
+                align-items: flex-start;
+            }
+            #navbarResponsive ul {
+                flex-direction: column;
+                width: 100%;
+                margin-left: 0;
+            }
+            #navbarResponsive ul li {
+                width: 100%;
+                text-align: left;
+            }
+            .dropdown-menu {
+                position: static;
+                transform: none;
+                width: 100%;
+                box-shadow: none;
+                border-radius: 0;
+                margin-top: 0;
+                background-color: rgba(0,0,0,0.1); /* Slightly different background for nested items */
+            }
+            .dropdown-menu a {
+                padding-left: 2.5rem;
+            }
+            .navbar-toggler {
+                display: block;
+            }
+            .search-container {
+                width: 100%;
+                margin-top: 1rem;
+            }
+            .search-container input {
+                padding-right: 4.5rem;
+            }
+            .search-container #searchActionButton {
+                right: 0.75rem;
+            }
+            .search-container #clearSearchIcon {
+                right: 2.5rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .navbar-toggler {
+                display: none;
+            }
+            #navbarResponsive {
+                display: flex !important;
+            }
+            .search-container {
+                width: auto;
+                margin-top: 0;
+                margin-left: 1rem;
+            }
+            .search-container input {
+                padding-right: 4.5rem;
+            }
+            .search-container #searchActionButton {
+                right: 0.75rem;
+            }
+            .search-container #clearSearchIcon {
+                right: 2.5rem;
+            }
+        }
+        .highlight {
+            background-color: yellow;
+            font-weight: bold;
+        }
+        /* Spinner styles */
+        .spinner {
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--brand-color);
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* New highlight styles for nav items and dropdown items */
+        .nav-item-highlight {
+            background-color: var(--highlight-bg-primary);
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+        }
+        .dropdown-item-highlight {
+            background-color: var(--highlight-bg-secondary);
+            border-radius: 4px;
+        }
+
+        /* Advertisement Slider Styles */
+        #adDisplayContainer {
+            position: relative;
+            width: 100%;
+            max-width: 250px;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 150px;
+        }
+
+        .slide {
+            min-width: 100%;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            cursor: pointer;
+        }
+
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 0.5rem;
+        }
+
+        .nav-btn {
+            background: var(--ad-nav-btn);
+            color: var(--ad-dot-active);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 0.5rem;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--ad-dot-inactive);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .dot.active {
+            background-color: var(--ad-dot-active);
+        }
+
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: var(--bg-color); /* Use CSS variable */
+            padding: 2rem;
+            border: 1px solid #888;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Theming specific social button styles (optional) */
+        .dark-mode .btn-social, .night-mode .btn-social {
+            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+        }
+
+        .mode-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: 1rem;
+        }
+
+        .mode-toggle button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            color: var(--navbar-text);
+            transition: transform 0.2s ease-in-out, color 0.2s;
+            border-radius: 50%;
+        }
+
+        .mode-toggle button:hover {
+            transform: scale(1.1);
+            color: var(--brand-color);
+        }
+
+        .mode-toggle button.active {
+            transform: scale(1.2);
+            color: var(--brand-color);
+        }
+    </style>
+</head>
+<body id="page-top">
+    <!-- Navigation (Copied from index.html for consistency) -->
+    <nav class="navbar fixed-top py-3" id="mainNav"> 
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a class="navbar-brand text-2xl font-bold" href="index.html">Your Useful Source</a>
+            
+            <!-- Search Bar -->
+            <div class="search-container relative flex items-center ml-4">
+                <input type="text" id="searchInput" placeholder="Search..." class="form-control rounded-full py-2 px-4 pr-18 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm w-full lg:w-48">
+                <button id="searchActionButton" class="absolute right-0 top-0 mt-2 mr-3 text-gray-600 hover:text-green-700 focus:outline-none flex items-center justify-center">
+                    <i class="fas fa-search" id="searchIcon"></i>
+                    <i class="fas fa-times hidden" id="clearSearchIcon"></i>
+                    <div id="loadingSpinner" class="hidden spinner"></div>
+                </button>
+            </div>
+
+            <!-- Navbar Toggler for mobile -->
+            <button class="navbar-toggler lg:hidden focus:outline-none ml-4" type="button" onclick="toggleNavbar()">
+                <i class="fas fa-bars text-3xl text-gray-700"></i>
+            </button>
+
+            <div class="hidden lg:flex items-center w-auto" id="navbarResponsive"> 
+                <ul class="navbar-nav flex space-x-4 ml-auto"> 
+                    <li class="nav-item"><a class="nav-link py-2 px-3 block" href="About.html">About</a></li>
+                    
+                    <!-- First Column of Dropdowns -->
+                    <ul class="navbar-nav flex lg:space-x-4 lg:ml-auto">
+                        <!-- Portfolio Dropdown -->
+                        <li class="nav-item relative group">
+                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('portfolioDropdown')">Portfolio <i class="fas fa-caret-down ml-1"></i></a>
+                            <div id="portfolioDropdown" class="dropdown-menu hidden">
+                                <a href="portfolio.html#projects" class="flex items-center"><i class="fas fa-project-diagram mr-2 text-blue-600"></i>Projects</a>
+                                <a href="*****#achievements" class="flex items-center"><i class="fas fa-trophy mr-2 text-yellow-600"></i>Achievements</a>
+                                <a href="*******#skills" class="flex items-center"><i class="fas fa-code mr-2 text-red-600"></i>Skills</a>
+                                <a href="slide.html" class="flex items-center"><i class="fas fa-images mr-2 text-purple-600"></i>Gallery</a>
+                            </div>
+                        </li>
+
+                        <!-- Social Engagement Dropdown - Now a dropdown -->
+                        <li class="nav-item relative group">
+                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('socialEngagementDropdown')">Social Engagement <i class="fas fa-caret-down ml-1"></i></a>
+                            <div id="socialEngagementDropdown" class="dropdown-menu hidden">
+                                <a href="fsu.html" class="flex items-center"><i class="fas fa-graduation-cap mr-2 text-green-700"></i>गलकोट बहुमुखी क्याम्पस: निवर्तमान अध्यक्ष (स्वतन्त्र विद्यार्थी युनियन)</a>
+    
+                                <a href="#" class="flex items-center"><i class="fas fa-users mr-2 text-blue-700"></i>निजामती कर्मचारी युनियन: गलकोट सदस्य</a>
+                                <a href="#" class="flex items-center"><i class="fas fa-running mr-2 text-purple-700"></i>जनजागृति युवा क्लब: सहसचिव</a>
+                                <a href="#" class="flex items-center"><i class="fas fa-hand-holding-heart mr-2 text-orange-700"></i>लायन्स क्लब अफ गलकोट घुम्टे: Charter Member</a>
+                                <a href="#" class="flex items-center"><i class="fas fa-globe-americas mr-2 text-red-700"></i>रोट्र्याक्ट क्लब अफ गलकोट बागलुङ: International Development Chair</a>
+                               
+                            </div>
+                        </li>
+                        
+                        <!-- Trading Dropdown -->
+                        <li class="nav-item relative group">
+                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('tradingDropdown')">Trading <i class="fas fa-caret-down ml-1"></i></a>
+                            <div id="tradingDropdown" class="dropdown-menu hidden">
+                                <a href="https://meroshare.cdsc.com.np/" target="_blank" class="flex items-center"><i class="fas fa-chart-line mr-2 text-green-600"></i>MeroShare</a>
+                                <a href="https://www.nepalstock.com.np/" target="_blank" class="flex items-center"><i class="fas fa-chart-area mr-2 text-red-600"></i>NEPSE</a>
+                            <a href="0000" target="_blank" class="flex items-center"><i class="fas fa-chart-area mr-2 text-red-600"></i>NewsPortal Hamro Sansar</a>
+
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- Second Column of Dropdowns -->
+                    <ul class="navbar-nav flex lg:space-x-4 lg:ml-auto">
+                        <!-- Banking services Dropdown -->
+                        <li class="nav-item relative group">
+                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('Banking servicesDropdown')">Banking services <i class="fas fa-caret-down ml-1"></i></a>
+                            <div id="Banking servicesDropdown" class="dropdown-menu hidden"> 
+                                 <a href="commercialbank.html" class="flex items-center"><i class="fas fa-building mr-2 text-blue-600"></i>वाणिज्य बैँहरुको सेवा</a>
+                                 <a href="developmentbank.html" class="flex items-center"><i class="fas fa-building mr-2 text-green-600"></i>विकास बैँक बैँहरुको सेवा</a>
+<a href="wallet.html" class="flex items-center"><i class="fas fa-building mr-2 text-green-900"></i>Wallet service</a>
+                            </div>
+                        </li>
+
+                        <!-- Government Uses sites Dropdown -->
+                        <li class="nav-item relative group">
+                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('governmentSitesDropdown')">Government Uses sites <i class="fas fa-caret-down ml-1"></i></a>
+                            <div id="governmentSitesDropdown" class="dropdown-menu hidden"> 
+                                <a href="e-services.html" class="flex items-center"><i class="fas fa-earth mr-2 text-blue-600"></i>विद्युतिय सेवाहरु</a>
+                                <a href="https://sutra.fcgo.gov.np" target="_blank" class="flex items-center"><i class="fas fa-globe mr-2 text-indigo-600"></i>सूत्र (Sutra)</a>
+                                <a href="https://ipfms.fcgo.gov.np" target="_blank" class="flex items-center"><i class="fas fa-building mr-2 text-green-600"></i>IPFMS</a>
+                                <a href="https://ss.donidcr.gov.np/" target="_blank" class="flex items-center"><i class="fas fa-sign-in-alt mr-2 text-blue-500"></i>सामाजिक सुरक्षा भत्ता प्रणाली login</a>
+                                <a href="https://online.donidcr.gov.np/" target="_blank" class="flex items-center"><i class="fas fa-sign-in-alt mr-2 text-blue-500"></i>व्यक्तिगत घटना दर्ता प्रणाली login</a>
+                                <a href="https://versrpt.donidcr.gov.np/.donidcr.gov.np/" target="_blank" class="flex items-center"><i class="fas fa-sign-in-alt mr-2 text-blue-500"></i>हाल र साविक ठेगाना परिवर्तन</a>
+                                <a href="https://attendance.gov.np" target="_blank" class="flex items-center"><i class="fas fa-globe mr-2 text-indigo-600"></i>विद्युतिय हाजिरी प्रणाली (E-hajiri)</a>
+                                <a href="https://newpams.fcgo.gov.np/#/Login" target="_blank" class="flex items-center"><i class="fas fa-sign-in-alt mr-2 text-blue-500"></i>Lmbis Login</a>
+                                <a href="https://lmbis.gov.np//#/Login" target="_blank" class="flex items-center"><i class="fas fa-sign-in-alt mr-2 text-blue-500"></i>New PAMS Login</a>
+                                <a href="https://hmis.gov.np/hmis/dhis-web-commons/security/login.action/Login" target="_blank" class="flex items-center"><i class="fas fa-sign-in-alt mr-2 text-blue-500"></i>स्वास्थ्य व्यवस्थापन सूचना प्रणाली</a>
+                                <a href="https://ehmishttps://ehmis.org/" target="_blank" class="flex items-center"><i class="fas fa-sign-in-alt mr-2 text-blue-500"></i>ehmis portal</a>
+                                
+                            </div>
+                        </li> 
+
+                        <!-- Important Links Dropdown -->
+                        <li class="nav-item relative group">
+                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('importantLinksDropdown')">Important Links <i class="fas fa-caret-down ml-1"></i></a>
+                            <div id="importantLinksDropdown" class="dropdown-menu hidden">
+                                <a href="link.html" class="flex items-center"><i class="fas fa-briefcase mr-2 text-blue-600"></i>आवश्यक पोर्टलहरू</a>
+                                <a href="edu.html" class="flex items-center"><i class="fas fa-book mr-2 text-yellow-600"></i>शिक्षा सम्बन्धित पोर्टलहरू</a>
+                                <a href="finance.html" class="flex items-center"><i class="fas fa-coins mr-2 text-orange-600"></i>वित्तीय सेवाहरू</a>
+                                <a href="health.html" class="flex items-center"><i class="fas fa-plus-circle mr-2 text-red-600"></i>स्वास्थ्य सम्बन्धित पोर्टलहरू</a>
+                                <a href="karmachari.html" class="flex items-center"><i class="fas fa-user-tie mr-2 text-purple-600"></i>शिक्षक कर्मचारी पोर्टल</a>
+                                <a href="bi.html" class="flex items-center"><i class="fas fa-building mr-2 text-indigo-600"></i>बैँक, विमा कम्पनी तथा पुनर्विमा कम्पनीहरु</a>
+                            </div>
+                        </li>
+                        
+                        <!-- Direct Contact Dropdown -->
+                        <li class="nav-item relative group">
+                            <a class="nav-link py-2 px-3 block cursor-pointer" onclick="toggleDropdown('directContactDropdown')">Direct Contact <i class="fas fa-caret-down ml-1"></i></a>
+                            <div id="directContactDropdown" class="dropdown-menu hidden">
+                                <a href="tel:+9779869065252" class="flex items-center"><i class="fas fa-phone mr-2 text-green-500"></i>+977 9869065252</a>
+                                <a href="/cdn-cgi/l/email-protection#d0bcbfbbb5beb4a2b1feb7b1b9a2b5fee7e090b7bdb1b9bcfeb3bfbd" class="flex items-center"><i class="fas fa-envelope mr-2 text-red-500"></i><span class="__cf_email__" data-cfemail="9af6f5f1fff4fee8fbb4fdfbf3e8ffb4adaadafdf7fbf3f6b4f9f5f7">[email&#160;protected]</span></a>
+                                <a href="https://maps.google.com/?q=Galkot+Municipality-2,+Baglung,+Nepal" target="_blank" class="flex items-center"><i class="fas fa-map-marker-alt mr-2 text-blue-500"></i>Galkot Municipality-2, Baglung</a>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <!-- New Mode Toggle buttons -->
+                    <div class="mode-toggle">
+                        <button id="light-mode-btn" data-mode="light" aria-label="Light Mode">
+                            <i class="fas fa-sun"></i>
+                        </button>
+                        <button id="dark-mode-btn" data-mode="dark" aria-label="Dark Mode">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <button id="night-mode-btn" data-mode="night" aria-label="Night Mode (Sepia)">
+                            <i class="fas fa-coffee"></i>
+                        </button>
+                    </div>
+
+                    <!-- Login/Logout button -->
+                    <li class="nav-item">
+                        <button id="loginButton" class="nav-link py-2 px-3 block text-blue-700 font-bold hover:bg-blue-100 rounded-md">
+                            <i class="fas fa-sign-in-alt mr-1"></i> लगइन
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Masthead (Hero Section) - Copied from index.html -->
+    <header class="masthead relative">
+        <div class="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-center lg:justify-start relative z-20">
+            <div class="masthead-content text-center lg:text-left lg:w-1/2 p-4 lg:p-8">
+                <h2 class="text-xl mb-2">WELCOME TO MY WORLD</h2>
+                <h1 class="masthead-heading text-uppercase font-bold mb-2">Hi, I'm Lokendra Gaire</h1>
+                <h2 class="masthead-subheading font-bold text-black">MIS Operator</h2>
+                <h2 class="masthead-heading text-uppercase font-bold mb-2 text-blue-500">Head of Department</h2>
+                <p class="masthead-bio mt-4 text-white">
+                    Social Security and Vital Registration Department <br> Galkot Municipality Office <br> Galkot, Baglung, Nepal
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Social Media Links Section -->
+        <section class="page-section text-center py-8">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800">Find me on social media</h2>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a class="btn-social btn-youtube" href="https://www.youtube.com/@hamrogalkot9" target="_blank" aria-label="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a class="btn-social btn-facebook" href="https://www.facebook.com/lokendragaire7" target="_blank" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="btn-social btn-tiktok" href="https://www.tiktok.com/@mr.gairelokendra" target="_blank" aria-label="TikTok">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    <a class="btn-social btn-linkedin" href="https://www.linkedin.com/in/lokendra-gaire-70b1b1275/" target="_blank" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a class="btn-social btn-telegram" href="https://t.me/lokendragaire70" target="_blank" aria-label="Telegram">
+                        <i class="fab fa-telegram-plane"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Login Modal -->
+        <div id="loginModal" class="modal hidden">
+            <div class="modal-content">
+                <h3 class="text-2xl font-bold mb-4 text-center text-gray-800">लगइन गर्नुहोस्</h3>
+                <form id="loginForm">
+                    <div class="mb-4">
+                        <label for="usernameInput" class="block text-sm font-medium text-gray-700 mb-1">प्रयोगकर्ता नाम:</label>
+                        <input type="text" id="usernameInput" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="passwordInput" class="block text-sm font-medium text-gray-700 mb-1">पासवर्ड:</label>
+                        <input type="password" id="passwordInput" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                    <div id="loginError" class="text-red-500 text-sm mb-4 hidden">गलत प्रयोगकर्ता नाम वा पासवर्ड।</div>
+                    <button type="submit" class="w-full bg-green-500 text-white py-2 px-4 rounded-md font-semibold hover:bg-green-600 transition-colors">
+                        लगइन
+                    </button>
+                    <button type="button" id="closeModalBtn" class="w-full bg-gray-300 text-gray-800 py-2 px-4 rounded-md font-semibold hover:bg-gray-400 transition-colors mt-2">
+                        रद्द गर्नुहोस्
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+<h2 class="text-3xl font-bold mb-6 text-gray-800">विभिन्न निवेदन तथा पत्र तयार गर्न यहाँ जानु होस</h2>
+                <div class="flex flex-wrap justify-center gap-4">
+                               <a href="renew.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>सामाजिक सुरक्षा भत्ता नविकरणको लागी निवेदन। </a>
+                    <a href="letter.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>लगतकट्टा पछी बैँकलाई लेख्ने पत्र। </a>
+                    <a href="letter1.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>खाताको रकम उपलब्ध गराउनका लागी बैँकलाई लेख्ने पत्र। </a>
+                    <a href="tamsuk.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>कपाली तमसुक तयार गर्नुहोस। </a>
+<a href="birth.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>जन्म प्रमाणित प्रमाणपत्र तयार गर्नुहोस।</a>
+                    <a href="application.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>दरखास्त आवेदन दिनुहोस। </a>
+                     <a href="sif.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>व्यवसाय दर्ता सिफारिस। </a>
+                                         <a href="test.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>under testing </a>
+    <!-- Footer (Copied from index.html for consistency) -->
+    <footer class="footer py-2">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap justify-center text-center">
+                <div class="w-full lg:w-1/2 mb-4 lg:mb-0">
+                    <h4 class="text-uppercase mb-2">Location</h4>
+                    <p class="lead text-sm text-gray-700">
+                        Galkot Municipality Office
+                        <br />
+                        Galkot, Baglung, Nepal
+                    </p>
+                    <div class="mt-4"> 
+                        <a href="https://www.google.com/maps/search/Galkot+Municipality-2,+Baglung,+Nepal" target="_blank" title="View Galkot Municipality on Google Maps">
+                            <img src="image_f958e4.png" alt="Map of Galkot Municipality-2, Baglung" class="mx-auto rounded-lg shadow-md" style="max-width: 300px;">
+                        </a>
+                        <p class="text-xs text-gray-600 mt-2">Click the map to view location on Google Maps.</p>
+                    </div>
+                </div>
+                <div class="w-full lg:w-1/2">
+                    <h4 class="text-uppercase mb-2">Website Description</h4>
+                    <p class="lead text-sm text-gray-700">A personal website to showcase my professional and social journey.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- This container holds the copyright and the newly positioned advertisement section -->
+    <div class="bg-gray-100 flex flex-col lg:flex-row justify-between items-center py-2 px-4">
+        <!-- The original copyright section -->
+        <div class="text-center text-gray-700 w-full lg:w-auto mb-4 lg:mb-0">
+            <small>Copyright © Lokendra Gaire 2024</small>
+        </div>
+        
+        <!-- Ad Slider Display Container - Now always visible to show the space -->
+        <div id="adDisplayContainer" class="w-full lg:w-1/4 max-w-sm mx-auto my-4 lg:my-0 lg:ml-4">
+             <!-- Advertisement Management Section - Only visible if logged in -->
+            <div id="adSection" class="mb-4 hidden">
+                
+    
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // JavaScript for toggling the dropdown menu
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            const allDropdowns = document.getElementsByClassName("dropdown-menu");
+
+            // Close all other dropdowns
+            for (let i = 0; i < allDropdowns.length; i++) {
+                let openDropdown = allDropdowns[i];
+                if (openDropdown.id !== dropdownId && !openDropdown.classList.contains('hidden')) {
+                    openDropdown.classList.add('hidden');
+                }
+            }
+
+            // Toggle the clicked dropdown
+            dropdown.classList.toggle("hidden");
+        }
+
+        // JavaScript for toggling the main navbar on mobile
+        function toggleNavbar() {
+            const navbar = document.getElementById("navbarResponsive");
+            navbar.classList.toggle("hidden");
+            navbar.classList.toggle("flex"); // Toggle flex to show/hide
+            navbar.classList.toggle("flex-col"); // Ensure vertical stacking when open
+        }
+
+        // Get references to search elements and spinner
+        const searchInput = document.getElementById('searchInput');
+        const searchActionButton = document.getElementById('searchActionButton');
+        const searchIcon = document.getElementById('searchIcon');
+        const clearSearchIcon = document.getElementById('clearSearchIcon');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        // Function to show/hide spinner
+        function showSpinner() {
+            searchIcon.classList.add('hidden');
+            clearSearchIcon.classList.add('hidden'); // Hide clear icon if showing
+            loadingSpinner.classList.remove('hidden');
+        }
+
+        function hideSpinner() {
+            loadingSpinner.classList.add('hidden');
+            // Decide whether to show search icon or clear icon based on input value
+            if (searchInput.value.length > 0) {
+                clearSearchIcon.classList.remove('hidden');
+            } else {
+                searchIcon.classList.remove('hidden');
+            }
+        }
+
+        // Function to remove all existing highlights (general text)
+        function removeTextHighlights() {
+            const highlights = document.querySelectorAll('.highlight');
+            highlights.forEach(span => {
+                const parent = span.parentNode;
+                // Replace the span with its text content
+                parent.replaceChild(document.createTextNode(span.textContent), span);
+                parent.normalize(); // Merge adjacent text nodes
+            });
+        }
+
+        // Function to remove nav and dropdown item highlights
+        function removeNavHighlights() {
+            document.querySelectorAll('#navbarResponsive .nav-link.nav-item-highlight').forEach(el => el.classList.remove('nav-item-highlight'));
+            document.querySelectorAll('.dropdown-item-highlight').forEach(el => el.classList.remove('dropdown-item-highlight'));
+            // Also ensure all dropdowns are closed when clearing highlights, unless a search specifically opens them
+            const allDropdowns = document.getElementsByClassName("dropdown-menu");
+            for (let i = 0; i < allDropdowns.length; i++) {
+                allDropdowns[i].classList.add('hidden');
+            }
+        }
+
+        // Combined search and highlight function
+        function performSearchAndHighlight(query) {
+            showSpinner();
+            removeTextHighlights(); // Clear general text highlights
+            removeNavHighlights(); // Clear nav/dropdown highlights
+
+            if (!query) {
+                hideSpinner();
+                return;
+            }
+
+            const regex = new RegExp(query, 'gi'); // Case-insensitive global search
+
+            // 1. Highlight main content (excluding navbar)
+            function highlightNode(node) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const parentTagName = node.parentNode.tagName;
+                    if (parentTagName !== 'SCRIPT' && parentTagName !== 'STYLE') {
+                        const match = node.nodeValue.match(regex);
+                        if (match) {
+                            const fragment = document.createDocumentFragment();
+                            let lastIndex = 0;
+                            node.nodeValue.replace(regex, (match, offset) => {
+                                fragment.appendChild(document.createTextNode(node.nodeValue.substring(lastIndex, offset)));
+                                const span = document.createElement('span');
+                                span.className = 'highlight';
+                                span.textContent = match;
+                                fragment.appendChild(span);
+                                lastIndex = offset + match.length;
+                                return match;
+                            });
+                            fragment.appendChild(document.createTextNode(node.nodeValue.substring(lastIndex)));
+                            node.parentNode.replaceChild(fragment, node);
+                        }
+                    }
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    if (node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE' && node.tagName !== 'NOSCRIPT' && node.id !== 'mainNav') { // Exclude mainNav from general content search
+                        for (let i = 0; i < node.childNodes.length; i++) {
+                            highlightNode(node.childNodes[i]);
+                        }
+                    }
+                }
+            }
+            highlightNode(document.body); // Start from body
+
+            // 2. Highlight Nav Items and Dropdown Items specifically
+            const navItems = document.querySelectorAll('#navbarResponsive .nav-item');
+            navItems.forEach(navItem => {
+                const navLink = navItem.querySelector('.nav-link');
+                const dropdownMenu = navItem.querySelector('.dropdown-menu');
+                let navItemMatched = false;
+
+                // Get only the text content of the navLink, excluding child elements like the icon
+                let navLinkText = '';
+                if (navLink) {
+                    for (let child of navLink.childNodes) {
+                        if (child.nodeType === Node.TEXT_NODE) {
+                            navLinkText += child.nodeValue;
+                        }
+                    }
+                }
+
+                if (navLinkText.match(regex)) {
+                    navLink.classList.add('nav-item-highlight');
+                    navItemMatched = true;
+                }
+
+                // Check dropdown items if it's a dropdown
+                if (dropdownMenu) {
+                    const dropdownLinks = dropdownMenu.querySelectorAll('a');
+                    dropdownLinks.forEach(dropdownLink => {
+                        if (dropdownLink.textContent.match(regex)) {
+                            dropdownLink.classList.add('dropdown-item-highlight');
+                            // Ensure parent dropdown is open
+                            dropdownMenu.classList.remove('hidden');
+                            // Highlight the parent nav item if not already
+                            if (!navItemMatched) {
+                                navLink.classList.add('nav-item-highlight');
+                            }
+                        }
+                    });
+                }
+            });
+
+            // Highlight the social media section links (only the remaining ones)
+            const socialLinksSection = document.querySelector('main .page-section .flex.flex-wrap');
+            if (socialLinksSection) {
+                const socialLinks = socialLinksSection.querySelectorAll('a');
+                socialLinks.forEach(link => {
+                    if (link.textContent.match(regex) || (link.getAttribute('aria-label') && link.getAttribute('aria-label').match(regex))) {
+                        link.classList.add('highlight'); // Use general highlight for these buttons
+                    }
+                });
+            }
+
+
+            setTimeout(() => {
+                hideSpinner();
+            }, 50); // Small delay to show spinner
+        }
+
+        // Function to clear search and highlights
+        function clearSearch() {
+            searchInput.value = '';
+            removeTextHighlights();
+            removeNavHighlights(); // Clear nav and dropdown highlights
+            // Also remove highlights from social media section
+            document.querySelectorAll('main .page-section .flex.flex-wrap .highlight').forEach(el => el.classList.remove('highlight'));
+            clearSearchIcon.classList.add('hidden');
+            searchIcon.classList.remove('hidden');
+        }
+
+        // Event listener for search action button click
+        searchActionButton.addEventListener('click', () => {
+            if (clearSearchIcon.classList.contains('hidden')) { // If search icon is visible, perform search
+                performSearchAndHighlight(searchInput.value);
+            } else { // If clear icon is visible, clear search
+                clearSearch();
+            }
+        });
+
+        // Event listener for Enter key in search input
+        searchInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                performSearchAndHighlight(searchInput.value);
+            }
+        });
+
+        // Event listener for input changes to show/hide clear icon
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value.length > 0) {
+                searchIcon.classList.add('hidden');
+                clearSearchIcon.classList.remove('hidden');
+            } else {
+                searchIcon.classList.remove('hidden');
+                clearSearchIcon.classList.add('hidden');
+                removeTextHighlights(); // Also remove highlights when input is cleared manually
+                removeNavHighlights(); // Clear nav and dropdown highlights when input is cleared
+                // Also remove highlights from social media section when input is cleared
+                document.querySelectorAll('main .page-section .flex.flex-wrap .highlight').forEach(el => el.classList.remove('highlight'));
+            }
+        });
+
+        // Close dropdowns and navbar if the user clicks outside of them
+        window.onclick = function(event) {
+            // Close dropdowns
+            if (!event.target.matches('.nav-link') && !event.target.closest('.dropdown-menu') && !event.target.closest('.search-container')) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (!openDropdown.classList.contains('hidden')) {
+                        openDropdown.classList.add('hidden');
+                    }
+                }
+                // Also remove nav/dropdown highlights if clicking outside
+                removeNavHighlights();
+            }
+
+            // Close navbar if click is outside navbar and it's open
+            const navbar = document.getElementById("mainNav");
+            const navbarResponsive = document.getElementById("navbarResponsive");
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const searchContainer = document.querySelector('.search-container');
+            const modeToggleContainer = document.querySelector('.mode-toggle');
+
+            if (!navbar.contains(event.target) && !navbarToggler.contains(event.target) && !searchContainer.contains(event.target) && !modeToggleContainer.contains(event.target)) {
+                if (!navbarResponsive.classList.contains('hidden')) {
+                    navbarResponsive.classList.add('hidden');
+                    navbarResponsive.classList.remove('flex', 'flex-col');
+                }
+            }
+        }
+        
+        // ==========================================
+        //  Advertisement Slider & Login Logic
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const adSlider = document.getElementById('adSlider');
+            const prevAdBtn = document.getElementById('prevAdBtn');
+            const nextAdBtn = document.getElementById('nextAdBtn');
+            const adDots = document.getElementById('adDots');
+            const adSection = document.getElementById('adSection');
+            const adDisplayContainer = document.getElementById('adDisplayContainer');
+
+            const loginButton = document.getElementById('loginButton');
+            const loginModal = document.getElementById('loginModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const loginForm = document.getElementById('loginForm');
+            const loginError = document.getElementById('loginError');
+            
+            // This is the interval ID for the automatic slide.
+            let slideInterval;
+
+            // GitHub repository details - **IMPORTANT: These must match your repo's details**
+            // **महत्त्वपूर्ण: यी मानहरू तपाईंको वास्तविक GitHub रिपोजिटरीको विवरणसँग मिल्नुपर्छ।**
+            // <<== यहाँ आफ्नो GitHub username राख्नुहोस्
+            const githubRepoOwner = 'lokendragaire'; 
+            // <<== यहाँ आफ्नो रिपोजिटरीको नाम राख्नुहोस्
+            const githubRepoName = 'lokendragaire'; 
+            const githubBranch = 'main';
+            const githubBaseUrl = `https://raw.githubusercontent.com/${githubRepoOwner}/${githubRepoName}/${githubBranch}/`;
+            const githubLoginUrl = `https://github.com/${githubRepoOwner}/${githubRepoName}/`; // Changed to the repo's main page
+            
+            // Log the constructed URL for debugging purposes
+            console.log(`Debug: The base URL being used is: ${githubBaseUrl}`);
+
+            let images = []; // Array to store image URLs
+            let currentSlideIndex = 0;
+
+            // Login Modal Functions
+            const openLoginModal = () => {
+                loginModal.classList.remove('hidden');
+            };
+
+            const closeLoginModal = () => {
+                loginModal.classList.add('hidden');
+                loginError.classList.add('hidden');
+                loginForm.reset();
+            };
+
+            // Login form submission handler
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const username = document.getElementById('usernameInput').value;
+                const password = document.getElementById('passwordInput').value;
+
+                // Hardcoded credentials for demonstration
+                // Replace with a real authentication system if needed
+                if (username === 'lokendra' && password === 'password123') {
+                    // Simulate successful login
+                    localStorage.setItem('isLoggedIn', 'true');
+                    closeLoginModal();
+                    // Open a new tab to the GitHub repository page where they can manage files
+                    window.open(githubLoginUrl, '_blank');
+                    checkLoginStatus();
+                } else {
+                    loginError.classList.remove('hidden');
+                }
+            });
+
+            closeModalBtn.addEventListener('click', closeLoginModal);
+
+            // Function to handle the logout
+            const handleLogout = () => {
+                localStorage.removeItem('isLoggedIn');
+                checkLoginStatus();
+            };
+
+            // Function to check login status from localStorage and update UI
+            const checkLoginStatus = () => {
+                const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+                
+                if (isLoggedIn) {
+                    loginButton.innerHTML = '<i class="fas fa-sign-out-alt mr-1"></i> लगआउट';
+                    loginButton.classList.remove('text-blue-700', 'hover:bg-blue-100');
+                    loginButton.classList.add('text-red-700', 'hover:bg-red-100');
+                    adSection.classList.remove('hidden'); // Show ad management for logged-in user
+                    loginButton.onclick = handleLogout; // Set logout function
+                } else {
+                    loginButton.innerHTML = '<i class="fas fa-sign-in-alt mr-1"></i> लगइन';
+                    loginButton.classList.remove('text-red-700', 'hover:bg-red-100');
+                    loginButton.classList.add('text-blue-700', 'hover:bg-blue-100');
+                    adSection.classList.add('hidden'); // Hide ad management for logged-out user
+                    loginButton.onclick = openLoginModal; // Open modal for login
+                }
+                
+                // Always fetch images to display the slider, regardless of login status
+                fetchImagesFromGitHub();
+            };
+
+            // Function to fetch images from GitHub based on filenames
+            const fetchImagesFromGitHub = async () => {
+                images = []; // Clear existing images
+                const imageFilenames = [];
+                for (let i = 1; i <= 10; i++) { // Check for photo1.jpg to photo10.jpg
+                    imageFilenames.push(`photo${i}.jpg`);
+                }
+
+                const promises = imageFilenames.map(filename => {
+                    const imageUrl = `${githubBaseUrl}${filename}`;
+                    
+                    // Log the URL being fetched for debugging
+                    console.log(`Fetching image from: ${imageUrl}`);
+
+                    return fetch(imageUrl)
+                        .then(response => {
+                            if (response.ok) {
+                                console.log(`Successfully loaded image from: ${imageUrl}`);
+                                return imageUrl;
+                            } else {
+                                console.error(`Failed to load image from: ${imageUrl} (Status: ${response.status})`);
+                                return null;
+                            }
+                        })
+                        .catch(error => {
+                            console.error(`Error fetching image from ${imageUrl}:`, error);
+                            return null;
+                        });
+                });
+
+                const loadedImages = await Promise.all(promises);
+                images = loadedImages.filter(url => url !== null); // Keep only valid URLs
+                
+                if (images.length === 0) {
+                    console.warn("No valid images found on GitHub. Displaying placeholder.");
+                }
+                
+                renderSlider();
+                
+                // Start auto-slide only if there are images
+                // यदि १ भन्दा बढी फोटो छ भने मात्र स्लाइडर चलाउने
+                if (images.length > 1) {
+                    startAutoSlide();
+                } else {
+                    // यदि १ वा सो भन्दा कम फोटो छ भने, स्लाइडर रोक्ने
+                    clearInterval(slideInterval);
+                }
+            };
+            
+            // Function to render the slider based on the images array
+            const renderSlider = () => {
+                adSlider.innerHTML = '';
+                adDots.innerHTML = '';
+                
+                if (images.length > 0) {
+                    images.forEach((src, index) => {
+                        const slide = document.createElement('div');
+                        slide.className = 'slide relative'; 
+                        
+                        const img = document.createElement('img');
+                        img.src = src;
+                        img.alt = `Advertisement Image ${index + 1}`;
+                        img.onclick = () => {
+                            window.open(src, '_blank');
+                        };
+                        // यदि छवि लोड हुन सकेन भने, त्रुटि सन्देशसहितको खाली (placeholder) छवि देखाउनुहोस्।
+                        img.onerror = () => {
+                            img.src = `NO Advertisement Avaliable`;
+                        };
+                        slide.appendChild(img);
+                        adSlider.appendChild(slide);
+
+                        const dot = document.createElement('span');
+                        dot.className = 'dot';
+                        dot.addEventListener('click', () => {
+                            currentSlideIndex = index;
+                            showSlide();
+                        });
+                        adDots.appendChild(dot);
+                    });
+                    
+                    showSlide(); // Show the first slide
+                    prevAdBtn.style.display = 'block';
+                    nextAdBtn.style.display = 'block';
+                } else {
+                    // Display placeholder if no images and hide controls
+                    adSlider.innerHTML = '<div class="slide"><img src="https://placehold.co/800x400/CCCCCC/333333?text=No+Photos+Found" alt="Placeholder Advertisement"></div>';
+                    prevAdBtn.style.display = 'none';
+                    nextAdBtn.style.display = 'none';
+                }
+            };
+
+            // Function to show a specific slide
+            const showSlide = () => {
+                const slides = document.querySelectorAll('#adSlider .slide');
+                const dots = document.querySelectorAll('#adDots .dot');
+
+                if (slides.length === 0) return;
+
+                // Loop the index if it goes out of bounds
+                if (currentSlideIndex >= slides.length) {
+                    currentSlideIndex = 0;
+                }
+                if (currentSlideIndex < 0) {
+                    currentSlideIndex = slides.length - 1;
+                }
+
+                adSlider.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+
+                // Update active dot
+                dots.forEach(dot => dot.classList.remove('active'));
+                if(dots[currentSlideIndex]) {
+                    dots[currentSlideIndex].classList.add('active');
+                }
+            };
+
+            // Function to go to the next slide
+            const nextSlide = () => {
+                console.log(`Debug: Advancing to next slide. Current index: ${currentSlideIndex}`);
+                currentSlideIndex++;
+                showSlide();
+            };
+
+            // Function to go to the previous slide
+            const prevSlide = () => {
+                currentSlideIndex--;
+                showSlide();
+            };
+
+            // Start the auto-slide interval
+            const startAutoSlide = () => {
+                console.log("Debug: Attempting to start auto-slide interval.");
+                clearInterval(slideInterval); // Clear any existing interval
+                if (images.length > 1) {
+                    slideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+                    console.log("Debug: Auto-slide started successfully.");
+                } else {
+                    console.log("Debug: Not enough images to start auto-slide.");
+                }
+            };
+
+            // Event listeners for navigation buttons
+            nextAdBtn.addEventListener('click', nextSlide);
+            prevAdBtn.addEventListener('click', prevSlide);
+            
+            // ==========================================
+            //  Theme Toggle Logic (Light/Dark/Night)
+            // ==========================================
+            const themeButtons = document.querySelectorAll('.mode-toggle button');
+            const storedTheme = localStorage.getItem('theme') || 'light';
+
+            // Function to set the theme
+            function setTheme(theme) {
+                // Remove all mode classes first
+                document.body.classList.remove('light-mode', 'dark-mode', 'night-mode');
+                
+                // Add the new class
+                if (theme !== 'light') {
+                    document.body.classList.add(theme + '-mode');
+                }
+                
+                // Update active button
+                themeButtons.forEach(btn => btn.classList.remove('active'));
+                const activeBtn = document.querySelector(`button[data-mode="${theme}"]`);
+                if (activeBtn) {
+                    activeBtn.classList.add('active');
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('theme', theme);
+            }
+
+            // Set the initial theme on page load
+            setTheme(storedTheme);
+
+            // Add event listeners to the theme buttons
+            themeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const newTheme = button.getAttribute('data-mode');
+                    setTheme(newTheme);
+                });
+            });
+
+
+            // Initial check and render on page load
+            checkLoginStatus();
+        });
+    </script>
+</body>
+</html>
