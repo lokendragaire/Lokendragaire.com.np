@@ -53,6 +53,24 @@
             border-color: #2563eb;
         }
     </style>
+    <script>
+        // लगइन जाँच गर्ने। यदि लगइन गरिएको छैन भने, लगइन पेजमा फर्काउने।
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'hi.html';
+        }
+
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+यो कोड तपाईंको `index.html` फाइलको `<head>` सेक्सनमा `</head>` ट्यागभन्दा पहिले राख्नुहोस्। यसले तपाईंको वेबसाइटलाई सुरक्षित बनाउन मद्दत गर्नेछ।
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
