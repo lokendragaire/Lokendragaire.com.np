@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8">
+  <title>Stock Portfolio Tracker</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+    table, th, td { border: 1px solid #ccc; border-collapse: collapse; padding: 8px; text-align: center; }
+    th { background-color: #eee; }
+    input, button { margin: 5px; padding: 6px; }
+    button.edit-btn { background-color: #ffc107; }
+    button.delete-btn { background-color: #dc3545; color: white; }
+  </style>
+</head>
+<body>
+
+  <h2>📈 स्टक पोर्टफोलियो ट्रैकर (with Edit/Delete)</h2>
+
+  <div>
+    <input type="text" id="stock" placeholder="Stock Symbol (e.g. NTC)">
+    <input type="number" id="quantity" placeholder="Quantity" step="1">
+    <input type="number" id="buyPrice" placeholder="Buy Price" step="0.01">
+    <input type="number" id="rightShares" placeholder="Right Share Qty" step="1">
+    <input type="number" id="rightPrice" placeholder="Right Price" step="0.01">
+    <input type="number" id="currentPrice" placeholder="Current Price" step="0.01">
+    <button onclick="addOrUpdateStock()">➕ Add / 💾 Update</button>
+    <button onclick="downloadExcel()">📥 Excel</button>
+    <button onclick="downloadPDF()">📄 PDF</button>
+  </div>
+
+  <br>
+
+  <table id="portfolio">
+    <thead>
+      <tr>
+        <th>Stock</th>
+        <th>Qty</th>
+        <th>Buy Price</th>
+        <th>Right Qty</th>
+        <th>Right Price</th>
+        <th>Adjusted Price</th>
+        <th>Current Price</th>
+        <th>Return (Rs)</th>
+        <th>Return (%)</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    let editingIndex = -1;
+    let portfolioData = JSON.parse(localStorage.getItem("portfolioData")) || [];
+
+    function renderTable() {
+      const tbody = document.querySelector("#portfolio tbody");
+      tbody.innerHTML = '';
+
+      portfolioData.forEach((data, index) => {
+        const row = document.createElement("tr");
+
+        const totalShares = data.qty + data.rightQty;
+        const totalInvestment = (data.qty * data.buyPrice) + (data.rightQty * data.rightPrice);
+        const adjustedPrice = totalInvestment / totalShares;
+        const returnAmount = (data.currentPrice - adjustedPrice) * totalShares;
+        const returnPercent = ((data.currentPrice - adjustedPrice) / adjustedPrice) * 100;
+
+        row.innerHTML = `
+          <td>${data.stock}</td>
+          <td>${totalShares}</td>
+          <td>Rs. ${data.buyPrice.toFixed(2)}</td>
+          <td>${data.rightQty}</td>
+          <td>Rs. ${data.rightPrice.toFixed(2)}</td>
+          <td>Rs. ${adjustedPrice.toFixed(2)}</td>
+          <td>Rs. ${data.currentPrice.toFixed(2)}</td>
+          <td>Rs. ${returnAmount.toFixed(2)}</td>
+          <td>${returnPercent.toFixed(2)}%</td>
+          <td>
+            <button class="edit-btn" onclick="editStock(${index})">✏️</button>
+            <button class="delete-btn" onclick="deleteStock(${index})">🗑️</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function addOrUpdateStock() {
+      const data = {
+        stock: document.getElementById('stock').value.trim(),
+        qty: parseFloat(document.getElementById('quantity').value),
+        buyPrice: parseFloat(document.getElementById('buyPrice').value),
+        rightQty: parseFloat(document.getElementById('rightShares').value) || 0,
+        rightPrice: parseFloat(document.getElementById('rightPrice').value) || 0,
+        currentPrice: parseFloat(document.getElementById('currentPrice').value)
+      };
+
+      if (!data.stock || isNaN(data.qty) || isNaN(data.buyPrice) || isNaN(data.currentPrice)) {
+        alert("Please fill required fields");
+        return;
+      }
+
+      if (editingIndex >= 0) {
+        portfolioData[editingIndex] = data;
+        editingIndex = -1;
+      } else {
+        portfolioData.push(data);
+      }
+
+      localStorage.setItem("portfolioData", JSON.stringify(portfolioData));
+      renderTable();
+      clearForm();
+    }
+
+    function editStock(index) {
+      const data = portfolioData[index];
+      document.getElementById('stock').value = data.stock;
+      document.getElementById('quantity').value = data.qty;
+      document.getElementById('buyPrice').value = data.buyPrice;
+      document.getElementById('rightShares').value = data.rightQty;
+      document.getElementById('rightPrice').value = data.rightPrice;
+      document.getElementById('currentPrice').value = data.currentPrice;
+      editingIndex = index;
+    }
+
+    function deleteStock(index) {
+      if (confirm("Are you sure you want to delete this entry?")) {
+        portfolioData.splice(index, 1);
+        localStorage.setItem("portfolioData", JSON.stringify(portfolioData));
+        renderTable();
+      }
+    }
+
+    function clearForm() {
+      document.getElementById('stock').value = '';
+      document.getElementById('quantity').value = '';
+      document.getElementById('buyPrice').value = '';
+      document.getElementById('rightShares').value = '';
+      document.getElementById('rightPrice').value = '';
+      document.getElementById('currentPrice').value = '';
+    }
+
+    function downloadExcel() {
+      const wb = XLSX.utils.book_new();
+      const table = document.getElementById('portfolio');
+      const ws = XLSX.utils.table_to_sheet(table);
+      XLSX.utils.book_append_sheet(wb, ws, "Portfolio");
+      XLSX.writeFile(wb, "portfolio.xlsx");
+    }
+
+    async function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: "landscape" });
+
+      const table = document.getElementById('portfolio');
+      const rows = [...table.rows].map(row => [...row.cells].map(cell => cell.innerText));
+
+      rows.forEach((row, i) => {
+        row.forEach((cell, j) => {
+          doc.text(cell, 10 + j * 30, 10 + i * 10);
+        });
+      });
+
+      doc.save("portfolio.pdf");
+    }
+
+    // Initial rendering
+    renderTable();
+  </script>
+
+</body>
+</html>
