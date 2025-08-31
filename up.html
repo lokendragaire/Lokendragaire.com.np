@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>प्रयोगकर्ता लगइन</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Login Container -->
+    <div class="bg-white rounded-xl shadow-lg p-8 max-w-md w-full">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">लगइन गर्नुहोस्</h1>
+        <p class="text-center text-gray-600 mb-8">दैनिक कारोबारको लेखा हेर्नको लागि लगइन गर्नुहोस्।</p>
+        
+        <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();">
+            <div class="mb-4">
+                <label for="username" class="block text-gray-700 text-sm font-bold mb-2">प्रयोगकर्ता नाम:</label>
+                <input type="text" id="username" name="username" class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+            <div class="mb-6">
+                <label for="password" class="block text-gray-700 text-sm font-bold mb-2">पासवर्ड:</label>
+                <input type="password" id="password" name="password" class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+            <div class="flex flex-col items-center justify-center space-y-4">
+                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg focus:outline-none focus:shadow-outline transition-colors">
+                    लगइन
+                </button>
+                <a href="#" onclick="showForgotPasswordMessage()" class="text-blue-500 hover:underline text-sm font-semibold">पासवर्ड बिर्सनुभयो?</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Custom Message Box -->
+    <div id="messageBox" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-xl">
+            <p id="messageText" class="text-center text-gray-800 text-lg font-semibold mb-4"></p>
+            <button onclick="hideMessage()" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">बुझें</button>
+        </div>
+    </div>
+
+    <script>
+        function showMessage(message) {
+            document.getElementById('messageText').innerHTML = message;
+            document.getElementById('messageBox').classList.remove('hidden');
+        }
+
+        function hideMessage() {
+            document.getElementById('messageBox').classList.add('hidden');
+        }
+
+        function showForgotPasswordMessage() {
+            const emailMessage = `यदि तपाईंले पासवर्ड बिर्सनुभयो भने, कृपया **lokendra.gaire.70@gmail.com** मा एउटा इमेल पठाउनुहोस् र पासवर्ड रिसेट गर्न अनुरोध गर्नुहोस्।`;
+            const mailtoLink = `<a href="mailto:lokendra.gaire.70@gmail.com?subject=Password Reset Request&body=नमस्ते, मैले आफ्नो पासवर्ड बिर्सें र रिसेट गर्न चाहन्छु।" class="text-blue-500 hover:underline">इमेल पठाउन यहाँ क्लिक गर्नुहोस्</a>`;
+            showMessage(`${emailMessage}<br><br>${mailtoLink}`);
+        }
+
+        function handleLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // निर्दिष्ट username र password जाँच गर्ने
+            if (username === 'Siri' && password === 'Cloud') {
+                // लगइन सफल भएमा sessionStorage मा झन्डा सेट गर्ने
+                sessionStorage.setItem('isLoggedIn', 'true');
+                // मुख्य पृष्ठमा जाने
+                window.location.href = 'index.html';
+            } else {
+                // लगइन असफल भएमा त्रुटि सन्देश देखाउने
+                showMessage('प्रयोगकर्ता नाम वा पासवर्ड मिलेन।');
+            }
+        }
+    </script>
+</body>
+</html>
