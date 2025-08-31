@@ -480,8 +480,18 @@
     <!-- Navigation (Copied from index.html for consistency) -->
     <nav class="navbar fixed-top py-3" id="mainNav"> 
         <div class="container mx-auto px-4 flex justify-between items-center">
-            <a class="navbar-brand </a>
-            <link rel="icon" type="image/x-icon" href="l.png.jpeg" />
+            <a class="navbar-brand text-2xl font-bold" href="l.png.jpeg">
+  <img src="l.png.jpeg" alt="Logo" class="logo">
+</a>
+
+<style>
+  .logo {
+    width: 50px;      /* लोगोको size मिलाउन सक्नुहुन्छ */
+    height: 50px;
+    border-radius: 50%;  /* गोलो बनाउने */
+    object-fit: cover;   /* फोटो काटेर फिट गराउने */
+  }
+</style>
             <!-- Search Bar -->
             <div class="search-container relative flex items-center ml-4">
                 <input type="text" id="searchInput" placeholder="Search..." class="form-control rounded-full py-2 px-4 pr-18 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm w-full lg:w-48">
