@@ -6,6 +6,11 @@
     <title>दैनिक कारोबारको लेखा</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        // लगइन जाँच गर्ने। यदि लगइन गरिएको छैन भने, लगइन पेजमा फर्काउने।
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'hi.html';
+        }
+
         tailwind.config = {
             theme: {
                 extend: {
@@ -53,7 +58,7 @@
             border-color: #2563eb;
         }
     </style>
-    </head>
+</head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
     <!-- Main Container -->
@@ -187,6 +192,233 @@
                     <p class="font-bold">सन्तुलन स्थिति: <span id="balance-status" class="text-green-600">मिलेको छ</span></p>
                 </div>
             </div>
+        </div>
+    </div>
+    
+    <!-- Custom Message Box -->
+    <div id="messageBox" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-xl">
+            <p id="messageText" class="text-center text-gray-800 text-lg font-semibold mb-4"></p>
+            <button onclick="hideMessage()" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">बुझें</button>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE'; 
+
+        const categories = {
+            income: ['बिक्री आम्दानी', 'सेवा शुल्क', 'अन्य आम्दानी'],
+            expense: ['खर्च', 'तलब', 'भाडा', 'बिद्युत शुल्क', 'विज्ञापन खर्च', 'अन्य खर्च'],
+            asset: ['नगद', 'बैंक मौज्दात', 'सापटी दिएको', 'सम्पत्ति'],
+            liability: ['बैंक ऋण', 'सापटी लिएको', 'भुक्तानी गर्नुपर्ने'],
+            equity: ['पूँजी लगानी', 'नाफा'],
+        };
+        
+        let accountingData = {
+            income: {},
+            expense: {},
+            asset: {},
+            liability: {},
+            equity: { 'पूँजी लगानी': 0, 'नाफा': 0 }
+        };
+
+        const increaseDecreaseButtons = document.getElementById('increaseDecreaseButtons');
+        const changeButtons = document.querySelectorAll('#increaseDecreaseButtons button');
+
+        changeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                changeButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+            });
+        });
+
+        function openModal() {
+            document.getElementById('transactionModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('transactionModal').classList.add('hidden');
+            document.getElementById('transactionForm').reset();
+            updateCategoriesAndButtons();
+        }
+        
+        function showMessage(message) {
+            document.getElementById('messageText').textContent = message;
+            document.getElementById('messageBox').classList.remove('hidden');
+        }
+
+        function hideMessage() {
+            document.getElementById('messageBox').classList.add('hidden');
+        }
+
+        function updateCategoriesAndButtons() {
+            const type = document.getElementById('type').value;
+            const categorySelect = document.getElementById('category');
+            categorySelect.innerHTML = '<option value="">छनौट गर्नुहोस्</option>';
+            if (type && categories[type]) {
+                categories[type].forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat;
+                    option.textContent = cat;
+                    categorySelect.appendChild(option);
+                });
+            } else {
+                categorySelect.innerHTML = '<option value="">पहिले प्रकार छनौट गर्नुहोस्</option>';
+            }
+
+            // Show/hide increase/decrease buttons based on transaction type
+            if (['asset', 'liability', 'equity'].includes(type)) {
+                increaseDecreaseButtons.classList.remove('hidden');
+            } else {
+                increaseDecreaseButtons.classList.add('hidden');
+            }
+        }
+
+        async function submitTransaction() {
+            const date = document.getElementById('date').value;
+            const type = document.getElementById('type').value;
+            const category = document.getElementById('category').value;
+            const description = document.getElementById('description').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+
+            if (isNaN(amount) || amount <= 0) {
+                showMessage("रकम सही तरिकाले भर्नुहोस्।");
+                return;
+            }
+
+            let changeType = null;
+            if (['asset', 'liability', 'equity'].includes(type)) {
+                const activeBtn = document.querySelector('#increaseDecreaseButtons button.active');
+                if (!activeBtn) {
+                    showMessage("कृपया 'बढ्यो' वा 'घट्यो' छनौट गर्नुहोस्।");
+                    return;
+                }
+                changeType = activeBtn.getAttribute('data-change');
+            }
+
+            const statusMessage = document.getElementById('status-message');
+            statusMessage.textContent = 'डाटा पठाइँदैछ...';
+            statusMessage.classList.remove('hidden');
+            statusMessage.classList.add('text-gray-500');
+            statusMessage.classList.remove('text-green-600', 'text-red-600');
+
+            // Data to be sent to Google Apps Script
+            const formData = {
+                timestamp: new Date().toLocaleString(),
+                date: date,
+                type: type,
+                category: category,
+                change: changeType,
+                description: description,
+                amount: amount
+            };
+
+            try {
+                await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                statusMessage.textContent = 'डाटा सफलतापूर्वक पठाइयो!';
+                statusMessage.classList.remove('text-gray-500');
+                statusMessage.classList.add('text-green-600');
+
+                // Update the local accounting data based on new logic
+                if (!accountingData[type][category]) {
+                    accountingData[type][category] = 0;
+                }
+                if (type === 'income') {
+                    accountingData[type][category] += amount;
+                } else if (type === 'expense') {
+                    accountingData[type][category] += amount;
+                } else if (type === 'asset' && changeType === 'increase') {
+                    accountingData[type][category] += amount;
+                } else if (type === 'asset' && changeType === 'decrease') {
+                    accountingData[type][category] -= amount;
+                } else if (['liability', 'equity'].includes(type) && changeType === 'increase') {
+                    accountingData[type][category] += amount;
+                } else if (['liability', 'equity'].includes(type) && changeType === 'decrease') {
+                    accountingData[type][category] -= amount;
+                }
+
+                updateTables();
+                closeModal();
+
+            } catch (error) {
+                console.error('Error sending data:', error);
+                statusMessage.textContent = 'डाटा पठाउन असफल भयो।';
+                statusMessage.classList.remove('text-gray-500');
+                statusMessage.classList.add('text-red-600');
+            }
+        }
+
+        function updateTables() {
+            updateProfitLossTable();
+            updateBalanceSheetTable();
+        }
+
+        function updateProfitLossTable() {
+            const pLBody = document.getElementById('p-l-body');
+            pLBody.innerHTML = '';
+            let totalIncome = 0;
+            let totalExpense = 0;
+
+            for (const cat in accountingData.income) {
+                if (accountingData.income[cat] !== 0) {
+                    const row = pLBody.insertRow();
+                    row.className = 'text-income';
+                    row.innerHTML = `<td>${cat}</td><td></td><td>${accountingData.income[cat].toFixed(2)}</td>`;
+                    totalIncome += accountingData.income[cat];
+                }
+            }
+
+            for (const cat in accountingData.expense) {
+                if (accountingData.expense[cat] !== 0) {
+                    const row = pLBody.insertRow();
+                    row.className = 'text-expense';
+                    row.innerHTML = `<td>${cat}</td><td></td><td>(${accountingData.expense[cat].toFixed(2)})</td>`;
+                    totalExpense += accountingData.expense[cat];
+                }
+            }
+
+            const netProfit = totalIncome - totalExpense;
+            const profitLossLabel = document.getElementById('profit-loss-label');
+            const pLTotal = document.getElementById('p-l-total');
+
+            if (netProfit >= 0) {
+                profitLossLabel.textContent = "कुल नाफा";
+                pLTotal.textContent = `रु. ${netProfit.toFixed(2)}`;
+                pLTotal.style.color = '#16a34a'; // Green color for profit
+            } else {
+                profitLossLabel.textContent = "कुल नोक्सान";
+                pLTotal.textContent = `रु. (${Math.abs(netProfit).toFixed(2)})`;
+                pLTotal.style.color = '#ef4444'; // Red color for loss
+            }
+
+            accountingData.equity['नाफा'] = netProfit;
+        }
+
+        function updateBalanceSheetTable() {
+            const balanceSheetBody = document.getElementById('balance-sheet-body');
+            balanceSheetBody.innerHTML = '';
+            let totalAssets = 0;
+            let totalLiabilitiesAndEquity = 0;
+
+            for (const cat in accountingData.asset) {
+                if (accountingData.asset[cat] !== 0) {
+                    const row = balanceSheetBody.insertRow();
+                    row.className = 'text-asset';
+                    row.innerHTML = `<td>${cat}</td><td></td><td>${accountingData.asset[cat].toFixed(2)}</td>`;
+                    totalAssets += accountingData.asset[cat];
+                }
+            }
+
+            for (const cat in accountingData.liability) {
+                if (accountingData.liability[cat] !== 0) {
+                    const row = balanceSheetBody.insertRow();
+                    row.clas      </div>
         </div>
     </div>
     
