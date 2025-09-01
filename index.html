@@ -610,24 +610,7 @@
                             <button id="loginButton" class="nav-link py-2 px-3 block text-blue-700 font-bold hover:bg-blue-100 rounded-md">
                                 <i class="fas fa-sign-in-alt mr-1"></i> लगइन
                             </button>
-                            <!-- Mode Switcher Buttons -->
-                            <div class="mode-toggle">
-                                <button id="light-mode-btn" data-mode="light" aria-label="Light Mode">
-                                    <i class="fas fa-sun"></i>
-                                </button>
-                                <button id="dark-mode-btn" data-mode="dark" aria-label="Dark Mode">
-                                    <i class="fas fa-moon"></i>
-                                </button>
-                                <button id="night-mode-btn" data-mode="night" aria-label="Night Mode (Sepia)">
-                                    <i class="fas fa-cloud-moon"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+                           
 
     <!-- Masthead (Hero Section) - Copied from index.html -->
     <header class="masthead relative">
@@ -1233,42 +1216,7 @@
             checkLoginStatus();
         });
         
-        // ==========================================
-        //  मोड परिवर्तनको लागि JavaScript
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', () => {
-            const themeButtons = document.querySelectorAll('.mode-toggle button');
-            const storedTheme = localStorage.getItem('theme') || 'light';
-
-            // Function to set theme for the entire page
-            function setTheme(theme) {
-                document.body.classList.remove('dark-mode', 'night-mode');
-                
-                if (theme === 'dark') {
-                    document.body.classList.add('dark-mode');
-                } else if (theme === 'night') {
-                    document.body.classList.add('night-mode');
-                }
-                
-                themeButtons.forEach(btn => btn.classList.remove('active'));
-                const activeBtn = document.querySelector(`button[data-mode="${theme}"]`);
-                if (activeBtn) {
-                    activeBtn.classList.add('active');
-                }
-                
-                localStorage.setItem('theme', theme);
-            }
-
-            // Set the theme on page load
-            setTheme(storedTheme);
-
-            // Add click event listeners to the buttons
-            themeButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const newTheme = button.getAttribute('data-mode');
-                    setTheme(newTheme);
-                });
-            });
+       
         });
     </script>
 </body>
