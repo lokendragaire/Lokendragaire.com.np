@@ -163,9 +163,6 @@
     </div>
 
     <script>
-        // Config - replace with your Apps Script URL if needed
-        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx14dbfeUGO9K6Lmcdc7LpGbA4c21fpJ3P-IJOc2vIM5m3-jjEIawY9nrypZ6uuLCpXJw/exec';
-
         const categories = {
             income: ['बिक्री आम्दानी', 'सेवा शुल्क', 'अन्य आम्दानी'],
             expense: ['खर्च', 'तलब', 'भाडा', 'बिद्युत शुल्क', 'विज्ञापन खर्च', 'अन्य खर्च'],
@@ -174,13 +171,11 @@
             equity: ['पूँजी लगानी', 'नाफा']
         };
 
-        // initialize accounting data with zero values for categories
         let accountingData = { income: {}, expense: {}, asset: {}, liability: {}, equity: {} };
         for (const t in categories) {
             categories[t].forEach(cat => accountingData[t][cat] = 0);
         }
 
-        // DOM elements
         const addTransactionBtn = document.getElementById('addTransactionBtn');
         const transactionModal = document.getElementById('transactionModal');
         const closeModalBtn = document.getElementById('closeModalBtn');
@@ -191,7 +186,6 @@
         const increaseDecreaseButtons = document.getElementById('increaseDecreaseButtons');
         const statusMessage = document.getElementById('status-message');
 
-        // add event listeners after DOM loads
         document.addEventListener('DOMContentLoaded', () => {
             addTransactionBtn.addEventListener('click', openModal);
             closeModalBtn.addEventListener('click', closeModal);
@@ -199,7 +193,6 @@
             transactionForm.addEventListener('submit', function(e) { e.preventDefault(); submitTransaction(); });
             typeSelect.addEventListener('change', updateCategoriesAndButtons);
 
-            // add click listeners to increase/decrease buttons
             document.querySelectorAll('#increaseDecreaseButtons button').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('#increaseDecreaseButtons button').forEach(x => x.classList.remove('active'));
@@ -211,7 +204,6 @@
             updateTables();
         });
 
-        // modal functions
         function openModal() { transactionModal.classList.remove('hidden'); }
         function closeModal() { transactionModal.classList.add('hidden'); transactionForm.reset(); updateCategoriesAndButtons(); }
 
@@ -233,12 +225,11 @@
                 increaseDecreaseButtons.classList.remove('hidden');
             } else {
                 increaseDecreaseButtons.classList.add('hidden');
-                // clear active state
                 document.querySelectorAll('#increaseDecreaseButtons button').forEach(x => x.classList.remove('active'));
             }
         }
 
-        async function submitTransaction() {
+        function submitTransaction() {
             const date = document.getElementById('date').value;
             const type = typeSelect.value;
             const category = categorySelect.value;
@@ -246,37 +237,43 @@
             const amount = parseFloat(document.getElementById('amount').value);
 
             if (isNaN(amount) || amount <= 0) { showMessage("रकम सही तरिकाले भर्नुहोस्।"); return; }
+            if (['asset', 'liability', 'equity'].includes(type) && !document.querySelector('#increaseDecreaseButtons button.active')) { showMessage("कृपया 'बढ्यो' वा 'घट्यो' छनौट गर्नुहोस्।"); return; }
 
             let changeType = null;
             if (['asset', 'liability', 'equity'].includes(type)) {
-                const activeBtn = document.querySelector('#increaseDecreaseButtons button.active');
-                if (!activeBtn) { showMessage("कृपया 'बढ्यो' वा 'घट्यो' छनौट गर्नुहोस्।"); return; }
-                changeType = activeBtn.getAttribute('data-change');
+                changeType = document.querySelector('#increaseDecreaseButtons button.active').getAttribute('data-change');
             }
 
-            statusMessage.textContent = 'डाटा पठाइँदैछ...'; statusMessage.classList.remove('hidden');
-            statusMessage.classList.remove('text-green-600', 'text-red-600');
+            statusMessage.textContent = 'डाटा पठाइँदैछ...';
+            statusMessage.classList.remove('hidden', 'text-green-600', 'text-red-600');
 
-            const formData = { timestamp: new Date().toLocaleString(), date, type, category, change: changeType, description, amount };
+            const formData = { date, type, category, change: changeType, description, amount };
 
-            try {
-                // Send to Google Apps Script (no-cors may not return response)
-                await fetch(GOOGLE_APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) });
-                statusMessage.textContent = 'डाटा सफलतापूर्वक पठाइयो!'; statusMessage.classList.add('text-green-600');
-            } catch (err) {
-                console.error('Error sending data:', err);
-                statusMessage.textContent = 'डाटा पठाउन असफल भयो।'; statusMessage.classList.add('text-red-600');
-            }
-
-            // Update local accounting data
-            if (!accountingData[type][category]) accountingData[type][category] = 0;
-            if (type === 'income') accountingData[type][category] += amount;
-            else if (type === 'expense') accountingData[type][category] += amount;
-            else if (type === 'asset') accountingData[type][category] += (changeType === 'increase' ? amount : -amount);
-            else if (type === 'liability') accountingData[type][category] += (changeType === 'increase' ? amount : -amount);
-            else if (type === 'equity') accountingData[type][category] += (changeType === 'increase' ? amount : -amount);
-
-            updateTables(); closeModal();
+            // Send data to Apps Script using google.script.run
+            google.script.run
+                .withSuccessHandler(function() {
+                    // Success! Update local data and UI
+                    if (!accountingData[type][category]) accountingData[type][category] = 0;
+                    if (type === 'income') accountingData[type][category] += amount;
+                    else if (type === 'expense') accountingData[type][category] += amount;
+                    else if (type === 'asset') accountingData[type][category] += (changeType === 'increase' ? amount : -amount);
+                    else if (type === 'liability') accountingData[type][category] += (changeType === 'increase' ? amount : -amount);
+                    else if (type === 'equity') accountingData[type][category] += (changeType === 'increase' ? amount : -amount);
+                    
+                    updateTables();
+                    closeModal();
+                    statusMessage.textContent = 'डाटा सफलतापूर्वक पठाइयो!';
+                    statusMessage.classList.add('text-green-600');
+                    showMessage("डाटा सफलतापूर्वक सेभ भयो!");
+                })
+                .withFailureHandler(function(error) {
+                    // Failure! Show error message
+                    console.error('Error sending data:', error);
+                    statusMessage.textContent = 'डाटा पठाउन असफल भयो।';
+                    statusMessage.classList.add('text-red-600');
+                    showMessage("डाटा सेभ गर्दा त्रुटि भयो।");
+                })
+                .saveData(formData); // This calls the saveData function in code.gs
         }
 
         function updateTables() { updateProfitLossTable(); updateBalanceSheetTable(); }
@@ -307,7 +304,6 @@
             if (Math.abs(totalAssets - liabilitiesEquityTotal) < 0.01) { balanceStatusEl.textContent = 'मिलेको छ'; balanceStatusEl.className = 'text-green-600'; }
             else { balanceStatusEl.textContent = 'मिलेको छैन'; balanceStatusEl.className = 'text-red-600'; }
         }
-
     </script>
 </body>
 </html>
