@@ -443,16 +443,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
-        /* मोड परिवर्तन बटनहरूका लागि */
-        .mode-toggle {
-            display: flex;
-            gap: 0.5rem; /* बटनहरू बीचको दूरी कम गरियो */
-            margin-left: 0.5rem; /* लगइन बटनबाट अलिकति दूरीमा राखियो */
-            padding: 0.5rem; /* प्याडिङ कम गरियो */
-            background-color: var(--button-color);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
+       
 
         .mode-toggle button {
             background: none;
@@ -610,24 +601,7 @@
                             <button id="loginButton" class="nav-link py-2 px-3 block text-blue-700 font-bold hover:bg-blue-100 rounded-md">
                                 <i class="fas fa-sign-in-alt mr-1"></i> लगइन
                             </button>
-                            <!-- Mode Switcher Buttons -->
-                            <div class="mode-toggle">
-                                <button id="light-mode-btn" data-mode="light" aria-label="Light Mode">
-                                    <i class="fas fa-sun"></i>
-                                </button>
-                                <button id="dark-mode-btn" data-mode="dark" aria-label="Dark Mode">
-                                    <i class="fas fa-moon"></i>
-                                </button>
-                                <button id="night-mode-btn" data-mode="night" aria-label="Night Mode (Sepia)">
-                                    <i class="fas fa-cloud-moon"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+                          
 
     <!-- Masthead (Hero Section) - Copied from index.html -->
     <header class="masthead relative">
