@@ -807,4 +807,469 @@
         // Function to remove nav and dropdown item highlights
         function removeNavHighlights() {
             document.querySelectorAll('#navbarResponsive .nav-link.nav-item-highlight').forEach(el => el.classList.remove('nav-item-highlight'));
-            document.querySelec
+            document.querySelectorAll('.dropdown-item-highlight').forEach(el => el.classList.remove('dropdown-item-highlight'));
+            // Also ensure all dropdowns are closed when clearing highlights, unless a search specifically opens them
+            const allDropdowns = document.getElementsByClassName("dropdown-menu");
+            for (let i = 0; i < allDropdowns.length; i++) {
+                allDropdowns[i].classList.add('hidden');
+            }
+        }
+
+        // Combined search and highlight function
+        function performSearchAndHighlight(query) {
+            showSpinner();
+            removeTextHighlights(); // Clear general text highlights
+            removeNavHighlights(); // Clear nav/dropdown highlights
+
+            if (!query) {
+                hideSpinner();
+                return;
+            }
+
+            const regex = new RegExp(query, 'gi'); // Case-insensitive global search
+
+            // 1. Highlight main content (excluding navbar)
+            function highlightNode(node) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const parentTagName = node.parentNode.tagName;
+                    if (parentTagName !== 'SCRIPT' && parentTagName !== 'STYLE') {
+                        const match = node.nodeValue.match(regex);
+                        if (match) {
+                            const fragment = document.createDocumentFragment();
+                            let lastIndex = 0;
+                            node.nodeValue.replace(regex, (match, offset) => {
+                                fragment.appendChild(document.createTextNode(node.nodeValue.substring(lastIndex, offset)));
+                                const span = document.createElement('span');
+                                span.className = 'highlight';
+                                span.textContent = match;
+                                fragment.appendChild(span);
+                                lastIndex = offset + match.length;
+                                return match;
+                            });
+                            fragment.appendChild(document.createTextNode(node.nodeValue.substring(lastIndex)));
+                            node.parentNode.replaceChild(fragment, node);
+                        }
+                    }
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    if (node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE' && node.tagName !== 'NOSCRIPT' && node.id !== 'mainNav') { // Exclude mainNav from general content search
+                        for (let i = 0; i < node.childNodes.length; i++) {
+                            highlightNode(node.childNodes[i]);
+                        }
+                    }
+                }
+            }
+            highlightNode(document.body); // Start from body
+
+            // 2. Highlight Nav Items and Dropdown Items specifically
+            const navItems = document.querySelectorAll('#navbarResponsive .nav-item');
+            navItems.forEach(navItem => {
+                const navLink = navItem.querySelector('.nav-link');
+                const dropdownMenu = navItem.querySelector('.dropdown-menu');
+                let navItemMatched = false;
+
+                // Get only the text content of the navLink, excluding child elements like the icon
+                let navLinkText = '';
+                if (navLink) {
+                    for (let child of navLink.childNodes) {
+                        if (child.nodeType === Node.TEXT_NODE) {
+                            navLinkText += child.nodeValue;
+                        }
+                    }
+                }
+
+                if (navLinkText.match(regex)) {
+                    navLink.classList.add('nav-item-highlight');
+                    navItemMatched = true;
+                }
+
+                // Check dropdown items if it's a dropdown
+                if (dropdownMenu) {
+                    const dropdownLinks = dropdownMenu.querySelectorAll('a');
+                    dropdownLinks.forEach(dropdownLink => {
+                        if (dropdownLink.textContent.match(regex)) {
+                            dropdownLink.classList.add('dropdown-item-highlight');
+                            // Ensure parent dropdown is open
+                            dropdownMenu.classList.remove('hidden');
+                            // Highlight the parent nav item if not already
+                            if (!navItemMatched) {
+                                navLink.classList.add('nav-item-highlight');
+                            }
+                        }
+                    });
+                }
+            });
+
+            // Highlight the social media section links (only the remaining ones)
+            const socialLinksSection = document.querySelector('main .page-section .flex.flex-wrap');
+            if (socialLinksSection) {
+                const socialLinks = socialLinksSection.querySelectorAll('a');
+                socialLinks.forEach(link => {
+                    if (link.textContent.match(regex) || (link.getAttribute('aria-label') && link.getAttribute('aria-label').match(regex))) {
+                        link.classList.add('highlight'); // Use general highlight for these buttons
+                    }
+                });
+            }
+
+
+            setTimeout(() => {
+                hideSpinner();
+            }, 50); // Small delay to show spinner
+        }
+
+        // Function to clear search and highlights
+        function clearSearch() {
+            searchInput.value = '';
+            removeTextHighlights();
+            removeNavHighlights(); // Clear nav and dropdown highlights
+            // Also remove highlights from social media section
+            document.querySelectorAll('main .page-section .flex.flex-wrap .highlight').forEach(el => el.classList.remove('highlight'));
+            clearSearchIcon.classList.add('hidden');
+            searchIcon.classList.remove('hidden');
+        }
+
+        // Event listener for search action button click
+        searchActionButton.addEventListener('click', () => {
+            if (clearSearchIcon.classList.contains('hidden')) { // If search icon is visible, perform search
+                performSearchAndHighlight(searchInput.value);
+            } else { // If clear icon is visible, clear search
+                clearSearch();
+            }
+        });
+
+        // Event listener for Enter key in search input
+        searchInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                performSearchAndHighlight(searchInput.value);
+            }
+        });
+
+        // Event listener for input changes to show/hide clear icon
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value.length > 0) {
+                searchIcon.classList.add('hidden');
+                clearSearchIcon.classList.remove('hidden');
+            } else {
+                searchIcon.classList.remove('hidden');
+                clearSearchIcon.classList.add('hidden');
+                removeTextHighlights(); // Also remove highlights when input is cleared manually
+                removeNavHighlights(); // Clear nav and dropdown highlights when input is cleared
+                // Also remove highlights from social media section when input is cleared
+                document.querySelectorAll('main .page-section .flex.flex-wrap .highlight').forEach(el => el.classList.remove('highlight'));
+            }
+        });
+
+        // Close dropdowns and navbar if the user clicks outside of them
+        window.onclick = function(event) {
+            // Close dropdowns
+            if (!event.target.matches('.nav-link') && !event.target.closest('.dropdown-menu') && !event.target.closest('.search-container')) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (!openDropdown.classList.contains('hidden')) {
+                        openDropdown.classList.add('hidden');
+                    }
+                }
+                // Also remove nav/dropdown highlights if clicking outside
+                removeNavHighlights();
+            }
+
+            // Close navbar if click is outside navbar and it's open
+            const navbar = document.getElementById("mainNav");
+            const navbarResponsive = document.getElementById("navbarResponsive");
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const searchContainer = document.querySelector('.search-container');
+
+            if (!navbar.contains(event.target) && !navbarToggler.contains(event.target) && !searchContainer.contains(event.target)) {
+                if (!navbarResponsive.classList.contains('hidden')) {
+                    navbarResponsive.classList.add('hidden');
+                    navbarResponsive.classList.remove('flex', 'flex-col');
+                }
+            }
+        }
+        
+        // ==========================================
+        //  Advertisement Slider & Login Logic
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const adSlider = document.getElementById('adSlider');
+            const prevAdBtn = document.getElementById('prevAdBtn');
+            const nextAdBtn = document.getElementById('nextAdBtn');
+            const adDots = document.getElementById('adDots');
+            const adSection = document.getElementById('adSection');
+            const adDisplayContainer = document.getElementById('adDisplayContainer');
+
+            const loginButton = document.getElementById('loginButton');
+            const loginModal = document.getElementById('loginModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const loginForm = document.getElementById('loginForm');
+            const loginError = document.getElementById('loginError');
+            
+            // This is the interval ID for the automatic slide.
+            let slideInterval;
+
+            // GitHub repository details - **IMPORTANT: These must match your repo's details**
+            // **महत्त्वपूर्ण: यी मानहरू तपाईंको वास्तविक GitHub रिपोजिटरीको विवरणसँग मिल्नुपर्छ।**
+            // <<== यहाँ आफ्नो GitHub username राख्नुहोस्
+            const githubRepoOwner = 'lokendragaire'; 
+            // <<== यहाँ आफ्नो रिपोजिटरीको नाम राख्नुहोस्
+            const githubRepoName = 'lokendragaire'; 
+            const githubBranch = 'main';
+            const githubBaseUrl = `https://raw.githubusercontent.com/${githubRepoOwner}/${githubRepoName}/${githubBranch}/`;
+            const githubLoginUrl = `https://github.com/${githubRepoOwner}/${githubRepoName}/`; // Changed to the repo's main page
+            
+            // Log the constructed URL for debugging purposes
+            console.log(`Debug: The base URL being used is: ${githubBaseUrl}`);
+
+            let images = []; // Array to store image URLs
+            let currentSlideIndex = 0;
+
+            // Login Modal Functions
+            const openLoginModal = () => {
+                loginModal.classList.remove('hidden');
+            };
+
+            const closeLoginModal = () => {
+                loginModal.classList.add('hidden');
+                loginError.classList.add('hidden');
+                loginForm.reset();
+            };
+
+            // Login form submission handler
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const username = document.getElementById('usernameInput').value;
+                const password = document.getElementById('passwordInput').value;
+
+                // Hardcoded credentials for demonstration
+                // Replace with a real authentication system if needed
+                if (username === 'lokendra' && password === 'password123') {
+                    // Simulate successful login
+                    localStorage.setItem('isLoggedIn', 'true');
+                    closeLoginModal();
+                    // Open a new tab to the GitHub repository page where they can manage files
+                    window.open(githubLoginUrl, '_blank');
+                    checkLoginStatus();
+                } else {
+                    loginError.classList.remove('hidden');
+                }
+            });
+
+            closeModalBtn.addEventListener('click', closeLoginModal);
+
+            // Function to handle the logout
+            const handleLogout = () => {
+                localStorage.removeItem('isLoggedIn');
+                checkLoginStatus();
+            };
+
+            // Function to check login status from localStorage and update UI
+            const checkLoginStatus = () => {
+                const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+                
+                if (isLoggedIn) {
+                    loginButton.innerHTML = '<i class="fas fa-sign-out-alt mr-1"></i> लगआउट';
+                    loginButton.classList.remove('text-blue-700', 'hover:bg-blue-100');
+                    loginButton.classList.add('text-red-700', 'hover:bg-red-100');
+                    adSection.classList.remove('hidden'); // Show ad management for logged-in user
+                    loginButton.onclick = handleLogout; // Set logout function
+                } else {
+                    loginButton.innerHTML = '<i class="fas fa-sign-in-alt mr-1"></i> लगइन';
+                    loginButton.classList.remove('text-red-700', 'hover:bg-red-100');
+                    loginButton.classList.add('text-blue-700', 'hover:bg-blue-100');
+                    adSection.classList.add('hidden'); // Hide ad management for logged-out user
+                    loginButton.onclick = openLoginModal; // Open modal for login
+                }
+                
+                // Always fetch images to display the slider, regardless of login status
+                fetchImagesFromGitHub();
+            };
+
+            // Function to fetch images from GitHub based on filenames
+            const fetchImagesFromGitHub = async () => {
+                images = []; // Clear existing images
+                const imageFilenames = [];
+                for (let i = 1; i <= 10; i++) { // Check for photo1.jpg to photo10.jpg
+                    imageFilenames.push(`photo${i}.jpg`);
+                }
+
+                const promises = imageFilenames.map(filename => {
+                    const imageUrl = `${githubBaseUrl}${filename}`;
+                    
+                    // Log the URL being fetched for debugging
+                    console.log(`Fetching image from: ${imageUrl}`);
+
+                    return fetch(imageUrl)
+                        .then(response => {
+                            if (response.ok) {
+                                console.log(`Successfully loaded image from: ${imageUrl}`);
+                                return imageUrl;
+                            } else {
+                                console.error(`Failed to load image from: ${imageUrl} (Status: ${response.status})`);
+                                return null;
+                            }
+                        })
+                        .catch(error => {
+                            console.error(`Error fetching image from ${imageUrl}:`, error);
+                            return null;
+                        });
+                });
+
+                const loadedImages = await Promise.all(promises);
+                images = loadedImages.filter(url => url !== null); // Keep only valid URLs
+                
+                if (images.length === 0) {
+                    console.warn("No valid images found on GitHub. Displaying placeholder.");
+                }
+                
+                renderSlider();
+                
+                // Start auto-slide only if there are images
+                // यदि १ भन्दा बढी फोटो छ भने मात्र स्लाइडर चलाउने
+                if (images.length > 1) {
+                    startAutoSlide();
+                } else {
+                    // यदि १ वा सो भन्दा कम फोटो छ भने, स्लाइडर रोक्ने
+                    clearInterval(slideInterval);
+                }
+            };
+            
+            // Function to render the slider based on the images array
+            const renderSlider = () => {
+                adSlider.innerHTML = '';
+                adDots.innerHTML = '';
+                
+                if (images.length > 0) {
+                    images.forEach((src, index) => {
+                        const slide = document.createElement('div');
+                        slide.className = 'slide relative'; 
+                        
+                        const img = document.createElement('img');
+                        img.src = src;
+                        img.alt = `Advertisement Image ${index + 1}`;
+                        img.onclick = () => {
+                            window.open(src, '_blank');
+                        };
+                        // यदि छवि लोड हुन सकेन भने, त्रुटि सन्देशसहितको खाली (placeholder) छवि देखाउनुहोस्।
+                        img.onerror = () => {
+                            img.src = `NO Advertisement Avaliable`;
+                        };
+                        slide.appendChild(img);
+                        adSlider.appendChild(slide);
+
+                        const dot = document.createElement('span');
+                        dot.className = 'dot';
+                        dot.addEventListener('click', () => {
+                            currentSlideIndex = index;
+                            showSlide();
+                        });
+                        adDots.appendChild(dot);
+                    });
+                    
+                    showSlide(); // Show the first slide
+                    prevAdBtn.style.display = 'block';
+                    nextAdBtn.style.display = 'block';
+                } else {
+                    // Display placeholder if no images and hide controls
+                    adSlider.innerHTML = '<div class="slide"><img src="https://placehold.co/800x400/CCCCCC/333333?text=No+Photos+Found" alt="Placeholder Advertisement"></div>';
+                    prevAdBtn.style.display = 'none';
+                    nextAdBtn.style.display = 'none';
+                }
+            };
+
+            // Function to show a specific slide
+            const showSlide = () => {
+                const slides = document.querySelectorAll('#adSlider .slide');
+                const dots = document.querySelectorAll('#adDots .dot');
+
+                if (slides.length === 0) return;
+
+                // Loop the index if it goes out of bounds
+                if (currentSlideIndex >= slides.length) {
+                    currentSlideIndex = 0;
+                }
+                if (currentSlideIndex < 0) {
+                    currentSlideIndex = slides.length - 1;
+                }
+
+                adSlider.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+
+                // Update active dot
+                dots.forEach(dot => dot.classList.remove('active'));
+                if(dots[currentSlideIndex]) {
+                    dots[currentSlideIndex].classList.add('active');
+                }
+            };
+
+            // Function to go to the next slide
+            const nextSlide = () => {
+                console.log(`Debug: Advancing to next slide. Current index: ${currentSlideIndex}`);
+                currentSlideIndex++;
+                showSlide();
+            };
+
+            // Function to go to the previous slide
+            const prevSlide = () => {
+                currentSlideIndex--;
+                showSlide();
+            };
+
+            // Start the auto-slide interval
+            const startAutoSlide = () => {
+                console.log("Debug: Attempting to start auto-slide interval.");
+                clearInterval(slideInterval); // Clear any existing interval
+                if (images.length > 1) {
+                    slideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+                    console.log("Debug: Auto-slide started successfully.");
+                } else {
+                    console.log("Debug: Not enough images to start auto-slide.");
+                }
+            };
+
+            // Event listeners for navigation buttons
+            nextAdBtn.addEventListener('click', nextSlide);
+            prevAdBtn.addEventListener('click', prevSlide);
+
+            // Initial check and render on page load
+            checkLoginStatus();
+        });
+        
+        // ==========================================
+        //  मोड परिवर्तनको लागि JavaScript
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeButtons = document.querySelectorAll('.mode-toggle button');
+            const storedTheme = localStorage.getItem('theme') || 'light';
+
+            // Function to set theme for the entire page
+            function setTheme(theme) {
+                document.body.classList.remove('dark-mode', 'night-mode');
+                
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-mode');
+                } else if (theme === 'night') {
+                    document.body.classList.add('night-mode');
+                }
+                
+                themeButtons.forEach(btn => btn.classList.remove('active'));
+                const activeBtn = document.querySelector(`button[data-mode="${theme}"]`);
+                if (activeBtn) {
+                    activeBtn.classList.add('active');
+                }
+                
+                localStorage.setItem('theme', theme);
+            }
+
+            // Set the theme on page load
+            setTheme(storedTheme);
+
+            // Add click event listeners to the buttons
+            themeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const newTheme = button.getAttribute('data-mode');
+                    setTheme(newTheme);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
