@@ -1,309 +1,211 @@
 <!DOCTYPE html>
 <html lang="ne">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>दैनिक कारोबारको लेखा</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Arial; background-color: #f3f4f6; }
-        .balance-sheet-table, .p-l-table { border-collapse: collapse; width: 100%; }
-        .balance-sheet-table th, .balance-sheet-table td, .p-l-table th, .p-l-table td { border: 1px solid #ddd; padding: 8px; }
-        .balance-sheet-table th, .p-l-table th { text-align: left; background-color: #e5e7eb; font-weight: bold; }
-        .text-income { color: #16a34a; }
-        .text-expense { color: #ef4444; }
-        .text-asset { color: #2563eb; }
-        .text-liability { color: #f97316; }
-        .text-equity { color: #7c3aed; }
-        .total-row { font-weight: bold; background-color: #f3f4f6; }
-        .button-group button { border: 1px solid #d1d5db; padding: 8px 16px; font-weight: 600; cursor: pointer; }
-        .button-group button.active { background-color: #2563eb; color: white; border-color: #2563eb; }
-        /* Modal utilities */
-        .hidden { display: none; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>दैनिक कारोबारको लेखा</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Arial; background-color: #f3f4f6; }
+    .balance-sheet-table, .p-l-table { border-collapse: collapse; width: 100%; }
+    .balance-sheet-table th, .balance-sheet-table td, .p-l-table th, .p-l-table td { border: 1px solid #ddd; padding: 8px; }
+    .balance-sheet-table th, .p-l-table th { text-align: left; background-color: #e5e7eb; font-weight: bold; }
+    .text-income { color: #16a34a; }
+    .text-expense { color: #ef4444; }
+    .text-asset { color: #2563eb; }
+    .text-liability { color: #f97316; }
+    .text-equity { color: #7c3aed; }
+    .total-row { font-weight: bold; background-color: #f3f4f6; }
+    .button-group button { border: 1px solid #d1d5db; padding: 8px 16px; font-weight: 600; cursor: pointer; }
+    .button-group button.active { background-color: #2563eb; color: white; border-color: #2563eb; }
+    .hidden { display: none; }
+  </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
-    <!-- Main Container -->
-    <div class="bg-white rounded-xl shadow-lg p-6 max-w-4xl w-full">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">दैनिक कारोबारको लेखा</h1>
-        <p class="text-center text-gray-600 mb-8">आफ्नो कारोबारलाई मुख्य लेखा शिर्षकअनुसार रेकर्ड गर्नुहोस्।</p>
+  <!-- Main Container -->
+  <div class="bg-white rounded-xl shadow-lg p-6 max-w-4xl w-full">
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">दैनिक कारोबारको लेखा</h1>
+    <p class="text-center text-gray-600 mb-8">आफ्नो कारोबारलाई मुख्य लेखा शिर्षकअनुसार रेकर्ड गर्नुहोस्।</p>
 
-        <!-- Transaction Button and Form Container -->
-        <div class="mb-8">
-            <button id="addTransactionBtn" class="w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
-                नयाँ कारोबार थप्नुहोस्
-            </button>
-        </div>
+    <!-- Add Transaction Button -->
+    <div class="mb-8">
+      <button id="addTransactionBtn" class="w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+        नयाँ कारोबार थप्नुहोस्
+      </button>
+    </div>
 
-        <!-- Google Sheet Link Placeholder -->
-        <div class="text-center text-gray-500 text-sm italic mb-8">
-            Google Sheet Link: <a id="googleSheetLink" href="https://docs.google.com/spreadsheets/d/1O1ry_iS6ekjS_yH1Rewm0Sfd9_iSH0ui0ot8zk0bN_s/edit" target="_blank" class="text-blue-500 underline">यहाँ क्लिक गर्नुहोस्</a>
-            <p id="status-message" class="text-green-600 font-semibold mt-2 hidden"></p>
-        </div>
-        
-        <!-- Transaction Modal -->
-        <div id="transactionModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center p-4 z-40">
-            <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 id="modalTitle" class="text-2xl font-semibold text-gray-800">नयाँ कारोबार</h3>
-                    <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-                <form id="transactionForm">
-                    <div class="mb-4">
-                        <label for="date" class="block text-gray-700 text-sm font-bold mb-2">मिति:</label>
-                        <input type="date" id="date" name="date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="type" class="block text-gray-700 text-sm font-bold mb-2">कारोबारको प्रकार:</label>
-                        <select id="type" name="type" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                            <option value="">छनौट गर्नुहोस्</option>
-                            <option value="income">आम्दानी</option>
-                            <option value="expense">खर्च</option>
-                            <option value="asset">सम्पत्ति</option>
-                            <option value="liability">दायित्व</option>
-                            <option value="equity">पूँजी</option>
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label for="category" class="block text-gray-700 text-sm font-bold mb-2">शिर्षक (Category):</label>
-                        <select id="category" name="category" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                            <option value="">पहिले प्रकार छनौट गर्नुहोस्</option>
-                        </select>
-                    </div>
-                    <div id="increaseDecreaseButtons" class="mb-4 hidden">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">परिवर्तन:</label>
-                        <div class="button-group flex rounded-md shadow-sm">
-                            <button type="button" data-change="increase" class="rounded-l-md hover:bg-gray-200">बढ्यो</button>
-                            <button type="button" data-change="decrease" class="rounded-r-md hover:bg-gray-200">घट्यो</button>
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        <label for="description" class="block text-gray-700 text-sm font-bold mb-2">विवरण:</label>
-                        <textarea id="description" name="description" rows="2" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="यहाँ विवरण लेख्नुहोस्..." required></textarea>
-                    </div>
-                    <div class="mb-6">
-                        <label for="amount" class="block text-gray-700 text-sm font-bold mb-2">रकम:</label>
-                        <input type="number" id="amount" name="amount" min="0" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="रु." required>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Save</button>
-                        <button type="button" id="cancelBtn" class="text-gray-500 hover:text-gray-700 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-            <!-- Profit & Loss Account Section -->
-            <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">नाफा नोक्सान खाता (Profit & Loss Account)</h2>
-                <table class="p-l-table">
-                    <thead>
-                        <tr>
-                            <th>शिर्षक</th>
-                            <th>विवरण</th>
-                            <th>रकम (रु.)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="p-l-body">
-                        <!-- P&L items will be added here dynamically -->
-                    </tbody>
-                    <tfoot>
-                        <tr class="total-row">
-                            <td colspan="2"><span id="profit-loss-label">कुल नाफा</span></td>
-                            <td id="p-l-total">रु. 0.00</td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            
-            <!-- Balance Sheet Section -->
-            <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">वासलात (Balance Sheet)</h2>
-                <table class="balance-sheet-table">
-                    <thead>
-                        <tr>
-                            <th>शिर्षक</th>
-                            <th>विवरण</th>
-                            <th>रकम (रु.)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="balance-sheet-body">
-                        <!-- Balance sheet items will be added here dynamically -->
-                    </tbody>
-                    <tfoot>
-                        <tr class="total-row">
-                            <td colspan="2">कुल सम्पत्ति</td>
-                            <td id="assets-total">रु. 0.00</td>
-                        </tr>
-                        <tr class="total-row">
-                            <td colspan="2">कुल दायित्व र पूँजी</td>
-                            <td id="liabilities-equity-total">रु. 0.00</td>
-                        </tr>
-                    </tfoot>
-                </table>
-                <div class="mt-4 text-center">
-                    <p class="font-bold">सन्तुलन स्थिति: <span id="balance-status" class="text-green-600">मिलेको छ</span></p>
-                </div>
-            </div>
-        </div>
+    <!-- Google Sheet Link -->
+    <div class="text-center text-gray-500 text-sm italic mb-8">
+      Google Sheet Link: 
+      <a id="googleSheetLink" href="https://docs.google.com/spreadsheets/d/1O1ry_iS6ekjS_yH1Rewm0Sfd9_iSH0ui0ot8zk0bN_s/edit" target="_blank" class="text-blue-500 underline">यहाँ क्लिक गर्नुहोस्</a>
+      <p id="status-message" class="text-green-600 font-semibold mt-2 hidden"></p>
     </div>
     
-    <!-- Custom Message Box -->
-    <div id="messageBox" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-xl">
-            <p id="messageText" class="text-center text-gray-800 text-lg font-semibold mb-4"></p>
-            <button onclick="hideMessage()" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">बुझें</button>
+    <!-- Transaction Modal -->
+    <div id="transactionModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center p-4 z-40">
+      <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+        <div class="flex justify-between items-center mb-4">
+          <h3 id="modalTitle" class="text-2xl font-semibold text-gray-800">नयाँ कारोबार</h3>
+          <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
         </div>
+        <form id="transactionForm">
+          <div class="mb-4">
+            <label for="date" class="block text-gray-700 text-sm font-bold mb-2">मिति:</label>
+            <input type="date" id="date" name="date" class="shadow border rounded w-full py-2 px-3" required>
+          </div>
+          <div class="mb-4">
+            <label for="type" class="block text-gray-700 text-sm font-bold mb-2">कारोबारको प्रकार:</label>
+            <select id="type" name="type" class="shadow border rounded w-full py-2 px-3" required>
+              <option value="">छनौट गर्नुहोस्</option>
+              <option value="income">आम्दानी</option>
+              <option value="expense">खर्च</option>
+              <option value="asset">सम्पत्ति</option>
+              <option value="liability">दायित्व</option>
+              <option value="equity">पूँजी</option>
+            </select>
+          </div>
+          <div class="mb-4">
+            <label for="category" class="block text-gray-700 text-sm font-bold mb-2">शिर्षक:</label>
+            <select id="category" name="category" class="shadow border rounded w-full py-2 px-3" required>
+              <option value="">पहिले प्रकार छनौट गर्नुहोस्</option>
+            </select>
+          </div>
+          <div id="increaseDecreaseButtons" class="mb-4 hidden">
+            <label class="block text-gray-700 text-sm font-bold mb-2">परिवर्तन:</label>
+            <div class="button-group flex rounded-md shadow-sm">
+              <button type="button" data-change="increase" class="rounded-l-md hover:bg-gray-200">बढ्यो</button>
+              <button type="button" data-change="decrease" class="rounded-r-md hover:bg-gray-200">घट्यो</button>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label for="description" class="block text-gray-700 text-sm font-bold mb-2">विवरण:</label>
+            <textarea id="description" name="description" rows="2" class="shadow border rounded w-full py-2 px-3" placeholder="यहाँ विवरण लेख्नुहोस्..." required></textarea>
+          </div>
+          <div class="mb-6">
+            <label for="amount" class="block text-gray-700 text-sm font-bold mb-2">रकम:</label>
+            <input type="number" id="amount" name="amount" min="0" class="shadow border rounded w-full py-2 px-3" placeholder="रु." required>
+          </div>
+          <div class="flex items-center justify-between">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save</button>
+            <button type="button" id="cancelBtn" class="text-gray-500 hover:text-gray-700 font-bold py-2 px-4 rounded">Cancel</button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 
-    <script>
-        const categories = {
-            income: ['बिक्री आम्दानी', 'सेवा शुल्क', 'अन्य आम्दानी'],
-            expense: ['खर्च', 'तलब', 'भाडा', 'बिद्युत शुल्क', 'विज्ञापन खर्च', 'अन्य खर्च'],
-            asset: ['नगद', 'बैंक मौज्दात', 'सापटी दिएको', 'सम्पत्ति'],
-            liability: ['बैंक ऋण', 'सापटी लिएको', 'भुक्तानी गर्नुपर्ने'],
-            equity: ['पूँजी लगानी', 'नाफा']
-        };
+  <!-- Custom Message Box -->
+  <div id="messageBox" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-xl">
+      <p id="messageText" class="text-center text-gray-800 text-lg font-semibold mb-4"></p>
+      <button onclick="hideMessage()" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">बुझें</button>
+    </div>
+  </div>
 
-        let accountingData = { income: {}, expense: {}, asset: {}, liability: {}, equity: {} };
-        for (const t in categories) {
-            categories[t].forEach(cat => accountingData[t][cat] = 0);
-        }
+  <script>
+    const categories = {
+      income: ['बिक्री आम्दानी', 'सेवा शुल्क', 'अन्य आम्दानी'],
+      expense: ['खर्च', 'तलब', 'भाडा', 'बिद्युत शुल्क', 'अन्य खर्च'],
+      asset: ['नगद', 'बैंक मौज्दात', 'सापटी दिएको'],
+      liability: ['बैंक ऋण', 'सापटी लिएको', 'भुक्तानी गर्नुपर्ने'],
+      equity: ['पूँजी लगानी', 'नाफा']
+    };
 
-        const addTransactionBtn = document.getElementById('addTransactionBtn');
-        const transactionModal = document.getElementById('transactionModal');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const transactionForm = document.getElementById('transactionForm');
-        const typeSelect = document.getElementById('type');
-        const categorySelect = document.getElementById('category');
-        const increaseDecreaseButtons = document.getElementById('increaseDecreaseButtons');
-        const statusMessage = document.getElementById('status-message');
+    const addTransactionBtn = document.getElementById('addTransactionBtn');
+    const transactionModal = document.getElementById('transactionModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const transactionForm = document.getElementById('transactionForm');
+    const typeSelect = document.getElementById('type');
+    const categorySelect = document.getElementById('category');
+    const increaseDecreaseButtons = document.getElementById('increaseDecreaseButtons');
+    const statusMessage = document.getElementById('status-message');
 
-        document.addEventListener('DOMContentLoaded', () => {
-            addTransactionBtn.addEventListener('click', openModal);
-            closeModalBtn.addEventListener('click', closeModal);
-            cancelBtn.addEventListener('click', closeModal);
-            transactionForm.addEventListener('submit', function(e) { e.preventDefault(); submitTransaction(); });
-            typeSelect.addEventListener('change', updateCategoriesAndButtons);
+    document.addEventListener('DOMContentLoaded', () => {
+      addTransactionBtn.addEventListener('click', openModal);
+      closeModalBtn.addEventListener('click', closeModal);
+      cancelBtn.addEventListener('click', closeModal);
+      transactionForm.addEventListener('submit', function(e) { e.preventDefault(); submitTransaction(); });
+      typeSelect.addEventListener('change', updateCategoriesAndButtons);
 
-            document.querySelectorAll('#increaseDecreaseButtons button').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('#increaseDecreaseButtons button').forEach(x => x.classList.remove('active'));
-                    btn.classList.add('active');
-                });
-            });
-
-            updateCategoriesAndButtons();
-            updateTables();
+      document.querySelectorAll('#increaseDecreaseButtons button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#increaseDecreaseButtons button').forEach(x => x.classList.remove('active'));
+          btn.classList.add('active');
         });
+      });
+    });
 
-        function openModal() { transactionModal.classList.remove('hidden'); }
-        function closeModal() { transactionModal.classList.add('hidden'); transactionForm.reset(); updateCategoriesAndButtons(); }
+    function openModal() { transactionModal.classList.remove('hidden'); }
+    function closeModal() { transactionModal.classList.add('hidden'); transactionForm.reset(); updateCategoriesAndButtons(); }
 
-        function showMessage(message) { document.getElementById('messageText').textContent = message; document.getElementById('messageBox').classList.remove('hidden'); }
-        function hideMessage() { document.getElementById('messageBox').classList.add('hidden'); }
+    function showMessage(message) {
+      document.getElementById('messageText').textContent = message;
+      document.getElementById('messageBox').classList.remove('hidden');
+    }
+    function hideMessage() { document.getElementById('messageBox').classList.add('hidden'); }
 
-        function updateCategoriesAndButtons() {
-            const type = typeSelect.value;
-            categorySelect.innerHTML = '<option value="">छनौट गर्नुहोस्</option>';
-            if (type && categories[type]) {
-                categories[type].forEach(cat => {
-                    const option = document.createElement('option'); option.value = cat; option.textContent = cat; categorySelect.appendChild(option);
-                });
-            } else {
-                categorySelect.innerHTML = '<option value="">पहिले प्रकार छनौट गर्नुहोस्</option>';
-            }
+    function updateCategoriesAndButtons() {
+      const type = typeSelect.value;
+      categorySelect.innerHTML = '<option value="">छनौट गर्नुहोस्</option>';
+      if (type && categories[type]) {
+        categories[type].forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat;
+          option.textContent = cat;
+          categorySelect.appendChild(option);
+        });
+      }
+      if (['asset','liability','equity'].includes(type)) {
+        increaseDecreaseButtons.classList.remove('hidden');
+      } else {
+        increaseDecreaseButtons.classList.add('hidden');
+        document.querySelectorAll('#increaseDecreaseButtons button').forEach(x => x.classList.remove('active'));
+      }
+    }
 
-            if (['asset', 'liability', 'equity'].includes(type)) {
-                increaseDecreaseButtons.classList.remove('hidden');
-            } else {
-                increaseDecreaseButtons.classList.add('hidden');
-                document.querySelectorAll('#increaseDecreaseButtons button').forEach(x => x.classList.remove('active'));
-            }
-        }
+    function submitTransaction() {
+      const date = document.getElementById('date').value;
+      const type = typeSelect.value;
+      const category = categorySelect.value;
+      const description = document.getElementById('description').value;
+      const amount = parseFloat(document.getElementById('amount').value);
 
-        function submitTransaction() {
-            const date = document.getElementById('date').value;
-            const type = typeSelect.value;
-            const category = categorySelect.value;
-            const description = document.getElementById('description').value;
-            const amount = parseFloat(document.getElementById('amount').value);
+      if (isNaN(amount) || amount <= 0) { showMessage("रकम सही तरिकाले भर्नुहोस्।"); return; }
+      if (['asset','liability','equity'].includes(type) && !document.querySelector('#increaseDecreaseButtons button.active')) {
+        showMessage("कृपया 'बढ्यो' वा 'घट्यो' छनौट गर्नुहोस्।"); return;
+      }
 
-            if (isNaN(amount) || amount <= 0) { showMessage("रकम सही तरिकाले भर्नुहोस्।"); return; }
-            if (['asset', 'liability', 'equity'].includes(type) && !document.querySelector('#increaseDecreaseButtons button.active')) { showMessage("कृपया 'बढ्यो' वा 'घट्यो' छनौट गर्नुहोस्।"); return; }
+      let changeType = null;
+      if (['asset','liability','equity'].includes(type)) {
+        changeType = document.querySelector('#increaseDecreaseButtons button.active').getAttribute('data-change');
+      }
 
-            let changeType = null;
-            if (['asset', 'liability', 'equity'].includes(type)) {
-                changeType = document.querySelector('#increaseDecreaseButtons button.active').getAttribute('data-change');
-            }
+      statusMessage.textContent = 'डाटा पठाइँदैछ...';
+      statusMessage.classList.remove('hidden','text-green-600','text-red-600');
 
-            statusMessage.textContent = 'डाटा पठाइँदैछ...';
-            statusMessage.classList.remove('hidden', 'text-green-600', 'text-red-600');
+      const formData = { date, type, category, change: changeType, description, amount };
 
-            const formData = { date, type, category, change: changeType, description, amount };
-
-            // Send data to Apps Script using google.script.run
-            google.script.run
-                .withSuccessHandler(function() {
-                    // Success! Update local data and UI
-                    if (!accountingData[type][category]) accountingData[type][category] = 0;
-                    if (type === 'income') accountingData[type][category] += amount;
-                    else if (type === 'expense') accountingData[type][category] += amount;
-                    else if (type === 'asset') accountingData[type][category] += (changeType === 'increase' ? amount : -amount);
-                    else if (type === 'liability') accountingData[type][category] += (changeType === 'increase' ? amount : -amount);
-                    else if (type === 'equity') accountingData[type][category] += (changeType === 'increase' ? amount : -amount);
-                    
-                    updateTables();
-                    closeModal();
-                    statusMessage.textContent = 'डाटा सफलतापूर्वक पठाइयो!';
-                    statusMessage.classList.add('text-green-600');
-                    showMessage("डाटा सफलतापूर्वक सेभ भयो!");
-                })
-                .withFailureHandler(function(error) {
-                    // Failure! Show error message
-                    console.error('Error sending data:', error);
-                    statusMessage.textContent = 'डाटा पठाउन असफल भयो।';
-                    statusMessage.classList.add('text-red-600');
-                    showMessage("डाटा सेभ गर्दा त्रुटि भयो।");
-                })
-                .saveData(formData); // This calls the saveData function in code.gs
-        }
-
-        function updateTables() { updateProfitLossTable(); updateBalanceSheetTable(); }
-
-        function updateProfitLossTable() {
-            const pLBody = document.getElementById('p-l-body'); pLBody.innerHTML = '';
-            let totalIncome = 0, totalExpense = 0;
-            for (const cat in accountingData.income) { if (accountingData.income[cat] !== 0) { const row = pLBody.insertRow(); row.className = 'text-income'; row.innerHTML = `<td>${cat}</td><td></td><td>${accountingData.income[cat].toFixed(2)}</td>`; totalIncome += accountingData.income[cat]; } }
-            for (const cat in accountingData.expense) { if (accountingData.expense[cat] !== 0) { const row = pLBody.insertRow(); row.className = 'text-expense'; row.innerHTML = `<td>${cat}</td><td></td><td>(${accountingData.expense[cat].toFixed(2)})</td>`; totalExpense += accountingData.expense[cat]; } }
-            const netProfit = totalIncome - totalExpense; const profitLossLabel = document.getElementById('profit-loss-label'); const pLTotal = document.getElementById('p-l-total');
-            if (netProfit >= 0) { profitLossLabel.textContent = "कुल नाफा"; pLTotal.textContent = `रु. ${netProfit.toFixed(2)}`; pLTotal.style.color = '#16a34a'; }
-            else { profitLossLabel.textContent = "कुल नोक्सान"; pLTotal.textContent = `रु. (${Math.abs(netProfit).toFixed(2)})`; pLTotal.style.color = '#ef4444'; }
-            accountingData.equity['नाफा'] = netProfit;
-        }
-
-        function updateBalanceSheetTable() {
-            const balanceSheetBody = document.getElementById('balance-sheet-body'); balanceSheetBody.innerHTML = '';
-            let totalAssets = 0, totalLiabilities = 0, totalEquity = 0;
-            for (const cat in accountingData.asset) { if (accountingData.asset[cat] !== 0) { const row = balanceSheetBody.insertRow(); row.className = 'text-asset'; row.innerHTML = `<td>${cat}</td><td></td><td>${accountingData.asset[cat].toFixed(2)}</td>`; totalAssets += accountingData.asset[cat]; } }
-            for (const cat in accountingData.liability) { if (accountingData.liability[cat] !== 0) { const row = balanceSheetBody.insertRow(); row.className = 'text-liability'; row.innerHTML = `<td>${cat}</td><td></td><td>(${accountingData.liability[cat].toFixed(2)})</td>`; totalLiabilities += accountingData.liability[cat]; } }
-            for (const cat in accountingData.equity) { if (accountingData.equity[cat] !== 0) { const row = balanceSheetBody.insertRow(); row.className = 'text-equity'; row.innerHTML = `<td>${cat}</td><td></td><td>${accountingData.equity[cat].toFixed(2)}</td>`; totalEquity += accountingData.equity[cat]; } }
-
-            document.getElementById('assets-total').textContent = `रु. ${totalAssets.toFixed(2)}`;
-            const liabilitiesEquityTotal = totalLiabilities + totalEquity;
-            document.getElementById('liabilities-equity-total').textContent = `रु. ${liabilitiesEquityTotal.toFixed(2)}`;
-
-            const balanceStatusEl = document.getElementById('balance-status');
-            if (Math.abs(totalAssets - liabilitiesEquityTotal) < 0.01) { balanceStatusEl.textContent = 'मिलेको छ'; balanceStatusEl.className = 'text-green-600'; }
-            else { balanceStatusEl.textContent = 'मिलेको छैन'; balanceStatusEl.className = 'text-red-600'; }
-        }
-    </script>
+      google.script.run
+        .withSuccessHandler(function(msg) {
+          statusMessage.textContent = msg;
+          statusMessage.classList.add('text-green-600');
+          showMessage(msg);
+          closeModal();
+        })
+        .withFailureHandler(function(error) {
+          console.error('Error:', error);
+          statusMessage.textContent = 'डाटा पठाउन असफल भयो।';
+          statusMessage.classList.add('text-red-600');
+          showMessage("त्रुटि भयो: " + error.message);
+        })
+        .saveData(formData);
+    }
+  </script>
 </body>
 </html>
