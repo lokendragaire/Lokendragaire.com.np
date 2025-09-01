@@ -41,7 +41,32 @@
             --button-hover-bg: #e5e7eb;
         }
         
-       
+        /* डार्क मोड */
+        .dark-mode {
+            --bg-color: #1a202c; /* Tailwind's gray-900 */
+            --text-color: #f7fafc; /* Tailwind's gray-100 */
+            --navbar-bg: #2d3748;
+            --navbar-brand-color: #a7f3d0; /* Light green */
+            --navbar-link-color: #f7fafc;
+            --footer-bg: #2d3748;
+            --footer-text-color: #f7fafc;
+            --button-color: #2d3748;
+            --button-text-color: #e2e8f0;
+            --button-hover-bg: #4a5568;
+        }
+        
+        /* नाइट मोड (सेपिया जस्तै) */
+        .night-mode {
+            --bg-color: #f4f0e9;
+            --text-color: #4a413a;
+            --navbar-bg: #e5e0d3;
+            --navbar-brand-color: #4a413a;
+            --navbar-link-color: #4a413a;
+            --footer-bg: #d4cfc1;
+            --footer-text-color: #4a413a;
+            --button-color: #e5e0d3;
+            --button-text-color: #4a413a;
+            --button-hover-bg: #d4cfc1;
         }
 
         /* Custom styles for social buttons and background colors not directly in Tailwind */
@@ -418,11 +443,37 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
-       
+        /* मोड परिवर्तन बटनहरूका लागि */
+        .mode-toggle {
+            display: flex;
+            gap: 0.5rem; /* बटनहरू बीचको दूरी कम गरियो */
+            margin-left: 0.5rem; /* लगइन बटनबाट अलिकति दूरीमा राखियो */
+            padding: 0.5rem; /* प्याडिङ कम गरियो */
+            background-color: var(--button-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
 
-       
+        .mode-toggle button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem; /* प्याडिङ कम गरियो */
+            color: var(--button-text-color);
+            font-size: 1.25rem; /* आइकन साइज सानो गरियो */
+            transition: transform 0.2s ease-in-out, background-color 0.2s;
+            border-radius: 50%;
+        }
 
-        
+        .mode-toggle button:hover {
+            transform: scale(1.1);
+            background-color: var(--button-hover-bg);
+        }
+
+        .mode-toggle button.active {
+            transform: scale(1.2);
+            color: #3b82f6;
+        }
     </style>
 </head>
 <body id="page-top">
@@ -559,7 +610,24 @@
                             <button id="loginButton" class="nav-link py-2 px-3 block text-blue-700 font-bold hover:bg-blue-100 rounded-md">
                                 <i class="fas fa-sign-in-alt mr-1"></i> लगइन
                             </button>
-                          
+                            <!-- Mode Switcher Buttons -->
+                            <div class="mode-toggle">
+                                <button id="light-mode-btn" data-mode="light" aria-label="Light Mode">
+                                    <i class="fas fa-sun"></i>
+                                </button>
+                                <button id="dark-mode-btn" data-mode="dark" aria-label="Dark Mode">
+                                    <i class="fas fa-moon"></i>
+                                </button>
+                                <button id="night-mode-btn" data-mode="night" aria-label="Night Mode (Sepia)">
+                                    <i class="fas fa-cloud-moon"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <!-- Masthead (Hero Section) - Copied from index.html -->
     <header class="masthead relative">
@@ -1165,7 +1233,41 @@
             checkLoginStatus();
         });
         
-        
+        // ==========================================
+        //  मोड परिवर्तनको लागि JavaScript
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeButtons = document.querySelectorAll('.mode-toggle button');
+            const storedTheme = localStorage.getItem('theme') || 'light';
+
+            // Function to set theme for the entire page
+            function setTheme(theme) {
+                document.body.classList.remove('dark-mode', 'night-mode');
+                
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-mode');
+                } else if (theme === 'night') {
+                    document.body.classList.add('night-mode');
+                }
+                
+                themeButtons.forEach(btn => btn.classList.remove('active'));
+                const activeBtn = document.querySelector(`button[data-mode="${theme}"]`);
+                if (activeBtn) {
+                    activeBtn.classList.add('active');
+                }
+                
+                localStorage.setItem('theme', theme);
+            }
+
+            // Set the theme on page load
+            setTheme(storedTheme);
+
+            // Add click event listeners to the buttons
+            themeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const newTheme = button.getAttribute('data-mode');
+                    setTheme(newTheme);
+                });
             });
         });
     </script>
