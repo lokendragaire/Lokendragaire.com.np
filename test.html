@@ -232,26 +232,7 @@
 
                 <h3 class="text-xl font-bold mt-8">Details of Income Sources</h3>
                 <div id="incomeSourcesContainer" class="space-y-4">
-                    <div class="income-source-row p-4 border rounded-md bg-gray-50 flex items-end space-x-2">
-                        <div class="flex-grow">
-                            <label class="block text-sm font-medium text-gray-700">Source of Income</label>
-                            <input type="text" class="mt-1 block w-full px-3 py-2 border rounded-md source-input" placeholder="e.g., Income from Pension (Ex-Indian Army)">
-                        </div>
-                        <div class="flex-grow">
-                            <label class="block text-sm font-medium text-gray-700">Earned By</label>
-                            <input type="text" class="mt-1 block w-full px-3 py-2 border rounded-md earned-by-input" placeholder="e.g., Mr. Yam Bahadur Khatri">
-                        </div>
-                        <div class="flex-grow">
-                            <label class="block text-sm font-medium text-gray-700">Annual Income (NPR)</label>
-                            <input type="number" class="mt-1 block w-full px-3 py-2 border rounded-md amount-input" placeholder="In Nepali Rupees">
-                        </div>
-                         <div class="flex-grow">
-                            <label class="block text-sm font-medium text-gray-700">Remarks</label>
-                            <input type="text" class="mt-1 block w-full px-3 py-2 border rounded-md remarks-input" placeholder="e.g., As per pension document">
-                        </div>
-                        <button type="button" class="remove-row-btn px-4 py-2 border rounded-md text-white bg-red-500 hover:bg-red-600">Remove</button>
                     </div>
-                </div>
                 <button type="button" id="addSourceBtn" class="px-4 py-2 border rounded-md text-white bg-blue-600 hover:bg-blue-700">Add New Source</button>
 
                 <div>
@@ -263,12 +244,12 @@
                     <input type="text" id="totalIncomeWords" name="totalIncomeWords" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="This will be generated automatically" readonly>
                 </div>
                 <div>
-                    <label for="equivalentToAUD" class="block text-sm font-medium text-gray-700">Equivalent to AUD:</label>
-                    <input type="text" id="equivalentToAUD" name="equivalentToAUD" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="This will be calculated automatically" readonly>
+                    <label for="exchangeRate" class="block text-sm font-medium text-gray-700">Exchange Rate (1 AUD = NRs.):</label>
+                    <input type="number" id="exchangeRate" name="exchangeRate" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., 90.94">
                 </div>
                 <div>
-                    <label for="exchangeRate" class="block text-sm font-medium text-gray-700">Exchange Rate Note:</label>
-                    <input type="text" id="exchangeRate" name="exchangeRate" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Note that the exchange rate as of 6th August, 2025 is 1 AUD = NRs. 90.94">
+                    <label for="equivalentToAUD" class="block text-sm font-medium text-gray-700">Equivalent to AUD:</label>
+                    <input type="text" id="equivalentToAUD" name="equivalentToAUD" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="This will be calculated automatically" readonly>
                 </div>
                 
                 <div>
@@ -379,7 +360,7 @@
                         </p>
                     </div>
                     <div class="mt-4">
-                        <p id="previewExchangeRate"></p>
+                        <p id="previewExchangeRateNote"></p>
                     </div>
                     
                     <div class="mt-10 text-right">
@@ -396,4 +377,29 @@
             </button>
             <button type="button" id="backToFormBtn" class="px-6 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" style="display: none;">
                 Back to Form
-      
+            </button>
+            <button type="button" id="printBtn" class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" style="display: none;">
+                Print
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const formSection = document.getElementById('formSection');
+            const previewSection = document.getElementById('previewSection');
+            const previewBtn = document.getElementById('previewBtn');
+            const backToFormBtn = document.getElementById('backToFormBtn');
+            const printBtn = document.getElementById('printBtn');
+            const addSourceBtn = document.getElementById('addSourceBtn');
+            const incomeSourcesContainer = document.getElementById('incomeSourcesContainer');
+            const totalIncomeInput = document.getElementById('totalIncome');
+            const totalIncomeWordsInput = document.getElementById('totalIncomeWords');
+            const exchangeRateInput = document.getElementById('exchangeRate');
+            const equivalentToAUDInput = document.getElementById('equivalentToAUD');
+
+            // Function to convert number to English words
+            const a = ['','one ','two ','three ','four ', 'five ','six ','seven ','eight ','nine ','ten ','eleven ','twelve ','thirteen ','fourteen ','fifteen ','sixteen ','seventeen ','eighteen ','nineteen '];
+            const b = ['', '', 'twenty','thirty','forty','fifty', 'sixty','seventy','eighty','ninety'];
+            
+            function in
