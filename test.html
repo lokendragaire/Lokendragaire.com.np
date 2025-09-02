@@ -34,7 +34,6 @@
         .preview-section.active {
             display: block;
         }
-
         /* A4 size for printing */
         @media print {
             body {
@@ -93,8 +92,10 @@
             .no-wrap {
                 white-space: nowrap;
             }
+            .black-line {
+                border-bottom: 1px solid black !important;
+            }
         }
-
         /* Watermark styling */
         .watermark-container {
             position: relative;
@@ -188,6 +189,11 @@
         .dotted-table th {
             background-color: #f2f2f2;
         }
+        .black-line {
+            border-bottom: 1px solid black;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -195,6 +201,19 @@
         <div id="formSection" class="form-section active">
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Source of Income Verification Details</h2>
             <form id="letterForm" class="space-y-6">
+                <h3 class="text-xl font-bold mt-8">Office Details</h3>
+                <div>
+                    <label for="municipalityName" class="block text-sm font-medium text-gray-700">Municipality Name:</label>
+                    <input type="text" id="municipalityName" name="municipalityName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Galkot Municipality">
+                </div>
+                <div>
+                    <label for="wardOfficeName" class="block text-sm font-medium text-gray-700">Ward Office Name (e.g., 8 No. Ward Office):</label>
+                    <input type="text" id="wardOfficeName" name="wardOfficeName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., 8 No. Ward Office">
+                </div>
+                <div>
+                    <label for="officeAddress" class="block text-sm font-medium text-gray-700">Office Address (e.g., Kandebas, Baglung):</label>
+                    <input type="text" id="officeAddress" name="officeAddress" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Kandebas, Baglung">
+                </div>
                 <div>
                     <label for="fiscalYear" class="block text-sm font-medium text-gray-700">Fiscal Year:</label>
                     <input type="text" id="fiscalYear" name="fiscalYear" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., 2082/083">
@@ -207,34 +226,31 @@
                     <label for="date" class="block text-sm font-medium text-gray-700">Date:</label>
                     <input type="text" id="date" name="date" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., 6th August, 2025">
                 </div>
-
                 <h3 class="text-xl font-bold mt-8">Applicant and Family Details</h3>
                 <div>
                     <label for="applicantName" class="block text-sm font-medium text-gray-700">Applicant's Name:</label>
-                    <input type="text" id="applicantName" name="applicantName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="Applicant's name">
+                    <input type="text" id="applicantName" name="applicantName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Arishma Khatri">
                 </div>
                 <div>
                     <label for="fatherName" class="block text-sm font-medium text-gray-700">Father's Name:</label>
-                    <input type="text" id="fatherName" name="fatherName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="Father's name">
+                    <input type="text" id="fatherName" name="fatherName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Mr. Yam Bahadur Khatri">
                 </div>
                 <div>
                     <label for="motherName" class="block text-sm font-medium text-gray-700">Mother's Name:</label>
-                    <input type="text" id="motherName" name="motherName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="Mother's name">
+                    <input type="text" id="motherName" name="motherName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Mrs. Khima Khatri">
                 </div>
                 <div>
-                    <label for="residenceAddress" class="block text-sm font-medium text-gray-700">Permanent Address:</label>
+                    <label for="residenceAddress" class="block text-sm font-medium text-gray-700">Permanent Address (Municipality, Ward No., District, Province, Nepal):</label>
                     <input type="text" id="residenceAddress" name="residenceAddress" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Galkot Municipality, Ward No. 8, Baglung District, Gandaki Province, Nepal">
                 </div>
                 <div>
-                    <label for="fiscalYearEnglish" class="block text-sm font-medium text-gray-700">Fiscal Year for Income:</label>
+                    <label for="fiscalYearEnglish" class="block text-sm font-medium text-gray-700">Fiscal Year for Income (e.g., 2024/2025 A.D.):</label>
                     <input type="text" id="fiscalYearEnglish" name="fiscalYearEnglish" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., 2024/2025 A.D.">
                 </div>
-
                 <h3 class="text-xl font-bold mt-8">Details of Income Sources</h3>
                 <div id="incomeSourcesContainer" class="space-y-4">
                     </div>
                 <button type="button" id="addSourceBtn" class="px-4 py-2 border rounded-md text-white bg-blue-600 hover:bg-blue-700">Add New Source</button>
-
                 <div>
                     <label for="totalIncome" class="block text-sm font-medium text-gray-700">Grand Total in NPR:</label>
                     <input type="text" id="totalIncome" name="totalIncome" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="This will be calculated automatically" readonly>
@@ -251,12 +267,10 @@
                     <label for="equivalentToAUD" class="block text-sm font-medium text-gray-700">Equivalent to AUD:</label>
                     <input type="text" id="equivalentToAUD" name="equivalentToAUD" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="This will be calculated automatically" readonly>
                 </div>
-                
                 <div>
                     <label for="wardChairpersonName" class="block text-sm font-medium text-gray-700">Ward Chairperson's Name:</label>
                     <input type="text" id="wardChairpersonName" name="wardChairpersonName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Tej Prasad Sapkota">
                 </div>
-
                 <div class="buttons-container mt-8 flex justify-center space-x-4">
                     <button type="button" id="previewBtn" class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Preview
@@ -270,7 +284,6 @@
                 </div>
             </form>
         </div>
-
         <div id="previewSection" class="preview-section">
             <div class="watermark-container">
                 <img src="https://galkotmun.gov.np/sites/galkotmun.gov.np/files/logo_0.png" alt="Watermark" class="watermark" />
@@ -280,10 +293,10 @@
                             <img src="https://galkotmun.gov.np/sites/galkotmun.gov.np/files/logo_0.png" alt="Logo" class="w-16 h-auto mb-2" />
                         </div>
                         <div class="flex-1 text-center">
-                            <p class="font-bold text-lg" id="previewMunicipality">Galkot Municipality</p>
-                            <p class="font-bold text-lg" id="previewWardOffice">8 No. Ward Office</p>
-                            <p id="previewAddress">Kandebas, Baglung</p>
-                            <p id="previewProvince">Gandaki Province, Nepal</p>
+                            <p class="font-bold text-lg" id="previewMunicipality"></p>
+                            <p class="font-bold text-lg" id="previewWardOffice"></p>
+                            <p id="previewAddress"></p>
+                            <p>Gandaki Province, Nepal</p>
                         </div>
                         <div class="flex-1 text-right">
                             <p>Website: <span class="dotted-line-bottom">galkotmun.gov.np</span></p>
@@ -291,6 +304,7 @@
                             <p>Phone No.: <span class="dotted-line-bottom">+९७७-९८५७६२१११४</span></p>
                         </div>
                     </div>
+                    <hr class="black-line">
                     <div class="flex justify-between mt-4">
                         <p class="header-left-align">
                             Fiscal Year: <span class="no-wrap" id="previewFiscalYear"></span><br>
@@ -300,7 +314,6 @@
                             Date: <span class="dotted-line-bottom no-wrap" id="previewDate"></span>
                         </p>
                     </div>
-
                     <div class="text-center mt-4">
                         <p class="font-bold text-xl">
                             Subject: Source of Income Verification
@@ -309,7 +322,6 @@
                             To Whom It May Concern
                         </p>
                     </div>
-
                     <div class="mt-8">
                         <p>
                             This is to certify that Mr. <span class="dotted-line-bottom no-wrap" id="previewFatherName"></span> (Father) and Mrs. <span class="dotted-line-bottom no-wrap" id="previewMotherName"></span> (Mother) of Miss/Mr. <span class="dotted-line-bottom no-wrap" id="previewApplicantName"></span> (Applicant), a permanent resident of <span class="dotted-line-bottom no-wrap" id="previewResidenceAddress"></span>, have the following annual income from various sources.
@@ -320,13 +332,11 @@
                             This income certification is made with the verification of concerned documents and record of this Municipality and this income is calculated for the fiscal year <span class="dotted-line-bottom no-wrap" id="previewFiscalYearEnglish"></span>.
                         </p>
                     </div>
-                    
                     <div class="text-center mt-8">
                         <p class="font-bold text-lg">
                             Details of Income Source
                         </p>
                     </div>
-
                     <div class="mt-2">
                         <table class="dotted-table">
                             <thead>
@@ -342,13 +352,11 @@
                                 </tbody>
                         </table>
                     </div>
-
                     <div class="mt-8">
                         <p>
                             Grand Total In NPR: <span class="dotted-line-bottom" id="previewTotalIncome"></span>
                         </p>
                     </div>
-                    
                     <div class="mt-4">
                         <p>
                             Amount in word: <span class="dotted-line-bottom" id="previewTotalIncomeWords"></span>
@@ -362,7 +370,6 @@
                     <div class="mt-4">
                         <p id="previewExchangeRateNote"></p>
                     </div>
-                    
                     <div class="mt-10 text-right">
                         <p class="font-bold" id="previewWardChairpersonName"></p>
                         <p>Ward Chairperson</p>
@@ -370,7 +377,393 @@
                 </div>
             </div>
         </div>
-
+        <div class="buttons-container mt-8 flex justify-center space-x-4">
+            <button type="button" id="previewBtn" class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Preview
+            </button>
+            <button type="button" id="backToFormBtn" class="px-6 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" style="display: none;">
+                        Back to Form
+            </button>
+            <button type="button" id="printBtn" class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" style="display: none;">
+                        Pr<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Source of Income Verification Letter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 5px;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            width: 100%;
+            max-width: 800px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .form-section, .preview-section {
+            display: none;
+        }
+        .form-section.active {
+            display: block;
+        }
+        .preview-section.active {
+            display: block;
+        }
+        /* A4 size for printing */
+        @media print {
+            body {
+                background: none;
+                margin: 0;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                width: 210mm;
+                min-height: 297mm;
+                margin: 0 auto;
+                padding: 10mm;
+                page-break-after: always;
+                position: relative;
+            }
+            .form-section, .buttons-container {
+                display: none !important;
+            }
+            .preview-section {
+                display: block !important;
+                position: relative;
+            }
+            .letter-content {
+                position: relative;
+                z-index: 10;
+            }
+            .watermark {
+                display: block !important;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 80%;
+                height: auto;
+                opacity: 0.08 !important;
+                pointer-events: none;
+                z-index: 1;
+            }
+            .dotted-line-bottom {
+                border-bottom: 1px dotted #999 !important;
+                text-align: initial !important;
+            }
+            .field-value {
+                white-space: normal !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+            }
+            .header-left-align {
+                text-align: left !important;
+            }
+            .header-right-align {
+                text-align: right !important;
+            }
+            .no-wrap {
+                white-space: nowrap;
+            }
+            .black-line {
+                border-bottom: 1px solid black !important;
+            }
+        }
+        /* Watermark styling */
+        .watermark-container {
+            position: relative;
+            min-height: 500px;
+        }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: auto;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .letter-content {
+            position: relative;
+            z-index: 10;
+        }
+        /* Custom styles for dotted lines and layout */
+        .dotted-line-bottom {
+            border-bottom: 1px dotted #999;
+            padding-bottom: 2px;
+            display: inline-block;
+            text-align: left;
+            box-sizing: border-box;
+            margin-left: 1px;
+            margin-right: 1px;
+            flex-grow: 1;
+            flex-shrink: 1;
+            white-space: nowrap;
+        }
+        .header-top-right p {
+            margin-bottom: 2px;
+        }
+        .header-center p {
+            margin-bottom: 2px;
+        }
+        .header-left-align {
+            text-align: left;
+        }
+        .header-right-align {
+            text-align: right;
+        }
+        .header-top-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .header-top-section .left-col {
+            flex-basis: 20%;
+            text-align: left;
+        }
+        .header-top-section .center-col {
+            flex-basis: 60%;
+            text-align: center;
+        }
+        .header-top-section .right-col {
+            flex-basis: 20%;
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-end;
+        }
+        .header-top-section .right-col p {
+            margin-bottom: 2px;
+        }
+        .header-center p {
+            white-space: normal;
+            word-break: break-word;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+        }
+        .header-center p.text-lg {
+            font-size: 1.125rem;
+            line-height: 1.75rem;
+        }
+        .dotted-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .dotted-table th, .dotted-table td {
+            border: 1px dotted #999;
+            padding: 8px;
+            text-align: left;
+        }
+        .dotted-table th {
+            background-color: #f2f2f2;
+        }
+        .black-line {
+            border-bottom: 1px solid black;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="formSection" class="form-section active">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Source of Income Verification Details</h2>
+            <form id="letterForm" class="space-y-6">
+                <h3 class="text-xl font-bold mt-8">Office Details</h3>
+                <div>
+                    <label for="municipalityName" class="block text-sm font-medium text-gray-700">Municipality Name:</label>
+                    <input type="text" id="municipalityName" name="municipalityName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Galkot Municipality">
+                </div>
+                <div>
+                    <label for="wardOfficeName" class="block text-sm font-medium text-gray-700">Ward Office Name (e.g., 8 No. Ward Office):</label>
+                    <input type="text" id="wardOfficeName" name="wardOfficeName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., 8 No. Ward Office">
+                </div>
+                <div>
+                    <label for="officeAddress" class="block text-sm font-medium text-gray-700">Office Address (e.g., Kandebas, Baglung):</label>
+                    <input type="text" id="officeAddress" name="officeAddress" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Kandebas, Baglung">
+                </div>
+                <div>
+                    <label for="fiscalYear" class="block text-sm font-medium text-gray-700">Fiscal Year:</label>
+                    <input type="text" id="fiscalYear" name="fiscalYear" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., 2082/083">
+                </div>
+                <div>
+                    <label for="refNo" class="block text-sm font-medium text-gray-700">Ref. No.:</label>
+                    <input type="text" id="refNo" name="refNo" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., 45">
+                </div>
+                <div>
+                    <label for="date" class="block text-sm font-medium text-gray-700">Date:</label>
+                    <input type="text" id="date" name="date" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., 6th August, 2025">
+                </div>
+                <h3 class="text-xl font-bold mt-8">Applicant and Family Details</h3>
+                <div>
+                    <label for="applicantName" class="block text-sm font-medium text-gray-700">Applicant's Name:</label>
+                    <input type="text" id="applicantName" name="applicantName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Arishma Khatri">
+                </div>
+                <div>
+                    <label for="fatherName" class="block text-sm font-medium text-gray-700">Father's Name:</label>
+                    <input type="text" id="fatherName" name="fatherName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Mr. Yam Bahadur Khatri">
+                </div>
+                <div>
+                    <label for="motherName" class="block text-sm font-medium text-gray-700">Mother's Name:</label>
+                    <input type="text" id="motherName" name="motherName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Mrs. Khima Khatri">
+                </div>
+                <div>
+                    <label for="residenceAddress" class="block text-sm font-medium text-gray-700">Permanent Address (Municipality, Ward No., District, Province, Nepal):</label>
+                    <input type="text" id="residenceAddress" name="residenceAddress" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Galkot Municipality, Ward No. 8, Baglung District, Gandaki Province, Nepal">
+                </div>
+                <div>
+                    <label for="fiscalYearEnglish" class="block text-sm font-medium text-gray-700">Fiscal Year for Income (e.g., 2024/2025 A.D.):</label>
+                    <input type="text" id="fiscalYearEnglish" name="fiscalYearEnglish" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., 2024/2025 A.D.">
+                </div>
+                <h3 class="text-xl font-bold mt-8">Details of Income Sources</h3>
+                <div id="incomeSourcesContainer" class="space-y-4">
+                    </div>
+                <button type="button" id="addSourceBtn" class="px-4 py-2 border rounded-md text-white bg-blue-600 hover:bg-blue-700">Add New Source</button>
+                <div>
+                    <label for="totalIncome" class="block text-sm font-medium text-gray-700">Grand Total in NPR:</label>
+                    <input type="text" id="totalIncome" name="totalIncome" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="This will be calculated automatically" readonly>
+                </div>
+                <div>
+                    <label for="totalIncomeWords" class="block text-sm font-medium text-gray-700">Amount in word:</label>
+                    <input type="text" id="totalIncomeWords" name="totalIncomeWords" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="This will be generated automatically" readonly>
+                </div>
+                <div>
+                    <label for="exchangeRate" class="block text-sm font-medium text-gray-700">Exchange Rate (1 AUD = NRs.):</label>
+                    <input type="number" id="exchangeRate" name="exchangeRate" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., 90.94">
+                </div>
+                <div>
+                    <label for="equivalentToAUD" class="block text-sm font-medium text-gray-700">Equivalent to AUD:</label>
+                    <input type="text" id="equivalentToAUD" name="equivalentToAUD" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="This will be calculated automatically" readonly>
+                </div>
+                <div>
+                    <label for="wardChairpersonName" class="block text-sm font-medium text-gray-700">Ward Chairperson's Name:</label>
+                    <input type="text" id="wardChairpersonName" name="wardChairpersonName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Tej Prasad Sapkota">
+                </div>
+                <div class="buttons-container mt-8 flex justify-center space-x-4">
+                    <button type="button" id="previewBtn" class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Preview
+                    </button>
+                    <button type="button" id="backToFormBtn" class="px-6 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" style="display: none;">
+                        Back to Form
+                    </button>
+                    <button type="button" id="printBtn" class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" style="display: none;">
+                        Print
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div id="previewSection" class="preview-section">
+            <div class="watermark-container">
+                <img src="https://galkotmun.gov.np/sites/galkotmun.gov.np/files/logo_0.png" alt="Watermark" class="watermark" />
+                <div class="letter-content text-sm leading-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex-1 text-left">
+                            <img src="https://galkotmun.gov.np/sites/galkotmun.gov.np/files/logo_0.png" alt="Logo" class="w-16 h-auto mb-2" />
+                        </div>
+                        <div class="flex-1 text-center">
+                            <p class="font-bold text-lg" id="previewMunicipality"></p>
+                            <p class="font-bold text-lg" id="previewWardOffice"></p>
+                            <p id="previewAddress"></p>
+                            <p>Gandaki Province, Nepal</p>
+                        </div>
+                        <div class="flex-1 text-right">
+                            <p>Website: <span class="dotted-line-bottom">galkotmun.gov.np</span></p>
+                            <p>Email: <span class="dotted-line-bottom">galkot8k@gmail.com</span></p>
+                            <p>Phone No.: <span class="dotted-line-bottom">+९७७-९८५७६२१११४</span></p>
+                        </div>
+                    </div>
+                    <hr class="black-line">
+                    <div class="flex justify-between mt-4">
+                        <p class="header-left-align">
+                            Fiscal Year: <span class="no-wrap" id="previewFiscalYear"></span><br>
+                            Ref. No.: <span class="no-wrap" id="previewRefNo"></span>
+                        </p>
+                        <p class="header-right-align">
+                            Date: <span class="dotted-line-bottom no-wrap" id="previewDate"></span>
+                        </p>
+                    </div>
+                    <div class="text-center mt-4">
+                        <p class="font-bold text-xl">
+                            Subject: Source of Income Verification
+                        </p>
+                        <p class="font-bold text-lg">
+                            To Whom It May Concern
+                        </p>
+                    </div>
+                    <div class="mt-8">
+                        <p>
+                            This is to certify that Mr. <span class="dotted-line-bottom no-wrap" id="previewFatherName"></span> (Father) and Mrs. <span class="dotted-line-bottom no-wrap" id="previewMotherName"></span> (Mother) of Miss/Mr. <span class="dotted-line-bottom no-wrap" id="previewApplicantName"></span> (Applicant), a permanent resident of <span class="dotted-line-bottom no-wrap" id="previewResidenceAddress"></span>, have the following annual income from various sources.
+                        </p>
+                    </div>
+                    <div class="mt-4">
+                        <p>
+                            This income certification is made with the verification of concerned documents and record of this Municipality and this income is calculated for the fiscal year <span class="dotted-line-bottom no-wrap" id="previewFiscalYearEnglish"></span>.
+                        </p>
+                    </div>
+                    <div class="text-center mt-8">
+                        <p class="font-bold text-lg">
+                            Details of Income Source
+                        </p>
+                    </div>
+                    <div class="mt-2">
+                        <table class="dotted-table">
+                            <thead>
+                                <tr>
+                                    <th>S.N.</th>
+                                    <th>Sources of Income</th>
+                                    <th>Earned By</th>
+                                    <th>Annual Income (NPR)</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody id="incomeTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-8">
+                        <p>
+                            Grand Total In NPR: <span class="dotted-line-bottom" id="previewTotalIncome"></span>
+                        </p>
+                    </div>
+                    <div class="mt-4">
+                        <p>
+                            Amount in word: <span class="dotted-line-bottom" id="previewTotalIncomeWords"></span>
+                        </p>
+                    </div>
+                    <div class="mt-4">
+                        <p>
+                            This is equivalent to AUD: <span class="dotted-line-bottom" id="previewEquivalentToAUD"></span>
+                        </p>
+                    </div>
+                    <div class="mt-4">
+                        <p id="previewExchangeRateNote"></p>
+                    </div>
+                    <div class="mt-10 text-right">
+                        <p class="font-bold" id="previewWardChairpersonName"></p>
+                        <p>Ward Chairperson</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="buttons-container mt-8 flex justify-center space-x-4">
             <button type="button" id="previewBtn" class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Preview
@@ -397,6 +790,9 @@
             const totalIncomeWordsInput = document.getElementById('totalIncomeWords');
             const exchangeRateInput = document.getElementById('exchangeRate');
             const equivalentToAUDInput = document.getElementById('equivalentToAUD');
+            const municipalityNameInput = document.getElementById('municipalityName');
+            const wardOfficeNameInput = document.getElementById('wardOfficeName');
+            const officeAddressInput = document.getElementById('officeAddress');
 
             // Function to convert number to English words
             const a = ['','one ','two ','three ','four ', 'five ','six ','seven ','eight ','nine ','ten ','eleven ','twelve ','thirteen ','fourteen ','fifteen ','sixteen ','seventeen ','eighteen ','nineteen '];
@@ -476,7 +872,7 @@
             addSourceBtn.addEventListener('click', addIncomeSourceRow);
             exchangeRateInput.addEventListener('input', calculateEquivalentAUD);
             
-            // Add initial rows on page load
+            // Add initial row on page load
             addIncomeSourceRow();
             
             calculateTotalIncome();
@@ -492,9 +888,11 @@
                         incomeData.push({ source, earnedBy, amount, remarks });
                     }
                 });
-
                 // Get all form data
                 const formData = {
+                    municipalityName: municipalityNameInput.value,
+                    wardOfficeName: wardOfficeNameInput.value,
+                    officeAddress: officeAddressInput.value,
                     fiscalYear: document.getElementById('fiscalYear').value,
                     refNo: document.getElementById('refNo').value,
                     date: document.getElementById('date').value,
@@ -511,6 +909,9 @@
                 };
                 
                 // Update preview content
+                document.getElementById('previewMunicipality').textContent = formData.municipalityName;
+                document.getElementById('previewWardOffice').textContent = formData.wardOfficeName;
+                document.getElementById('previewAddress').textContent = formData.officeAddress;
                 document.getElementById('previewFiscalYear').textContent = formData.fiscalYear;
                 document.getElementById('previewRefNo').textContent = formData.refNo;
                 document.getElementById('previewDate').textContent = formData.date;
@@ -528,9 +929,7 @@
                 } else {
                     document.getElementById('previewExchangeRateNote').textContent = '';
                 }
-
                 document.getElementById('previewWardChairpersonName').textContent = formData.wardChairpersonName;
-
                 // Populate the income table
                 const incomeTableBody = document.getElementById('incomeTableBody');
                 incomeTableBody.innerHTML = '';
@@ -546,7 +945,6 @@
                     `;
                     incomeTableBody.innerHTML += row;
                 });
-
                 // Show preview and hide form
                 formSection.classList.remove('active');
                 previewSection.classList.add('active');
@@ -554,7 +952,6 @@
                 backToFormBtn.style.display = 'inline-block';
                 printBtn.style.display = 'inline-block';
             });
-
             backToFormBtn.addEventListener('click', function() {
                 // Show form and hide preview
                 formSection.classList.add('active');
@@ -563,7 +960,6 @@
                 backToFormBtn.style.display = 'none';
                 printBtn.style.display = 'none';
             });
-
             printBtn.addEventListener('click', function() {
                 window.print();
             });
