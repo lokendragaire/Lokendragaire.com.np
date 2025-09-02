@@ -95,8 +95,9 @@
             }
             .signature-line {
                 display: inline-block;
-                border-bottom: 1px solid black;
-                width: 150px; /* Adjust width as needed for signature line */
+                border-bottom: 1px dotted black;
+                width: 150px;
+                vertical-align: middle;
             }
             p.indent {
                 text-indent: 40px; /* Optional: adds indentation to paragraphs for better readability */
@@ -329,8 +330,11 @@
                         <p id="previewExchangeRateNote"></p>
                     </div>
                     <div class="mt-10 text-right">
-                        <div class="signature-line"></div>
-                        <p class="font-bold">Ward Chairperson</p>
+                        <p class="font-bold">
+                            <span class="signature-line"></span>
+                            <br>
+                            Ward Chairperson
+                        </p>
                         <p id="previewWardChairpersonName"></p>
                     </div>
                 </div>
@@ -551,4 +555,3 @@
     </script>
 </body>
 </html>
-
