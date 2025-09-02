@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ne">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>आम्दानीको स्रोत प्रमाणिकरण पत्र</title>
+    <title>Source of Income Verification Letter</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -126,7 +126,7 @@
             margin-right: 1px;
             flex-grow: 1;
             flex-shrink: 1;
-            white-space: nowrap; /* Prevents values from wrapping */
+            white-space: nowrap;
         }
         .field-row {
             display: flex;
@@ -242,23 +242,23 @@
 <body>
     <div class="container">
         <div id="formSection" class="form-section active">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">आम्दानीको स्रोत प्रमाणिकरण विवरण प्रविष्ट गर्नुहोस्</h2>
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Source of Income Verification Details</h2>
             <form id="letterForm" class="space-y-6">
                 <div>
-                    <label for="municipalityNepali" class="block text-sm font-medium text-gray-700">नगरपालिका (नेपाली):</label>
-                    <input type="text" id="municipalityNepali" name="municipalityNepali" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="नगरपालिका नेपालीमा प्रविष्ट गर्नुहोस्">
+                    <label for="municipalityNepali" class="block text-sm font-medium text-gray-700">Municipality (Nepali):</label>
+                    <input type="text" id="municipalityNepali" name="municipalityNepali" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="Municipality in Nepali">
                 </div>
                 <div>
-                    <label for="wardOfficeNepali" class="block text-sm font-medium text-gray-700">वडा कार्यालय (नेपाली):</label>
-                    <input type="text" id="wardOfficeNepali" name="wardOfficeNepali" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="वडा कार्यालय नेपालीमा प्रविष्ट गर्नुहोस्">
+                    <label for="wardOfficeNepali" class="block text-sm font-medium text-gray-700">Ward Office (Nepali):</label>
+                    <input type="text" id="wardOfficeNepali" name="wardOfficeNepali" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="Ward Office in Nepali">
                 </div>
                 <div>
-                    <label for="districtNepali" class="block text-sm font-medium text-gray-700">जिल्ला (नेपाली):</label>
-                    <input type="text" id="districtNepali" name="districtNepali" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="जिल्ला नेपालीमा प्रविष्ट गर्नुहोस्">
+                    <label for="districtNepali" class="block text-sm font-medium text-gray-700">District (Nepali):</label>
+                    <input type="text" id="districtNepali" name="districtNepali" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="District in Nepali">
                 </div>
                 <div>
-                    <label for="provinceNepali" class="block text-sm font-medium text-gray-700">प्रदेश (नेपाली):</label>
-                    <input type="text" id="provinceNepali" name="provinceNepali" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="प्रदेश नेपालीमा प्रविष्ट गर्नुहोस्">
+                    <label for="provinceNepali" class="block text-sm font-medium text-gray-700">Province (Nepali):</label>
+                    <input type="text" id="provinceNepali" name="provinceNepali" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="Province in Nepali">
                 </div>
                 <div>
                     <label for="municipalityEnglish" class="block text-sm font-medium text-gray-700">Municipality (English):</label>
@@ -275,6 +275,145 @@
                 <div>
                     <label for="provinceEnglish" class="block text-sm font-medium text-gray-700">Province (English):</label>
                     <input type="text" id="provinceEnglish" name="provinceEnglish" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="Province name in English">
+                </div>
+                <div>
+                    <label for="refNo" class="block text-sm font-medium text-gray-700">Des. No. (चलानी नं.):</label>
+                    <input type="text" id="refNo" name="refNo" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="Enter Des. No.">
+                </div>
+                <div>
+                    <label for="date" class="block text-sm font-medium text-gray-700">Date (मिति):</label>
+                    <input type="text" id="date" name="date" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="yyyy/mm/dd (B.S.)">
+                </div>
+                <div>
+                    <label for="applicantName" class="block text-sm font-medium text-gray-700">Mr./Mrs./Ms./Miss (Nepali):</label>
+                    <input type="text" id="applicantName" name="applicantName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="Applicant's name in Nepali">
+                </div>
+                <div>
+                    <label for="forWhom" class="block text-sm font-medium text-gray-700">Verified Person (Nepali):</label>
+                    <input type="text" id="forWhom" name="forWhom" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="Name of person to be verified in Nepali">
+                </div>
+                <div>
+                    <label for="purpose" class="block text-sm font-medium text-gray-700">Purpose (English):</label>
+                    <input type="text" id="purpose" name="purpose" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="Enter the purpose (e.g., for Visa Application)">
+                </div>
+
+                <h3 class="text-xl font-bold mt-8">Family Annual Income Sources</h3>
+                <div id="incomeSourcesContainer" class="space-y-4">
+                    <div class="income-source-row p-4 border rounded-md bg-gray-50 flex items-end space-x-2">
+                        <div class="flex-grow">
+                            <label class="block text-sm font-medium text-gray-700">Source of Income</label>
+                            <input type="text" class="mt-1 block w-full px-3 py-2 border rounded-md source-input" placeholder="Source">
+                        </div>
+                        <div class="flex-grow">
+                            <label class="block text-sm font-medium text-gray-700">Annual Income (NPR)</label>
+                            <input type="number" class="mt-1 block w-full px-3 py-2 border rounded-md amount-input" placeholder="In Nepali Rupees">
+                        </div>
+                        <button type="button" class="remove-row-btn px-4 py-2 border rounded-md text-white bg-red-500 hover:bg-red-600">Remove</button>
+                    </div>
+                </div>
+                <button type="button" id="addSourceBtn" class="px-4 py-2 border rounded-md text-white bg-blue-600 hover:bg-blue-700">Add New Source</button>
+
+                <div>
+                    <label for="totalIncome" class="block text-sm font-medium text-gray-700">Total Annual Income (NPR):</label>
+                    <input type="text" id="totalIncome" name="totalIncome" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="This will be calculated automatically" readonly>
+                </div>
+                
+                <div>
+                    <label for="conversionRate" class="block text-sm font-medium text-gray-700">Conversion Rate (1 AUD = NPR):</label>
+                    <input type="number" id="conversionRate" name="conversionRate" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="Enter exchange rate">
+                </div>
+                
+                <div>
+                    <label for="totalInAUD" class="block text-sm font-medium text-gray-700">Total Annual Income (AUD):</label>
+                    <input type="text" id="totalInAUD" name="totalInAUD" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="This will be calculated automatically" readonly>
+                </div>
+
+                <div>
+                    <label for="wardChairpersonName" class="block text-sm font-medium text-gray-700">Ward Chairperson's Name:</label>
+                    <input type="text" id="wardChairpersonName" name="wardChairpersonName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="Enter Ward Chairperson's name">
+                </div>
+
+                <div class="buttons-container mt-8 flex justify-center space-x-4">
+                    <button type="button" id="previewBtn" class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Preview
+                    </button>
+                    <button type="button" id="backToFormBtn" class="px-6 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" style="display: none;">
+                        Back to Form
+                    </button>
+                    <button type="button" id="printBtn" class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" style="display: none;">
+                        Print
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div id="previewSection" class="preview-section">
+            <div class="watermark-container">
+                <img src="https://galkotmun.gov.np/sites/galkotmun.gov.np/files/logo_0.png" alt="Watermark" class="watermark" />
+                <div class="letter-content text-sm leading-6">
+                    <div class="header-top-section">
+                        <div class="left-col flex flex-col items-start">
+                            <img src="https://galkotmun.gov.np/sites/galkotmun.gov.np/files/logo_0.png" alt="Logo" class="w-16 h-auto mb-2" />
+                        </div>
+                        <div class="center-col text-center">
+                            <p class="font-bold text-lg" id="previewMunicipalityNepali"></p>
+                            <p class="font-bold text-lg" id="previewMunicipalityEnglish"></p>
+                            <p class="font-bold text-lg" id="previewWardOfficeNepali"></p>
+                            <p class="font-bold text-lg" id="previewWardOfficeEnglish"></p>
+                            <p id="previewDistrictProvinceNepali"></p>
+                            <p id="previewDistrictProvinceEnglish"></p>
+                            <p>नेपाल</p>
+                            <p>Nepal</p>
+                        </div>
+                        <div class="right-col text-right">
+                            <p>Website: <span class="dotted-line-bottom">galkotmun.gov.np</span></p>
+                            <p>Email: <span class="dotted-line-bottom">galkot8k@gmail.com</span></p>
+                            <p>Phone No.: <span class="dotted-line-bottom">+९७७-९८५७६२१११४</span></p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between mt-4">
+                        <p class="header-left-align">
+                            <span id="previewRefNo"></span>
+                        </p>
+                        <p class="header-right-align">
+                            मिति: <span class="dotted-line-bottom no-wrap" id="previewDate"></span>
+                        </p>
+                    </div>
+                    <div class="text-center mt-4">
+                        <p class="font-bold text-xl">
+                            विषय: आम्दानीको स्रोत प्रमाणिकरण।
+                        </p>
+                    </div>
+                    <div class="text-center mt-2">
+                        <p class="font-bold text-lg">
+                            TO WHOM IT MAY CONCERN
+                        </p>
+                    </div>
+
+                    <div class="mt-8">
+                        <p>
+                            प्रस्तुत विषयमा, श्री <span class="dotted-line-bottom no-wrap" id="previewApplicantName"></span> ले यस वडा कार्यालयमा पेश गर्नुभएको निवेदन अनुसार निजको छोरी/छोरा <span class="dotted-line-bottom no-wrap" id="previewForWhom"></span> को <span class="dotted-line-bottom no-wrap" id="previewPurpose"></span> को लागि निजको परिवारको वार्षिक आम्दानीको स्रोत र वार्षिक आम्दानी रकमको विवरण प्रमाणित गरी पाउँ भनि सिफारिसको लागि अनुरोध गर्नु भएकोमा देहाय बमोजिमको विवरण प्रमाणित गरिएको छ।
+                        </p>
+                    </div>
+
+                    <div class="mt-8">
+                        <table class="dotted-table">
+                            <thead>
+                                <tr>
+                                    <th>क्र.सं.</th>
+                                    <th>आम्दानीको स्रोत</th>
+                                    <th>वार्षिक आम्दानी (ने.रु.)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="incomeTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-8">
+                        <p class="text-right">
+                            जम्मा वार्षिक आम्दानी: ने.रु. <span class="dotted-line-bottom" id="preceEnglish" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="Province name in English">
                 </div>
                 <div>
                     <label for="refNo" class="block text-sm font-medium text-gray-700">चलानी नं. (Des. No.):</label>
