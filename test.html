@@ -93,6 +93,11 @@
             .bold-text {
                 font-weight: bold;
             }
+            .signature-line {
+                display: inline-block;
+                border-bottom: 1px solid black;
+                width: 150px; /* Adjust width as needed for signature line */
+            }
             p.indent {
                 text-indent: 40px; /* Optional: adds indentation to paragraphs for better readability */
             }
@@ -324,8 +329,9 @@
                         <p id="previewExchangeRateNote"></p>
                     </div>
                     <div class="mt-10 text-right">
-                        <p class="font-bold" id="previewWardChairpersonName"></p>
-                        <p>Ward Chairperson</p>
+                        <div class="signature-line"></div>
+                        <p class="font-bold">Ward Chairperson</p>
+                        <p id="previewWardChairpersonName"></p>
                     </div>
                 </div>
             </div>
@@ -437,6 +443,10 @@
             document.getElementById('fiscalYearEnglish').value = '2024/2025 A.D.';
             document.getElementById('exchangeRate').value = '90.94';
             document.getElementById('wardChairpersonName').value = 'Tej Prasad Sapkota';
+            document.getElementById('municipalityName').value = 'Galkot Municipality';
+            document.getElementById('wardOfficeName').value = '8 No. Ward Office';
+            document.getElementById('officeAddress').value = 'Kandebas, Baglung';
+
 
             previewBtn.addEventListener('click', function() {
                 let total = 0;
@@ -541,3 +551,4 @@
     </script>
 </body>
 </html>
+
