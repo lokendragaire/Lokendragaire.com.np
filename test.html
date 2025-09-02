@@ -34,7 +34,7 @@
         .preview-section.active {
             display: block;
         }
-        /* A4 size for printing */
+        /* A4 size and margin for printing */
         @media print {
             body {
                 background: none;
@@ -47,7 +47,8 @@
                 width: 210mm;
                 min-height: 297mm;
                 margin: 0 auto;
-                padding: 10mm;
+                padding-left: 0.7in;
+                padding-right: 0.7in;
                 page-break-after: always;
                 position: relative;
             }
@@ -61,6 +62,8 @@
             .letter-content {
                 position: relative;
                 z-index: 10;
+                text-align: justify;
+                hyphens: auto;
             }
             .watermark {
                 display: block !important;
@@ -78,22 +81,20 @@
                 border-bottom: 1px dotted #999 !important;
                 text-align: initial !important;
             }
-            .field-value {
-                white-space: normal !important;
-                overflow: visible !important;
-                text-overflow: clip !important;
-            }
-            .header-left-align {
-                text-align: left !important;
-            }
-            .header-right-align {
-                text-align: right !important;
-            }
             .no-wrap {
                 white-space: nowrap;
             }
             .black-line {
                 border-bottom: 1px solid black !important;
+            }
+            .red-text {
+                color: red !important;
+            }
+            .bold-text {
+                font-weight: bold;
+            }
+            p.indent {
+                text-indent: 40px; /* Optional: adds indentation to paragraphs for better readability */
             }
         }
         /* Watermark styling */
@@ -128,54 +129,6 @@
             flex-grow: 1;
             flex-shrink: 1;
             white-space: nowrap;
-        }
-        .header-top-right p {
-            margin-bottom: 2px;
-        }
-        .header-center p {
-            margin-bottom: 2px;
-        }
-        .header-left-align {
-            text-align: left;
-        }
-        .header-right-align {
-            text-align: right;
-        }
-        .header-top-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        .header-top-section .left-col {
-            flex-basis: 20%;
-            text-align: left;
-        }
-        .header-top-section .center-col {
-            flex-basis: 60%;
-            text-align: center;
-        }
-        .header-top-section .right-col {
-            flex-basis: 20%;
-            text-align: right;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: flex-end;
-        }
-        .header-top-section .right-col p {
-            margin-bottom: 2px;
-        }
-        .header-center p {
-            white-space: normal;
-            word-break: break-word;
-            font-size: 0.875rem;
-            line-height: 1.25rem;
-        }
-        .header-center p.text-lg {
-            font-size: 1.125rem;
-            line-height: 1.75rem;
         }
         .dotted-table {
             border-collapse: collapse;
@@ -281,10 +234,10 @@
                             <img src="https://galkotmun.gov.np/sites/galkotmun.gov.np/files/logo_0.png" alt="Logo" class="w-16 h-auto mb-2" />
                         </div>
                         <div class="flex-1 text-center">
-                            <p class="font-bold text-lg" id="previewMunicipality"></p>
-                            <p class="font-bold text-lg" id="previewWardOffice"></p>
-                            <p id="previewOfficeAddress"></p>
-                            <p>Gandaki Province, Nepal</p>
+                            <p class="font-bold text-lg red-text" id="previewMunicipality"></p>
+                            <p class="font-bold text-lg red-text" id="previewWardOffice"></p>
+                            <p class="red-text" id="previewOfficeAddress"></p>
+                            <p class="red-text">Gandaki Province, Nepal</p>
                         </div>
                         <div class="flex-1 text-right">
                             <p>Website: <span class="dotted-line-bottom">galkotmun.gov.np</span></p>
@@ -294,11 +247,11 @@
                     </div>
                     <div class="flex justify-between mt-4">
                         <p class="header-left-align">
-                            Fiscal Year: <span class="no-wrap" id="previewFiscalYear"></span><br>
-                            Ref. No.: <span class="no-wrap" id="previewRefNo"></span>
+                            Fiscal Year: <span class="no-wrap bold-text" id="previewFiscalYear"></span><br>
+                            Ref. No.: <span class="no-wrap bold-text" id="previewRefNo"></span>
                         </p>
                         <p class="header-right-align">
-                            Date: <span class="dotted-line-bottom no-wrap" id="previewDate"></span>
+                            Date: <span class="no-wrap bold-text" id="previewDate"></span>
                         </p>
                     </div>
                     <hr class="black-line">
@@ -310,14 +263,14 @@
                             To Whom It May Concern
                         </p>
                     </div>
-                    <div class="mt-8">
+                    <div class="mt-8 text-justify">
                         <p>
-                            This is to certify that Mr. <span class="dotted-line-bottom no-wrap" id="previewFatherName"></span> (Father) and Mrs. <span class="dotted-line-bottom no-wrap" id="previewMotherName"></span> (Mother) of Miss/Mr. <span class="dotted-line-bottom no-wrap" id="previewApplicantName"></span> (Applicant), a permanent resident of <span class="dotted-line-bottom no-wrap" id="previewResidenceAddress"></span>, have the following annual income from various sources.
+                            This is to certify that Mr. <span class="bold-text" id="previewFatherName"></span> (Father) and Mrs. <span class="bold-text" id="previewMotherName"></span> (Mother) of Miss/Mr. <span class="bold-text" id="previewApplicantName"></span> (Applicant), a permanent resident of <span class="bold-text" id="previewResidenceAddress"></span>, have the following annual income from various sources.
                         </p>
                     </div>
-                    <div class="mt-4">
+                    <div class="mt-4 text-justify">
                         <p>
-                            This income certification is made with the verification of concerned documents and record of this Municipality and this income is calculated for the fiscal year <span class="dotted-line-bottom no-wrap" id="previewFiscalYearEnglish"></span>.
+                            This income certification is made with the verification of concerned documents and record of this Municipality and this income is calculated for the fiscal year <span class="bold-text" id="previewFiscalYearEnglish"></span>.
                         </p>
                     </div>
                     <div class="text-center mt-8">
@@ -352,12 +305,24 @@
                             </tfoot>
                         </table>
                     </div>
-                    <div class="mt-4">
+                    <div class="mt-4 text-justify">
                         <p>
-                            Amount in word: <span class="dotted-line-bottom" id="previewTotalIncomeWords"></span>
+                            Total Annual Income: <span class="bold-text" id="previewTotalAnnualIncome"></span>
                         </p>
                     </div>
-                    <div class="mt-4" id="previewExchangeRateNote"></div>
+                    <div class="mt-4 text-justify">
+                        <p>
+                            Amount in word: <span class="bold-text" id="previewTotalIncomeWords"></span>
+                        </p>
+                    </div>
+                    <div class="mt-4 text-justify">
+                        <p>
+                            This is equivalent to AUD: <span class="bold-text" id="previewEquivalentToAUDText"></span>
+                        </p>
+                    </div>
+                    <div class="mt-4 text-justify">
+                        <p id="previewExchangeRateNote"></p>
+                    </div>
                     <div class="mt-10 text-right">
                         <p class="font-bold" id="previewWardChairpersonName"></p>
                         <p>Ward Chairperson</p>
@@ -388,9 +353,6 @@
             const addSourceBtn = document.getElementById('addSourceBtn');
             const incomeSourcesContainer = document.getElementById('incomeSourcesContainer');
             const exchangeRateInput = document.getElementById('exchangeRate');
-            const municipalityNameInput = document.getElementById('municipalityName');
-            const wardOfficeNameInput = document.getElementById('wardOfficeName');
-            const officeAddressInput = document.getElementById('officeAddress');
 
             // Function to convert number to English words
             const a = ['','one ','two ','three ','four ', 'five ','six ','seven ','eight ','nine ','ten ','eleven ','twelve ','thirteen ','fourteen ','fifteen ','sixteen ','seventeen ','eighteen ','nineteen '];
@@ -408,7 +370,8 @@
                 if (n[5] != 0) {
                     str += ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]);
                 }
-                return str.trim() + ' only.';
+                const capitalizedStr = str.trim().charAt(0).toUpperCase() + str.trim().slice(1);
+                return capitalizedStr + ' only.';
             }
 
             // Function to add a new income source row
@@ -438,27 +401,8 @@
                 newRow.querySelector('.remove-row-btn').addEventListener('click', function() {
                     newRow.remove();
                 });
-                newRow.querySelector('.amount-input').addEventListener('input', calculateTotalIncome);
             }
             
-            // Function to calculate total income and update words
-            function calculateTotalIncome() {
-                let total = 0;
-                document.querySelectorAll('.amount-input').forEach(input => {
-                    total += parseFloat(input.value) || 0;
-                });
-                
-                // We'll update the values on preview
-                const roundedTotal = Math.round(total);
-                
-                // Recalculate equivalent AUD
-                const exchangeRate = parseFloat(exchangeRateInput.value) || 0;
-                let equivalentAUD = 0;
-                if (total > 0 && exchangeRate > 0) {
-                    equivalentAUD = total / exchangeRate;
-                }
-            }
-
             // Event listeners
             addSourceBtn.addEventListener('click', addIncomeSourceRow);
             
@@ -547,8 +491,10 @@
                 document.getElementById('previewResidenceAddress').textContent = formData.residenceAddress;
                 document.getElementById('previewFiscalYearEnglish').textContent = formData.fiscalYearEnglish;
                 document.getElementById('previewTotalIncome').textContent = formData.totalIncome;
+                document.getElementById('previewTotalAnnualIncome').textContent = formData.totalIncome;
                 document.getElementById('previewTotalIncomeWords').textContent = formData.totalIncomeWords;
                 document.getElementById('previewEquivalentToAUD').textContent = formData.equivalentToAUD;
+                document.getElementById('previewEquivalentToAUDText').textContent = parseFloat(formData.equivalentToAUD.replace(/,/g, '')).toFixed(2);
                 
                 if (formData.exchangeRate && formData.date) {
                     document.getElementById('previewExchangeRateNote').innerHTML = `**Please Note that the exchange rate as of ${formData.date} is 1 AUD = NRs. ${formData.exchangeRate}**`;
@@ -572,30 +518,6 @@
                     `;
                     incomeTableBody.innerHTML += row;
                 });
-
-                // Add Grand Total and Equivalent AUD to the table footer
-                const totalRow = `
-                    <tr>
-                        <td colspan="3" class="text-right font-bold">Grand Total In NPR:</td>
-                        <td class="font-bold">${formData.totalIncome}</td>
-                        <td></td>
-                    </tr>
-                `;
-                const audRow = `
-                    <tr>
-                        <td colspan="3" class="text-right font-bold">Equivalent to AUD:</td>
-                        <td class="font-bold">${formData.equivalentToAUD}</td>
-                        <td></td>
-                    </tr>
-                `;
-
-                const table = document.querySelector('.dotted-table');
-                let tfoot = table.querySelector('tfoot');
-                if (!tfoot) {
-                    tfoot = document.createElement('tfoot');
-                    table.appendChild(tfoot);
-                }
-                tfoot.innerHTML = totalRow + audRow;
 
                 // Show preview and hide form
                 formSection.classList.remove('active');
