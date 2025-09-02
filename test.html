@@ -388,4 +388,185 @@
             
             function inWords(num) {
                 if ((num = num.toString()).length > 9) return 'overflow';
-     
+                const n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+                if (!n) return '';
+                let str = '';
+                str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'crore ' : '';
+                str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'lakh ' : '';
+                str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'thousand ' : '';
+                str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'hundred ' : '';
+                if (n[5] != 0) {
+                    str += ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]);
+                }
+                return str.trim() + ' only.';
+            }
+
+            // Function to add a new income source row
+            function addIncomeSourceRow() {
+                const newRow = document.createElement('div');
+                newRow.classList.add('income-source-row', 'p-4', 'border', 'rounded-md', 'bg-gray-50', 'flex', 'items-end', 'space-x-2');
+                newRow.innerHTML = `
+                    <div class="flex-grow">
+                        <label class="block text-sm font-medium text-gray-700">Source of Income</label>
+                        <input type="text" class="mt-1 block w-full px-3 py-2 border rounded-md source-input" placeholder="e.g., Income from Pension">
+                    </div>
+                    <div class="flex-grow">
+                        <label class="block text-sm font-medium text-gray-700">Earned By</label>
+                        <input type="text" class="mt-1 block w-full px-3 py-2 border rounded-md earned-by-input" placeholder="e.g., Mr. Yam Bahadur Khatri">
+                    </div>
+                    <div class="flex-grow">
+                        <label class="block text-sm font-medium text-gray-700">Annual Income (NPR)</label>
+                        <input type="number" class="mt-1 block w-full px-3 py-2 border rounded-md amount-input" placeholder="In Nepali Rupees">
+                    </div>
+                     <div class="flex-grow">
+                        <label class="block text-sm font-medium text-gray-700">Remarks</label>
+                        <input type="text" class="mt-1 block w-full px-3 py-2 border rounded-md remarks-input" placeholder="e.g., As per document">
+                    </div>
+                    <button type="button" class="remove-row-btn px-4 py-2 border rounded-md text-white bg-red-500 hover:bg-red-600">Remove</button>
+                `;
+                incomeSourcesContainer.appendChild(newRow);
+                newRow.querySelector('.remove-row-btn').addEventListener('click', function() {
+                    newRow.remove();
+                    calculateTotalIncome();
+                });
+                newRow.querySelector('.amount-input').addEventListener('input', calculateTotalIncome);
+            }
+            
+            // Function to calculate total income and update words
+            function calculateTotalIncome() {
+                let total = 0;
+                document.querySelectorAll('.amount-input').forEach(input => {
+                    total += parseFloat(input.value) || 0;
+                });
+                totalIncomeInput.value = total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                
+                const roundedTotal = Math.round(total);
+                totalIncomeWordsInput.value = inWords(roundedTotal);
+                calculateEquivalentAUD();
+            }
+
+            // Function to calculate equivalent AUD
+            function calculateEquivalentAUD() {
+                const totalNPR = parseFloat(totalIncomeInput.value.replace(/,/g, '')) || 0;
+                const exchangeRate = parseFloat(exchangeRateInput.value) || 0;
+                let equivalentAUD = 0;
+                if (totalNPR > 0 && exchangeRate > 0) {
+                    equivalentAUD = totalNPR / exchangeRate;
+                }
+                equivalentToAUDInput.value = equivalentAUD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+
+            // Event listeners
+            addSourceBtn.addEventListener('click', addIncomeSourceRow);
+            exchangeRateInput.addEventListener('input', calculateEquivalentAUD);
+            
+            // Add initial rows on page load
+            addIncomeSourceRow();
+            addIncomeSourceRow();
+            addIncomeSourceRow();
+            
+            // Auto-populate with sample data from the image
+            document.querySelectorAll('.source-input')[0].value = 'Income from Pension (Ex-Indian Army)';
+            document.querySelectorAll('.earned-by-input')[0].value = 'Mr. Yam Bahadur Khatri';
+            document.querySelectorAll('.amount-input')[0].value = '436248';
+            document.querySelectorAll('.remarks-input')[0].value = 'As per pension document';
+            
+            document.querySelectorAll('.source-input')[1].value = 'Income from Employment (Employer RESTAURANTEE PIZZARIA CASA ALFARMA, LDA)';
+            document.querySelectorAll('.earned-by-input')[1].value = 'Mr. Yam Bahadur Khatri';
+            document.querySelectorAll('.amount-input')[1].value = '1801277.93';
+            document.querySelectorAll('.remarks-input')[1].value = 'As per salary certificate and salary slip';
+
+            document.querySelectorAll('.source-input')[2].value = 'Income from Land Lease Plot No. 1319';
+            document.querySelectorAll('.earned-by-input')[2].value = 'Mrs. Khima Khatri';
+            document.querySelectorAll('.amount-input')[2].value = '240000';
+            document.querySelectorAll('.remarks-input')[2].value = 'As per Land Lease Agreement';
+
+            document.getElementById('exchangeRate').value = '90.94';
+
+            calculateTotalIncome();
+
+            previewBtn.addEventListener('click', function() {
+                const incomeData = [];
+                document.querySelectorAll('.income-source-row').forEach(row => {
+                    const source = row.querySelector('.source-input').value;
+                    const earnedBy = row.querySelector('.earned-by-input').value;
+                    const amount = parseFloat(row.querySelector('.amount-input').value) || 0;
+                    const remarks = row.querySelector('.remarks-input').value;
+                    if (source && amount > 0) {
+                        incomeData.push({ source, earnedBy, amount, remarks });
+                    }
+                });
+                // Get all form data
+                const formData = {
+                    fiscalYear: document.getElementById('fiscalYear').value,
+                    refNo: document.getElementById('refNo').value,
+                    date: document.getElementById('date').value,
+                    applicantName: document.getElementById('applicantName').value,
+                    fatherName: document.getElementById('fatherName').value,
+                    motherName: document.getElementById('motherName').value,
+                    residenceAddress: document.getElementById('residenceAddress').value,
+                    fiscalYearEnglish: document.getElementById('fiscalYearEnglish').value,
+                    totalIncome: document.getElementById('totalIncome').value,
+                    totalIncomeWords: document.getElementById('totalIncomeWords').value,
+                    equivalentToAUD: document.getElementById('equivalentToAUD').value,
+                    exchangeRate: document.getElementById('exchangeRate').value,
+                    wardChairpersonName: document.getElementById('wardChairpersonName').value,
+                };
+                
+                // Update preview content
+                document.getElementById('previewFiscalYear').textContent = formData.fiscalYear;
+                document.getElementById('previewRefNo').textContent = formData.refNo;
+                document.getElementById('previewDate').textContent = formData.date;
+                document.getElementById('previewApplicantName').textContent = formData.applicantName;
+                document.getElementById('previewFatherName').textContent = formData.fatherName;
+                document.getElementById('previewMotherName').textContent = formData.motherName;
+                document.getElementById('previewResidenceAddress').textContent = formData.residenceAddress;
+                document.getElementById('previewFiscalYearEnglish').textContent = formData.fiscalYearEnglish;
+                document.getElementById('previewTotalIncome').textContent = formData.totalIncome;
+                document.getElementById('previewTotalIncomeWords').textContent = formData.totalIncomeWords;
+                document.getElementById('previewEquivalentToAUD').textContent = formData.equivalentToAUD;
+                
+                if (formData.exchangeRate && formData.date) {
+                    document.getElementById('previewExchangeRateNote').textContent = `Note that the exchange rate as of ${formData.date} is 1 AUD = NRs. ${formData.exchangeRate}`;
+                } else {
+                    document.getElementById('previewExchangeRateNote').textContent = '';
+                }
+                document.getElementById('previewWardChairpersonName').textContent = formData.wardChairpersonName;
+                // Populate the income table
+                const incomeTableBody = document.getElementById('incomeTableBody');
+                incomeTableBody.innerHTML = '';
+                incomeData.forEach((item, index) => {
+                    const row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${item.source}</td>
+                            <td>${item.earnedBy}</td>
+                            <td>${item.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                            <td>${item.remarks}</td>
+                        </tr>
+                    `;
+                    incomeTableBody.innerHTML += row;
+                });
+                // Show preview and hide form
+                formSection.classList.remove('active');
+                previewSection.classList.add('active');
+                previewBtn.style.display = 'none';
+                backToFormBtn.style.display = 'inline-block';
+                printBtn.style.display = 'inline-block';
+            });
+            backToFormBtn.addEventListener('click', function() {
+                // Show form and hide preview
+                formSection.classList.add('active');
+                previewSection.classList.remove('active');
+                previewBtn.style.display = 'inline-block';
+                backToFormBtn.style.display = 'none';
+                printBtn.style.display = 'none';
+            });
+            printBtn.addEventListener('click', function() {
+                window.print();
+            });
+        });
+    </script>
+</body>
+</html>
+
