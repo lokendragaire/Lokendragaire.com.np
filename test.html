@@ -34,7 +34,6 @@
         .preview-section.active {
             display: block;
         }
-
         /* A4 size for printing */
         @media print {
             body {
@@ -94,7 +93,6 @@
                 white-space: nowrap;
             }
         }
-
         /* Watermark styling */
         .watermark-container {
             position: relative;
@@ -207,7 +205,6 @@
                     <label for="date" class="block text-sm font-medium text-gray-700">Date:</label>
                     <input type="text" id="date" name="date" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., 6th August, 2025">
                 </div>
-
                 <h3 class="text-xl font-bold mt-8">Applicant and Family Details</h3>
                 <div>
                     <label for="applicantName" class="block text-sm font-medium text-gray-700">Applicant's Name (e.g., Arishma Khatri):</label>
@@ -229,12 +226,10 @@
                     <label for="fiscalYearEnglish" class="block text-sm font-medium text-gray-700">Fiscal Year for Income (e.g., 2024/2025 A.D.):</label>
                     <input type="text" id="fiscalYearEnglish" name="fiscalYearEnglish" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., 2024/2025 A.D.">
                 </div>
-
                 <h3 class="text-xl font-bold mt-8">Details of Income Sources</h3>
                 <div id="incomeSourcesContainer" class="space-y-4">
                     </div>
                 <button type="button" id="addSourceBtn" class="px-4 py-2 border rounded-md text-white bg-blue-600 hover:bg-blue-700">Add New Source</button>
-
                 <div>
                     <label for="totalIncome" class="block text-sm font-medium text-gray-700">Grand Total in NPR:</label>
                     <input type="text" id="totalIncome" name="totalIncome" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="This will be calculated automatically" readonly>
@@ -251,12 +246,10 @@
                     <label for="equivalentToAUD" class="block text-sm font-medium text-gray-700">Equivalent to AUD:</label>
                     <input type="text" id="equivalentToAUD" name="equivalentToAUD" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="This will be calculated automatically" readonly>
                 </div>
-                
                 <div>
                     <label for="wardChairpersonName" class="block text-sm font-medium text-gray-700">Ward Chairperson's Name:</label>
                     <input type="text" id="wardChairpersonName" name="wardChairpersonName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Tej Prasad Sapkota">
                 </div>
-
                 <div class="buttons-container mt-8 flex justify-center space-x-4">
                     <button type="button" id="previewBtn" class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Preview
@@ -270,7 +263,6 @@
                 </div>
             </form>
         </div>
-
         <div id="previewSection" class="preview-section">
             <div class="watermark-container">
                 <img src="https://galkotmun.gov.np/sites/galkotmun.gov.np/files/logo_0.png" alt="Watermark" class="watermark" />
@@ -300,7 +292,6 @@
                             Date: <span class="dotted-line-bottom no-wrap" id="previewDate"></span>
                         </p>
                     </div>
-
                     <div class="text-center mt-4">
                         <p class="font-bold text-xl">
                             Subject: Source of Income Verification
@@ -309,7 +300,6 @@
                             To Whom It May Concern
                         </p>
                     </div>
-
                     <div class="mt-8">
                         <p>
                             This is to certify that Mr. <span class="dotted-line-bottom no-wrap" id="previewFatherName"></span> (Father) and Mrs. <span class="dotted-line-bottom no-wrap" id="previewMotherName"></span> (Mother) of Miss/Mr. <span class="dotted-line-bottom no-wrap" id="previewApplicantName"></span> (Applicant), a permanent resident of <span class="dotted-line-bottom no-wrap" id="previewResidenceAddress"></span>, have the following annual income from various sources.
@@ -320,13 +310,11 @@
                             This income certification is made with the verification of concerned documents and record of this Municipality and this income is calculated for the fiscal year <span class="dotted-line-bottom no-wrap" id="previewFiscalYearEnglish"></span>.
                         </p>
                     </div>
-                    
                     <div class="text-center mt-8">
                         <p class="font-bold text-lg">
                             Details of Income Source
                         </p>
                     </div>
-
                     <div class="mt-2">
                         <table class="dotted-table">
                             <thead>
@@ -342,13 +330,11 @@
                                 </tbody>
                         </table>
                     </div>
-
                     <div class="mt-8">
                         <p>
                             Grand Total In NPR: <span class="dotted-line-bottom" id="previewTotalIncome"></span>
                         </p>
                     </div>
-                    
                     <div class="mt-4">
                         <p>
                             Amount in word: <span class="dotted-line-bottom" id="previewTotalIncomeWords"></span>
@@ -362,7 +348,6 @@
                     <div class="mt-4">
                         <p id="previewExchangeRateNote"></p>
                     </div>
-                    
                     <div class="mt-10 text-right">
                         <p class="font-bold" id="previewWardChairpersonName"></p>
                         <p>Ward Chairperson</p>
@@ -370,7 +355,6 @@
                 </div>
             </div>
         </div>
-
         <div class="buttons-container mt-8 flex justify-center space-x-4">
             <button type="button" id="previewBtn" class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                 Preview
@@ -390,4 +374,18 @@
             const previewSection = document.getElementById('previewSection');
             const previewBtn = document.getElementById('previewBtn');
             const backToFormBtn = document.getElementById('backToFormBtn');
-            const printBtn = document.getElement
+            const printBtn = document.getElementById('printBtn');
+            const addSourceBtn = document.getElementById('addSourceBtn');
+            const incomeSourcesContainer = document.getElementById('incomeSourcesContainer');
+            const totalIncomeInput = document.getElementById('totalIncome');
+            const totalIncomeWordsInput = document.getElementById('totalIncomeWords');
+            const exchangeRateInput = document.getElementById('exchangeRate');
+            const equivalentToAUDInput = document.getElementById('equivalentToAUD');
+
+            // Function to convert number to English words
+            const a = ['','one ','two ','three ','four ', 'five ','six ','seven ','eight ','nine ','ten ','eleven ','twelve ','thirteen ','fourteen ','fifteen ','sixteen ','seventeen ','eighteen ','nineteen '];
+            const b = ['', '', 'twenty','thirty','forty','fifty', 'sixty','seventy','eighty','ninety'];
+            
+            function inWords(num) {
+                if ((num = num.toString()).length > 9) return 'overflow';
+     
