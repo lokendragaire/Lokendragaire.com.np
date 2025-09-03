@@ -283,23 +283,23 @@
             </div>
             <div class="form-group">
                 <label for="recipientNameInput">प्राप्त गर्ने व्यक्तिको नाम:</label>
-                <input type="text" id="recipientNameInput" value="Lokendra Gaire">
+                <input type="text" id="recipientNameInput" value="">
             </div>
             <div class="form-group">
                 <label for="mainDescriptionInput">मुख्य विवरण:</label>
-                <input type="text" id="mainDescriptionInput" value="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Penatibus tellus platea bibendum mattis odio mi odio amet. Cras vel tortor viverra ut. Ac condimentum.">
+                <input type="text" id="mainDescriptionInput" value="by the organization, which expects valuable contribution in the future.">
             </div>
             <div class="form-group">
                 <label for="dateInput">दिइएको मिति:</label>
                 <input type="date" id="dateInput" value="2023-04-05">
             </div>
             <div class="form-group">
-                <label for="directorNameInput">डायरेक्टरको नाम:</label>
-                <input type="text" id="directorNameInput" value="Ganesh Buddha">
+                <label for="SecretaryNameInput">डायरेक्टरको नाम:</label>
+                <input type="text" id="SecretaryNameInput" value="">
             </div>
             <div class="form-group">
-                <label for="managerNameInput">म्यानेजरको नाम:</label>
-                <input type="text" id="managerNameInput" value="Lokendra Gaire">
+                <label for="CharipersonNameInput">म्यानेजरको नाम:</label>
+                <input type="text" id="CharipersonNameInput" value="">
             </div>
             <div class="form-group">
                 <label for="photoUploadInput">फोटो अपलोड:</label>
@@ -323,17 +323,17 @@
                 <div class="cert-type" id="membershipType">General Membership</div>
                 <div class="cert-title">This certificate is presented to</div>
                 
-                <div class="recipient-name" id="recipientName">Lokendra Gaire</div>
+                <div class="recipient-name" id="recipientName"></div>
                 
                 <div class="cert-description" id="mainDescription">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Penatibus tellus platea bibendum mattis odio mi odio amet. Cras vel tortor viverra ut. Ac condimentum.
+                    by the organization, which expects valuable contribution in the future.
                 </div>
             </div>
             
             <div class="signatures">
                 <div class="signature-block">
-                    <div class="signature-name" id="directorName">Ganesh Buddha</div>
-                    <div class="signature-title">Director, <span id="directorCompany">Sarobar Nepal</span></div>
+                    <div class="signature-name" id="SecretaryName"></div>
+                    <div class="signature-title">Secretary, <span id="SecretaryCompany"></span></div>
                 </div>
                 <div class="award-details">
                     <div class="label">This certificate is awarded on:</div>
@@ -341,8 +341,8 @@
                     <div class="cert-id">Certificate ID:<br><span class="cert-id-value" id="certificateId">9e785800-b33e-4a5a-890e-d4b12da2f94a</span></div>
                 </div>
                 <div class="signature-block">
-                    <div class="signature-name" id="managerName">Lokendra Gaire</div>
-                    <div class="signature-title">Manager, <span id="managerCompany">Sarobar Nepal</span></div>
+                    <div class="signature-name" id="CharipersonName"></div>
+                    <div class="signature-title">Chariperson, <span id="CharipersonCompany"></span></div>
                 </div>
             </div>
         </div>
@@ -360,20 +360,20 @@
             const recipientName = document.getElementById('recipientNameInput').value;
             const mainDescription = document.getElementById('mainDescriptionInput').value;
             const date = document.getElementById('dateInput').value;
-            const directorName = document.getElementById('directorNameInput').value;
-            const managerName = document.getElementById('managerNameInput').value;
+            const SecretaryName = document.getElementById('SecretaryNameInput').value;
+            const CharipersonName = document.getElementById('CharipersonNameInput').value;
             const certificateId = document.getElementById('certificateIdInput').value;
             const photoFile = document.getElementById('photoUploadInput').files[0];
 
             document.getElementById('companyName').innerText = companyName;
-            document.getElementById('directorCompany').innerText = companyName;
-            document.getElementById('managerCompany').innerText = companyName;
+            document.getElementById('SecretaryCompany').innerText = companyName;
+            document.getElementById('CharipersonCompany').innerText = companyName;
             document.getElementById('membershipType').innerText = membershipType;
             document.getElementById('recipientName').innerText = recipientName;
             document.getElementById('mainDescription').innerText = mainDescription;
             document.getElementById('awardDate').innerText = date;
-            document.getElementById('directorName').innerText = directorName;
-            document.getElementById('managerName').innerText = managerName;
+            document.getElementById('SecretaryName').innerText = SecretaryName;
+            document.getElementById('CharipersonName').innerText = CharipersonName;
             document.getElementById('certificateId').innerText = certificateId;
 
             if (photoFile) {
