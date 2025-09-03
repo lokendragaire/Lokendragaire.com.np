@@ -317,7 +317,7 @@
     <div class="certificate-container" id="certificate">
         <div class="certificate-content">
             <div>
-                <div class="logo"><img src="logo.jpg" alt="Company Emblem"></div>
+                <div class="logo"><img src="logo.png" alt="Company Emblem"></div>
                 <div class="company-name" id="companyName">Sarobar Nepal</div>
                 <div class="cert-type" id="membershipType">General Membership</div>
                 <div class="cert-title">This certificate is presented to</div>
@@ -391,7 +391,7 @@
             const certificate = document.getElementById('certificate');
             html2canvas(certificate, {
                 scale: 2, // Higher scale for better resolution
-                allowTaint: true, // Allow tainting for external images (logo.jpg)
+                allowTaint: true, // Allow tainting for external images (logo.png)
                 useCORS: true,   // Use CORS for external images
                 backgroundColor: null, // This ensures background is captured
                 logging: true, // Enable logging for debugging
