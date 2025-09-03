@@ -81,10 +81,10 @@
             text-align: center;
             color: #fff;
             overflow: hidden;
-            background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 565"%3E%3Cdefs%3E%3ClinearGradient id="goldGradient" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:rgb(212,175,55);stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:rgb(255,230,128);stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d="M 15 15 L 785 15 L 785 550 L 15 550 L 15 15 Z" fill="none" stroke="url(%23goldGradient)" stroke-width="8"/%3E%3Cpath d="M 0 0 H 800 V 565 H 0 Z" fill="none" stroke="url(%23goldGradient)" stroke-width="40" stroke-dasharray="8 8"/%3E%3C/svg%3E');
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: contain;
+            
+            /* The attractive border from the user's second image */
+            border: 20px solid transparent;
+            border-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="p" patternUnits="userSpaceOnUse" width="10" height="10"><rect width="10" height="10" fill="%23d4af37"/></pattern></defs><rect width="100" height="100" fill="url(%23p)"/><rect x="10" y="10" width="80" height="80" fill="%232c2c2c"/></svg>') 20 fill stretch;
         }
 
         .decorative-border {
@@ -98,20 +98,6 @@
             box-sizing: border-box;
         }
         
-        /* Decorative corners */
-        .corner {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23d4af37" d="M100 0H0V100h100V0zm-5 5v90h-90V5h90z"/><path fill="%23d4af37" d="M50 0L60 40L100 40L70 60L80 100L50 70L20 100L30 60L0 40L40 40L50 0Z" opacity="0.5"/></svg>');
-            background-repeat: no-repeat;
-        }
-        .top-left { top: 0; left: 0; transform: rotate(0deg); }
-        .top-right { top: 0; right: 0; transform: rotate(90deg); }
-        .bottom-left { bottom: 0; left: 0; transform: rotate(270deg); }
-        .bottom-right { bottom: 0; right: 0; transform: rotate(180deg); }
-
-
         .logo {
             width: 60px;
             height: 60px;
@@ -133,6 +119,7 @@
 
         .cert-type {
             font-family: 'Playfair Display', serif;
+            font-style: italic;
             font-size: 24px;
             font-weight: 700;
             color: #d4af37;
@@ -184,12 +171,6 @@
             padding-top: 10px;
             flex: 1;
             margin: 0 20px;
-        }
-
-        .signature-line {
-            height: 1px;
-            background-color: #d4af37;
-            margin-bottom: 5px;
         }
 
         .signature-name {
@@ -295,7 +276,7 @@
             </div>
             <div class="form-group">
                 <label for="recipientNameInput">प्राप्त गर्ने व्यक्तिको नाम:</label>
-                <input type="text" id="recipientNameInput" value="Elizabeth Martin">
+                <input type="text" id="recipientNameInput" value="Lokendra Gaire">
             </div>
             <div class="form-group">
                 <label for="mainDescriptionInput">मुख्य विवरण:</label>
@@ -307,11 +288,11 @@
             </div>
             <div class="form-group">
                 <label for="directorNameInput">डायरेक्टरको नाम:</label>
-                <input type="text" id="directorNameInput" value="Damian Lee">
+                <input type="text" id="directorNameInput" value="Ganesh Buddha">
             </div>
             <div class="form-group">
                 <label for="managerNameInput">म्यानेजरको नाम:</label>
-                <input type="text" id="managerNameInput" value="Allan C.K.">
+                <input type="text" id="managerNameInput" value="Lokendra Gaire">
             </div>
             <div class="form-group">
                 <label for="photoUploadInput">फोटो अपलोड:</label>
@@ -328,17 +309,12 @@
     </div>
 
     <div class="certificate-container" id="certificate">
-        <div class="corner top-left"></div>
-        <div class="corner top-right"></div>
-        <div class="corner bottom-left"></div>
-        <div class="corner bottom-right"></div>
-        
         <div class="logo"><img src="emblem.png" alt="Company Emblem"></div>
         <div class="company-name" id="companyName">Sarobar Nepal</div>
-        <div class="cert-type" id="membershipType">Lifetime Membership</div>
+        <div class="cert-type" id="membershipType">General Membership</div>
         <div class="cert-title">This certificate is presented to</div>
         
-        <div class="recipient-name" id="recipientName">Elizabeth Martin</div>
+        <div class="recipient-name" id="recipientName">Lokendra Gaire</div>
         
         <div class="cert-description" id="mainDescription">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Penatibus tellus platea bibendum mattis odio mi odio amet. Cras vel tortor viverra ut. Ac condimentum.
@@ -346,7 +322,7 @@
         
         <div class="signatures">
             <div class="signature-block">
-                <div class="signature-name" id="directorName">Damian Lee</div>
+                <div class="signature-name" id="directorName">Ganesh Buddha</div>
                 <div class="signature-title">Director, <span id="directorCompany">Sarobar Nepal</span></div>
             </div>
             <div class="award-details">
@@ -355,7 +331,7 @@
                 <div class="cert-id">Certificate ID:<br><span class="cert-id-value" id="certificateId">9e785800-b33e-4a5a-890e-d4b12da2f94a</span></div>
             </div>
             <div class="signature-block">
-                <div class="signature-name" id="managerName">Allan C.K.</div>
+                <div class="signature-name" id="managerName">Lokendra Gaire</div>
                 <div class="signature-title">Manager, <span id="managerCompany">Sarobar Nepal</span></div>
             </div>
         </div>
@@ -404,7 +380,8 @@
                 scale: 2,
                 allowTaint: true,
                 useCORS: true,
-                backgroundColor: null
+                backgroundColor: null,
+                logging: true
             }).then(canvas => {
                 const image = canvas.toDataURL("image/jpeg", 1.0);
                 const link = document.createElement('a');
@@ -417,4 +394,5 @@
         document.addEventListener('DOMContentLoaded', generateCertificate);
     </script>
 </body>
-</html>
+                </html>
+                
