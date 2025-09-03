@@ -293,12 +293,12 @@
                 <input type="date" id="dateInput" value="2023-04-05">
             </div>
             <div class="form-group">
-                <label for="SecretaryNameInput">सचिवको नाम:</label>
-                <input type="text" id="SecretaryNameInput" value="">
+                <label for="secretaryNameInput">सचिवको नाम:</label>
+                <input type="text" id="secretaryNameInput" value="">
             </div>
             <div class="form-group">
-                <label for="ChairpersonNameInput">अध्यक्षको नाम:</label>
-                <input type="text" id="ChairpersonNameInput" value="">
+                <label for="chairpersonNameInput">अध्यक्षको नाम:</label>
+                <input type="text" id="chairpersonNameInput" value="">
             </div>
             <div class="form-group">
                 <label for="photoUploadInput">फोटो अपलोड:</label>
@@ -331,7 +331,7 @@
             
             <div class="signatures">
                 <div class="signature-block">
-                    <div class="signature-name" id="SecretaryName"></div>
+                    <div class="signature-name" id="secretaryName"></div>
                     <div class="signature-title">Secretary, <span id="SecretaryCompany"></span></div>
                 </div>
                 <div class="award-details">
@@ -360,7 +360,7 @@
             const mainDescription = document.getElementById('mainDescriptionInput').value;
             const date = document.getElementById('dateInput').value;
             const SecretaryName = document.getElementById('SecretaryNameInput').value;
-            const ChairpersonName = document.getElementById('ChairpersonNameInput').value;
+            const ChairpersonName = document.getElementById('chairpersonNameInput').value;
             const certificateId = document.getElementById('certificateIdInput').value;
             const photoFile = document.getElementById('photoUploadInput').files[0];
 
