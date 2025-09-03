@@ -1,147 +1,415 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ne">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard with Form</title>
-  <style>
-    /* Navbar Design */
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      transition: background 0.3s, color 0.3s;
-    }
-    nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 20px;
-      background: #333;
-      color: #fff;
-    }
-    nav img {
-      height: 50px;
-    }
-    .nav-right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
-    .login-btn {
-      padding: 8px 16px;
-      margin-bottom: 5px;
-      background: #4CAF50;
-      border: none;
-      color: white;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-    .toggle-btn {
-      padding: 6px 12px;
-      background: #555;
-      border: none;
-      color: white;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-    /* Dark/Light Mode */
-    .dark-mode {
-      background: #121212;
-      color: #ddd;
-    }
-    /* Form */
-    .container {
-      padding: 20px;
-      max-width: 500px;
-      margin: 20px auto;
-      background: #f4f4f4;
-      border-radius: 8px;
-      box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
-    }
-    .container h2 {
-      text-align: center;
-    }
-    form input, form textarea, form button {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    form button {
-      background: #333;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-    }
-    /* Watermark */
-    .watermark {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      opacity: 0.2;
-      font-size: 14px;
-    }
-    @media(max-width:768px) {
-      nav {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .nav-right {
-        align-items: flex-start;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>सर्टिफिकेट जेनेरेटर - Sarobar Nepal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,700&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 40px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Certificate Styles */
+        .certificate-container {
+            width: 100%;
+            max-width: 800px; /* A4 aspect ratio base */
+            height: 565px; /* (800 / 1.414) approx */
+            box-sizing: border-box;
+            
+            /* Gradient Background */
+            background: linear-gradient(135deg, #1a2a6c 0%, #303e5a 50%, #2c3c50 100%); /* Deep Blue to Dark Grey Gradient */
+            
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            color: #fff;
+            overflow: hidden;
+            
+            /* Enhanced attractive border */
+            border: 20px solid transparent; /* This creates space for the border-image */
+            border-image: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23d4af37"/><stop offset="100%" stop-color="%23ffeb80"/></linearGradient><path id="deco" d="M10 0L20 10L10 20L0 10Z" fill="url(%23gold)"/><path id="line" d="M0 5h100v-5h-100z" fill="url(%23gold)"/></defs><rect x="0" y="0" width="100" height="100" fill="transparent"/><use href="%23deco" x="0" y="0"/><use href="%23deco" x="80" y="0"/><use href="%23deco" x="0" y="80"/><use href="%23deco" x="80" y="80"/><rect x="0" y="0" width="100" height="100" fill="none" stroke="url(%23gold)" stroke-width="2"/></svg>') 20 round;
+        }
+        
+        /* Inner padding for content */
+        .certificate-content {
+            padding: 20px;
+            height: calc(100% - 40px); /* Adjust for outer border */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 10px;
+        }
+        .logo img {
+            width: 100%;
+            height: auto;
+        }
+
+        .company-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #3498db; /* Blue color for company name */
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .cert-type {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 24px;
+            font-weight: 700;
+            color: #d4af37;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .cert-title {
+            font-size: 16px;
+            font-weight: 400;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .recipient-name {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-weight: 400;
+            font-size: 60px;
+            color: #d4af37;
+            margin: 0;
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .cert-description {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #ccc;
+            margin: 20px auto 30px; /* Use auto for left/right margin to center */
+            max-width: 600px;
+        }
+
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 100%;
+            position: relative;
+        }
+
+        .signature-block {
+            text-align: center;
+            padding-top: 10px;
+            flex: 1;
+            margin: 0 20px;
+        }
+
+        .signature-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .signature-title {
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        .award-details {
+            text-align: center;
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .award-details .label {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .award-details .value {
+            color: #d4af37;
+        }
+
+        .cert-id {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 10px;
+        }
+
+        .cert-id-value {
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .photo-box {
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            width: 90px;
+            height: 110px;
+            border: 2px solid #d4af37;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #444;
+            overflow: hidden;
+        }
+        .photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: none;
+                -webkit-print-color-adjust: exact;
+                margin: 0;
+                padding: 0;
+            }
+            .container, h2, button {
+                display: none;
+            }
+            .certificate-container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                border: none;
+                width: 297mm; /* A4 width in landscape */
+                height: 210mm; /* A4 height in landscape */
+                page-break-after: always;
+                
+                /* Reapply gradient background for print */
+                background: linear-gradient(135deg, #1a2a6c 0%, #303e5a 50%, #2c3c50 100%);
+                
+                /* Reapply border for print if needed, but html2canvas should handle it */
+                border: 20px solid transparent; 
+                border-image: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23d4af37"/><stop offset="100%" stop-color="%23ffeb80"/></linearGradient><path id="deco" d="M10 0L20 10L10 20L0 10Z" fill="url(%23gold)"/><path id="line" d="M0 5h100v-5h-100z" fill="url(%23gold)"/></defs><rect x="0" y="0" width="100" height="100" fill="transparent"/><use href="%23deco" x="0" y="0"/><use href="%23deco" x="80" y="0"/><use href="%23deco" x="0" y="80"/><use href="%23deco" x="80" y="80"/><rect x="0" y="0" width="100" height="100" fill="none" stroke="url(%23gold)" stroke-width="2"/></svg>') 20 round;
+            }
+            .certificate-content {
+                height: calc(100% - 40px); /* Adjust for print border */
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- Navbar -->
-  <nav>
-    <div class="logo">
-      <img src="your-logo.png" alt="Logo">
+
+    <div class="container">
+        <h2>सर्टिफिकेटको जानकारी भर्नुहोस्</h2>
+        <form id="certForm">
+            <div class="form-group">
+                <label for="companyNameInput">कम्पनीको नाम:</label>
+                <input type="text" id="companyNameInput" value="Sarobar Nepal">
+            </div>
+            <div class="form-group">
+                <label for="membershipTypeInput">सदस्यताको प्रकार:</label>
+                <select id="membershipTypeInput">
+                    <option value="Lifetime Membership">Lifetime Membership</option>
+                    <option value="General Membership">General Membership</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="recipientNameInput">प्राप्त गर्ने व्यक्तिको नाम:</label>
+                <input type="text" id="recipientNameInput" value="Lokendra Gaire">
+            </div>
+            <div class="form-group">
+                <label for="mainDescriptionInput">मुख्य विवरण:</label>
+                <input type="text" id="mainDescriptionInput" value="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Penatibus tellus platea bibendum mattis odio mi odio amet. Cras vel tortor viverra ut. Ac condimentum.">
+            </div>
+            <div class="form-group">
+                <label for="dateInput">दिइएको मिति:</label>
+                <input type="date" id="dateInput" value="2023-04-05">
+            </div>
+            <div class="form-group">
+                <label for="directorNameInput">डायरेक्टरको नाम:</label>
+                <input type="text" id="directorNameInput" value="Ganesh Buddha">
+            </div>
+            <div class="form-group">
+                <label for="managerNameInput">म्यानेजरको नाम:</label>
+                <input type="text" id="managerNameInput" value="Lokendra Gaire">
+            </div>
+            <div class="form-group">
+                <label for="photoUploadInput">फोटो अपलोड:</label>
+                <input type="file" id="photoUploadInput" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="certificateIdInput">सर्टिफिकेट ID:</label>
+                <input type="text" id="certificateIdInput" value="9e785800-b33e-4a5a-890e-d4b12da2f94a">
+            </div>
+            <button type="button" onclick="generateCertificate()">सर्टिफिकेट बनाउनुहोस्</button>
+            <button type="button" onclick="downloadCertificate()">डाउनलोड (JPG)</button>
+            <button type="button" onclick="window.print()">प्रिन्ट</button>
+        </form>
     </div>
-    <div class="nav-right">
-      <button class="login-btn">Login</button>
-      <button class="toggle-btn" onclick="toggleMode()">🌙 Dark/Light</button>
+
+    <div class="certificate-container" id="certificate">
+        <div class="certificate-content">
+            <div>
+                <div class="logo"><img src="logo.png" alt="Company Emblem"></div>
+                <div class="company-name" id="companyName">Sarobar Nepal</div>
+                <div class="cert-type" id="membershipType">General Membership</div>
+                <div class="cert-title">This certificate is presented to</div>
+                
+                <div class="recipient-name" id="recipientName">Lokendra Gaire</div>
+                
+                <div class="cert-description" id="mainDescription">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Penatibus tellus platea bibendum mattis odio mi odio amet. Cras vel tortor viverra ut. Ac condimentum.
+                </div>
+            </div>
+            
+            <div class="signatures">
+                <div class="signature-block">
+                    <div class="signature-name" id="directorName">Ganesh Buddha</div>
+                    <div class="signature-title">Director, <span id="directorCompany">Sarobar Nepal</span></div>
+                </div>
+                <div class="award-details">
+                    <div class="label">This certificate is awarded on:</div>
+                    <div class="value" id="awardDate">2023-04-05</div>
+                    <div class="cert-id">Certificate ID:<br><span class="cert-id-value" id="certificateId">9e785800-b33e-4a5a-890e-d4b12da2f94a</span></div>
+                </div>
+                <div class="signature-block">
+                    <div class="signature-name" id="managerName">Lokendra Gaire</div>
+                    <div class="signature-title">Manager, <span id="managerCompany">Sarobar Nepal</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="photo-box">
+            <img id="profilePhoto" src="" alt="Profile Photo">
+        </div>
     </div>
-  </nav>
 
-  <!-- Form -->
-  <div class="container">
-    <h2>Contact Form</h2>
-    <form id="contact-form">
-      <input type="text" name="name" placeholder="Your Name" required>
-      <input type="email" name="email" placeholder="Your Email" required>
-      <textarea name="message" rows="4" placeholder="Your Message"></textarea>
-      <button type="submit">Send</button>
-    </form>
-    <p id="status"></p>
-  </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        function generateCertificate() {
+            const companyName = document.getElementById('companyNameInput').value;
+            const membershipType = document.getElementById('membershipTypeInput').value;
+            const recipientName = document.getElementById('recipientNameInput').value;
+            const mainDescription = document.getElementById('mainDescriptionInput').value;
+            const date = document.getElementById('dateInput').value;
+            const directorName = document.getElementById('directorNameInput').value;
+            const managerName = document.getElementById('managerNameInput').value;
+            const certificateId = document.getElementById('certificateIdInput').value;
+            const photoFile = document.getElementById('photoUploadInput').files[0];
 
-  <!-- Watermark -->
-  <div class="watermark">© Lokendra Gaire</div>
+            document.getElementById('companyName').innerText = companyName;
+            document.getElementById('directorCompany').innerText = companyName;
+            document.getElementById('managerCompany').innerText = companyName;
+            document.getElementById('membershipType').innerText = membershipType;
+            document.getElementById('recipientName').innerText = recipientName;
+            document.getElementById('mainDescription').innerText = mainDescription;
+            document.getElementById('awardDate').innerText = date;
+            document.getElementById('directorName').innerText = directorName;
+            document.getElementById('managerName').innerText = managerName;
+            document.getElementById('certificateId').innerText = certificateId;
 
-  <script>
-    // Dark / Light Toggle
-    function toggleMode() {
-      document.body.classList.toggle("dark-mode");
-    }
+            if (photoFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePhoto').src = e.target.result;
+                }
+                reader.readAsDataURL(photoFile);
+            } else {
+                // Clear photo if no file is selected
+                document.getElementById('profilePhoto').src = "";
+            }
+        }
+        
+        function downloadCertificate() {
+            const certificate = document.getElementById('certificate');
+            html2canvas(certificate, {
+                scale: 2, // Higher scale for better resolution
+                allowTaint: true, // Allow tainting for external images (logo.png)
+                useCORS: true,   // Use CORS for external images
+                backgroundColor: null, // This ensures background is captured
+                logging: true, // Enable logging for debugging
+                onclone: (clonedDoc) => {
+                    return new Promise(resolve => setTimeout(() => resolve(clonedDoc), 50));
+                }
+            }).then(canvas => {
+                const image = canvas.toDataURL("image/jpeg", 1.0); // 1.0 is max quality
+                const link = document.createElement('a');
+                link.download = 'sarobar_certificate.jpeg';
+                link.href = image;
+                link.click();
+            });
+        }
 
-    // Form Submission to Google Apps Script
-    const scriptURL = "YOUR_GOOGLE_SCRIPT_LINK"; // <-- यहाँ तपाईंको Apps Script Link राख्नुहोस्
-    const form = document.getElementById("contact-form");
-    const status = document.getElementById("status");
-
-    form.addEventListener("submit", e => {
-      e.preventDefault();
-      fetch(scriptURL, { method: "POST", body: new FormData(form)})
-        .then(response => {
-          status.innerHTML = "✅ Message Sent Successfully!";
-          form.reset();
-        })
-        .catch(error => {
-          status.innerHTML = "❌ Error! Try Again.";
-        });
-    });
-  </script>
+        // Initial call to set default values when the page loads
+        document.addEventListener('DOMContentLoaded', generateCertificate);
+    </script>
 </body>
 </html>
