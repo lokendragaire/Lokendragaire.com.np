@@ -1,291 +1,147 @@
 <!DOCTYPE html>
-<html lang="ne">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Certificate Generator</title>
+  <title>Dashboard with Form</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,700&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&display=swap');
-
+    /* Navbar Design */
     body {
-      font-family: 'Open Sans', sans-serif;
-      background-color: #f0f2f5;
-      color: #333;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: #333;
+      color: #fff;
+    }
+    nav img {
+      height: 50px;
+    }
+    .nav-right {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 20px;
+      align-items: flex-end;
     }
-
-    .container {
-      width: 100%;
-      max-width: 800px;
-      margin-bottom: 40px;
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    h2 {
-      text-align: center;
-      color: #2c3e50;
-      margin-bottom: 20px;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-    .form-group label {
-      display: block;
+    .login-btn {
+      padding: 8px 16px;
       margin-bottom: 5px;
-      font-weight: bold;
+      background: #4CAF50;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 4px;
     }
-    .form-group input, .form-group select {
+    .toggle-btn {
+      padding: 6px 12px;
+      background: #555;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    /* Dark/Light Mode */
+    .dark-mode {
+      background: #121212;
+      color: #ddd;
+    }
+    /* Form */
+    .container {
+      padding: 20px;
+      max-width: 500px;
+      margin: 20px auto;
+      background: #f4f4f4;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+    }
+    .container h2 {
+      text-align: center;
+    }
+    form input, form textarea, form button {
       width: 100%;
       padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
       border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
     }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #3498db;
-      color: white;
+    form button {
+      background: #333;
+      color: #fff;
       border: none;
-      border-radius: 4px;
-      font-size: 16px;
       cursor: pointer;
-      margin-bottom: 10px;
     }
-    button:hover {
-      background-color: #2980b9;
-    }
-
-    /* Certificate Styles */
-    .certificate-container {
-      position: relative;
-      width: 100%;
-      max-width: 1123px; /* A4 landscape width in px */
-      height: 794px;    /* A4 landscape height in px */
-      background: linear-gradient(135deg, #1a2a6c, #2c3c50);
-      color: #fff;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.5);
-      padding: 40px;
-      box-sizing: border-box;
-      overflow: hidden;
-      border: 15px solid #d4af37;
-    }
-
     /* Watermark */
-    .certificate-container::before {
-      content: "";
-      background: url('logo.png') center center no-repeat;
-      background-size: 400px;
-      opacity: 0.1;
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      z-index: 0;
-    }
-
-    .certificate-content {
-      position: relative;
-      z-index: 1;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      text-align: center;
-    }
-
-    .company-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 32px;
-      font-weight: 700;
-      color: #fff; /* changed to white */
-      text-transform: uppercase;
-      margin-bottom: 20px;
-    }
-
-    .cert-type {
-      font-family: 'Playfair Display', serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: #d4af37;
-      margin-bottom: 5px;
-    }
-
-    .recipient-name {
-      font-size: 55px;
-      font-weight: 400;
-      font-style: italic;
-      color: #d4af37;
-      margin: 20px 0;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-    }
-
-    .cert-description {
-      font-size: 14px;
-      color: #ccc;
-      max-width: 700px;
-      margin: 0 auto 20px;
-      line-height: 1.6;
-    }
-
-    .signatures {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      width: 100%;
-      margin-top: 30px;
-    }
-
-    .signature-block {
-      flex: 1;
-      text-align: center;
-      margin: 0 20px;
-      position: relative;
-    }
-
-    .signature-line {
-      border-top: 1px solid #fff;
-      margin-bottom: 5px;
-      margin-top: 40px; /* space for sign */
-    }
-
-    .signature-name {
-      font-size: 16px;
-      font-weight: bold;
-      color: #fff;
-    }
-    .signature-title {
-      font-size: 12px;
-      color: #ccc;
-    }
-
-    .award-details {
-      text-align: center;
-      font-size: 14px;
-      color: #ccc;
-    }
-    .award-details .label {
-      font-weight: bold;
-      color: #fff;
-    }
-    .award-details .value {
-      color: #d4af37;
-    }
-    .cert-id {
-      font-size: 12px;
-      color: #aaa;
-      margin-top: 10px;
-    }
-    .cert-id-value {
-      color: #fff;
-      font-weight: bold;
+    .watermark {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      opacity: 0.2;
       font-size: 14px;
     }
-
-    @media print {
-      body {
-        margin: 0;
-        padding: 0;
+    @media(max-width:768px) {
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
       }
-      .container, h2, button { display: none; }
-      .certificate-container {
-        border: none;
-        box-shadow: none;
-        width: 297mm;
-        height: 210mm;
-        page-break-after: always;
+      .nav-right {
+        align-items: flex-start;
       }
     }
   </style>
 </head>
 <body>
-
-  <div class="container">
-    <h2>सर्टिफिकेट जानकारी</h2>
-    <form id="certForm">
-      <div class="form-group">
-        <label for="recipientNameInput">प्राप्त गर्ने व्यक्तिको नाम:</label>
-        <input type="text" id="recipientNameInput" value="Lokendra Gaire">
-      </div>
-      <div class="form-group">
-        <label for="mainDescriptionInput">मुख्य विवरण:</label>
-        <input type="text" id="mainDescriptionInput" value="यसले प्रमाणित गर्दछ कि ...">
-      </div>
-      <div class="form-group">
-        <label for="dateInput">मिति:</label>
-        <input type="date" id="dateInput" value="2025-09-03">
-      </div>
-      <div class="form-group">
-        <label for="secretaryInput">Secretary को नाम:</label>
-        <input type="text" id="secretaryInput" value="Ganesh Buddha">
-      </div>
-      <div class="form-group">
-        <label for="chairpersonInput">Chairperson को नाम:</label>
-        <input type="text" id="chairpersonInput" value="Lokendra Gaire">
-      </div>
-      <div class="form-group">
-        <label for="certificateIdInput">Certificate Number (SN.2078):</label>
-        <input type="text" id="certificateIdInput" placeholder="4 digit" maxlength="4">
-      </div>
-      <button type="button" onclick="generateCertificate()">Generate</button>
-      <button type="button" onclick="window.print()">Print</button>
-    </form>
-  </div>
-
-  <div class="certificate-container" id="certificate">
-    <div class="certificate-content">
-      <div>
-        <div class="company-name">CERTIFICATE</div>
-        <div class="cert-type">OF MEMBERSHIP</div>
-        <div class="cert-title">This certificate is proudly presented to</div>
-        <div class="recipient-name" id="recipientName">Name Here</div>
-        <div class="cert-description" id="mainDescription">Description Here</div>
-      </div>
-      <div class="signatures">
-        <div class="signature-block">
-          <div class="signature-line"></div>
-          <div class="signature-name" id="secretaryName">Secretary</div>
-          <div class="signature-title">Secretary</div>
-        </div>
-        <div class="award-details">
-          <div class="label">Date:</div>
-          <div class="value" id="awardDate">2025-09-03</div>
-          <div class="cert-id">Certificate No: <span class="cert-id-value" id="certificateId">SN.2078</span></div>
-        </div>
-        <div class="signature-block">
-          <div class="signature-line"></div>
-          <div class="signature-name" id="chairpersonName">Chairperson</div>
-          <div class="signature-title">Chairperson</div>
-        </div>
-      </div>
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">
+      <img src="your-logo.png" alt="Logo">
     </div>
+    <div class="nav-right">
+      <button class="login-btn">Login</button>
+      <button class="toggle-btn" onclick="toggleMode()">🌙 Dark/Light</button>
+    </div>
+  </nav>
+
+  <!-- Form -->
+  <div class="container">
+    <h2>Contact Form</h2>
+    <form id="contact-form">
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Your Email" required>
+      <textarea name="message" rows="4" placeholder="Your Message"></textarea>
+      <button type="submit">Send</button>
+    </form>
+    <p id="status"></p>
   </div>
+
+  <!-- Watermark -->
+  <div class="watermark">© Lokendra Gaire</div>
 
   <script>
-    function generateCertificate() {
-      document.getElementById('recipientName').innerText =
-        document.getElementById('recipientNameInput').value;
-      document.getElementById('mainDescription').innerText =
-        document.getElementById('mainDescriptionInput').value;
-      document.getElementById('awardDate').innerText =
-        document.getElementById('dateInput').value;
-      document.getElementById('secretaryName').innerText =
-        document.getElementById('secretaryInput').value;
-      document.getElementById('chairpersonName').innerText =
-        document.getElementById('chairpersonInput').value;
-
-      const certNo = document.getElementById('certificateIdInput').value;
-      document.getElementById('certificateId').innerText =
-        "SN.2078" + certNo;
+    // Dark / Light Toggle
+    function toggleMode() {
+      document.body.classList.toggle("dark-mode");
     }
 
-    document.addEventListener('DOMContentLoaded', generateCertificate);
+    // Form Submission to Google Apps Script
+    const scriptURL = "YOUR_GOOGLE_SCRIPT_LINK"; // <-- यहाँ तपाईंको Apps Script Link राख्नुहोस्
+    const form = document.getElementById("contact-form");
+    const status = document.getElementById("status");
+
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      fetch(scriptURL, { method: "POST", body: new FormData(form)})
+        .then(response => {
+          status.innerHTML = "✅ Message Sent Successfully!";
+          form.reset();
+        })
+        .catch(error => {
+          status.innerHTML = "❌ Error! Try Again.";
+        });
+    });
   </script>
 </body>
 </html>
