@@ -298,8 +298,8 @@
                 <input type="text" id="SecretaryNameInput" value="">
             </div>
             <div class="form-group">
-                <label for="CharipersonNameInput">म्यानेजरको नाम:</label>
-                <input type="text" id="CharipersonNameInput" value="">
+                <label for="ChairpersonNameInput">म्यानेजरको नाम:</label>
+                <input type="text" id="ChairpersonNameInput" value="">
             </div>
             <div class="form-group">
                 <label for="photoUploadInput">फोटो अपलोड:</label>
@@ -341,8 +341,8 @@
                     <div class="cert-id">Certificate ID:<br><span class="cert-id-value" id="certificateId">9e785800-b33e-4a5a-890e-d4b12da2f94a</span></div>
                 </div>
                 <div class="signature-block">
-                    <div class="signature-name" id="CharipersonName"></div>
-                    <div class="signature-title">Chariperson, <span id="CharipersonCompany"></span></div>
+                    <div class="signature-name" id="ChairpersonName"></div>
+                    <div class="signature-title">Chairperson, <span id="ChairpersonCompany"></span></div>
                 </div>
             </div>
         </div>
@@ -361,19 +361,19 @@
             const mainDescription = document.getElementById('mainDescriptionInput').value;
             const date = document.getElementById('dateInput').value;
             const SecretaryName = document.getElementById('SecretaryNameInput').value;
-            const CharipersonName = document.getElementById('CharipersonNameInput').value;
+            const ChairpersonName = document.getElementById('ChairpersonNameInput').value;
             const certificateId = document.getElementById('certificateIdInput').value;
             const photoFile = document.getElementById('photoUploadInput').files[0];
 
             document.getElementById('companyName').innerText = companyName;
             document.getElementById('SecretaryCompany').innerText = companyName;
-            document.getElementById('CharipersonCompany').innerText = companyName;
+            document.getElementById('ChairpersonCompany').innerText = companyName;
             document.getElementById('membershipType').innerText = membershipType;
             document.getElementById('recipientName').innerText = recipientName;
             document.getElementById('mainDescription').innerText = mainDescription;
             document.getElementById('awardDate').innerText = date;
             document.getElementById('SecretaryName').innerText = SecretaryName;
-            document.getElementById('CharipersonName').innerText = CharipersonName;
+            document.getElementById('ChairpersonName').innerText = ChairpersonName;
             document.getElementById('certificateId').innerText = certificateId;
 
             if (photoFile) {
