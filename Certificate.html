@@ -1,4 +1,3 @@
-Here is an English translation of the user's request:
 <!DOCTYPE html>
 <html lang="ne">
 <head>
@@ -6,16 +5,15 @@ Here is an English translation of the user's request:
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>सर्टिफिकेट जेनेरेटर - Sarobar Nepal</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,700&family=Roboto:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,700&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&display=swap');
 
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Open Sans', sans-serif;
             background-color: #f0f2f5;
             color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             padding: 20px;
         }
 
@@ -45,7 +43,7 @@ Here is an English translation of the user's request:
             font-weight: bold;
         }
 
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -63,6 +61,7 @@ Here is an English translation of the user's request:
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin-bottom: 10px;
         }
 
         button:hover {
@@ -73,112 +72,79 @@ Here is an English translation of the user's request:
         .certificate-container {
             width: 100%;
             max-width: 800px;
-            height: 565px; /* A4 aspect ratio */
+            height: 565px; /* A4 aspect ratio in landscape */
             box-sizing: border-box;
             background-color: #2c2c2c;
-            padding: 30px;
-            border: 15px solid #d4af37;
-            border-image: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:rgb(212,175,55);stop-opacity:1" /><stop offset="100%" style="stop-color:rgb(255,230,128);stop-opacity:1" /></linearGradient></defs><rect x="0" y="0" width="100" height="100" fill="url(#g)"/></svg>') 15 stretch;
+            padding: 40px;
             position: relative;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
             text-align: center;
             color: #fff;
             overflow: hidden;
-        }
-
-        .certificate-container:before, .certificate-container:after {
-            content: '';
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            background-image: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><path d="M50 0L65 35L100 35L75 60L85 95L50 70L15 95L25 60L0 35L35 35L50 0Z" fill="%23d4af37"/></svg>');
+            background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 565"%3E%3Cdefs%3E%3ClinearGradient id="goldGradient" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:rgb(212,175,55);stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:rgb(255,230,128);stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d="M 15 15 L 785 15 L 785 550 L 15 550 L 15 15 Z" fill="none" stroke="url(%23goldGradient)" stroke-width="8"/%3E%3Cpath d="M 0 0 H 800 V 565 H 0 Z" fill="none" stroke="url(%23goldGradient)" stroke-width="40" stroke-dasharray="8 8"/%3E%3C/svg%3E');
+            background-repeat: no-repeat;
+            background-position: center;
             background-size: contain;
-            background-repeat: no-repeat;
-            top: 20px;
-            left: 20px;
         }
 
-        .certificate-container:after {
-            top: auto;
-            left: auto;
-            bottom: 20px;
-            right: 20px;
-        }
-        
-        /* Gold lines */
-        .certificate-container:before, .certificate-container:after {
-            content: '';
+        .decorative-border {
             position: absolute;
-            width: 100px;
-            height: 100px;
-            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23d4af37" d="M100 0H0V100h100V0zm-5 5v90h-90V5h90z"/><path fill="%23d4af37" d="M50 0L60 40L100 40L70 60L80 100L50 70L20 100L30 60L0 40L40 40L50 0Z" opacity="0.1"/></svg>');
-            background-repeat: no-repeat;
-        }
-        
-        .certificate-container:before {
             top: 0;
             left: 0;
-            transform: rotate(0deg);
+            width: 100%;
+            height: 100%;
+            border: 15px solid transparent;
+            border-image: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:rgb(212,175,55);stop-opacity:1" /><stop offset="100%" style="stop-color:rgb(255,230,128);stop-opacity:1" /></linearGradient></defs><rect x="0" y="0" width="100" height="100" fill="url(%23g)"/></svg>') 15 stretch;
+            box-sizing: border-box;
         }
         
-        .certificate-container:after {
-            top: 0;
-            left: auto;
-            right: 0;
-            transform: rotate(90deg);
-        }
-        
-        .certificate-container .bottom-left-corner {
+        /* Decorative corners */
+        .corner {
             position: absolute;
-            bottom: 0;
-            left: 0;
             width: 100px;
             height: 100px;
-            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23d4af37" d="M100 0H0V100h100V0zm-5 5v90h-90V5h90z"/><path fill="%23d4af37" d="M50 0L60 40L100 40L70 60L80 100L50 70L20 100L30 60L0 40L40 40L50 0Z" opacity="0.1"/></svg>');
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23d4af37" d="M100 0H0V100h100V0zm-5 5v90h-90V5h90z"/><path fill="%23d4af37" d="M50 0L60 40L100 40L70 60L80 100L50 70L20 100L30 60L0 40L40 40L50 0Z" opacity="0.5"/></svg>');
             background-repeat: no-repeat;
-            transform: rotate(270deg);
         }
-        
-        .certificate-container .bottom-right-corner {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 100px;
-            height: 100px;
-            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23d4af37" d="M100 0H0V100h100V0zm-5 5v90h-90V5h90z"/><path fill="%23d4af37" d="M50 0L60 40L100 40L70 60L80 100L50 70L20 100L30 60L0 40L40 40L50 0Z" opacity="0.1"/></svg>');
-            background-repeat: no-repeat;
-            transform: rotate(180deg);
-        }
+        .top-left { top: 0; left: 0; transform: rotate(0deg); }
+        .top-right { top: 0; right: 0; transform: rotate(90deg); }
+        .bottom-left { bottom: 0; left: 0; transform: rotate(270deg); }
+        .bottom-right { bottom: 0; right: 0; transform: rotate(180deg); }
 
 
         .logo {
             width: 60px;
             height: 60px;
-            background-color: #d4af37;
-            border-radius: 50%;
             margin: 0 auto 10px;
+        }
+        .logo img {
+            width: 100%;
+            height: auto;
         }
 
         .company-name {
-            font-size: 18px;
-            font-weight: bold;
-            color: #d4af37;
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #3498db;
             margin-bottom: 20px;
             text-transform: uppercase;
         }
 
-        .cert-title {
+        .cert-type {
+            font-family: 'Playfair Display', serif;
             font-size: 24px;
             font-weight: 700;
-            color: #fff;
+            color: #d4af37;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 5px;
         }
 
-        .sub-title {
+        .cert-title {
             font-size: 16px;
-            color: #d4af37;
+            font-weight: 400;
+            color: #fff;
             margin-bottom: 20px;
         }
 
@@ -194,7 +160,7 @@ Here is an English translation of the user's request:
         }
 
         .cert-description {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Open Sans', sans-serif;
             font-size: 14px;
             line-height: 1.6;
             color: #ccc;
@@ -210,6 +176,7 @@ Here is an English translation of the user's request:
             align-items: flex-end;
             width: 100%;
             margin-top: auto;
+            position: relative;
         }
 
         .signature-block {
@@ -264,6 +231,50 @@ Here is an English translation of the user's request:
             font-size: 14px;
             letter-spacing: 1px;
         }
+
+        .photo-box {
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            width: 90px;
+            height: 110px;
+            border: 2px solid #d4af37;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #444;
+            overflow: hidden;
+        }
+        .photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: none;
+                -webkit-print-color-adjust: exact;
+                margin: 0;
+                padding: 0;
+            }
+            .container, h2, button {
+                display: none;
+            }
+            .certificate-container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                border: none;
+                width: 297mm; /* A4 width */
+                height: 210mm; /* A4 height */
+                page-break-after: always;
+            }
+            .certificate-container .decorative-border {
+                border-image-slice: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -276,16 +287,15 @@ Here is an English translation of the user's request:
                 <input type="text" id="companyNameInput" value="Sarobar Nepal">
             </div>
             <div class="form-group">
-                <label for="certTitleInput">सर्टिफिकेटको शीर्षक:</label>
-                <input type="text" id="certTitleInput" value="CERTIFICATE OF MEMBERSHIP">
+                <label for="membershipTypeInput">सदस्यताको प्रकार:</label>
+                <select id="membershipTypeInput">
+                    <option value="Lifetime Membership">Lifetime Membership</option>
+                    <option value="General Membership">General Membership</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="recipientNameInput">प्राप्त गर्ने व्यक्तिको नाम:</label>
                 <input type="text" id="recipientNameInput" value="Elizabeth Martin">
-            </div>
-            <div class="form-group">
-                <label for="descriptionInput">विवरण:</label>
-                <input type="text" id="descriptionInput" value="This certificate is presented to">
             </div>
             <div class="form-group">
                 <label for="mainDescriptionInput">मुख्य विवरण:</label>
@@ -300,35 +310,33 @@ Here is an English translation of the user's request:
                 <input type="text" id="directorNameInput" value="Damian Lee">
             </div>
             <div class="form-group">
-                <label for="directorTitleInput">डायरेक्टरको पद:</label>
-                <input type="text" id="directorTitleInput" value="Director">
-            </div>
-            <div class="form-group">
                 <label for="managerNameInput">म्यानेजरको नाम:</label>
                 <input type="text" id="managerNameInput" value="Allan C.K.">
             </div>
             <div class="form-group">
-                <label for="managerTitleInput">म्यानेजरको पद:</label>
-                <input type="text" id="managerTitleInput" value="Manager">
+                <label for="photoUploadInput">फोटो अपलोड:</label>
+                <input type="file" id="photoUploadInput" accept="image/*">
             </div>
             <div class="form-group">
                 <label for="certificateIdInput">सर्टिफिकेट ID:</label>
                 <input type="text" id="certificateIdInput" value="9e785800-b33e-4a5a-890e-d4b12da2f94a">
             </div>
             <button type="button" onclick="generateCertificate()">सर्टिफिकेट बनाउनुहोस्</button>
+            <button type="button" onclick="downloadCertificate()">डाउनलोड (JPG)</button>
+            <button type="button" onclick="window.print()">प्रिन्ट</button>
         </form>
     </div>
 
     <div class="certificate-container" id="certificate">
-        <div class="top-left-corner"></div>
-        <div class="top-right-corner"></div>
-        <div class="bottom-left-corner"></div>
-        <div class="bottom-right-corner"></div>
+        <div class="corner top-left"></div>
+        <div class="corner top-right"></div>
+        <div class="corner bottom-left"></div>
+        <div class="corner bottom-right"></div>
         
-        <div class="logo"></div>
+        <div class="logo"><img src="emblem.png" alt="Company Emblem"></div>
         <div class="company-name" id="companyName">Sarobar Nepal</div>
-        <div class="cert-title" id="certTitle">CERTIFICATE OF MEMBERSHIP</div>
-        <div class="sub-title" id="certDescription">This certificate is presented to</div>
+        <div class="cert-type" id="membershipType">Lifetime Membership</div>
+        <div class="cert-title">This certificate is presented to</div>
         
         <div class="recipient-name" id="recipientName">Elizabeth Martin</div>
         
@@ -339,8 +347,7 @@ Here is an English translation of the user's request:
         <div class="signatures">
             <div class="signature-block">
                 <div class="signature-name" id="directorName">Damian Lee</div>
-                <div class="signature-title" id="directorTitle">Director</div>
-                <div class="signature-title" id="directorCompany">Your Company name</div>
+                <div class="signature-title">Director, <span id="directorCompany">Sarobar Nepal</span></div>
             </div>
             <div class="award-details">
                 <div class="label">This certificate is awarded on:</div>
@@ -349,47 +356,65 @@ Here is an English translation of the user's request:
             </div>
             <div class="signature-block">
                 <div class="signature-name" id="managerName">Allan C.K.</div>
-                <div class="signature-title" id="managerTitle">Manager</div>
-                <div class="signature-title" id="managerCompany">Your Company name</div>
+                <div class="signature-title">Manager, <span id="managerCompany">Sarobar Nepal</span></div>
             </div>
+        </div>
+
+        <div class="photo-box">
+            <img id="profilePhoto" src="" alt="Profile Photo">
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         function generateCertificate() {
-            // Get values from the form
             const companyName = document.getElementById('companyNameInput').value;
-            const certTitle = document.getElementById('certTitleInput').value;
+            const membershipType = document.getElementById('membershipTypeInput').value;
             const recipientName = document.getElementById('recipientNameInput').value;
-            const certDescription = document.getElementById('descriptionInput').value;
             const mainDescription = document.getElementById('mainDescriptionInput').value;
             const date = document.getElementById('dateInput').value;
             const directorName = document.getElementById('directorNameInput').value;
-            const directorTitle = document.getElementById('directorTitleInput').value;
             const managerName = document.getElementById('managerNameInput').value;
-            const managerTitle = document.getElementById('managerTitleInput').value;
             const certificateId = document.getElementById('certificateIdInput').value;
+            const photoFile = document.getElementById('photoUploadInput').files[0];
 
-            // Update the certificate content
             document.getElementById('companyName').innerText = companyName;
             document.getElementById('directorCompany').innerText = companyName;
             document.getElementById('managerCompany').innerText = companyName;
-            document.getElementById('certTitle').innerText = certTitle;
+            document.getElementById('membershipType').innerText = membershipType;
             document.getElementById('recipientName').innerText = recipientName;
-            document.getElementById('certDescription').innerText = certDescription;
             document.getElementById('mainDescription').innerText = mainDescription;
             document.getElementById('awardDate').innerText = date;
             document.getElementById('directorName').innerText = directorName;
-            document.getElementById('directorTitle').innerText = directorTitle;
             document.getElementById('managerName').innerText = managerName;
-            document.getElementById('managerTitle').innerText = managerTitle;
             document.getElementById('certificateId').innerText = certificateId;
+
+            if (photoFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePhoto').src = e.target.result;
+                }
+                reader.readAsDataURL(photoFile);
+            }
         }
         
-        // Initial call to set default values
+        function downloadCertificate() {
+            const certificate = document.getElementById('certificate');
+            html2canvas(certificate, {
+                scale: 2,
+                allowTaint: true,
+                useCORS: true,
+                backgroundColor: null
+            }).then(canvas => {
+                const image = canvas.toDataURL("image/jpeg", 1.0);
+                const link = document.createElement('a');
+                link.download = 'certificate.jpeg';
+                link.href = image;
+                link.click();
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', generateCertificate);
     </script>
-
 </body>
 </html>
-
