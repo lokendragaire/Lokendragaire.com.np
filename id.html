@@ -277,7 +277,7 @@
                     <input type="text" id="birthDate" placeholder="e.g., MM/DD/YYYY" required>
                 </div>
                 <div class="form-group">
-                    <label for="expiryDate">Expiry Date:</label>
+                    <label for="expiryDate">Issued Date:</label>
                     <input type="text" id="expiryDate" placeholder="e.g., MM/DD/YYYY" required>
                 </div>
                 <div class="form-group">
@@ -327,7 +327,7 @@
                             <p>Phone:<span id="cardPhone">+000-666 22 777</span></p>
                             <p>Email:<span id="cardEmail">yourmail address here</span></p>
                             <p>Birth Date:<span id="cardBirthDate">MM/DD/YYYY</span></p>
-                            <p>Expire Date:<span id="cardExpiryDate">MM/DD/YYYY</span></p>
+                            <p>Issued Date:<span id="cardissuedDate">MM/DD/YYYY</span></p>
                         </div>
                     </div>
                 </div>
@@ -354,7 +354,7 @@
                 const phone = document.getElementById('phone').value;
                 const email = document.getElementById('email').value;
                 const birthDate = document.getElementById('birthDate').value;
-                const expiryDate = document.getElementById('expiryDate').value;
+                const issuedDate = document.getElementById('issueDate').value;
                 const signatureName = document.getElementById('signatureName').value;
                 const signaturePost = document.getElementById('signaturePost').value;
                 const photoFile = document.getElementById('photo').files[0];
@@ -368,7 +368,7 @@
                 document.getElementById('cardPhone').textContent = phone;
                 document.getElementById('cardEmail').textContent = email;
                 document.getElementById('cardBirthDate').textContent = birthDate;
-                document.getElementById('cardExpiryDate').textContent = expiryDate;
+                document.getElementById('cardIssuedDate').textContent = issuedDate;
                 document.getElementById('cardSignatureName').textContent = signatureName;
                 document.getElementById('cardSignaturePost').textContent = signaturePost;
                 
