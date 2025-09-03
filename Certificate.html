@@ -71,10 +71,13 @@
         /* Certificate Styles */
         .certificate-container {
             width: 100%;
-            max-width: 800px;
-            height: 565px; /* A4 aspect ratio in landscape */
+            max-width: 800px; /* A4 aspect ratio base */
+            height: 565px; /* (800 / 1.414) approx */
             box-sizing: border-box;
-            background-color: #2c2c2c;
+            
+            /* Gradient Background */
+            background: linear-gradient(135deg, #1a2a6c 0%, #303e5a 50%, #2c3c50 100%); /* Deep Blue to Dark Grey Gradient */
+            
             padding: 40px;
             position: relative;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
@@ -82,22 +85,21 @@
             color: #fff;
             overflow: hidden;
             
-            /* The attractive border from the user's second image */
-            border: 20px solid transparent;
-            border-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="p" patternUnits="userSpaceOnUse" width="10" height="10"><rect width="10" height="10" fill="%23d4af37"/></pattern></defs><rect width="100" height="100" fill="url(%23p)"/><rect x="10" y="10" width="80" height="80" fill="%232c2c2c"/></svg>') 20 fill stretch;
-        }
-
-        .decorative-border {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 15px solid transparent;
-            border-image: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:rgb(212,175,55);stop-opacity:1" /><stop offset="100%" style="stop-color:rgb(255,230,128);stop-opacity:1" /></linearGradient></defs><rect x="0" y="0" width="100" height="100" fill="url(%23g)"/></svg>') 15 stretch;
-            box-sizing: border-box;
+            /* Enhanced attractive border */
+            border: 20px solid transparent; /* This creates space for the border-image */
+            border-image: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23d4af37"/><stop offset="100%" stop-color="%23ffeb80"/></linearGradient><path id="deco" d="M10 0L20 10L10 20L0 10Z" fill="url(%23gold)"/><path id="line" d="M0 5h100v-5h-100z" fill="url(%23gold)"/></defs><rect x="0" y="0" width="100" height="100" fill="transparent"/><use href="%23deco" x="0" y="0"/><use href="%23deco" x="80" y="0"/><use href="%23deco" x="0" y="80"/><use href="%23deco" x="80" y="80"/><rect x="0" y="0" width="100" height="100" fill="none" stroke="url(%23gold)" stroke-width="2"/></svg>') 20 round;
         }
         
+        /* Inner padding for content */
+        .certificate-content {
+            padding: 20px;
+            height: calc(100% - 40px); /* Adjust for outer border */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
         .logo {
             width: 60px;
             height: 60px;
@@ -112,7 +114,7 @@
             font-family: 'Playfair Display', serif;
             font-size: 32px;
             font-weight: 700;
-            color: #3498db;
+            color: #3498db; /* Blue color for company name */
             margin-bottom: 20px;
             text-transform: uppercase;
         }
@@ -151,10 +153,8 @@
             font-size: 14px;
             line-height: 1.6;
             color: #ccc;
-            margin: 20px 0 30px;
+            margin: 20px auto 30px; /* Use auto for left/right margin to center */
             max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         .signatures {
@@ -162,7 +162,6 @@
             justify-content: space-between;
             align-items: flex-end;
             width: 100%;
-            margin-top: auto;
             position: relative;
         }
 
@@ -248,12 +247,19 @@
                 margin: 0;
                 padding: 0;
                 border: none;
-                width: 297mm; /* A4 width */
-                height: 210mm; /* A4 height */
+                width: 297mm; /* A4 width in landscape */
+                height: 210mm; /* A4 height in landscape */
                 page-break-after: always;
+                
+                /* Reapply gradient background for print */
+                background: linear-gradient(135deg, #1a2a6c 0%, #303e5a 50%, #2c3c50 100%);
+                
+                /* Reapply border for print if needed, but html2canvas should handle it */
+                border: 20px solid transparent; 
+                border-image: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23d4af37"/><stop offset="100%" stop-color="%23ffeb80"/></linearGradient><path id="deco" d="M10 0L20 10L10 20L0 10Z" fill="url(%23gold)"/><path id="line" d="M0 5h100v-5h-100z" fill="url(%23gold)"/></defs><rect x="0" y="0" width="100" height="100" fill="transparent"/><use href="%23deco" x="0" y="0"/><use href="%23deco" x="80" y="0"/><use href="%23deco" x="0" y="80"/><use href="%23deco" x="80" y="80"/><rect x="0" y="0" width="100" height="100" fill="none" stroke="url(%23gold)" stroke-width="2"/></svg>') 20 round;
             }
-            .certificate-container .decorative-border {
-                border-image-slice: 1;
+            .certificate-content {
+                height: calc(100% - 40px); /* Adjust for print border */
             }
         }
     </style>
@@ -309,30 +315,34 @@
     </div>
 
     <div class="certificate-container" id="certificate">
-        <div class="logo"><img src="emblem.png" alt="Company Emblem"></div>
-        <div class="company-name" id="companyName">Sarobar Nepal</div>
-        <div class="cert-type" id="membershipType">General Membership</div>
-        <div class="cert-title">This certificate is presented to</div>
-        
-        <div class="recipient-name" id="recipientName">Lokendra Gaire</div>
-        
-        <div class="cert-description" id="mainDescription">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Penatibus tellus platea bibendum mattis odio mi odio amet. Cras vel tortor viverra ut. Ac condimentum.
-        </div>
-        
-        <div class="signatures">
-            <div class="signature-block">
-                <div class="signature-name" id="directorName">Ganesh Buddha</div>
-                <div class="signature-title">Director, <span id="directorCompany">Sarobar Nepal</span></div>
+        <div class="certificate-content">
+            <div>
+                <div class="logo"><img src="emblem.png" alt="Company Emblem"></div>
+                <div class="company-name" id="companyName">Sarobar Nepal</div>
+                <div class="cert-type" id="membershipType">General Membership</div>
+                <div class="cert-title">This certificate is presented to</div>
+                
+                <div class="recipient-name" id="recipientName">Lokendra Gaire</div>
+                
+                <div class="cert-description" id="mainDescription">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Penatibus tellus platea bibendum mattis odio mi odio amet. Cras vel tortor viverra ut. Ac condimentum.
+                </div>
             </div>
-            <div class="award-details">
-                <div class="label">This certificate is awarded on:</div>
-                <div class="value" id="awardDate">2023-04-05</div>
-                <div class="cert-id">Certificate ID:<br><span class="cert-id-value" id="certificateId">9e785800-b33e-4a5a-890e-d4b12da2f94a</span></div>
-            </div>
-            <div class="signature-block">
-                <div class="signature-name" id="managerName">Lokendra Gaire</div>
-                <div class="signature-title">Manager, <span id="managerCompany">Sarobar Nepal</span></div>
+            
+            <div class="signatures">
+                <div class="signature-block">
+                    <div class="signature-name" id="directorName">Ganesh Buddha</div>
+                    <div class="signature-title">Director, <span id="directorCompany">Sarobar Nepal</span></div>
+                </div>
+                <div class="award-details">
+                    <div class="label">This certificate is awarded on:</div>
+                    <div class="value" id="awardDate">2023-04-05</div>
+                    <div class="cert-id">Certificate ID:<br><span class="cert-id-value" id="certificateId">9e785800-b33e-4a5a-890e-d4b12da2f94a</span></div>
+                </div>
+                <div class="signature-block">
+                    <div class="signature-name" id="managerName">Lokendra Gaire</div>
+                    <div class="signature-title">Manager, <span id="managerCompany">Sarobar Nepal</span></div>
+                </div>
             </div>
         </div>
 
@@ -371,26 +381,33 @@
                     document.getElementById('profilePhoto').src = e.target.result;
                 }
                 reader.readAsDataURL(photoFile);
+            } else {
+                // Clear photo if no file is selected
+                document.getElementById('profilePhoto').src = "";
             }
         }
         
         function downloadCertificate() {
             const certificate = document.getElementById('certificate');
             html2canvas(certificate, {
-                scale: 2,
-                allowTaint: true,
-                useCORS: true,
-                backgroundColor: null,
-                logging: true
+                scale: 2, // Higher scale for better resolution
+                allowTaint: true, // Allow tainting for external images (emblem.png)
+                useCORS: true,   // Use CORS for external images
+                backgroundColor: null, // This ensures background is captured
+                logging: true, // Enable logging for debugging
+                onclone: (clonedDoc) => {
+                    return new Promise(resolve => setTimeout(() => resolve(clonedDoc), 50));
+                }
             }).then(canvas => {
-                const image = canvas.toDataURL("image/jpeg", 1.0);
+                const image = canvas.toDataURL("image/jpeg", 1.0); // 1.0 is max quality
                 const link = document.createElement('a');
-                link.download = 'certificate.jpeg';
+                link.download = 'sarobar_certificate.jpeg';
                 link.href = image;
                 link.click();
             });
         }
 
+        // Initial call to set default values when the page loads
         document.addEventListener('DOMContentLoaded', generateCertificate);
     </script>
 </body>
