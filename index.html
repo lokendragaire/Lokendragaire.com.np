@@ -474,6 +474,25 @@
             transform: scale(1.2);
             color: #3b82f6;
         }
+        /* Tab styles */
+        .tab-button.active {
+            background-color: #4a5568; /* Tailwind's gray-700 */
+            color: white;
+        }
+        .tab-button-highlight {
+            background-color: #bfdbfe; /* A light blue to highlight */
+            color: #1f2937;
+        }
+        .main-application-section-title.collapsed {
+            cursor: pointer;
+            user-select: none;
+        }
+        .main-application-section-title.collapsed::after {
+            content: " \25B6"; /* Right-pointing triangle */
+        }
+        .main-application-section-title:not(.collapsed)::after {
+            content: " \25BC"; /* Down-pointing triangle */
+        }
     </style>
 </head>
 <body id="page-top">
@@ -669,6 +688,80 @@
             </div>
         </section>
 
+        <!-- New Section for Applications and Letters with Vertical Tabs -->
+        <section class="page-section py-8">
+            <div class="container mx-auto px-4">
+                <!-- Clickable title to toggle content -->
+                <h2 id="applicationSectionTitle" class="main-application-section-title text-3xl font-bold mb-6 text-gray-800 text-center collapsed">विभिन्न निवेदन तथा पत्र तयार गर्न यहाँ जानु होस</h2>
+                
+                <!-- The entire content block is hidden by default -->
+                <div id="applicationContent" class="hidden">
+                    <div class="flex flex-col lg:flex-row gap-4 p-4 rounded-xl shadow-lg bg-gray-100">
+                        <!-- Tab Buttons (Vertical) -->
+                        <div id="tab-buttons" class="flex flex-col gap-2 w-full lg:w-1/4">
+                            <button class="tab-button w-full text-left p-4 rounded-xl font-medium text-gray-800 bg-gray-300 hover:bg-gray-400 focus:outline-none" data-tab="tab-renewal" data-search-terms="सामाजिक सुरक्षा भत्ता नविकरणको निवेदन">सामाजिक सुरक्षा भत्ता नविकरणको निवेदन।</button>
+                            <button class="tab-button w-full text-left p-4 rounded-xl font-medium text-gray-800 bg-gray-300 hover:bg-gray-400 focus:outline-none" data-tab="tab-bank-letter" data-search-terms="लगतकट्टा पछी बैँकलाई लेख्ने पत्र">लगतकट्टा पछी बैँकलाई लेख्ने पत्र।</button>
+                            <button class="tab-button w-full text-left p-4 rounded-xl font-medium text-gray-800 bg-gray-300 hover:bg-gray-400 focus:outline-none" data-tab="tab-account-letter" data-search-terms="खाताको रकम उपलब्ध गराउनका लागी बैँकलाई लेख्ने पत्र">खाताको रकम उपलब्ध गराउनका लागी बैँकलाई लेख्ने पत्र।</button>
+                            <button class="tab-button w-full text-left p-4 rounded-xl font-medium text-gray-800 bg-gray-300 hover:bg-gray-400 focus:outline-none" data-tab="tab-application" data-search-terms="दरखास्त आवेदन">दरखास्त आवेदन।</button>
+                            <button class="tab-button w-full text-left p-4 rounded-xl font-medium text-gray-800 bg-gray-300 hover:bg-gray-400 focus:outline-none" data-tab="tab-business-recommendation" data-search-terms="व्यवसाय दर्ता सिफारिस">व्यवसाय दर्ता सिफारिस।</button>
+                            <button class="tab-button w-full text-left p-4 rounded-xl font-medium text-gray-800 bg-gray-300 hover:bg-gray-400 focus:outline-none" data-tab="tab-birth-verification" data-search-terms="Birth verification">Birth verification।</button>
+                            <button class="tab-button w-full text-left p-4 rounded-xl font-medium text-gray-800 bg-gray-300 hover:bg-gray-400 focus:outline-none" data-tab="tab-income-verification" data-search-terms="income source verification">income source verification</button>
+                            <button class="tab-button w-full text-left p-4 rounded-xl font-medium text-gray-800 bg-gray-300 hover:bg-gray-400 focus:outline-none" data-tab="tab-tamsuk" data-search-terms="कपाली तमसुक">कपाली तमसुक तयार गर्नुहोस।</button>
+                            <button class="tab-button w-full text-left p-4 rounded-xl font-medium text-gray-800 bg-gray-300 hover:bg-gray-400 focus:outline-none" data-tab="tab-certificate" data-search-terms="Certificate">Certificate</button>
+                            <button class="tab-button w-full text-left p-4 rounded-xl font-medium text-gray-800 bg-gray-300 hover:bg-gray-400 focus:outline-none" data-tab="tab-id-card" data-search-terms="Id Card">Id Card</button>
+                        </div>
+
+                        <!-- Tab Content -->
+                        <div id="tab-content" class="w-full lg:w-3/4 p-6 bg-white rounded-xl shadow-inner">
+                            <div id="tab-placeholder">
+                                <p class="text-gray-600 text-center">माथि कुनै एक विषयमा क्लिक गरेर जानकारी हेर्नुहोस्।</p>
+                            </div>
+                            <div id="tab-renewal" class="hidden">
+                                <h3 class="text-2xl font-bold mb-4 text-green-700">सामाजिक सुरक्षा भत्ता नविकरणको निवेदन।</h3>
+                                <p class="text-gray-600">यो सामाजिक सुरक्षा भत्ता नविकरणको निवेदन फारमको सामग्री हो।</p>
+                            </div>
+                            <div id="tab-bank-letter" class="hidden">
+                                <h3 class="text-2xl font-bold mb-4 text-green-700">लगतकट्टा पछी बैँकलाई लेख्ने पत्र।</h3>
+                                <p class="text-gray-600">यो लगतकट्टा पछी बैँकलाई लेख्ने पत्रको सामग्री हो।</p>
+                            </div>
+                            <div id="tab-account-letter" class="hidden">
+                                <h3 class="text-2xl font-bold mb-4 text-green-700">खाताको रकम उपलब्ध गराउनका लागी बैँकलाई लेख्ने पत्र।</h3>
+                                <p class="text-gray-600">यो खाताको रकम उपलब्ध गराउनका लागी बैँकलाई लेख्ने पत्रको सामग्री हो।</p>
+                            </div>
+                            <div id="tab-application" class="hidden">
+                                <h3 class="text-2xl font-bold mb-4 text-green-700">दरखास्त आवेदन।</h3>
+                                <p class="text-gray-600">यो दरखास्त आवेदनको सामग्री हो।</p>
+                            </div>
+                            <div id="tab-business-recommendation" class="hidden">
+                                <h3 class="text-2xl font-bold mb-4 text-green-700">व्यवसाय दर्ता सिफारिस।</h3>
+                                <p class="text-gray-600">यो व्यवसाय दर्ता सिफारिस फारमको सामग्री हो।</p>
+                            </div>
+                            <div id="tab-birth-verification" class="hidden">
+                                <h3 class="text-2xl font-bold mb-4 text-green-700">Birth verification।</h3>
+                                <p class="text-gray-600">यो जन्म प्रमाणीकरण फारमको सामग्री हो।</p>
+                            </div>
+                            <div id="tab-income-verification" class="hidden">
+                                <h3 class="text-2xl font-bold mb-4 text-green-700">income source verification</h3>
+                                <p class="text-gray-600">यो आय स्रोत प्रमाणीकरण फारमको सामग्री हो।</p>
+                            </div>
+                            <div id="tab-tamsuk" class="hidden">
+                                <h3 class="text-2xl font-bold mb-4 text-green-700">कपाली तमसुक तयार गर्नुहोस।</h3>
+                                <p class="text-gray-600">यो कपाली तमसुक तयार गर्ने फारमको सामग्री हो।</p>
+                            </div>
+                            <div id="tab-certificate" class="hidden">
+                                <h3 class="text-2xl font-bold mb-4 text-green-700">Certificate</h3>
+                                <p class="text-gray-600">यो प्रमाणपत्र फारमको सामग्री हो।</p>
+                            </div>
+                            <div id="tab-id-card" class="hidden">
+                                <h3 class="text-2xl font-bold mb-4 text-green-700">Id Card</h3>
+                                <p class="text-gray-600">यो परिचय पत्र फारमको सामग्री हो।</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Login Modal -->
         <div id="loginModal" class="modal hidden">
             <div class="modal-content">
@@ -693,19 +786,7 @@
             </div>
         </div>
     </main>
-<h2 class="text-3xl font-bold mb-6 text-gray-800">विभिन्न निवेदन तथा पत्र तयार गर्न यहाँ जानु होस</h2>
-                <div class="flex flex-wrap justify-center gap-4">
-                               <a href="renew.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>सामाजिक सुरक्षा भत्ता नविकरणको निवेदन। </a>
-                    <a href="letter.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>लगतकट्टा पछी बैँकलाई लेख्ने पत्र। </a>
-                    <a href="letter1.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>खाताको रकम उपलब्ध गराउनका लागी बैँकलाई लेख्ने पत्र। </a>
-                   
-                    <a href="application.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>दरखास्त आवेदन।  </a>
-                    <a href="sif.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>व्यवसाय दर्ता सिफारिस। </a>
-                    <a href="birth.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>Birth verification। </a>                    
-                    <a href="ver.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>income source verification </a>
-                     <a href="tamsuk.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>कपाली तमसुक तयार गर्नुहोस। </a>
-                    <a href="Certificate.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>Certificate</a>
-                     <a href="id.html" class="flex items-center"><i class="fas fa-envelope mr-2 text-blue-600"></i>Id Card</a>
+
     <!-- Footer (Copied from index.html for consistency) -->
     <footer class="footer py-2">
         <div class="container mx-auto px-4">
@@ -823,6 +904,7 @@
             showSpinner();
             removeTextHighlights(); // Clear general text highlights
             removeNavHighlights(); // Clear nav/dropdown highlights
+            removeTabHighlights(); // Clear tab highlights
 
             if (!query) {
                 hideSpinner();
@@ -912,11 +994,26 @@
                     }
                 });
             }
-
+            
+            // 3. Highlight Tab Buttons based on search terms
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                const searchTerms = button.dataset.searchTerms;
+                if (searchTerms && searchTerms.match(regex)) {
+                    button.classList.add('tab-button-highlight');
+                } else {
+                    button.classList.remove('tab-button-highlight');
+                }
+            });
 
             setTimeout(() => {
                 hideSpinner();
             }, 50); // Small delay to show spinner
+        }
+        
+        // Function to remove tab button highlights
+        function removeTabHighlights() {
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('tab-button-highlight'));
         }
 
         // Function to clear search and highlights
@@ -924,6 +1021,7 @@
             searchInput.value = '';
             removeTextHighlights();
             removeNavHighlights(); // Clear nav and dropdown highlights
+            removeTabHighlights(); // Clear tab highlights
             // Also remove highlights from social media section
             document.querySelectorAll('main .page-section .flex.flex-wrap .highlight').forEach(el => el.classList.remove('highlight'));
             clearSearchIcon.classList.add('hidden');
@@ -956,6 +1054,7 @@
                 clearSearchIcon.classList.add('hidden');
                 removeTextHighlights(); // Also remove highlights when input is cleared manually
                 removeNavHighlights(); // Clear nav and dropdown highlights when input is cleared
+                removeTabHighlights(); // Clear tab highlights when input is cleared
                 // Also remove highlights from social media section when input is cleared
                 document.querySelectorAll('main .page-section .flex.flex-wrap .highlight').forEach(el => el.classList.remove('highlight'));
             }
@@ -1270,6 +1369,51 @@
                 button.addEventListener('click', () => {
                     const newTheme = button.getAttribute('data-mode');
                     setTheme(newTheme);
+                });
+            });
+        });
+
+        // ==========================================
+        //  Tab Functionality
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const applicationSectionTitle = document.getElementById('applicationSectionTitle');
+            const applicationContent = document.getElementById('applicationContent');
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('#tab-content > div');
+
+            // Initially hide all content except the placeholder
+            tabContents.forEach(content => {
+                if (content.id !== 'tab-placeholder') {
+                    content.classList.add('hidden');
+                }
+            });
+
+            // Toggle function for the main content section
+            applicationSectionTitle.addEventListener('click', () => {
+                applicationContent.classList.toggle('hidden');
+                applicationSectionTitle.classList.toggle('collapsed');
+            });
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Get the target tab from the data-tab attribute
+                    const targetTabId = button.getAttribute('data-tab');
+
+                    // Deactivate all buttons and hide all content
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+
+                    // Activate the clicked button and show the corresponding content
+                    button.classList.add('active');
+                    const targetContent = document.getElementById(targetTabId);
+                    if (targetContent) {
+                        targetContent.classList.remove('hidden');
+                    }
                 });
             });
         });
