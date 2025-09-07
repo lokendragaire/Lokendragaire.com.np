@@ -176,7 +176,7 @@
                 </div>
                 <div>
                     <label for="officeAddress" class="block text-sm font-medium text-gray-700">Office Address (e.g., Kandebas, Baglung):</label>
-                    <input type="text" id="officeAddress" name="officeAddress" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Kandebas, Baglung">
+                    <input type="text" id="officeAddress" name="officeAddress" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="">
                 </div>
                 <div>
                     <label for="fiscalYear" class="block text-sm font-medium text-gray-700">Fiscal Year:</label>
@@ -221,18 +221,7 @@
                 </div>
                 <div>
                     <label for="wardChairpersonName" class="block text-sm font-medium text-gray-700">Ward Chairperson's Name:</label>
-                    <input type="text" id="wardChairpersonName" name="wardChairpersonName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="e.g., Tej Prasad Sapkota">
-                </div>
-                <div class="buttons-container mt-8 flex justify-center space-x-4">
-                    <button type="button" id="previewBtn" class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        Preview
-                    </button>
-                    <button type="button" id="backToFormBtn" class="px-6 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" style="display: none;">
-                        Back to Form
-                    </button>
-                    <button type="button" id="printBtn" class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" style="display: none;">
-                        Print
-                    </button>
+                    <input type="text" id="wardChairpersonName" name="wardChairpersonName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="">
                 </div>
             </form>
         </div>
@@ -251,9 +240,9 @@
                             <p class="red-text">Gandaki Province, Nepal</p>
                         </div>
                         <div class="flex-1 text-right">
-                            <p>Website: <span class="dotted-line-bottom">galkotmun.gov.np</span></p>
-                            <p>Email: <span class="dotted-line-bottom">galkot8k@gmail.com</span></p>
-                            <p>Phone No.: <span class="dotted-line-bottom">+९७७-९८५७६२१११४</span></p>
+                            <p>           <span class="dotted-line-bottom">                    </span></p>
+                            <p>      <span class="dotted-line-bottom"><a href="/cdn-cgi/l/                 " class="__cf_email__" data-cfemail="4126202d2a2e35792a01262c20282d6f222e2c">                     </a></span></p>
+                            <p>         <span class="dotted-line-bottom">                </span></p>
                         </div>
                     </div>
                     <div class="flex justify-between mt-4">
@@ -328,13 +317,13 @@
                     <div class="mt-4 text-justify">
                         <p id="previewExchangeRateNote"></p>
                     </div>
-                    <div class="mt-10 signature-container">
-                        <div class="signature-line-box text-right">
+                    <div class="mt-10 text-right">
+                        <div class="inline-block text-center">
                             <span class="signature-line" style="width: 100%;"></span>
                             <br>
                             <span class="font-bold">Ward Chairperson</span>
+                            <p id="previewWardChairpersonName"></p>
                         </div>
-                        <p id="previewWardChairpersonName" class="text-right"></p>
                     </div>
                 </div>
             </div>
@@ -352,7 +341,7 @@
         </div>
     </div>
     
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         document.addEventListener('DOMContentLoaded', function() {
             const formSection = document.getElementById('formSection');
             const previewSection = document.getElementById('previewSection');
@@ -421,34 +410,34 @@
             addIncomeSourceRow();
 
             // Optional: Auto-populate with sample data from the image for demonstration
-            document.querySelectorAll('.source-input')[0].value = 'Income from Pension (Ex-Indian Army)';
-            document.querySelectorAll('.earned-by-input')[0].value = 'Mr. Yam Bahadur Khatri';
-            document.querySelectorAll('.amount-input')[0].value = '436248';
-            document.querySelectorAll('.remarks-input')[0].value = 'As per pension document';
+            document.querySelectorAll('.source-input')[0].value = '';
+            document.querySelectorAll('.earned-by-input')[0].value = '';
+            document.querySelectorAll('.amount-input')[0].value = '';
+            document.querySelectorAll('.remarks-input')[0].value = '';
             
-            document.querySelectorAll('.source-input')[1].value = 'Income from Employment (Employer RESTAURANTEE PIZZARIA CASA ALFARMA, LDA)';
-            document.querySelectorAll('.earned-by-input')[1].value = 'Mr. Yam Bahadur Khatri';
-            document.querySelectorAll('.amount-input')[1].value = '1801277.93';
-            document.querySelectorAll('.remarks-input')[1].value = 'As per salary certificate and salary slip';
+            document.querySelectorAll('.source-input')[1].value = '';
+            document.querySelectorAll('.earned-by-input')[1].value = '';
+            document.querySelectorAll('.amount-input')[1].value = '';
+            document.querySelectorAll('.remarks-input')[1].value = '';
 
-            document.querySelectorAll('.source-input')[2].value = 'Income from Land Lease Plot No. 1319';
-            document.querySelectorAll('.earned-by-input')[2].value = 'Mrs. Khima Khatri';
-            document.querySelectorAll('.amount-input')[2].value = '240000';
-            document.querySelectorAll('.remarks-input')[2].value = 'As per Land Lease Agreement';
+            document.querySelectorAll('.source-input')[2].value = '';
+            document.querySelectorAll('.earned-by-input')[2].value = '';
+            document.querySelectorAll('.amount-input')[2].value = '';
+            document.querySelectorAll('.remarks-input')[2].value = '';
 
-            document.getElementById('fiscalYear').value = '2082/083';
-            document.getElementById('refNo').value = '45';
-            document.getElementById('date').value = '6th August, 2025';
-            document.getElementById('applicantName').value = 'Arishma Khatri';
-            document.getElementById('fatherName').value = 'Mr. Yam Bahadur Khatri';
-            document.getElementById('motherName').value = 'Mrs. Khima Khatri';
-            document.getElementById('residenceAddress').value = 'Galkot Municipality, Ward No. 8, Baglung District, Gandaki Province, Nepal';
-            document.getElementById('fiscalYearEnglish').value = '2024/2025 A.D.';
-            document.getElementById('exchangeRate').value = '90.94';
-            document.getElementById('wardChairpersonName').value = 'Tej Prasad Sapkota';
+            document.getElementById('fiscalYear').value = '';
+            document.getElementById('refNo').value = '';
+            document.getElementById('date').value = '';
+            document.getElementById('applicantName').value = '';
+            document.getElementById('fatherName').value = '';
+            document.getElementById('motherName').value = '';
+            document.getElementById('residenceAddress').value = 'Galkot Municipality, Ward No. ......, Baglung District, Gandaki Province, Nepal';
+            document.getElementById('fiscalYearEnglish').value = ' A.D.';
+            document.getElementById('exchangeRate').value = '';
+            document.getElementById('wardChairpersonName').value = '';
             document.getElementById('municipalityName').value = 'Galkot Municipality';
-            document.getElementById('wardOfficeName').value = '8 No. Ward Office';
-            document.getElementById('officeAddress').value = 'Kandebas, Baglung';
+            document.getElementById('wardOfficeName').value = '';
+            document.getElementById('officeAddress').value = '';
 
 
             previewBtn.addEventListener('click', function() {
