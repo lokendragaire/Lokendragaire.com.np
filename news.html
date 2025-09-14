@@ -9,8 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Lato:wght@400;700;400italic;700italic&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- नेपाली पात्रोका लागि लाइब्रेरी -->
-    <script src="https://cdn.jsdelivr.net/npm/nepali-date-converter/dist/nepali-date.umd.js"></script>
     <style>
         :root {
             --bg-color: #FFFFFF;
@@ -147,13 +145,13 @@
                 <div class="date-display text-gray-600 text-sm mt-2 lg:mt-0">
                     <p id="currentDate"></p>
                 </div>
+                <!-- लगइन बटनलाई यहाँ सारिएको छ ताकि यो सधैं देखियोस् -->
+                <button id="loginButton" class="py-2 px-3 block text-blue-700 font-bold hover:bg-blue-100 rounded-md mt-2 lg:mt-0">
+                    <i class="fas fa-sign-in-alt mr-1"></i> लगइन
+                </button>
             </div>
 
-            <!-- Navbar Toggler for mobile -->
-            <button class="navbar-toggler lg:hidden focus:outline-none ml-4" type="button" onclick="toggleNavbar()">
-                <i class="fas fa-bars text-3xl text-gray-700"></i>
-            </button>
-
+            <!-- मुख्य नेभिगेसन लिंकहरू -->
             <div class="hidden lg:flex items-center w-auto" id="navbarResponsive"> 
                 <ul class="navbar-nav flex space-x-4 ml-auto"> 
                     <li><a class="nav-link py-2 px-3 block text-blue-700 font-bold hover:bg-blue-100 rounded-md" href="#" data-category="मुख्य पृष्ठ">मुख्य पृष्ठ</a></li>
@@ -164,11 +162,6 @@
                     <li><a class="nav-link py-2 px-3 block text-blue-700 font-bold hover:bg-blue-100 rounded-md" href="#" data-category="प्रविधि">प्रविधि</a></li>
                     <li><a class="nav-link py-2 px-3 block text-blue-700 font-bold hover:bg-blue-100 rounded-md" href="#" data-category="विचार">विचार</a></li>
                 </ul>
-                <div class="flex items-center ml-4">
-                    <button id="loginButton" class="py-2 px-3 block text-blue-700 font-bold hover:bg-blue-100 rounded-md">
-                        <i class="fas fa-sign-in-alt mr-1"></i> लगइन
-                    </button>
-                </div>
             </div>
         </div>
     </nav>
@@ -257,17 +250,13 @@
     
     <script>
         // तपाईंको Google Apps Script को URL यहाँ राख्नुहोस्।
-        const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwY4e945c7x-rY0X8M7d2l9d45e5a6f7-g8h9i0j1k2l3m4n5o6p7q8r9s/exec'; // This is a placeholder, please replace with your actual URL.
+        const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyWeXiDEkUkViBT7ZZzZlGqI0OCxn68ymehKiTA0Co3mKioFQvv9izM9bDNOUfzw_kowA/exec'; // This is a placeholder, please replace with your actual URL.
         
         // मिति देखाउने कार्य
         function updateDate() {
             const today = new Date();
             const englishDate = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-            
-            const nepaliDate = new NepaliDate(today);
-            const nepaliFormatted = `${nepaliDate.getBSYear()} ${nepaliDate.getBSMonth()} ${nepaliDate.getBSDay()} गते`;
-
-            document.getElementById('currentDate').textContent = `${nepaliFormatted} / ${englishDate}`;
+            document.getElementById('currentDate').textContent = englishDate;
         }
         setInterval(updateDate, 1000);
         updateDate();
