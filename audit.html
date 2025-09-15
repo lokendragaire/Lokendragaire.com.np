@@ -1,0 +1,669 @@
+
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>वित्तीय प्रतिवेदन - Pandavkhani Kirana Store</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: justify;
+        }
+
+        .input-form-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .report-container {
+            display: none;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            box-sizing: border-box;
+        }
+
+        /* Print-specific styles */
+        @media print {
+            .input-form-container, .print-section, .add-item-btn, .item-select, .other-input {
+                display: none;
+            }
+            .report-container {
+                display: block;
+                box-shadow: none;
+            }
+            body {
+                background: #fff;
+            }
+            .page {
+                page-break-after: always;
+                margin: 0;
+                padding: 10mm;
+            }
+            .page-7 {
+                 page-break-after: avoid;
+            }
+            input[type="text"], input[type="number"] {
+                border: none !important;
+                background-color: transparent !important;
+                padding: 0 !important;
+            }
+            .data-input-cell {
+                width: 150px;
+                display: block;
+            }
+            .signature-row {
+                justify-content: space-around !important;
+            }
+            .printed-value {
+                display: block;
+            }
+        }
+
+        .report-title, .report-subtitle, .page-title {
+            text-align: center;
+        }
+
+        .financial-section table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .financial-section th, .financial-section td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .financial-section input[type="text"], .financial-section input[type="number"] {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+        }
+
+        .add-item-btn {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .item-select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .signature-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 50px;
+        }
+
+        .signature-block {
+            text-align: center;
+        }
+        .signature-placeholder {
+            height: 50px;
+            text-align: center;
+            font-size: 2em;
+            letter-spacing: 5px;
+            color: #333;
+        }
+
+        /* Specific styles for PPE table */
+        #ppe table {
+            font-size: 12px;
+        }
+
+        #ppe th {
+            text-align: center;
+            vertical-align: top;
+        }
+
+        #ppe .addition-header th {
+            font-weight: normal;
+        }
+
+        .sn-cell {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="input-form-container">
+        <h1>वित्तीय प्रतिवेदन जानकारी</h1>
+        <form id="report-details-form">
+            <div class="form-group">
+                <label for="firm-name">व्यवसायको नाम:</label>
+                <input type="text" id="firm-name" value="PANDAVKHANI KIRANA STORE">
+            </div>
+            <div class="form-group">
+                <label for="auditor-name">लेखापरीक्षकको नाम:</label>
+                <input type="text" id="auditor-name" value="Gopal B. Thapa & Associates">
+            </div>
+            <div class="form-group">
+                <label for="pan-no">प्यान नम्बर:</label>
+                <input type="text" id="pan-no" value="300393853">
+            </div>
+            <div class="form-group">
+                <label for="fiscal-year">आर्थिक वर्ष:</label>
+                <input type="text" id="fiscal-year" value="2080-81">
+            </div>
+            <button type="button" id="generate-report-btn">प्रतिवेदन तयार पार्नुहोस्</button>
+        </form>
+    </div>
+
+    <div class="report-container">
+
+        <div class="page page-1">
+            <header>
+                <div class="header-info">
+                    <h2 id="auditor-name-display">Gopal B. Thapa & Associates</h2>
+                    <p>Registered Auditor</p>
+                    <p>Pan no. <span id="pan-no-display">300393853</span></p>
+                    <p>COP No: 514</p>
+                </div>
+                <h1 class="report-title">INDEPENDENT AUDITORS' REPORT</h1>
+                <h2 class="report-subtitle">TO THE PROPRIETOR OF <span id="firm-name-display-1">PANDAVKHANI KIRANA STORE</span></h2>
+            </header>
+            <main>
+                <p>We have audited the accompanying financial statements of **<span id="firm-name-display-2">PANDAVKHANI KIRANA STORE</span>** which comprise the Balance Sheet as at 31st Ashad <span id="fiscal-year-display-1">2081</span> (15 July 2024) and the related Profit & Loss A/c, and Statement of Cash Flows for the year ended on that date.</p>
+                <p>Management's Responsibility for the financial Statements: Management of the Firm is responsible for the preparation and fair presentation of these financial Statements in accordance with Nepal Accounting Standards. This responsibility includes: designing, implementing and maintaining internal control relevant to the preparation and fair presentation of financial statements that are free from material misstatement, whether due to fraud or error, selecting and applying appropriate accounting policies, and making accounting estimates that are reasonable in the circumstances.</p>
+                <p>Auditor's Responsibility: Our responsibility is to express an opinion on these financial statements based on our audit. We conducted our audit in accordance with Nepal Standards on Auditing. Those Standards require that we comply with ethical requirements and plan and perform the audit to obtain reasonable assurance about whether the financial statements are free from material misstatement An audit involves performing procedures to obtain audit evidence about the amounts and disclosures in the financial statements. The procedures selected depend on our professional judgment, including the assessment of the risks of material misstatement of the financial statements, whether due to fraud or error.</p>
+                <div class="opinion-section">
+                    <h3>Our opinion:</h3>
+                    <p>In our opinion, the accompanying financial statements give a true and fair view, in all material respects the financial position of <span id="firm-name-display-3">PANDAVKHANI KIRANA STORE</span> at at Ashad 31, <span id="fiscal-year-display-2">2081</span>(July 15, 2024)and of the results of its financial performance and its cash flows for the year then ended and are in accordance with Nepal Accounting Standards.</p>
+                </div>
+            </main>
+            <footer>
+                <div class="signature-block">
+                    <p>For <span id="auditor-name-display-2">Gopal B. Thapa & Associates</span></p>
+                    <div class="signature-placeholder">................</div>
+                    <p>RA Gopal Bahadur Thapa</p>
+                    <p>Date: <span id="report-date">2081.10.02</span></p>
+                </div>
+            </footer>
+        </div>
+
+        <div class="page page-2">
+            <h2 class="page-title"><span id="firm-name-display-4">Pandavkhani Kirana Store</span><br>Balancesheet as on 31 Asadh 2081</h2>
+            <div class="financial-section" id="balance-sheet">
+                <h4>CAPITAL & LIABILITY</h4>
+                <table>
+                    <thead>
+                        <tr><th>Particulars</th><th>F.Y. 080/081</th></tr>
+                    </thead>
+                    <tbody id="capital-liability-body"></tbody>
+                </table>
+                <button class="add-item-btn" data-target="capital-liability-body">Add Other</button>
+                <br><br>
+                <h4>ASSETS</h4>
+                <table>
+                    <thead>
+                        <tr><th>Particulars</th><th>F.Y. 080/081</th></tr>
+                    </thead>
+                    <tbody id="assets-body"></tbody>
+                </table>
+                <button class="add-item-btn" data-target="assets-body">Add Other</button>
+            </div>
+        </div>
+
+        <div class="page page-3">
+            <h2 class="page-title"><span id="firm-name-display-5">Pandavkhani Kirana Store</span><br>Profit and Loss Account for the year ended 31st Asadh 2081</h2>
+            <div class="financial-section" id="profit-loss">
+                <table>
+                    <thead>
+                        <tr><th>Particulars</th><th>F.Y. 080/081</th></tr>
+                    </thead>
+                    <tbody id="pnl-body"></tbody>
+                </table>
+                <button class="add-item-btn" data-target="pnl-body">Add Other</button>
+            </div>
+        </div>
+
+        <div class="page page-4">
+            <h2 class="page-title"><span id="firm-name-display-6">Pandavkhani Kirana Store</span><br>Property, Plant & Equipment Details</h2>
+            <div class="financial-section" id="ppe">
+                <table>
+                    <thead>
+                        <tr>
+                            <th rowspan="2">S. N.</th>
+                            <th rowspan="2">Particular</th>
+                            <th rowspan="2">Rate</th>
+                            <th rowspan="2">Previous Year</th>
+                            <th colspan="3">Addition During the Year</th>
+                            <th rowspan="2">Sale/Disposal</th>
+                            <th rowspan="2">Depreciation Base for the year</th>
+                            <th rowspan="2">Depreciation for the year</th>
+                            <th rowspan="2">Net Book Value</th>
+                            <th rowspan="2">Unabsorbed Addition</th>
+                            <th rowspan="2">Closing Depn Base</th>
+                        </tr>
+                        <tr class="addition-header">
+                            <th>Up to Poush</th>
+                            <th>Magh to Chaitra</th>
+                            <th>Baisakh to Asadh</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ppe-body"></tbody>
+                </table>
+                <button class="add-item-btn" data-target="ppe-body">Add Other</button>
+            </div>
+        </div>
+
+        <div class="page page-5">
+            <h2 class="page-title"><span id="firm-name-display-7">Pandavkhani Kirana Store</span><br>Cash Flow Statement for the year ended 31st Asadh 2081</h2>
+            <div class="financial-section" id="cash-flow">
+                <table>
+                    <thead>
+                        <tr><th>Particulars</th><th>F.Y. 080/081</th></tr>
+                    </thead>
+                    <tbody id="cash-flow-body"></tbody>
+                </table>
+                <button class="add-item-btn" data-target="cash-flow-body">Add Other</button>
+            </div>
+        </div>
+        
+        <div class="page page-6">
+            <h2 class="page-title"><span id="firm-name-display-8">Pandavkhani Kirana Store</span><br>Schedules forming part of the Financial Statements</h2>
+            <div class="financial-section" id="schedules">
+                <p>Note: The following schedules are integral part of this financial statement.</p>
+                <div class="schedule-table">
+                    <h4>Schedule –1: Sales</h4>
+                    <table id="schedule-sales-table">
+                        <thead><tr><th>Particulars</th><th>Amount (NPR)</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                    <button class="add-item-btn" data-target="schedule-sales-table">Add Other</button>
+                </div>
+                <div class="schedule-table">
+                    <h4>Schedule –2: Purchases</h4>
+                    <table id="schedule-purchases-table">
+                        <thead><tr><th>Particulars</th><th>Amount (NPR)</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                    <button class="add-item-btn" data-target="schedule-purchases-table">Add Other</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="page page-7">
+            <h2 class="page-title"><span id="firm-name-display-9">Pandavkhani Kirana Store</span><br>Significant Accounting Policies & Notes to the Accounts</h2>
+            <div class="financial-section">
+                <div id="notes-content">
+                    <p>The Firm: <span id="firm-name-display-10">Pandavkhani Kirana Store</span> registered business deals in groceries items.</p>
+                    <p>Significant Accounting Policies:</p>
+                    <p>a. Accounting Conventions: The financial statements are prepared under the historical cost conventions on an accrual concept unless otherwise stated and are in accordance with Nepal Accounting Standards and others as applicable laws prevalent in Nepal.</p>
+                    <p>b. Use of Estimates: The preparation of financial statements in conformity with generally accepted accounting principles requires estimates and assumptions to be made that affect the reported amounts of assets and liabilities and disclosure of contingent liabilities on the date of the financial statements and the reported amounts of revenues and expenses during the reporting period. Differences between actual results and estimates are recognized in the periods in which the results are known / materialized.</p>
+                    <p>c. Going Concern: The financial statements are prepared on the assumption that the proprietorship firm is a going concern.</p>
+                    <p>d. Comparative Information: The accounting policies have been consistently applied by the proprietorship firm and are consistent with those used in the previous year.</p>
+                    <p>e. Revenue Recognition: Revenue is recognized to the extent that it is probable that the economic benefits will flow to the proprietorship firm and the revenue & associated costs incurred or to be incurred can be reliably measured. Revenue is also recognized when significant risks and rewards of ownership has transferred to the buyers.</p>
+                    <p>Notes to the Accounts:</p>
+                    <p id="fixed-assets-note">**1. Fixed Assets:** Fixed assets are valued at cost of purchases plus the expenses which are incidental to such purchases. Depreciation on fixed assets is provided at diminishing balance value method at the rates prescribed by the Income Tax. The rates of depreciation applied is 25% on Furniture.</p>
+                    <p id="cash-note">**2. Cash and Cash Equivalent:** Cash and cash equivalent comprise of cash balances and deposits in banks in Nepalese currency. The positive cash flow indicates a strong liquidity position.</p>
+                    <p id="debtors-note">**3. Sundry Debtors and other Receivables:** The amounts recoverable from sundry debtors are stated at book value and all outstanding balances are considered good. Other receivables classified under loans and advances are stated at book value.</p>
+                    <p id="tax-note">**4. Income Taxes:** Provision for current tax is made with reference to profit for the financial year based on the provisions of Income Tax Act, 2058. A positive net profit for the year indicates a potential tax liability.</p>
+                    <p id="sales-note">**5. Sales:** Sales are recognised on rendering service to the party & are accounted for at net of value added tax.</p>
+                    <p>6. The presentation currency for the Financial statement is Nepalese Rupees (NPR).</p>
+                </div>
+            </div>
+            <footer>
+                <div class="signature-row">
+                    <div class="signature-block">
+                        <p>Proprietor</p>
+                        <div class="signature-placeholder">................</div>
+                    </div>
+                    <div class="signature-block">
+                        <p>For <span id="auditor-name-display-footer">Gopal B. Thapa & Associates</span></p>
+                        <div class="signature-placeholder">................</div>
+                        <p>RA Gopal Bahadur Thapa</p>
+                        <p>Registered Auditor</p>
+                        <p>Firm No. 6049</p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <div class="print-section">
+            <button onclick="window.print()">प्रिन्ट गर्नुहोस्</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reportDetailsForm = document.getElementById('report-details-form');
+            const generateReportBtn = document.getElementById('generate-report-btn');
+            const inputFormContainer = document.querySelector('.input-form-container');
+            const reportContainer = document.querySelector('.report-container');
+
+            const firmNameDisplay = document.querySelectorAll('[id^="firm-name-display-"]');
+            const auditorNameDisplay = document.querySelectorAll('[id^="auditor-name-display"]');
+            const panNoDisplay = document.getElementById('pan-no-display');
+            const fiscalYearDisplay = document.querySelectorAll('[id^="fiscal-year-display-"]');
+            const auditorNameDisplayFooter = document.getElementById('auditor-name-display-footer');
+
+            // Pre-defined financial data for a professional look
+            const financialData = {
+                'capital-liability-body': [
+                    { name: "Proprietor's Capital", amount: 500000.00 },
+                    { name: "Reserve & Surplus", amount: 839613.20 }
+                ],
+                'assets-body': [
+                    { name: "Fixed Assets (Net)", amount: 121575.00 },
+                    { name: "Closing Stock", amount: 1006004.00 },
+                    { name: "Sundry Debtors", amount: 128463.00 },
+                    { name: "Cash & Bank Balances", amount: 350790.00 }
+                ],
+                'pnl-body': [
+                    { name: "Revenue from Operation", amount: 3907390.00 },
+                    { name: "Cost of Sales", amount: 2129169.00 },
+                    { name: "Office & Admn. Overheads", amount: 228680.00 },
+                    { name: "Depreciation", amount: 24315.00 },
+                    { name: "Income Tax Provision", amount: 213567.80 }
+                ],
+                'ppe-body': [
+                    { name: "Furniture & Fixture", rate: 25, previousYear: 0, upToPoush: 0, maghToChaitra: 145890.00, baisakhToAsadh: 0, saleDisposal: 0 }
+                ],
+                'cash-flow-body': [
+                    { name: "Net Profit / (Loss)", amount: 1311658.20 },
+                    { name: "Depreciation", amount: 24315.00 },
+                    { name: "Change in inventories", amount: -1006004.00 },
+                    { name: "Fixed Assets", amount: -145890.00 }
+                ],
+                'schedule-sales-table': [
+                    { name: "Local Sales", amount: 3907390.00 }
+                ],
+                'schedule-purchases-table': [
+                    { name: "Local Purchases", amount: 2129169.00 }
+                ]
+            };
+
+            const dropdownOptions = {
+                'capital-liability-body': ["Proprietor's Capital", "Reserve & Surplus", "Current Liabilities", "Secured Loans", "Unsecured Loans"],
+                'assets-body': ["Fixed Assets (Net)", "Closing Stock", "Sundry Debtors", "Cash & Bank Balances", "Prepaid Expenses", "Investments", "Current Assets"],
+                'pnl-body': ["Revenue from Operation", "Cost of Sales", "Office & Admn. Overheads", "Depreciation", "Income Tax Provision", "Other Income", "Interest Expenses"],
+                'ppe-body': ["Furniture & Fixture", "Machinery", "Office Equipment", "Vehicles", "Computer Equipment"],
+                'cash-flow-body': ["Net Profit / (Loss)", "Depreciation", "Change in inventories", "Change in debtors", "Change in creditors", "Fixed Assets", "Proceeds from Loans", "Repayment of Loans"],
+                'schedule-sales-table': ["Local Sales", "Sales Return", "Export Sales"],
+                'schedule-purchases-table': ["Local Purchases", "Import Purchases", "Purchases Return"]
+            };
+
+            // Function to populate tables with initial data or dropdowns
+            const populateTables = () => {
+                for (const section in financialData) {
+                    const tbody = document.getElementById(section);
+                    if (tbody) {
+                        tbody.innerHTML = '';
+                        financialData[section].forEach((item, index) => {
+                            const row = document.createElement('tr');
+                            if (section === 'ppe-body') {
+                                // PPE row with all columns
+                                const previousYear = item.previousYear || 0;
+                                const totalAddition = (item.upToPoush || 0) + (item.maghToChaitra || 0) + (item.baisakhToAsadh || 0);
+                                const depreciationBase = previousYear + totalAddition - (item.saleDisposal || 0);
+                                const depreciation = (depreciationBase * (item.rate / 100)) || 0;
+                                const netBookValue = depreciationBase - depreciation;
+                                const unabsorbedAddition = 0; // Assuming this is calculated elsewhere
+                                const closingDepnBase = netBookValue; // As per the example image
+
+                                row.innerHTML = `
+                                    <td class="sn-cell">${index + 1}</td>
+                                    <td><select class="item-select ppe-select"></select><input type="text" class="other-input" style="display:none;"></td>
+                                    <td><input type="number" value="${item.rate}"></td>
+                                    <td><input type="number" value="${item.previousYear}"></td>
+                                    <td><input type="number" value="${item.upToPoush}"></td>
+                                    <td><input type="number" value="${item.maghToChaitra}"></td>
+                                    <td><input type="number" value="${item.baisakhToAsadh}"></td>
+                                    <td><input type="number" value="${item.saleDisposal}"></td>
+                                    <td><input type="number" value="${depreciationBase.toFixed(2)}" readonly></td>
+                                    <td><input type="number" value="${depreciation.toFixed(2)}" readonly></td>
+                                    <td><input type="number" value="${netBookValue.toFixed(2)}" readonly></td>
+                                    <td><input type="number" value="${unabsorbedAddition.toFixed(2)}" readonly></td>
+                                    <td><input type="number" value="${closingDepnBase.toFixed(2)}" readonly></td>
+                                `;
+                            } else {
+                                // Standard rows for other tables
+                                row.innerHTML = `
+                                    <td><select class="item-select"></select><input type="text" class="other-input" style="display:none;"></td>
+                                    <td><input type="number" value="${item.amount}"></td>
+                                `;
+                            }
+                            tbody.appendChild(row);
+                            if(row.querySelector('.item-select')) {
+                                setupDropdowns(row.querySelector('.item-select'), section, item.name);
+                            }
+                        });
+                    }
+                }
+            };
+
+            // Function to set up dropdowns with options
+            const setupDropdowns = (selectElement, section, selectedValue) => {
+                const options = dropdownOptions[section];
+                options.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.textContent = option;
+                    selectElement.appendChild(opt);
+                });
+                const otherOpt = document.createElement('option');
+                otherOpt.value = 'Other';
+                otherOpt.textContent = 'Other';
+                selectElement.appendChild(otherOpt);
+                selectElement.value = selectedValue;
+            };
+
+            // Event listener for "Add Other" buttons
+            document.querySelectorAll('.add-item-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const tbodyId = e.target.getAttribute('data-target');
+                    const tbody = document.getElementById(tbodyId);
+                    const newRow = document.createElement('tr');
+                    
+                    if (tbodyId === 'ppe-body') {
+                        newRow.innerHTML = `
+                            <td class="sn-cell">${tbody.children.length + 1}</td>
+                            <td><select class="item-select ppe-select"></select><input type="text" class="other-input" style="display:none;"></td>
+                            <td><input type="number" placeholder="Rate (%)"></td>
+                            <td><input type="number" placeholder="Previous Year"></td>
+                            <td><input type="number" placeholder="Up to Poush"></td>
+                            <td><input type="number" placeholder="Magh to Chaitra"></td>
+                            <td><input type="number" placeholder="Baisakh to Asadh"></td>
+                            <td><input type="number" placeholder="Sale/Disposal"></td>
+                            <td><input type="number" readonly></td>
+                            <td><input type="number" readonly></td>
+                            <td><input type="number" readonly></td>
+                            <td><input type="number" readonly></td>
+                            <td><input type="number" readonly></td>
+                        `;
+                    } else {
+                        newRow.innerHTML = `
+                            <td><select class="item-select"></select><input type="text" class="other-input" style="display:none;"></td>
+                            <td><input type="number" placeholder="Amount"></td>
+                        `;
+                    }
+                    tbody.appendChild(newRow);
+                    if(newRow.querySelector('.item-select')) {
+                        setupDropdowns(newRow.querySelector('.item-select'), tbodyId);
+                    }
+                });
+            });
+
+            // Event listener for "Generate Report" button
+            generateReportBtn.addEventListener('click', () => {
+                // Hide the form and show the report
+                inputFormContainer.style.display = 'none';
+                reportContainer.style.display = 'block';
+
+                // Update dynamic text fields
+                const firmName = document.getElementById('firm-name').value;
+                const auditorName = document.getElementById('auditor-name').value;
+                const panNo = document.getElementById('pan-no').value;
+                const fiscalYear = document.getElementById('fiscal-year').value;
+
+                firmNameDisplay.forEach(element => element.textContent = firmName);
+                auditorNameDisplay.forEach(element => element.textContent = auditorName);
+                panNoDisplay.textContent = panNo;
+                fiscalYearDisplay.forEach(element => element.textContent = fiscalYear.split('-')[1]);
+                auditorNameDisplayFooter.textContent = auditorName;
+
+                populateTables();
+                updateDynamicNotes();
+            });
+
+            // Event listener for dropdown changes
+            document.addEventListener('change', (e) => {
+                const target = e.target;
+                if (target.classList.contains('item-select')) {
+                    const row = target.closest('tr');
+                    const otherInput = row.querySelector('.other-input');
+                    if (target.value === 'Other') {
+                        otherInput.style.display = 'block';
+                        otherInput.value = '';
+                        target.style.display = 'none';
+                    } else {
+                        otherInput.style.display = 'none';
+                        target.style.display = 'block';
+                    }
+                }
+            });
+
+            // Event listener for PPE calculation and dynamic notes update
+            document.addEventListener('input', (e) => {
+                const target = e.target;
+                const row = target.closest('tr');
+                if (row && target.closest('.financial-section').id === 'ppe') {
+                    // Check if the input is one of the calculation-triggering fields
+                    const cellIndex = target.closest('td').cellIndex;
+                    if (cellIndex >= 2 && cellIndex <= 7) {
+                        const rateInput = row.cells[2].querySelector('input');
+                        const prevYearInput = row.cells[3].querySelector('input');
+                        const upToPoushInput = row.cells[4].querySelector('input');
+                        const maghToChaitraInput = row.cells[5].querySelector('input');
+                        const baisakhToAsadhInput = row.cells[6].querySelector('input');
+                        const disposalInput = row.cells[7].querySelector('input');
+                        const depBaseOutput = row.cells[8].querySelector('input');
+                        const depForYearOutput = row.cells[9].querySelector('input');
+                        const netBookValueOutput = row.cells[10].querySelector('input');
+                        const closingDepnBaseOutput = row.cells[12].querySelector('input');
+
+                        const rate = parseFloat(rateInput.value) || 0;
+                        const prevYear = parseFloat(prevYearInput.value) || 0;
+                        const upToPoush = parseFloat(upToPoushInput.value) || 0;
+                        const maghToChaitra = parseFloat(maghToChaitraInput.value) || 0;
+                        const baisakhToAsadh = parseFloat(baisakhToAsadhInput.value) || 0;
+                        const disposal = parseFloat(disposalInput.value) || 0;
+
+                        const totalAddition = upToPoush + maghToChaitra + baisakhToAsadh;
+                        const depreciationBase = prevYear + totalAddition - disposal;
+                        const depreciation = (depreciationBase * (rate / 100));
+                        const netBookValue = depreciationBase - depreciation;
+                        
+                        depBaseOutput.value = depreciationBase.toFixed(2);
+                        depForYearOutput.value = depreciation.toFixed(2);
+                        netBookValueOutput.value = netBookValue.toFixed(2);
+                        closingDepnBaseOutput.value = netBookValue.toFixed(2);
+                        updateDynamicNotes();
+                    }
+                } else if (target.type === 'number') {
+                    updateDynamicNotes();
+                }
+            });
+
+            const updateDynamicNotes = () => {
+                const pnlBody = document.getElementById('pnl-body');
+                let netProfit = 0;
+                pnlBody.querySelectorAll('tr').forEach(row => {
+                    const select = row.querySelector('.item-select');
+                    const otherInput = row.querySelector('.other-input');
+                    const item = select.value === 'Other' ? otherInput.value : select.value;
+                    const amount = parseFloat(row.querySelector('input').value) || 0;
+                    if (['Revenue from Operation', 'Other Income'].includes(item)) {
+                        netProfit += amount;
+                    } else if (['Cost of Sales', 'Office & Admn. Overheads', 'Depreciation', 'Income Tax Provision', 'Interest Expenses'].includes(item)) {
+                        netProfit -= amount;
+                    }
+                });
+
+                const ppeBody = document.getElementById('ppe-body');
+                const ppeItems = Array.from(ppeBody.querySelectorAll('tr')).map(row => {
+                    const select = row.querySelector('.item-select');
+                    const otherInput = row.querySelector('.other-input');
+                    const name = select.value === 'Other' ? otherInput.value : select.value;
+                    const rate = parseFloat(row.querySelector('td:nth-child(3) input').value) || 0;
+                    return { name, rate };
+                });
+                
+                const cashBody = document.getElementById('cash-flow-body');
+                let cashBalance = 0;
+                cashBody.querySelectorAll('tr').forEach(row => {
+                    const amount = parseFloat(row.querySelector('input').value) || 0;
+                    cashBalance += amount;
+                });
+
+                // Update Notes based on calculations
+                let taxNote = document.getElementById('tax-note');
+                if (netProfit > 0) {
+                    taxNote.innerHTML = `**4. Income Taxes:** Provision for current tax is made with reference to the positive profit for the financial year based on the provisions of Income Tax Act, 2058.`;
+                } else {
+                    taxNote.innerHTML = `**4. Income Taxes:** As the firm has incurred a net loss, no provision for current tax has been made. The loss can be carried forward as per the Income Tax Act, 2058.`;
+                }
+
+                let fixedAssetsNote = document.getElementById('fixed-assets-note');
+                let fixedAssetsList = ppeItems.map(item => `${item.name} (${item.rate}%)`).join(', ');
+                fixedAssetsNote.innerHTML = `**1. Fixed Assets:** Fixed assets are valued at cost of purchases plus incidental expenses. Depreciation is provided at diminishing balance value method at the rates prescribed by the Income Tax Act. The rates of depreciation applied is ${fixedAssetsList}.`;
+                
+                let cashNote = document.getElementById('cash-note');
+                if (cashBalance > 0) {
+                    cashNote.innerHTML = `**2. Cash and Cash Equivalent:** Cash and cash equivalent comprise of cash balances and deposits in banks in Nepalese currency. The positive cash flow indicates a strong liquidity position.`;
+                } else {
+                     cashNote.innerHTML = `**2. Cash and Cash Equivalent:** Cash and cash equivalent comprise of cash balances and deposits in banks in Nepalese currency. The negative cash flow suggests that the firm's cash position requires monitoring.`;
+                }
+            };
+        });
+    </script>
+</body>
+</html>
