@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Family Tree</title>
+<title>वंशावली - Family Tree</title>
 
 <style>
     body {
         font-family: Arial, sans-serif;
         background: #f1f1f1;
         padding: 20px;
-        overflow-x: scroll;
+        overflow-x: auto;
+    }
+    #searchBox {
+        width: 300px;
+        height: 30px;
+        font-size: 16px;
+        padding: 5px;
+        margin-bottom: 20px;
     }
     .tree { white-space: nowrap; display: flex; align-items: center; }
     .node {
@@ -22,42 +29,76 @@
         margin: 20px;
     }
     .node img {
-        width: 80px; height: 80px; border-radius: 50%;
-        object-fit: cover; border: 3px solid #4a90e2;
+        width: 80px; height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #4a90e2;
     }
-    .line {
-        height: 2px; background: #4a90e2; flex: 1;
-    }
+    .line { height: 2px; background: #4a90e2; flex: 1; }
     .children { display: flex; justify-content: center; margin-top: 20px; }
-    #searchBox {
-        width: 300px; height: 30px; font-size: 18px;
-        padding: 6px; margin-bottom: 20px;
-    }
 </style>
-
 </head>
 <body>
 
-<h2>Family Tree Viewer (Google Sheet Based)</h2>
+<h2>वंशावली Viewer</h2>
 
-<input type="text" id="searchBox" placeholder="Search name...">
+<input type="text" id="searchBox" placeholder="नाम खोज्नुहोस्...">
 
 <div id="treeContainer"></div>
 
 <script>
+// -----------------------------
+// ⚡ Google Sheet CSV URL
+// -----------------------------
+const sheetURL = "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/export?format=csv";
+
+// -----------------------------
+// Persons object
+// -----------------------------
 let persons = {};
 
-google.script.run.withSuccessHandler(dataLoaded).loadFamilyData();
+// -----------------------------
+// Load CSV data from Google Sheet
+// -----------------------------
+async function loadData() {
+    const res = await fetch(sheetURL);
+    const csv = await res.text();
+    const rows = csv.split("\n").map(r => r.split(","));
+    const headers = rows[0];
 
-function dataLoaded(data) {
-    persons = data;
+    const id_i = headers.indexOf("id");
+    const name_i = headers.indexOf("name");
+    const dob_i = headers.indexOf("dob");
+    const photo_i = headers.indexOf("photo");
+    const father_i = headers.indexOf("father_id");
 
-    // root–father बिना भएको व्यक्ति
+    rows.slice(1).forEach(r => {
+        if (!r[id_i]) return;
+        persons[r[id_i]] = {
+            id: r[id_i],
+            name: r[name_i],
+            dob: r[dob_i],
+            photo: r[photo_i],
+            father_id: r[father_i],
+            children: []
+        };
+    });
+
+    // Build children array
+    Object.values(persons).forEach(p => {
+        if (p.father_id && persons[p.father_id]) {
+            persons[p.father_id].children.push(p);
+        }
+    });
+
+    // Render root
     const root = Object.values(persons).find(p => !p.father_id);
-
     renderTree(root);
 }
 
+// -----------------------------
+// Render a single node
+// -----------------------------
 function renderNode(p) {
     return `
         <div class="node">
@@ -68,6 +109,9 @@ function renderNode(p) {
     `;
 }
 
+// -----------------------------
+// Render tree recursively
+// -----------------------------
 function renderTree(person) {
     if (!person) return;
 
@@ -89,14 +133,19 @@ function renderTree(person) {
     document.getElementById("treeContainer").innerHTML = html;
 }
 
-// Search handler
+// -----------------------------
+// Search functionality
+// -----------------------------
 document.getElementById("searchBox").addEventListener("input", e => {
     const q = e.target.value.toLowerCase();
-    const found = Object.values(persons).find(
-        p => p.name.toLowerCase() === q
-    );
+    const found = Object.values(persons).find(p => p.name.toLowerCase() === q);
     if (found) renderTree(found);
 });
+
+// -----------------------------
+// Initial load
+// -----------------------------
+loadData();
 </script>
 
 </body>
