@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Family Tree</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f1f1f1;
+        padding: 20px;
+        overflow-x: scroll;
+    }
+    .tree { white-space: nowrap; display: flex; align-items: center; }
+    .node {
+        text-align: center;
+        padding: 10px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        display: inline-block;
+        margin: 20px;
+    }
+    .node img {
+        width: 80px; height: 80px; border-radius: 50%;
+        object-fit: cover; border: 3px solid #4a90e2;
+    }
+    .line {
+        height: 2px; background: #4a90e2; flex: 1;
+    }
+    .children { display: flex; justify-content: center; margin-top: 20px; }
+    #searchBox {
+        width: 300px; height: 30px; font-size: 18px;
+        padding: 6px; margin-bottom: 20px;
+    }
+</style>
+
+</head>
+<body>
+
+<h2>Family Tree Viewer (Google Sheet Based)</h2>
+
+<input type="text" id="searchBox" placeholder="Search name...">
+
+<div id="treeContainer"></div>
+
+<script>
+let persons = {};
+
+google.script.run.withSuccessHandler(dataLoaded).loadFamilyData();
+
+function dataLoaded(data) {
+    persons = data;
+
+    // root–father बिना भएको व्यक्ति
+    const root = Object.values(persons).find(p => !p.father_id);
+
+    renderTree(root);
+}
+
+function renderNode(p) {
+    return `
+        <div class="node">
+            <img src="${p.photo}">
+            <h4>${p.name}</h4>
+            <small>DOB: ${p.dob}</small>
+        </div>
+    `;
+}
+
+function renderTree(person) {
+    if (!person) return;
+
+    let html = `<div class="tree">${renderNode(person)}</div>`;
+
+    if (person.children.length > 0) {
+        html += `<div class="children">`;
+        person.children.forEach(child => {
+            html += `
+                <div>
+                    <div class="line"></div>
+                    ${renderNode(child)}
+                    ${child.children.length > 0 ? renderTree(child) : ""}
+                </div>`;
+        });
+        html += `</div>`;
+    }
+
+    document.getElementById("treeContainer").innerHTML = html;
+}
+
+// Search handler
+document.getElementById("searchBox").addEventListener("input", e => {
+    const q = e.target.value.toLowerCase();
+    const found = Object.values(persons).find(
+        p => p.name.toLowerCase() === q
+    );
+    if (found) renderTree(found);
+});
+</script>
+
+</body>
+</html>
