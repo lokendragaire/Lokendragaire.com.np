@@ -3,115 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <title>वंशावली - Family Tree</title>
-
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f1f1f1;
-        padding: 20px;
-        overflow-x: auto;
-    }
-    #searchBox {
-        width: 300px;
-        height: 30px;
-        font-size: 16px;
-        padding: 5px;
-        margin-bottom: 20px;
-    }
-    .tree { white-space: nowrap; display: flex; align-items: center; }
-    .node {
-        text-align: center;
-        padding: 10px;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        display: inline-block;
-        margin: 20px;
-    }
-    .node img {
-        width: 80px; height: 80px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 3px solid #4a90e2;
-    }
-    .line { height: 2px; background: #4a90e2; flex: 1; }
-    .children { display: flex; justify-content: center; margin-top: 20px; }
+    body { font-family: Arial; padding: 20px; overflow-x: auto; }
+    #searchBox { width: 300px; height: 30px; margin-bottom: 20px; padding:5px; font-size:16px; }
+    .tree { white-space: nowrap; display:flex; align-items:center; }
+    .node { text-align:center; padding:10px; background:white; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.2); display:inline-block; margin:20px; }
+    .node img { width:80px;height:80px;border-radius:50%;border:3px solid #4a90e2; object-fit:cover; }
+    .line { height:2px; background:#4a90e2; flex:1; }
+    .children { display:flex; justify-content:center; margin-top:20px; }
 </style>
 </head>
 <body>
 
 <h2>वंशावली Viewer</h2>
-
 <input type="text" id="searchBox" placeholder="नाम खोज्नुहोस्...">
-
 <div id="treeContainer"></div>
 
 <script>
-// -----------------------------
-// ⚡ Google Sheet CSV URL
-// -----------------------------
-const sheetURL = "https://script.google.com/macros/s/AKfycbxz20MSWWcYc4A220GfGOfGs_bz9fo2Knqc-9KGI6eVlqEaQKulDmoGbxeib4qr_9s94Q/exec";
-
-// -----------------------------
-// Persons object
-// -----------------------------
+// Google Sheet data fetch via Apps Script
 let persons = {};
 
-// -----------------------------
-// Load CSV data from Google Sheet
-// -----------------------------
-async function loadData() {
-    const res = await fetch(sheetURL);
-    const csv = await res.text();
-    const rows = csv.split("\n").map(r => r.split(","));
-    const headers = rows[0];
+google.script.run.withSuccessHandler(dataLoaded).loadFamilyData();
 
-    const id_i = headers.indexOf("id");
-    const name_i = headers.indexOf("name");
-    const dob_i = headers.indexOf("dob");
-    const photo_i = headers.indexOf("photo");
-    const father_i = headers.indexOf("father_id");
-
-    rows.slice(1).forEach(r => {
-        if (!r[id_i]) return;
-        persons[r[id_i]] = {
-            id: r[id_i],
-            name: r[name_i],
-            dob: r[dob_i],
-            photo: r[photo_i],
-            father_id: r[father_i],
-            children: []
-        };
-    });
-
-    // Build children array
-    Object.values(persons).forEach(p => {
-        if (p.father_id && persons[p.father_id]) {
-            persons[p.father_id].children.push(p);
-        }
-    });
-
-    // Render root
+function dataLoaded(data) {
+    persons = data;
     const root = Object.values(persons).find(p => !p.father_id);
     renderTree(root);
 }
 
-// -----------------------------
-// Render a single node
-// -----------------------------
 function renderNode(p) {
-    return `
-        <div class="node">
-            <img src="${p.photo}">
-            <h4>${p.name}</h4>
-            <small>DOB: ${p.dob}</small>
-        </div>
-    `;
+    return `<div class="node"><img src="${p.photo}"><h4>${p.name}</h4><small>DOB: ${p.dob}</small></div>`;
 }
 
-// -----------------------------
-// Render tree recursively
-// -----------------------------
 function renderTree(person) {
     if (!person) return;
 
@@ -120,12 +43,7 @@ function renderTree(person) {
     if (person.children.length > 0) {
         html += `<div class="children">`;
         person.children.forEach(child => {
-            html += `
-                <div>
-                    <div class="line"></div>
-                    ${renderNode(child)}
-                    ${child.children.length > 0 ? renderTree(child) : ""}
-                </div>`;
+            html += `<div><div class="line"></div>${renderNode(child)}${child.children.length>0 ? renderTree(child) : ""}</div>`;
         });
         html += `</div>`;
     }
@@ -133,19 +51,12 @@ function renderTree(person) {
     document.getElementById("treeContainer").innerHTML = html;
 }
 
-// -----------------------------
-// Search functionality
-// -----------------------------
+// Search by name
 document.getElementById("searchBox").addEventListener("input", e => {
     const q = e.target.value.toLowerCase();
     const found = Object.values(persons).find(p => p.name.toLowerCase() === q);
     if (found) renderTree(found);
 });
-
-// -----------------------------
-// Initial load
-// -----------------------------
-loadData();
 </script>
 
 </body>
