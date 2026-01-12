@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>गैरे बन्धु वंशावली ड्यासबोर्ड</title>
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.85); /* अक्षर स्पष्ट देखिन सिसा जस्तो ब्याकग्राउन्ड */
+            --primary: #1e3a5f;
+            --accent: #e67e22;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            /* ब्याकग्राउन्ड इमेज सेटिङ */
+            background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKLEgDvpZXhKburwYVv2npsdlmaNUYU1tG4PGap1NCCB-6Kx3FN3jC5RHajiHt5qZLCDusa0qRVB6iMAodXkqXVmIfkQEtNTM9fmK-lgY&s=10') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar - पारदर्शी र डार्क */
+        .sidebar {
+            width: 260px;
+            background: rgba(30, 58, 95, 0.9);
+            color: white;
+            position: fixed;
+            height: 100%;
+            padding: 20px 0;
+            backdrop-filter: blur(5px);
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            font-size: 20px;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 15px;
+            margin: 0 15px 20px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-menu li {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .sidebar-menu li:hover {
+            background: var(--accent);
+            padding-left: 35px;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            margin-left: 260px;
+            width: 100%;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Glass Card - फारम र विवरण बस्ने ठाउँ */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 850px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        h1, h2 { color: var(--primary); }
+
+        /* Form Styling */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.9);
+            font-size: 15px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 17px;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        .btn:hover { background: var(--accent); }
+
+        /* Tree Result Styling */
+        .tree-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .parent-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .box {
+            padding: 15px;
+            background: white;
+            border-left: 5px solid var(--accent);
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            min-width: 180px;
+        }
+
+        .id-label {
+            font-size: 11px;
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .connector { font-size: 24px; color: var(--primary); margin: 10px 0; }
+
+        .child-box {
+            display: inline-block;
+            background: #e1f5fe;
+            padding: 12px 25px;
+            border: 1px dashed var(--primary);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>गैरे बन्धु वंशावली</h2>
+        <ul class="sidebar-menu">
+            <li onclick="showPage('dashboard')">📊 ड्यासबोर्ड</li>
+            <li onclick="showPage('entry')">➕ नयाँ विवरण थप्नुहोस्</li>
+            <li onclick="showPage('search')">🔍 वंशावली खोज्नुहोस्</li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        
+        <div id="page-dashboard" class="page">
+            <div class="card" style="text-align: center;">
+                <h1>डिजिटल वंशावलीमा स्वागत छ</h1>
+                <p>तपाईँको कुलको विवरण सुरक्षित राख्न बायाँ मेनु प्रयोग गर्नुहोस्।</p>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKLEgDvpZXhKburwYVv2npsdlmaNUYU1tG4PGap1NCCB-6Kx3FN3jC5RHajiHt5qZLCDusa0qRVB6iMAodXkqXVmIfkQEtNTM9fmK-lgY&s=10" style="width: 100%; border-radius: 10px; margin-top: 20px; opacity: 0.8;">
+            </div>
+        </div>
+
+        <div id="page-entry" class="page" style="display:none;">
+            <div class="card">
+                <h2>नयाँ सदस्यको विवरण</h2>
+                <div class="form-grid">
+                    <input type="text" id="name" placeholder="नाम (Name)">
+                    <input type="text" id="dob" placeholder="जन्म मिति (BS YYYY/MM/DD)">
+                    <select id="gender">
+                        <option value="Male">पुरुष</option>
+                        <option value="Female">महिला</option>
+                    </select>
+                    <input type="text" id="bPlace" placeholder="जन्म स्थान">
+                    <input type="text" id="fName" placeholder="बुवाको नाम">
+                    <input type="text" id="mName" placeholder="आमाको नाम">
+                    <div style="grid-column: span 2;">
+                        <label>फोटो छान्नुहोस्:</label>
+                        <input type="file" id="photo" style="width: 100%;">
+                    </div>
+                </div>
+                <button class="btn" onclick="saveData()">विवरण सुरक्षित गर्नुहोस्</button>
+            </div>
+        </div>
+
+        <div id="page-search" class="page" style="display:none;">
+            <div class="card">
+                <h2>वंशावली खोज्नुहोस्</h2>
+                <input type="text" id="searchBox" placeholder="खोज्ने व्यक्तिको नाम लेख्नुहोस्..." onkeyup="findFamily()" style="width: 100%; font-size: 18px;">
+                
+                <div id="treeOutput" class="tree-container">
+                    </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let database = [];
+        let dadIDCount = 1;
+        let momIDCount = 1;
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            document.getElementById('page-' + pageId).style.display = 'block';
+        }
+
+        function saveData() {
+            const dadName = document.getElementById('fName').value;
+            const momName = document.getElementById('mName').value;
+
+            // Dad001, Mom001 Logic
+            const dID = "Dad" + String(dadIDCount++).padStart(3, '0');
+            const mID = "Mom" + String(momIDCount++).padStart(3, '0');
+
+            const entry = {
+                name: document.getElementById('name').value,
+                dob: document.getElementById('dob').value,
+                gender: document.getElementById('gender').value,
+                father: dadName,
+                mother: momName,
+                dadID: dID,
+                momID: mID,
+                place: document.getElementById('bPlace').value
+            };
+
+            database.push(entry);
+            alert("सफल भयो!\nबुवा कोड: " + dID + "\nआमा कोड: " + mID);
+            
+            // Reset fields
+            document.querySelectorAll('input').forEach(i => i.value = '');
+        }
+
+        function findFamily() {
+            const val = document.getElementById('searchBox').value.toLowerCase();
+            const out = document.getElementById('treeOutput');
+            out.innerHTML = "";
+
+            if(val.length < 2) return;
+
+            const results = database.filter(x => x.name.toLowerCase().includes(val));
+
+            results.forEach(res => {
+                out.innerHTML += `
+                    <div class="parent-row">
+                        <div class="box">
+                            <span class="id-label">${res.dadID}</span>
+                            <strong>बुवा: ${res.father}</strong>
+                        </div>
+                        <div class="box" style="border-left-color: #e91e63;">
+                            <span class="id-label">${res.momID}</span>
+                            <strong>आमा: ${res.mother}</strong>
+                        </div>
+                    </div>
+                    <div class="connector">⬇️</div>
+                    <div class="child-box" onclick="alert('जन्म मिति: ${res.dob}\\nस्थान: ${res.place}')">
+                        <strong>${res.name}</strong><br><small>${res.gender}</small>
+                    </div>
+                    <hr style="margin: 40px 0; border: 0; border-top: 1px solid #ccc;">
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
