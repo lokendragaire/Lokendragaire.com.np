@@ -51,7 +51,9 @@
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(rgba(26, 35, 126, 0.8), rgba(26, 35, 126, 0.8)), url('https://images.unsplash.com/photo-1582650625119-3a31f8fa2699?auto=format&fit=crop&q=80&w=1600');
+            background-image: linear-gradient(rgba(240, 242, 245, 0.8), rgba(240, 242, 245, 0.8)), 
+                              url('risi.avif'); 
+            background-attachment: fixed;
             background-size: cover;
             padding: 40px 20px;
             text-align: center;
@@ -187,7 +189,9 @@
 <body>
 
     <header>
-        <div class="logo-section"   <img src="risi.avif">
+       <div class="logo-section" onclick="showSection('home')">
+            <!-- लोगोको लागि यहाँ .png फोटोको नाम राख्नुहोस् -->
+            <img src="loooogo.png" alt="गैरे सेवा समाज " onerror="this.style.display='none'">
             <h1>गैरे सेवा समाज, नेपाल</h1>
         </div>
         <nav>
@@ -374,7 +378,7 @@
             </div>
             <div class="footer-col">
                 <h4>सम्पर्क</h4>
-                <p><i class="fas fa-map-marker-alt"></i> चितवन, नेपाल</p>
+                <p><i class="fas fa-map-marker-alt"></i> भरतपुर-९,शरदपुर, चितवन, नेपाल</p>
                 <p><i class="fas fa-phone"></i> +९७७-९८४५६३४९२६ </p>
             </div>
         </div>
