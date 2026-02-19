@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>गैरे सेवा समाज, नेपाल - डिजिटल पोर्टल</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a237e;
+            --secondary: #c5a059;
+            --accent: #d32f2f;
+            --bg-body: #f0f2f5;
+            --white: #ffffff;
+            --text-dark: #1f2937;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', sans-serif; }
+
+        body { background-color: var(--bg-body); color: var(--text-dark); line-height: 1.5; }
+
+        /* Navigation */
+        header {
+            background: var(--primary);
+            color: var(--white);
+            padding: 10px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .logo-section { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .logo-section i { font-size: 1.8rem; color: var(--secondary); }
+        .logo-section h1 { font-size: 1.3rem; font-weight: 700; }
+
+        nav ul { display: flex; list-style: none; gap: 15px; }
+        nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+        nav ul li a:hover, nav ul li a.active { background: rgba(255,255,255,0.1); color: var(--secondary); }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(26, 35, 126, 0.8), rgba(26, 35, 126, 0.8)), url('https://images.unsplash.com/photo-1582650625119-3a31f8fa2699?auto=format&fit=crop&q=80&w=1600');
+            background-size: cover;
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--white);
+        }
+        .hero.compact { padding: 15px 20px; }
+        .hero.compact .rishi-image { width: 60px; height: 60px; }
+        .hero.compact h2 { font-size: 1.2rem; }
+        .hero.compact p { display: none; }
+
+        .rishi-image {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            border: 4px solid var(--secondary);
+            margin: 0 auto 10px;
+            background: var(--white);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .rishi-image img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Dashboard Grid Layout */
+        .dashboard-container { max-width: 1300px; margin: 20px auto; padding: 0 20px; min-height: 70vh; }
+        
+        .committee-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            gap: 20px;
+        }
+
+        .side-col { background: transparent; }
+        .main-col { background: transparent; }
+
+        .content-card { 
+            background: var(--white); 
+            border-radius: 10px; 
+            padding: 15px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+        }
+
+        .section-title { 
+            font-size: 1.1rem; 
+            color: var(--primary); 
+            margin-bottom: 15px; 
+            border-bottom: 2px solid var(--bg-body); 
+            padding-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Compact Member List Item */
+        .compact-member {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .compact-member:last-child { border-bottom: none; }
+        .compact-member img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--secondary); }
+        .member-info h5 { font-size: 0.9rem; color: var(--primary); margin: 0; }
+        .member-info p { font-size: 0.75rem; margin: 0; color: #666; }
+        .member-info .phone { color: var(--accent); font-weight: bold; }
+
+        /* Tree Styles */
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: auto;
+        }
+        .tree-node {
+            border: 2px solid var(--primary);
+            padding: 10px;
+            border-radius: 8px;
+            background: var(--white);
+            min-width: 120px;
+            text-align: center;
+            position: relative;
+            margin: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .tree-node .node-title { font-size: 0.75rem; color: #666; display: block; }
+        .tree-node b { color: var(--primary); }
+        
+        .tree-connector { height: 20px; width: 2px; background: var(--secondary); }
+        .tree-children { display: flex; justify-content: center; width: 100%; position: relative; }
+
+        /* Tables */
+        .custom-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .custom-table thead { background: #f4f4f4; }
+        .custom-table th, .custom-table td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; }
+
+        /* Tabs for Membership & Branches */
+        .tab-btn-group { display: flex; gap: 5px; margin-bottom: 15px; background: #eee; padding: 5px; border-radius: 8px; }
+        .tab-btn { 
+            flex: 1; padding: 10px; border: none; cursor: pointer; 
+            border-radius: 5px; font-weight: 600; font-family: 'Mukta'; background: transparent;
+        }
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        /* Footer */
+        footer { background: #111827; color: #9ca3af; padding: 40px 5% 15px; margin-top: 40px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; }
+        .designer-credit {
+            text-align: center;
+            border-top: 1px solid #374151;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+        .designer-credit a { color: var(--secondary); text-decoration: none; font-weight: bold; }
+
+        .page-section { display: none; }
+        .page-section.active { display: block; animation: fadeIn 0.4s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        @media (max-width: 1100px) {
+            .committee-layout { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-section" onclick="showSection('home')">
+            <i class="fas fa-landmark"></i>
+            <h1>गैरे सेवा समाज, नेपाल</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a onclick="showSection('home')" id="nav-home">गृहपृष्ठ</a></li>
+                <li><a onclick="showSection('membership')" id="nav-membership">सदस्यता</a></li>
+                <li><a onclick="showSection('genealogy')" id="nav-genealogy">वंशावली</a></li>
+                <li><a onclick="showSection('branches')" id="nav-branches">शाखाहरु</a></li>
+                <li><a onclick="showSection('articles')" id="nav-articles">लेख-रचना</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" id="mainHero">
+        <div class="rishi-image">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRz-7p4pE89C35p6Nf3YqE9_uT271W5P7u88Q&s" alt="वशिष्ठ ऋषि">
+        </div>
+        <h2>श्री वशिष्ठ ऋषये नम:</h2>
+        <p>वशिष्ठ गोत्रिय गैरे बन्धुहरुको ऐतिहासिक वंशावली र सामाजिक एकताको केन्द्र</p>
+    </section>
+
+    <div class="dashboard-container">
+        
+        <!-- HOME SECTION -->
+        <div id="home" class="page-section active">
+            <div class="committee-layout">
+                <div class="side-col">
+                    <div class="content-card">
+                        <h3 class="section-title"><i class="fas fa-user-tie"></i> हालको कार्यसमिति</h3>
+                        <div id="currentCommitteeList"></div>
+                    </div>
+                    <div class="content-card">
+                        <h3 class="section-title"><i class="fas fa-history"></i> पूर्व कार्यसमिति</h3>
+                        <select id="prevAdhSelect" onchange="renderPreviousCommittee()" style="width:100%; padding:5px; margin-bottom:10px;">
+                            <option value="adh_5">पाँचौं महाधिवेशन</option>
+                            <option value="adh_4">चौथौं महाधिवेशन</option>
+                        </select>
+                        <div id="prevCommitteeList"></div>
+                    </div>
+                </div>
+
+                <div class="main-col">
+                    <div class="content-card">
+                        <h2 class="section-title"><i class="fas fa-bullhorn"></i> पछिल्लो समाचार र सूचना</h2>
+                        <div style="padding:10px; background:#fff8e1; border-left:4px solid var(--secondary); margin-bottom:15px;">
+                            <strong>डिजिटल वंशावली:</strong> वंशावली ट्याबमा गएर आफ्नो पुर्खाको विवरण ३ पुस्तासम्म हेर्न सकिनेछ।
+                        </div>
+                        <p>हाम्रो समाजको उद्देश्य छरिएर रहेका गैरे बन्धुहरूलाई एकसूत्रमा बाँध्नु हो।</p>
+                    </div>
+                    <div class="content-card">
+                        <h2 class="section-title"><i class="fas fa-images"></i> गतिविधि झलक</h2>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                            <img src="https://images.unsplash.com/photo-1544735047-493437f8f902?q=80&w=400" style="width:100%; border-radius:5px;" alt="Event">
+                            <img src="https://images.unsplash.com/photo-1540959733332-e94e270b4052?q=80&w=400" style="width:100%; border-radius:5px;" alt="Temple">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="side-col">
+                    <div class="content-card">
+                        <h3 class="section-title"><i class="fas fa-user-shield"></i> सल्लाहकार समिति</h3>
+                        <div id="advisorList"></div>
+                    </div>
+                    <div class="content-card" style="background:var(--primary); color:white;">
+                        <h3 style="font-size:1rem; margin-bottom:10px;">सम्पर्क</h3>
+                        <p style="font-size:0.85rem;"><i class="fas fa-phone"></i> +९७७-९८५७०XXXXX</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GENEALOGY SECTION -->
+        <div id="genealogy" class="page-section">
+            <div class="content-card">
+                <h2 class="section-title"><i class="fas fa-sitemap"></i> डिजिटल वंशावली (३ पुस्ते)</h2>
+                <div style="display:flex; gap:10px; margin-bottom:20px;">
+                    <input type="text" id="ancestorSearch" placeholder="पुर्खाको नाम (उदा: राम गैरे) वा कोड (उदा: G101) टाइप गर्नुहोस्" style="flex:1; padding:12px; border:1px solid #ccc; border-radius:8px;">
+                    <button onclick="searchGenealogy()" class="tab-btn active" style="flex:0 0 120px;">खोज्नुहोस्</button>
+                </div>
+                
+                <div id="treeArea" class="tree-container" style="display:none; background:#f9f9f9; border-radius:10px;">
+                    <!-- Grandfather -->
+                    <div class="tree-node" id="node-gf">
+                        <span class="node-title">बाजे (Grandfather)</span>
+                        <b id="name-gf"></b>
+                    </div>
+                    <div class="tree-connector"></div>
+                    <!-- Father -->
+                    <div class="tree-node" id="node-f">
+                        <span class="node-title">बुवा (Father)</span>
+                        <b id="name-f"></b>
+                    </div>
+                    <div class="tree-connector"></div>
+                    <!-- Children -->
+                    <div class="tree-children" id="node-children">
+                        <!-- Dynamic Children -->
+                    </div>
+                </div>
+                <div id="noTreeMsg" style="text-align:center; padding:20px; color:#999;">नाम वा कोड राखेर खोज्नुहोस् (नमुनाको लागि 'राम' वा 'G101' प्रयोग गर्नुहोस्)</div>
+            </div>
+        </div>
+
+        <!-- BRANCHES SECTION -->
+        <div id="branches" class="page-section">
+            <div class="committee-layout">
+                <div class="main-col">
+                    <div class="content-card">
+                        <h2 class="section-title"><i class="fas fa-globe"></i> अन्तर्राष्ट्रिय तथा क्षेत्रीय शाखाहरू</h2>
+                        <div class="tab-btn-group">
+                            <button class="tab-btn active" onclick="switchBranch('Japan')">जापान</button>
+                            <button class="tab-btn" onclick="switchBranch('UK')">युके (UK)</button>
+                            <button class="tab-btn" onclick="switchBranch('Australia')">अष्ट्रेलिया</button>
+                        </div>
+                        
+                        <div id="branchMainInfo">
+                            <h3 id="activeBranchTitle" style="color:var(--primary); margin-bottom:10px;">गैरे सेवा समाज, जापान</h3>
+                            <div class="tab-btn-group" style="background:#f0f0f0; width:fit-content;">
+                                <button class="tab-btn active" id="btn-curr-branch" onclick="renderBranchCommittee('current')">वर्तमान समिति</button>
+                                <button class="tab-btn" id="btn-prev-branch" onclick="renderBranchCommittee('previous')">पूर्व समिति</button>
+                            </div>
+                            
+                            <div style="overflow-x:auto;">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>अधिवेशन मिति</th>
+                                            <th>नाम</th>
+                                            <th>पद</th>
+                                            <th>ठेगाना</th>
+                                            <th>फोन</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="branchCommitteeTable"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="side-col">
+                    <div class="content-card" style="background:#e8eaf6;">
+                        <h3 class="section-title" style="border-bottom-color:#c5cae9;">शाखा सम्पर्क</h3>
+                        <p id="branchContactDetail" style="font-size:0.9rem; line-height:2;">
+                            <b>इमेल:</b> japan@gairesamaj.com<br>
+                            <b>वेब:</b> jp.gairesamaj.com
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MEMBERSHIP SECTION (Unchanged Structure) -->
+        <div id="membership" class="page-section">
+            <div class="committee-layout" style="grid-template-columns: 1fr 350px;">
+                <div class="main-col">
+                    <div class="content-card">
+                        <h2 class="section-title"><i class="fas fa-address-book"></i> सदस्यता विवरण</h2>
+                        <div class="tab-btn-group">
+                            <button class="tab-btn active" onclick="switchMemberTab('ajivan')">आजीवन सदस्य</button>
+                            <button class="tab-btn" onclick="switchMemberTab('sadharan')">साधारण सदस्य</button>
+                        </div>
+                        <input type="text" id="memberSearch" onkeyup="filterMembers()" placeholder="खोज्नुहोस्..." style="width:100%; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:5px;">
+                        <table class="custom-table"><tbody id="memberTableBody"></tbody></table>
+                    </div>
+                </div>
+                <div class="side-col">
+                    <div class="content-card">
+                        <h2 class="section-title"><i class="fas fa-file-signature"></i> अनलाइन फाराम</h2>
+                        <form onsubmit="event.preventDefault(); alert('फाराम सफल भयो।');">
+                            <input type="text" placeholder="पूरा नाम" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:5px;" required>
+                            <input type="tel" placeholder="फोन नं." style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:5px;" required>
+                            <button class="tab-btn active" style="width:100%;">बुझाउनुहोस्</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="articles" class="page-section">
+            <div class="content-card"><h2>लेख तथा रचनाहरू</h2><p>विवरण थपिँदैछ...</p></div>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>हाम्रो बारेमा</h4>
+                <p>गैरे सेवा समाज नेपाल एक छाता संगठन हो जसले वशिष्ठ गोत्रिय गैरे बन्धुहरूको हक हित र पुर्ख्यौली पहिचानको संरक्षणमा काम गर्दछ।</p>
+            </div>
+            <div class="footer-col">
+                <h4>सम्पर्क</h4>
+                <p><i class="fas fa-map-marker-alt"></i> काठमाडौं, नेपाल</p>
+                <p><i class="fas fa-phone"></i> +९७७-०१-XXXXXXX</p>
+            </div>
+        </div>
+        <div class="designer-credit">
+            © २०२६ गैरे सेवा समाज, नेपाल | सर्वाधिकार सुरक्षित। <br>
+            Design by: <a href="https://lokendragaire.com.np" target="_blank">Lokendra Gaire</a>
+        </div>
+    </footer>
+
+    <script>
+        // --- DATA ---
+        const centralCommittee = [
+            { name: 'श्री झम्पलाल गैरे', role: 'अध्यक्ष', phone: '९८५७०XXXXX', address: 'गुल्मी', img: 'https://i.pravatar.cc/100?u=1' },
+            { name: 'श्री सन्तोष गैरे', role: 'उपाध्यक्ष', phone: '९८४७०XXXXX', address: 'रुपन्देही', img: 'https://i.pravatar.cc/100?u=2' }
+        ];
+
+        const advisors = [
+            { name: 'श्री बुद्धिमान गैरे', role: 'मुख्य सल्लाहकार', phone: '९८५१०XXXXX', address: 'पाल्पा', img: 'https://i.pravatar.cc/100?u=a1' }
+        ];
+
+        // Sample Genealogy Data
+        const genealogyData = {
+            "ram": { code: "G101", gf: "स्व. दशरथ गैरे", f: "हरिप्रसाद गैरे", children: ["राम गैरे", "लक्ष्मण गैरे", "भरत गैरे"] },
+            "g101": { code: "G101", gf: "स्व. दशरथ गैरे", f: "हरिप्रसाद गैरे", children: ["राम गैरे", "लक्ष्मण गैरे", "भरत गैरे"] }
+        };
+
+        // Branch Data
+        const branches = {
+            "Japan": {
+                title: "गैरे सेवा समाज, जापान",
+                contact: "japan@gairesamaj.com | +81-XXXXX",
+                current: [
+                    { date: '२०८१/०२/१०', name: 'दिनेश गैरे', role: 'अध्यक्ष', address: 'टोकियो', phone: '+81-XXX' },
+                    { date: '२०८१/०२/१०', name: 'शर्मिला गैरे', role: 'सचिव', address: 'ओसाका', phone: '+81-XXX' }
+                ],
+                previous: [
+                    { date: '२०७८/०१/१५', name: 'कृष्ण गैरे', role: 'पूर्व अध्यक्ष', address: 'नागोया', phone: '-' }
+                ]
+            },
+            "UK": {
+                title: "गैरे सेवा समाज, युके",
+                contact: "uk@gairesamaj.com | +44-XXXXX",
+                current: [{ date: '२०८०/१०/०५', name: 'विमल गैरे', role: 'संयोजक', address: 'लन्डन', phone: '+44-XXX' }],
+                previous: []
+            },
+            "Australia": {
+                title: "गैरे सेवा समाज, अष्ट्रेलिया",
+                contact: "au@gairesamaj.com | +61-XXXXX",
+                current: [{ date: '२०८१/०१/२०', name: 'राजेश गैरे', role: 'अध्यक्ष', address: 'सिड्नी', phone: '+61-XXX' }],
+                previous: []
+            }
+        };
+
+        let activeBranchKey = "Japan";
+
+        // --- FUNCTIONS ---
+        function showSection(id) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('nav ul li a').forEach(a => a.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(document.getElementById('nav-'+id)) document.getElementById('nav-'+id).classList.add('active');
+            
+            const hero = document.getElementById('mainHero');
+            id === 'home' ? hero.classList.remove('compact') : hero.classList.add('compact');
+            window.scrollTo(0, 0);
+        }
+
+        // Genealogy Search
+        function searchGenealogy() {
+            const query = document.getElementById('ancestorSearch').value.toLowerCase().trim();
+            const result = genealogyData[query];
+            const treeArea = document.getElementById('treeArea');
+            const noMsg = document.getElementById('noTreeMsg');
+
+            if(result) {
+                noMsg.style.display = 'none';
+                treeArea.style.display = 'flex';
+                document.getElementById('name-gf').innerText = result.gf;
+                document.getElementById('name-f').innerText = result.f;
+                document.getElementById('node-children').innerHTML = result.children.map(c => `
+                    <div class="tree-node">
+                        <span class="node-title">नाति (Son)</span>
+                        <b>${c}</b>
+                    </div>
+                `).join('');
+            } else {
+                treeArea.style.display = 'none';
+                noMsg.style.display = 'block';
+                noMsg.innerText = "माफ गर्नुहोला, उक्त नाम वा कोड भेटिएन। नमुनाको लागि 'राम' टाइप गर्नुहोस्।";
+            }
+        }
+
+        // Branch Switching
+        function switchBranch(key) {
+            activeBranchKey = key;
+            document.querySelectorAll('#branches .tab-btn-group:first-child .tab-btn').forEach(b => {
+                b.classList.remove('active');
+                if(b.innerText.includes(key)) b.classList.add('active');
+            });
+            document.getElementById('activeBranchTitle').innerText = branches[key].title;
+            document.getElementById('branchContactDetail').innerHTML = `<b>सम्पर्क:</b> ${branches[key].contact}`;
+            renderBranchCommittee('current');
+        }
+
+        function renderBranchCommittee(type) {
+            const data = branches[activeBranchKey][type];
+            const tbody = document.getElementById('branchCommitteeTable');
+            
+            // UI Toggle
+            document.getElementById('btn-curr-branch').classList.toggle('active', type === 'current');
+            document.getElementById('btn-prev-branch').classList.toggle('active', type === 'previous');
+
+            if(data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">विवरण उपलब्ध छैन।</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map(m => `
+                <tr>
+                    <td>${m.date}</td>
+                    <td><b>${m.name}</b></td>
+                    <td>${m.role}</td>
+                    <td>${m.address}</td>
+                    <td style="color:var(--accent); font-weight:bold;">${m.phone}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Helper Renderers
+        function renderList(data, id) {
+            document.getElementById(id).innerHTML = data.map(m => `
+                <div class="compact-member">
+                    <img src="${m.img}" alt="${m.name}">
+                    <div class="member-info">
+                        <h5>${m.name}</h5>
+                        <p>${m.role} | ${m.address}</p>
+                        <p class="phone">${m.phone}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Init
+        window.onload = () => {
+            renderList(centralCommittee, 'currentCommitteeList');
+            renderList(advisors, 'advisorList');
+            switchBranch('Japan');
+        };
+    </script>
+</body>
+</html>
