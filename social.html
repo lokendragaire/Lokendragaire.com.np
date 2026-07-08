@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media - Lokendra Gaire</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            transition: all 0.5s ease;
+        }
+        .heading-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .dark-mode { background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%); color: #e2e8f0; }
+        .day-mode { background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%); color: #1e2937; }
+        .comfort-mode { background: linear-gradient(135deg, #f1f5f9 0%, #fef3c7 100%); color: #334155; }
+    </style>
+</head>
+<body class="dark-mode min-h-screen">
+
+    <div class="max-w-4xl mx-auto px-6 py-20 text-center">
+        <h1 class="text-5xl font-bold heading-font mb-12">My Social Media</h1>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+            
+            <a href="https://www.youtube.com/@hamrogalkot9" target="_blank" 
+               class="btn-social group bg-red-600 hover:bg-red-700 p-8 rounded-3xl transition-all hover:scale-105 flex flex-col items-center">
+                <i class="fab fa-youtube text-5xl mb-4"></i>
+                <span class="font-semibold">YouTube</span>
+            </a>
+
+            <a href="https://www.facebook.com/lokendragaire7" target="_blank" 
+               class="btn-social group bg-blue-600 hover:bg-blue-700 p-8 rounded-3xl transition-all hover:scale-105 flex flex-col items-center">
+                <i class="fab fa-facebook-f text-5xl mb-4"></i>
+                <span class="font-semibold">Facebook</span>
+            </a>
+
+            <a href="https://www.tiktok.com/@mr.gairelokendra" target="_blank" 
+               class="btn-social group bg-black hover:bg-zinc-800 p-8 rounded-3xl transition-all hover:scale-105 flex flex-col items-center">
+                <i class="fab fa-tiktok text-5xl mb-4"></i>
+                <span class="font-semibold">TikTok</span>
+            </a>
+
+            <a href="https://www.linkedin.com/in/lokendra-gaire-70b1b1275/" target="_blank" 
+               class="btn-social group bg-blue-700 hover:bg-blue-800 p-8 rounded-3xl transition-all hover:scale-105 flex flex-col items-center">
+                <i class="fab fa-linkedin-in text-5xl mb-4"></i>
+                <span class="font-semibold">LinkedIn</span>
+            </a>
+
+            <a href="https://t.me/lokendragaire70" target="_blank" 
+               class="btn-social group bg-sky-500 hover:bg-sky-600 p-8 rounded-3xl transition-all hover:scale-105 flex flex-col items-center">
+                <i class="fab fa-telegram-plane text-5xl mb-4"></i>
+                <span class="font-semibold">Telegram</span>
+            </a>
+        </div>
+
+        <!-- Back Button -->
+        <div class="mt-16">
+            <a href="index.html" 
+               class="inline-flex items-center gap-3 px-8 py-4 bg-slate-700 hover:bg-slate-600 rounded-3xl transition-all hover:scale-105">
+                <i class="fas fa-arrow-left"></i>
+                <span class="font-semibold">Back to Home</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Mode Load from index.html
+        window.onload = function() {
+            const savedMode = localStorage.getItem('mode') || 'dark';
+            document.body.classList.add(savedMode + '-mode');
+        };
+    </script>
+</body>
+</html>
