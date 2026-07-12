@@ -235,6 +235,21 @@
             transition: padding-top 0.3s ease-in-out;
         }
 
+        /* Loading animation for location */
+        .pulse-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulse 1s ease-in-out infinite;
+            margin-left: 4px;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+        }
+
         @media (max-width: 640px) {
             .top-info-bar {
                 padding: 0.2rem 0.6rem;
@@ -295,6 +310,7 @@
         <div class="info-item">
             <span class="icon">📍</span>
             <span class="value accent-text" id="locationName">Detecting...</span>
+            <span class="pulse-dot" id="locationPulse"></span>
         </div>
 
         <div class="info-divider"></div>
@@ -329,7 +345,7 @@
             <div class="nav-links flex items-center gap-4 text-sm font-medium">
                 <a href="#" onclick="goHome()" class="flex items-center gap-1">🏠 Home</a>
                 <a href="About.html">About</a>
-                <a href="Portfolio.html">Personal Blog</a>
+                <a href="Portfolio.html">Portfolio</a>
                 <a href="slide.html">Gallery</a>
                 <a href="social.html">Social Media</a>
                 <a href="ram.html">Social engagement</a>
@@ -399,6 +415,7 @@
             const topBar = document.getElementById('topInfoBar');
             const navbar = document.getElementById('mainNav');
             const heroSection = document.getElementById('home');
+            const locationPulse = document.getElementById('locationPulse');
             let lastScrollTop = 0;
             let isHidden = false;
 
@@ -480,8 +497,7 @@
             });
 
             // ============================================================
-            //  AUTO UPDATE: LOCATION, TEMPERATURE, DAY, DATE, TIME, GREETING
-            //  Real-time update every second (FITIKKAI UPDATE)
+            //  LIVE LOCATION & TEMPERATURE - AUTO UPDATE (REAL-TIME)
             // ============================================================
 
             // --- Days of Week ---
@@ -496,50 +512,75 @@
                 return { text: 'Good Night', icon: '🌙' };
             }
 
-            // --- Fetch IP based location & temperature (REAL-TIME) ---
+            // --- Show loading state ---
+            function showLoading() {
+                locationPulse.style.display = 'inline-block';
+                document.getElementById('locationName').textContent = 'Updating...';
+            }
+
+            // --- Hide loading state ---
+            function hideLoading() {
+                locationPulse.style.display = 'none';
+            }
+
+            // --- Fetch IP based location & temperature (LIVE) ---
             function fetchIPLocation() {
-                // Primary API: ip-api.com (free, no API key needed)
-                fetch('https://ip-api.com/json/')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('ip-api.com failed');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.status === 'success') {
-                            const locationDisplay = data.city + ', ' + data.country;
-                            document.getElementById('locationName').textContent = locationDisplay;
-                            
-                            // Temperature from API (if available) or estimate
-                            let temp = data.temp ? Math.round(data.temp) : estimateTemperature(data.city, data.country);
-                            document.getElementById('temperature').textContent = temp + '°C';
-                        } else {
-                            throw new Error('ip-api.com returned error');
-                        }
-                    })
-                    .catch(() => {
-                        // Fallback to ipapi.co
-                        fetch('https://ipapi.co/json/')
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('ipapi.co failed');
+                // Show loading indicator
+                showLoading();
+
+                // Try multiple APIs
+                const apis = [
+                    'https://ip-api.com/json/',
+                    'https://ipapi.co/json/'
+                ];
+
+                let apiIndex = 0;
+
+                function tryNextApi() {
+                    if (apiIndex >= apis.length) {
+                        // All APIs failed
+                        document.getElementById('locationName').textContent = 'Kathmandu, Nepal';
+                        document.getElementById('temperature').textContent = '24°C';
+                        hideLoading();
+                        return;
+                    }
+
+                    fetch(apis[apiIndex])
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('API failed');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            let city, country, temp;
+
+                            if (apis[apiIndex].includes('ip-api.com')) {
+                                if (data.status === 'success') {
+                                    city = data.city || 'Unknown';
+                                    country = data.country || 'Nepal';
+                                    temp = data.temp ? Math.round(data.temp) : estimateTemperature(city, country);
+                                } else {
+                                    throw new Error('ip-api.com error');
                                 }
-                                return response.json();
-                            })
-                            .then(data => {
-                                const locationDisplay = data.city + ', ' + data.country_name;
-                                document.getElementById('locationName').textContent = locationDisplay;
-                                
-                                let temp = data.temperature ? Math.round(data.temperature) : estimateTemperature(data.city, data.country_name);
-                                document.getElementById('temperature').textContent = temp + '°C';
-                            })
-                            .catch(() => {
-                                // Final fallback
-                                document.getElementById('locationName').textContent = 'Kathmandu, Nepal';
-                                document.getElementById('temperature').textContent = '24°C';
-                            });
-                    });
+                            } else if (apis[apiIndex].includes('ipapi.co')) {
+                                city = data.city || 'Unknown';
+                                country = data.country_name || 'Nepal';
+                                temp = data.temperature ? Math.round(data.temperature) : estimateTemperature(city, country);
+                            }
+
+                            const locationDisplay = city + ', ' + country;
+                            document.getElementById('locationName').textContent = locationDisplay;
+                            document.getElementById('temperature').textContent = temp + '°C';
+                            hideLoading();
+                        })
+                        .catch(() => {
+                            apiIndex++;
+                            tryNextApi();
+                        });
+                }
+
+                tryNextApi();
             }
 
             // --- Estimate temperature based on location ---
@@ -563,7 +604,7 @@
                     };
                     return tempMap[city] || 22;
                 }
-                
+
                 // Other countries temperature map
                 const tempMap = {
                     'India': 28, 'USA': 22, 'UK': 15, 'Australia': 25,
@@ -575,7 +616,7 @@
                 return tempMap[country] || 22;
             }
 
-            // --- AUTO UPDATE: Update all display elements every second (FITIKKAI) ---
+            // --- AUTO UPDATE: Update all display elements every second ---
             function updateDisplay() {
                 const now = new Date();
 
@@ -605,17 +646,21 @@
             document.addEventListener('DOMContentLoaded', function() {
                 loadSavedMode();
 
+                // ============================================================
+                //  LIVE LOCATION & TEMPERATURE AUTO UPDATE
+                //  - हरेक ३० सेकेन्डमा Location Refresh
+                //  - हरेक १ सेकेन्डमा Time, Date, Day, Greeting Update
+                // ============================================================
+
                 // Fetch location & temperature immediately
                 fetchIPLocation();
 
                 // Initial display update
                 updateDisplay();
 
-                // ============================================================
-                //  FITIKKAI AUTO UPDATE - हरेक १ सेकेन्डमा सबै Update हुन्छ
-                // ============================================================
-                setInterval(updateDisplay, 1000);           // Day, Date, Time, Greeting - हरेक सेकेन्ड
-                setInterval(fetchIPLocation, 30000);        // Location, Temperature - हरेक ३० सेकेन्ड
+                // Set intervals for auto updates
+                setInterval(updateDisplay, 1000);           // Time, Date, Day, Greeting - हरेक सेकेन्ड
+                setInterval(fetchIPLocation, 30000);        // Location, Temperature - हरेक ३० सेकेन्ड (LIVE)
             });
 
         })();
