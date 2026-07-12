@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ne">
 <head>
@@ -37,6 +38,7 @@
             --accent: #ef4444;
             --accent-hover: #dc2626;
             --hero-overlay: rgba(15, 23, 42, 0.7);
+            --info-bg: #1e293b;
         }
 
         .day-mode {
@@ -52,6 +54,7 @@
             --accent: #ef4444;
             --accent-hover: #b91c1c;
             --hero-overlay: rgba(241, 249, 255, 0.5);
+            --info-bg: #ffffff;
         }
 
         .comfort-mode {
@@ -67,6 +70,7 @@
             --accent: #b45309;
             --accent-hover: #92400e;
             --hero-overlay: rgba(245, 239, 230, 0.6);
+            --info-bg: #faf6f0;
         }
 
         body {
@@ -112,12 +116,12 @@
 
         /* Mode toggle buttons */
         .mode-btn {
-            padding: 0.4rem 1rem;
+            padding: 0.3rem 0.8rem;
             border-radius: 40px;
             border: 1px solid var(--border-nav);
             background: transparent;
             color: var(--text-primary);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
             cursor: pointer;
             transition: 0.2s;
@@ -148,7 +152,60 @@
             color: var(--accent);
         }
 
-        /* Responsive tweaks */
+        /* ===== INFO BOX - Small & Compact ===== */
+        .info-box {
+            background: var(--info-bg);
+            border: 1px solid var(--border-nav);
+            border-radius: 16px;
+            padding: 0.5rem 1.2rem;
+            box-shadow: var(--shadow-color) 0px 4px 20px;
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.6rem 1.5rem;
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .info-item .icon {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        .info-item .value {
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: 'Space Grotesk', sans-serif;
+            white-space: nowrap;
+        }
+        .info-item .sub-value {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin-left: 0.2rem;
+            font-weight: 400;
+        }
+        .info-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--border-nav);
+            opacity: 0.3;
+        }
+
+        @media (max-width: 640px) {
+            .info-box {
+                padding: 0.4rem 0.8rem;
+                gap: 0.3rem 1rem;
+                justify-content: center;
+            }
+            .info-item .value {
+                font-size: 0.7rem;
+            }
+            .info-divider {
+                height: 18px;
+            }
+        }
+
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -160,14 +217,14 @@
 
     <!-- ====== NAVBAR ====== -->
     <nav class="navbar-custom fixed top-0 w-full z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between flex-wrap gap-3">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-red-500 rounded-2xl flex items-center justify-center text-white font-bold text-xl">LG</div>
-                <span class="text-2xl font-bold heading-font text-heading-custom">Lokendra Gaire</span>
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-red-500 rounded-xl flex items-center justify-center text-white font-bold text-lg">LG</div>
+                <span class="text-xl font-bold heading-font text-heading-custom">Lokendra Gaire</span>
             </div>
 
             <!-- Desktop Nav Links -->
-            <div class="nav-links flex items-center gap-6 text-sm font-medium">
+            <div class="nav-links flex items-center gap-4 text-sm font-medium">
                 <a href="#" onclick="goHome()" class="flex items-center gap-1">🏠 Home</a>
                 <a href="About.html">About</a>
                 <a href="Portfolio.html">Portfolio</a>
@@ -186,33 +243,101 @@
     </nav>
 
     <!-- ====== HERO ====== -->
-    <section id="home" class="min-h-screen flex items-center relative pt-24">
+    <section id="home" class="min-h-screen flex items-center relative pt-20">
         <!-- Background image with overlay -->
         <div class="absolute inset-0 bg-[url('https://picsum.photos/id/1015/2000/1200')] bg-cover bg-center">
             <div class="hero-overlay absolute inset-0"></div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10 py-10">
-            <div class="space-y-6">
-                <div class="text-red-500 tracking-widest text-sm font-semibold">GALKOT-2, BAGLUNG, NEPAL</div>
-                <h1 class="text-5xl md:text-7xl font-bold heading-font leading-tight text-heading-custom">
-                    Hi, I'm <span class="accent-text">Lokendra Gaire</span>
-                </h1>
-                <p class="text-3xl font-medium text-heading-custom">Digital Creator &amp; Tech Enthusiast</p>
-                <p class="max-w-md text-lg text-secondary-custom">Passionate about technology, social media management, creative design and community development.</p>
+        <div class="max-w-7xl mx-auto px-4 relative z-10 py-8 w-full">
+            <!-- Date/Time/Location Info Box - Top Right -->
+            <div class="flex justify-end mb-6">
+                <div class="info-box">
+                    <!-- AD Date -->
+                    <div class="info-item">
+                        <span class="icon">📅</span>
+                        <span class="value" id="adDate">Jul 12, 2026</span>
+                        <span class="sub-value">AD</span>
+                    </div>
 
-                <div class="flex flex-wrap gap-4 pt-2">
-                    <a href="tel:+9779869065252" class="px-8 py-4 btn-accent rounded-3xl font-semibold flex items-center gap-3 shadow-lg shadow-red-500/20">📞 Call Me</a>
-                    <a href="https://wa.me/+9779869065252" class="px-8 py-4 btn-outline rounded-3xl font-semibold">💬 WhatsApp</a>
-                    <a href="mailto:lokendragaireofficial@gmail.com" class="px-8 py-4 btn-outline rounded-3xl font-semibold">✉️ Gmail</a>
+                    <div class="info-divider"></div>
+
+                    <!-- BS Date -->
+                    <div class="info-item">
+                        <span class="icon">📅</span>
+                        <span class="value accent-text" id="bsDate">2083 Asar 28</span>
+                        <span class="sub-value">BS</span>
+                    </div>
+
+                    <div class="info-divider"></div>
+
+                    <!-- Time with Seconds -->
+                    <div class="info-item">
+                        <span class="icon">🕐</span>
+                        <span class="value" id="currentTime">11:18:45 AM</span>
+                    </div>
+
+                    <div class="info-divider"></div>
+
+                    <!-- Location (Real-time from IP) -->
+                    <div class="info-item">
+                        <span class="icon">📍</span>
+                        <span class="value accent-text" id="locationName">Kathmandu</span>
+                    </div>
+
+                    <div class="info-divider"></div>
+
+                    <!-- Temperature -->
+                    <div class="info-item">
+                        <span class="icon">🌡️</span>
+                        <span class="value" id="temperature">24°C</span>
+                    </div>
+
+                    <div class="info-divider"></div>
+
+                    <!-- Greeting -->
+                    <div class="info-item">
+                        <span class="value accent-text" id="greetingText">Good Morning</span>
+                        <span class="icon" id="greetingIcon">🌤️</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="flex justify-center">
-                <img src="brp.jpg" alt="Lokendra Gaire" class="profile-img rounded-3xl max-h-[520px] w-auto object-cover shadow-2xl">
+            <!-- Hero Content -->
+            <div class="grid md:grid-cols-2 gap-10 items-center">
+                <div class="space-y-5">
+                    <div class="text-red-500 tracking-widest text-xs font-semibold">GALKOT-2, BAGLUNG, NEPAL</div>
+                    <h1 class="text-4xl md:text-6xl font-bold heading-font leading-tight text-heading-custom">
+                        Hi, I'm <span class="accent-text">Lokendra Gaire</span>
+                    </h1>
+                    <p class="text-2xl font-medium text-heading-custom">Digital Creator &amp; Tech Enthusiast</p>
+                    <p class="max-w-md text-base text-secondary-custom">Passionate about technology, social media management, creative design and community development.</p>
+
+                    <div class="flex flex-wrap gap-3 pt-2">
+                        <a href="tel:+9779869065252" class="px-6 py-3 btn-accent rounded-2xl font-semibold flex items-center gap-2 text-sm shadow-lg shadow-red-500/20">📞 Call Me</a>
+                        <a href="https://wa.me/+9779869065252" class="px-6 py-3 btn-outline rounded-2xl font-semibold text-sm">💬 WhatsApp</a>
+                        <a href="mailto:lokendragaireofficial@gmail.com" class="px-6 py-3 btn-outline rounded-2xl font-semibold text-sm">✉️ Gmail</a>
+                    </div>
+                </div>
+
+                <div class="flex justify-center">
+                    <img src="brp.jpg" alt="Lokendra Gaire" class="profile-img rounded-2xl max-h-[400px] w-auto object-cover shadow-2xl">
+                </div>
             </div>
         </div>
     </section>
+
+    <!-- ====== FOOTER WITH COPYRIGHT ====== -->
+    <footer class="footer-custom py-4 px-4 text-center" style="background: var(--bg-nav); border-top: 1px solid var(--border-nav);">
+        <div class="max-w-7xl mx-auto">
+            <p class="text-sm text-secondary-custom">
+                Copyright © Lokendra Gaire 2024
+            </p>
+            <p class="text-xs text-secondary-custom opacity-60 mt-1">
+                Galkot-2, Baglung, Nepal | 📞 +977 9869065252 | 📧 lokendragaireofficial@gmail.com
+            </p>
+        </div>
+    </footer>
 
     <!-- ====== JAVASCRIPT ====== -->
     <script>
@@ -225,18 +350,15 @@
 
             // --- Set mode function ---
             function setMode(mode) {
-                // Remove all theme classes
                 body.classList.remove('day-mode', 'comfort-mode');
-                // 'dark-mode' is default via CSS (no class needed, but we keep it clean)
                 if (mode === 'dark') {
-                    body.style.background = ''; // let CSS handle
+                    body.style.background = '';
                 } else if (mode === 'day') {
                     body.classList.add('day-mode');
                 } else if (mode === 'comfort') {
                     body.classList.add('comfort-mode');
                 }
 
-                // Update active button style
                 modeBtns.forEach(btn => {
                     btn.classList.remove('active');
                     if (btn.getAttribute('data-mode') === mode) {
@@ -244,7 +366,6 @@
                     }
                 });
 
-                // Save to localStorage
                 localStorage.setItem('preferredMode', mode);
             }
 
@@ -254,7 +375,6 @@
                 if (saved && ['dark', 'day', 'comfort'].includes(saved)) {
                     setMode(saved);
                 } else {
-                    // default: dark
                     setMode('dark');
                 }
             }
@@ -264,25 +384,117 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             };
 
-            // --- Expose setMode globally for onclick ---
+            // --- Expose setMode globally ---
             window.setMode = setMode;
 
-            // --- Init on load ---
-            document.addEventListener('DOMContentLoaded', loadSavedMode);
+            // ============================================================
+            //  DATE, TIME, LOCATION, TEMP, GREETING - AUTO UPDATE
+            // ============================================================
+
+            // --- Nepali Months (English) ---
+            const nepaliMonths = ['Baisakh', 'Jestha', 'Asar', 'Shrawan', 'Bhadra', 'Ashwin', 'Kartik', 'Mangsir', 'Poush', 'Magh', 'Falgun', 'Chaitra'];
+
+            // --- Approximate Nepali Date (BS) ---
+            function getNepaliDate(gregDate) {
+                const year = gregDate.getFullYear() + 56;
+                const month = gregDate.getMonth();
+                let day = gregDate.getDate() + 15;
+                let bsMonth = month;
+                let bsDay = day;
+                if (bsDay > 30) {
+                    bsDay -= 30;
+                    bsMonth += 1;
+                }
+                if (bsMonth >= 12) {
+                    bsMonth -= 12;
+                }
+                return {
+                    year: year,
+                    month: nepaliMonths[bsMonth] || 'Asar',
+                    day: bsDay
+                };
+            }
+
+            // --- Location data (from IP) ---
+            let locationData = {
+                city: 'Kathmandu',
+                temp: 24,
+                region: 'Bagmati',
+                country: 'Nepal'
+            };
+
+            // --- Fetch location from IP ---
+            function fetchLocation() {
+                fetch('https://ipapi.co/json/')
+                    .then(response => response.json())
+                    .then(data => {
+                        locationData.city = data.city || 'Kathmandu';
+                        locationData.region = data.region || 'Bagmati';
+                        locationData.country = data.country_name || 'Nepal';
+                        locationData.temp = Math.round(data.temperature || 24);
+                        // Update location display
+                        document.getElementById('locationName').textContent = locationData.city;
+                        document.getElementById('temperature').textContent = `${locationData.temp}°C`;
+                    })
+                    .catch(() => {
+                        // Fallback
+                        document.getElementById('locationName').textContent = 'Kathmandu';
+                        document.getElementById('temperature').textContent = '24°C';
+                    });
+            }
+
+            // --- Get greeting based on time ---
+            function getGreeting() {
+                const hour = new Date().getHours();
+                if (hour >= 5 && hour < 12) return { text: 'Good Morning', icon: '🌤️' };
+                if (hour >= 12 && hour < 17) return { text: 'Good Afternoon', icon: '☀️' };
+                if (hour >= 17 && hour < 20) return { text: 'Good Evening', icon: '🌅' };
+                return { text: 'Good Night', icon: '🌙' };
+            }
+
+            // --- Update all display elements ---
+            function updateDisplay() {
+                const now = new Date();
+                
+                // AD Date: Jul 12, 2026
+                const adOptions = { month: 'short', day: 'numeric', year: 'numeric' };
+                const adDate = now.toLocaleDateString('en-US', adOptions);
+                document.getElementById('adDate').textContent = adDate;
+                
+                // BS Date: 2083 Asar 28
+                const nep = getNepaliDate(now);
+                const bsDate = `${nep.year} ${nep.month} ${nep.day}`;
+                document.getElementById('bsDate').textContent = bsDate;
+                
+                // Time with seconds: 11:18:45 AM
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+                const seconds = now.getSeconds();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const hours12 = hours % 12 || 12;
+                const timeStr = `${String(hours12).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} ${ampm}`;
+                document.getElementById('currentTime').textContent = timeStr;
+                
+                // Location (already set from fetch)
+                // Temperature (already set from fetch)
+                
+                // Greeting
+                const greeting = getGreeting();
+                document.getElementById('greetingText').textContent = greeting.text;
+                document.getElementById('greetingIcon').textContent = greeting.icon;
+            }
+
+            // --- Init ---
+            document.addEventListener('DOMContentLoaded', function() {
+                loadSavedMode();
+                fetchLocation();
+                updateDisplay();
+                // Update every second (for real-time clock)
+                setInterval(updateDisplay, 1000);
+            });
 
         })();
     </script>
-  <!-- ====== FOOTER WITH COPYRIGHT ====== -->
-    <footer class="footer-custom py-6 px-6 text-center">
-        <div class="max-w-7xl mx-auto">
-            <p class="text-sm text-secondary-custom">
-                Copyright © Lokendra Gaire 2024
-            </p>
-            <p class="text-xs text-secondary-custom opacity-60 mt-1">
-                Galkot-2, Baglung, Nepal | 📞 +977 9869065252 | 📧 lokendragaireofficial@gmail.com
-            </p>
-        </div>
-    </footer>
 
 </body>
 </html>
