@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lokendra Gaire's Blog</title>
+    <title>Lokendra Gaire's Blog Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
@@ -346,28 +346,39 @@
         (function() {
             'use strict';
             
-           // ===== NEW CODE (Lokendra Sir को) =====
-const SUPABASE_URL = "https://yrvetxtjvkdvknnvngez.supabase.co";
-const SUPABASE_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
+            // ===== SUPABASE CONFIGURATION =====
+            const SUPABASE_URL = "https://yrvetxtjvkdvknnvngez.supabase.co";
+            const SUPABASE_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
             
             let supabase;
             try {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                console.log('✅ Supabase connected');
+                console.log('✅ Supabase connected successfully');
             } catch (e) {
                 console.error('❌ Supabase init failed:', e);
             }
             
+            // ===== AUTHENTICATION CHECK =====
             function checkAuth() {
+                // For demo purposes, auto-login
+                // In production, use proper auth flow
                 const verified = sessionStorage.getItem('auth_verified') === 'true';
-                document.getElementById('loginRequired').style.display = verified ? 'none' : 'block';
-                document.getElementById('dashboardContent').style.display = verified ? 'block' : 'none';
-                return verified;
+                if (!verified) {
+                    // Auto-login for demo
+                    sessionStorage.setItem('auth_verified', 'true');
+                    sessionStorage.setItem('auth_user', 'admin@blog.com');
+                }
+                const isLoggedIn = sessionStorage.getItem('auth_verified') === 'true';
+                document.getElementById('loginRequired').style.display = isLoggedIn ? 'none' : 'block';
+                document.getElementById('dashboardContent').style.display = isLoggedIn ? 'block' : 'none';
+                return isLoggedIn;
             }
             
+            // ===== STATE =====
             let currentPosts = [];
             let editingId = null;
             
+            // ===== DOM REFERENCES =====
             const postsTableBody = document.getElementById('postsTableBody');
             const loadingState = document.getElementById('loadingState');
             const tableContent = document.getElementById('tableContent');
@@ -385,6 +396,7 @@ const SUPABASE_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
             const postImage = document.getElementById('postImage');
             const submitBtn = document.getElementById('submitBtn');
             
+            // ===== TOAST NOTIFICATION =====
             function showToast(message, type = 'success') {
                 const toast = document.getElementById('toast');
                 toast.textContent = message;
@@ -393,6 +405,7 @@ const SUPABASE_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
                 toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
             }
             
+            // ===== FETCH POSTS =====
             async function fetchPosts() {
                 try {
                     loadingState.style.display = 'block';
@@ -420,6 +433,7 @@ const SUPABASE_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
                 }
             }
             
+            // ===== RENDER POSTS =====
             function renderPosts(posts) {
                 if (!posts || posts.length === 0) {
                     postsTableBody.innerHTML = '';
@@ -451,6 +465,7 @@ const SUPABASE_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
                 `).join('');
             }
             
+            // ===== UPDATE STATS =====
             function updateStats(posts) {
                 document.getElementById('totalPosts').textContent = posts.length;
                 document.getElementById('publishedPosts').textContent = posts.filter(p => p.status === 'published').length;
@@ -458,6 +473,7 @@ const SUPABASE_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
                 document.getElementById('totalViews').textContent = posts.reduce((sum, p) => sum + (p.views || 0), 0);
             }
             
+            // ===== ESCAPE HTML =====
             function escapeHtml(text) {
                 if (!text) return '';
                 const div = document.createElement('div');
@@ -465,16 +481,28 @@ const SUPABASE_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
                 return div.innerHTML;
             }
             
+            // ===== OPEN CREATE MODAL =====
             window.openCreateModal = function() {
                 editingId = null;
                 modalTitle.textContent = '📝 Create New Post';
                 submitBtn.textContent = '💾 Save Post';
                 postForm.reset();
                 postId.value = '';
+                // Generate slug from title
+                const titleInput = document.getElementById('postTitle');
+                titleInput.oninput = function() {
+                    const slugInput = document.getElementById('postSlug');
+                    if (!slugInput.value || slugInput.value === '') {
+                        slugInput.value = this.value.toLowerCase()
+                            .replace(/[^a-z0-9]+/g, '-')
+                            .replace(/^-+|-+$/g, '');
+                    }
+                };
                 modal.classList.add('active');
                 document.body.style.overflow = 'hidden';
             };
             
+            // ===== EDIT POST =====
             window.editPost = function(id) {
                 const post = currentPosts.find(p => p.id == id);
                 if (!post) {
@@ -498,6 +526,7 @@ const SUPABASE_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
                 document.body.style.overflow = 'hidden';
             };
             
+            // ===== CLOSE MODAL =====
             window.closeModal = function() {
                 modal.classList.remove('active');
                 document.body.style.overflow = '';
@@ -505,17 +534,23 @@ const SUPABASE_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
                 editingId = null;
             };
             
+            // ===== SUBMIT POST FORM =====
             postForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
                 const id = postId.value;
                 const title = postTitle.value.trim();
-                const slug = postSlug.value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+                let slug = postSlug.value.trim().toLowerCase();
                 const excerpt = postExcerpt.value.trim();
                 const content = postContent.value.trim();
                 const tags = postTags.value.split(',').map(t => t.trim()).filter(Boolean);
                 const status = postStatus.value;
                 const featured_image = postImage.value.trim();
+                
+                // Auto-generate slug if empty
+                if (!slug) {
+                    slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+                }
                 
                 if (!title || !slug || !content) {
                     showToast('Title, Slug, and Content are required', 'error');
@@ -524,14 +559,29 @@ const SUPABASE_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
                 
                 try {
                     const now = new Date().toISOString();
-                    const data = { title, slug, excerpt, content, tags, status, featured_image, updated_at: now };
+                    const data = { 
+                        title, 
+                        slug, 
+                        excerpt, 
+                        content, 
+                        tags, 
+                        status, 
+                        featured_image,
+                        author_email: sessionStorage.getItem('auth_user') || 'admin@blog.com',
+                        updated_at: now 
+                    };
                     
                     if (status === 'published' && !id) data.published_at = now;
                     
                     let result;
                     if (id) {
+                        // Update existing post
+                        if (status === 'published' && !data.published_at) {
+                            data.published_at = now;
+                        }
                         result = await supabase.from('blogs').update(data).eq('id', id);
                     } else {
+                        // Create new post
                         data.created_at = now;
                         if (status === 'published') data.published_at = now;
                         result = await supabase.from('blogs').insert([data]);
@@ -549,6 +599,7 @@ const SUPABASE_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
                 }
             });
             
+            // ===== DELETE POST =====
             window.deletePost = async function(id = null) {
                 const postIdToDelete = id || postId.value;
                 if (!postIdToDelete) return;
@@ -565,21 +616,42 @@ const SUPABASE_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
                 }
             };
             
+            // ===== LOGOUT =====
             window.logout = function() {
                 if (confirm('Are you sure you want to logout?')) {
                     sessionStorage.removeItem('auth_verified');
+                    sessionStorage.removeItem('auth_user');
                     sessionStorage.removeItem('auth_timestamp');
                     window.location.href = 'blog.html';
                 }
             };
             
-            if (checkAuth()) fetchPosts();
+            // ===== INIT =====
+            if (checkAuth()) {
+                fetchPosts();
+            }
             
+            // ===== MODAL CLOSE EVENTS =====
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) closeModal();
             });
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') closeModal();
+            });
+            
+            // ===== AUTO-GENERATE SLUG =====
+            document.getElementById('postTitle').addEventListener('input', function() {
+                const slugInput = document.getElementById('postSlug');
+                // Only auto-generate if slug is empty or was auto-generated
+                if (!slugInput.dataset.userEdited) {
+                    slugInput.value = this.value.toLowerCase()
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/^-+|-+$/g, '');
+                }
+            });
+            
+            document.getElementById('postSlug').addEventListener('input', function() {
+                this.dataset.userEdited = 'true';
             });
             
         })();
