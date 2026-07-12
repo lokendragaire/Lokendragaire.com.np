@@ -1,973 +1,938 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ne">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Personal Blog · Admin Panel</title>
-  <!-- Supabase JS library -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Font Awesome 6 (free) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    }
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Lokendra Gaire | Digital Creator</title>
+    <meta name="description" content="Lokendra Gaire's social and community engagement." />
+    <meta name="keywords" content="Lokendra Gaire, social engagement, community, politics, Nepal" />
+    <link rel="canonical" href="https://lokendragaire.com.np/" />
+    <link rel="icon" type="image/x-icon" href="lok.ico" />
 
-    body {
-      background: #f6f9fc;
-      display: flex;
-      justify-content: center;
-      padding: 2rem 1rem;
-      min-height: 100vh;
-    }
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LPGL4SRW14"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
 
-    .app {
-      max-width: 1200px;
-      width: 100%;
-    }
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-LPGL4SRW14');
+    </script>
 
-    /* header / tabs */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    .brand i {
-      font-size: 2rem;
-      color: #2d7aff;
-      background: white;
-      padding: 0.5rem;
-      border-radius: 16px;
-      box-shadow: 0 8px 20px rgba(45, 122, 255, 0.15);
-    }
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
-    .brand h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      background: linear-gradient(145deg, #0b1e3a, #1d3b6e);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -0.5px;
-    }
+        * {
+            transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
 
-    .tab-bar {
-      display: flex;
-      gap: 0.5rem;
-      background: white;
-      padding: 0.3rem;
-      border-radius: 60px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-      border: 1px solid #eef2f6;
-    }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        .heading-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
 
-    .tab-btn {
-      background: transparent;
-      border: none;
-      padding: 0.6rem 1.6rem;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      color: #4a5b6e;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+        /* ----- THEMES ----- */
+        :root {
+            --bg-body: #0f172a;
+            --bg-nav: #0f172aee;
+            --border-nav: #334155;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-heading: #f1f5f9;
+            --card-bg: #1e293b;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --btn-hover: #334155;
+            --accent: #ef4444;
+            --accent-hover: #dc2626;
+            --hero-overlay: rgba(15, 23, 42, 0.7);
+            --info-bg: #1e293b;
+            --input-bg: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
 
-    .tab-btn i {
-      font-size: 1rem;
-    }
+        .day-mode {
+            --bg-body: #f1f9ff;
+            --bg-nav: #ffffffdd;
+            --border-nav: #d1d5db;
+            --text-primary: #1e2937;
+            --text-secondary: #475569;
+            --text-heading: #0f172a;
+            --card-bg: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --btn-hover: #e2e8f0;
+            --accent: #ef4444;
+            --accent-hover: #b91c1c;
+            --hero-overlay: rgba(241, 249, 255, 0.5);
+            --info-bg: #ffffff;
+            --input-bg: #f1f5f9;
+        }
 
-    .tab-btn.active {
-      background: #2d7aff;
-      color: white;
-      box-shadow: 0 4px 12px rgba(45, 122, 255, 0.3);
-    }
+        .comfort-mode {
+            --bg-body: #f5efe6;
+            --bg-nav: #f5efe6dd;
+            --border-nav: #d6cbb8;
+            --text-primary: #3d352e;
+            --text-secondary: #6b6258;
+            --text-heading: #2a231d;
+            --card-bg: #faf6f0;
+            --shadow-color: rgba(0, 0, 0, 0.06);
+            --btn-hover: #e5d9c8;
+            --accent: #b45309;
+            --accent-hover: #92400e;
+            --hero-overlay: rgba(245, 239, 230, 0.6);
+            --info-bg: #faf6f0;
+            --input-bg: #faf6f0;
+        }
 
-    .tab-btn:not(.active):hover {
-      background: #eef3fa;
-      color: #0b1e3a;
-    }
+        body {
+            background: var(--bg-body);
+            color: var(--text-primary);
+        }
 
-    .login-btn {
-      background: white;
-      border: 1px solid #dce3ec;
-      padding: 0.6rem 1.8rem;
-      border-radius: 40px;
-      font-weight: 600;
-      color: #1d3b6e;
-      cursor: pointer;
-      transition: 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-    }
+        /* Navbar */
+        .navbar-custom {
+            background: var(--bg-nav);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-nav);
+            position: fixed;
+            width: 100%;
+            z-index: 50;
+            top: 0;
+            transition: transform 0.3s ease-in-out, top 0.3s ease-in-out;
+        }
+        .navbar-custom a {
+            color: var(--text-primary);
+        }
+        .navbar-custom a:hover {
+            color: var(--accent);
+        }
 
-    .login-btn i {
-      color: #2d7aff;
-    }
+        /* Hero overlay */
+        .hero-overlay {
+            background: var(--hero-overlay);
+        }
 
-    .login-btn:hover {
-      background: #f0f5ff;
-      border-color: #2d7aff;
-    }
+        /* Buttons */
+        .btn-accent {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-accent:hover {
+            background: var(--accent-hover);
+        }
+        .btn-outline {
+            border: 2px solid var(--accent);
+            color: var(--text-primary);
+            background: transparent;
+        }
+        .btn-outline:hover {
+            background: var(--accent);
+            color: #fff;
+        }
 
-    .login-btn.logged {
-      background: #e6f0ff;
-      border-color: #2d7aff;
-    }
+        /* Mode toggle buttons */
+        .mode-btn {
+            padding: 0.3rem 0.8rem;
+            border-radius: 40px;
+            border: 1px solid var(--border-nav);
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .mode-btn:hover {
+            background: var(--btn-hover);
+        }
+        .mode-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
 
-    /* main content */
-    .content {
-      background: white;
-      border-radius: 32px;
-      padding: 2rem 2rem 2.5rem;
-      box-shadow: 0 20px 60px rgba(0,20,50,0.06);
-      border: 1px solid #eef2f6;
-      transition: 0.2s;
-    }
+        /* Profile image border */
+        .profile-img {
+            border: 4px solid var(--border-nav);
+            box-shadow: 0 20px 40px var(--shadow-color);
+        }
 
-    .tab-panel {
-      display: none;
-      animation: fade 0.25s ease;
-    }
+        /* Text colors */
+        .text-secondary-custom {
+            color: var(--text-secondary);
+        }
+        .text-heading-custom {
+            color: var(--text-heading);
+        }
+        .accent-text {
+            color: var(--accent);
+        }
 
-    .tab-panel.active {
-      display: block;
-    }
+        /* ===== TOP INFO BAR ===== */
+        .top-info-bar {
+            background: var(--info-bg);
+            border-bottom: 1px solid var(--border-nav);
+            padding: 0.3rem 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.8rem 1.5rem;
+            font-size: 0.75rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 51;
+            transition: transform 0.3s ease-in-out;
+            transform: translateY(0);
+        }
+        .top-info-bar.hidden-bar {
+            transform: translateY(-100%);
+        }
+        .top-info-bar .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .top-info-bar .info-item .icon {
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
+        .top-info-bar .info-item .value {
+            font-weight: 600;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .top-info-bar .info-divider {
+            width: 1px;
+            height: 16px;
+            background: var(--border-nav);
+            opacity: 0.3;
+        }
+        .top-info-bar .greeting-text {
+            font-weight: 600;
+        }
 
-    @keyframes fade {
-      from { opacity: 0.4; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+        /* Logo styles */
+        .logo-img {
+            height: 36px;
+            width: auto;
+            border-radius: 8px;
+        }
 
-    /* posts grid */
-    .post-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.8rem;
-      margin-top: 1.5rem;
-    }
+        /* Navbar - below top bar */
+        .navbar-custom {
+            top: 38px;
+        }
 
-    .post-card {
-      background: #fafcff;
-      border-radius: 24px;
-      padding: 1.6rem 1.5rem 1.5rem;
-      border: 1px solid #e6edf6;
-      transition: 0.2s;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.01);
-    }
+        section#home {
+            padding-top: 115px;
+            transition: padding-top 0.3s ease-in-out;
+        }
 
-    .post-card:hover {
-      border-color: #cbd9ec;
-      box-shadow: 0 12px 28px rgba(45, 122, 255, 0.06);
-    }
+        /* ===== BLOG SECTION ===== */
+        .blog-section {
+            background: var(--bg-body);
+            padding: 40px 0;
+            min-height: 100vh;
+        }
 
-    .post-card h3 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #0b1e3a;
-      margin-bottom: 0.4rem;
-      line-height: 1.3;
-    }
+        /* Blog Card */
+        .blog-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-nav);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-color);
+            margin-bottom: 24px;
+        }
+        .blog-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px var(--shadow-color);
+        }
 
-    .post-card .meta {
-      font-size: 0.8rem;
-      color: #6f7e94;
-      margin-bottom: 0.8rem;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
+        .blog-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
 
-    .post-card .meta i {
-      margin-right: 4px;
-      color: #8a9bb0;
-    }
+        .blog-card .blog-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
 
-    .post-card .excerpt {
-      color: #2c3f5a;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      margin: 0.5rem 0 1.2rem;
-      flex: 1;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
+        .blog-card .blog-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 8px;
+        }
 
-    .post-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 0.5rem;
-      flex-wrap: wrap;
-      border-top: 1px solid #e6edf6;
-      padding-top: 1rem;
-    }
+        .blog-card .blog-excerpt {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
 
-    .post-actions button {
-      background: transparent;
-      border: none;
-      padding: 0.3rem 0.9rem;
-      border-radius: 40px;
-      font-weight: 500;
-      font-size: 0.8rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: 0.15s;
-      border: 1px solid transparent;
-    }
+        .blog-card .blog-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
 
-    .post-actions .edit-btn {
-      color: #1d3b6e;
-      background: #eef4fa;
-    }
-    .post-actions .edit-btn:hover {
-      background: #dce6f2;
-    }
-    .post-actions .delete-btn {
-      color: #b13e4b;
-      background: #fdeeef;
-    }
-    .post-actions .delete-btn:hover {
-      background: #fcd9dd;
-    }
-    .post-actions .update-btn {
-      color: #1e7b4b;
-      background: #e4f3ec;
-    }
-    .post-actions .update-btn:hover {
-      background: #c9e9db;
-    }
+        .blog-card .blog-tags span {
+            background: rgba(239, 68, 68, 0.1);
+            padding: 2px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            color: var(--accent);
+        }
 
-    /* form */
-    .post-form {
-      background: #f7faff;
-      border-radius: 28px;
-      padding: 2rem 2rem 1.8rem;
-      margin-bottom: 2rem;
-      border: 1px solid #e2ecf9;
-    }
+        .blog-card .blog-status {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .blog-card .blog-status.published {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+        .blog-card .blog-status.draft {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+        .blog-card .blog-status.archived {
+            background: rgba(148, 163, 184, 0.2);
+            color: var(--text-secondary);
+        }
 
-    .post-form h2 {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #0b1e3a;
-      margin-bottom: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+        /* Blog Admin Controls */
+        .blog-admin-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-nav);
+            flex-wrap: wrap;
+        }
 
-    .post-form input, .post-form textarea {
-      width: 100%;
-      padding: 0.9rem 1.2rem;
-      border: 1px solid #dce6f2;
-      border-radius: 20px;
-      font-size: 0.95rem;
-      background: white;
-      margin-bottom: 1rem;
-      transition: 0.15s;
-    }
+        .blog-admin-controls button {
+            padding: 6px 16px;
+            min-height: 32px;
+            font-size: 0.75rem;
+            border-radius: 40px;
+            border: 1px solid var(--border-nav);
+            background: transparent;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: 0.2s;
+        }
 
-    .post-form input:focus, .post-form textarea:focus {
-      outline: none;
-      border-color: #2d7aff;
-      box-shadow: 0 0 0 4px rgba(45, 122, 255, 0.08);
-    }
+        .blog-admin-controls .edit-btn {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+        .blog-admin-controls .edit-btn:hover {
+            background: #3b82f6;
+            color: #fff;
+        }
 
-    .post-form textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
+        .blog-admin-controls .delete-btn {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        .blog-admin-controls .delete-btn:hover {
+            background: #ef4444;
+            color: #fff;
+        }
 
-    .form-row {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
+        .blog-admin-controls .status-btn {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: #f59e0b;
+            color: #f59e0b;
+        }
+        .blog-admin-controls .status-btn:hover {
+            background: #f59e0b;
+            color: #fff;
+        }
 
-    .form-row button {
-      background: #2d7aff;
-      border: none;
-      padding: 0.8rem 2.2rem;
-      border-radius: 40px;
-      font-weight: 600;
-      color: white;
-      cursor: pointer;
-      transition: 0.2s;
-      box-shadow: 0 4px 12px rgba(45, 122, 255, 0.2);
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-    }
+        /* Create Post Form */
+        .create-post-form {
+            background: var(--card-bg);
+            border: 1px solid var(--border-nav);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-color);
+        }
 
-    .form-row button:hover {
-      background: #1b5fd9;
-      box-shadow: 0 8px 18px rgba(45, 122, 255, 0.3);
-      transform: scale(1.01);
-    }
+        .create-post-form h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-heading);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    .form-row .cancel-btn {
-      background: #eef2f6;
-      color: #1d3b6e;
-      box-shadow: none;
-    }
-    .form-row .cancel-btn:hover {
-      background: #dce3ec;
-      transform: none;
-    }
+        .create-post-form .form-group {
+            margin-bottom: 16px;
+        }
 
-    .empty-state {
-      text-align: center;
-      color: #6f7e94;
-      padding: 3rem 0;
-    }
-    .empty-state i {
-      font-size: 3rem;
-      color: #cbd9ec;
-      margin-bottom: 1rem;
-    }
+        .create-post-form label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
 
-    /* auth modal */
-    .auth-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.2);
-      backdrop-filter: blur(6px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-      opacity: 0;
-      pointer-events: none;
-      transition: 0.2s;
-    }
-    .auth-modal.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .auth-box {
-      background: white;
-      padding: 2.5rem 2rem;
-      border-radius: 40px;
-      max-width: 420px;
-      width: 100%;
-      box-shadow: 0 40px 70px rgba(0,0,0,0.15);
-      transform: scale(0.96);
-      transition: 0.25s;
-    }
-    .auth-modal.open .auth-box {
-      transform: scale(1);
-    }
-    .auth-box h2 {
-      font-size: 1.6rem;
-      margin-bottom: 0.5rem;
-      color: #0b1e3a;
-    }
-    .auth-box .subtitle {
-      color: #6f7e94;
-      margin-bottom: 1.5rem;
-      font-size: 0.9rem;
-    }
-    .auth-box input {
-      width: 100%;
-      padding: 0.9rem 1.2rem;
-      border: 1px solid #dce6f2;
-      border-radius: 30px;
-      margin-bottom: 1rem;
-      font-size: 0.95rem;
-    }
-    .auth-box input:focus {
-      outline: none;
-      border-color: #2d7aff;
-      box-shadow: 0 0 0 4px rgba(45, 122, 255, 0.08);
-    }
-    .auth-box button {
-      width: 100%;
-      padding: 0.9rem;
-      background: #2d7aff;
-      border: none;
-      border-radius: 40px;
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.2s;
-      font-size: 1rem;
-    }
-    .auth-box button:hover {
-      background: #1b5fd9;
-    }
-    .auth-box .close-auth {
-      background: transparent;
-      color: #4a5b6e;
-      margin-top: 0.8rem;
-      font-weight: 500;
-    }
-    .auth-box .close-auth:hover {
-      background: #eef2f6;
-    }
-    .auth-box .toggle-mode {
-      background: transparent;
-      color: #2d7aff;
-      margin-top: 0.5rem;
-      font-weight: 500;
-      font-size: 0.9rem;
-    }
-    .auth-box .toggle-mode:hover {
-      background: transparent;
-      text-decoration: underline;
-    }
-    #authError {
-      color: #b13e4b;
-      margin-top: 10px;
-      font-size: 0.9rem;
-      text-align: center;
-    }
-    #authSuccess {
-      color: #1e7b4b;
-      margin-top: 10px;
-      font-size: 0.9rem;
-      text-align: center;
-    }
+        .create-post-form input,
+        .create-post-form textarea,
+        .create-post-form select {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-nav);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
 
-    /* loading spinner */
-    .loading {
-      text-align: center;
-      padding: 2rem;
-      color: #6f7e94;
-    }
-    .loading i {
-      font-size: 2rem;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
+        .create-post-form input:focus,
+        .create-post-form textarea:focus,
+        .create-post-form select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
 
-    /* responsive */
-    @media (max-width: 700px) {
-      .header { flex-direction: column; align-items: stretch; }
-      .tab-bar { border-radius: 30px; overflow-x: auto; }
-      .tab-btn { flex: 1; justify-content: center; padding: 0.6rem 0.8rem; font-size: 0.85rem; }
-      .content { padding: 1.5rem; }
-    }
-  </style>
+        .create-post-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .create-post-form .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .create-post-form .form-actions button {
+            flex: 1;
+            padding: 10px 20px;
+            border-radius: 40px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            min-width: 120px;
+        }
+
+        .create-post-form .form-actions .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .create-post-form .form-actions .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .create-post-form .form-actions .btn-secondary {
+            background: var(--btn-hover);
+            color: var(--text-primary);
+        }
+
+        /* Login Form for Blog */
+        .blog-login-form {
+            background: var(--card-bg);
+            border: 1px solid var(--border-nav);
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 420px;
+            margin: 40px auto;
+            text-align: center;
+            box-shadow: var(--shadow-color);
+        }
+
+        .blog-login-form h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 8px;
+        }
+
+        .blog-login-form p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .blog-login-form .form-group {
+            margin-bottom: 16px;
+        }
+
+        .blog-login-form input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-nav);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .blog-login-form input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .blog-login-form button {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .blog-login-form button:hover {
+            background: var(--accent-hover);
+        }
+
+        .blog-login-form .login-status {
+            margin-top: 12px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-nav);
+            box-shadow: var(--shadow-color);
+            z-index: 9999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            max-width: 400px;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .toast.success { border-left: 4px solid var(--success); }
+        .toast.error { border-left: 4px solid #ef4444; }
+        .toast.info { border-left: 4px solid var(--accent); }
+
+        /* Loading spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--border-nav);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Back button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: 1px solid var(--border-nav);
+        }
+        .back-btn:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* Admin toggle button */
+        .admin-toggle {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .admin-toggle:hover {
+            background: var(--accent-hover);
+            transform: scale(1.05);
+        }
+        .admin-toggle.logged-in {
+            background: var(--success);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .top-info-bar {
+                padding: 0.2rem 0.6rem;
+                gap: 0.3rem 0.8rem;
+                font-size: 0.6rem;
+                justify-content: center;
+            }
+            .top-info-bar .info-divider {
+                height: 12px;
+            }
+            .navbar-custom {
+                top: 32px;
+            }
+            section#home {
+                padding-top: 100px;
+            }
+            .logo-img {
+                height: 28px;
+            }
+            .blog-card img {
+                height: 150px;
+            }
+            .create-post-form .form-actions {
+                flex-direction: column;
+            }
+            .blog-login-form {
+                margin: 20px 16px;
+                padding: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="app" id="app">
 
-  <!-- header -->
-  <div class="header">
-    <div class="brand">
-      <i class="fas fa-pen-fancy"></i>
-      <h1>personal.blog</h1>
-    </div>
-    <div class="tab-bar">
-      <button class="tab-btn active" data-tab="personal"><i class="fas fa-user-edit"></i> Personal</button>
-      <button class="tab-btn" data-tab="all"><i class="fas fa-newspaper"></i> All posts</button>
-    </div>
-    <button class="login-btn" id="loginToggle"><i class="fas fa-key"></i> <span id="loginLabel">Login</span></button>
-  </div>
-
-  <!-- main content -->
-  <div class="content">
-    <!-- Personal tab (admin posts) -->
-    <div id="personalTab" class="tab-panel active">
-      <div class="post-form" id="postForm" style="display:none;">
-        <h2><i class="fas fa-feather-alt" style="color:#2d7aff;"></i> <span id="formTitle">Create new post</span></h2>
-        <input type="text" id="titleInput" placeholder="Post title" />
-        <textarea id="contentInput" placeholder="Write your post content..."></textarea>
-        <div class="form-row">
-          <button id="savePostBtn"><i class="fas fa-paper-plane"></i> Publish</button>
-          <button class="cancel-btn" id="cancelEditBtn" style="display:none;"><i class="fas fa-times"></i> Cancel</button>
+    <!-- ====== TOP INFO BAR ====== -->
+    <div class="top-info-bar" id="topInfoBar">
+        <div class="info-item">
+            <span class="icon">📆</span>
+            <span class="value accent-text" id="dayName">Sunday</span>
         </div>
-        <input type="hidden" id="editId" value="" />
-      </div>
-      <div id="personalPostsContainer">
-        <!-- dynamic posts will be injected -->
-      </div>
+        <div class="info-divider"></div>
+        <div class="info-item">
+            <span class="icon">📅</span>
+            <span class="value" id="adDate">Jul 12, 2026</span>
+        </div>
+        <div class="info-divider"></div>
+        <div class="info-item">
+            <span class="icon">🕐</span>
+            <span class="value" id="currentTime">11:18:45 AM</span>
+        </div>
+        <div class="info-divider"></div>
+        <div class="info-item">
+            <span class="icon">📍</span>
+            <span class="value accent-text" id="locationName">Kathmandu, Nepal</span>
+        </div>
+        <div class="info-divider"></div>
+        <div class="info-item">
+            <span class="icon">🌡️</span>
+            <span class="value" id="temperature">24°C</span>
+        </div>
+        <div class="info-divider"></div>
+        <div class="info-item">
+            <span class="greeting-text accent-text" id="greetingText">Good Morning</span>
+            <span class="icon" id="greetingIcon">🌤️</span>
+        </div>
     </div>
 
-    <!-- All posts tab (readonly) -->
-    <div id="allTab" class="tab-panel">
-      <div id="allPostsContainer"></div>
-    </div>
-  </div>
-
-  <!-- Auth Modal -->
-  <div class="auth-modal" id="authModal">
-    <div class="auth-box">
-      <h2><i class="fas fa-lock" style="color:#2d7aff; margin-right: 8px;"></i> <span id="authTitle">Login</span></h2>
-      <p class="subtitle" id="authSubtitle">Sign in with your Supabase account</p>
-      <input type="email" id="authEmail" placeholder="Email address" />
-      <input type="password" id="authPassword" placeholder="Password" />
-      <button id="authSubmitBtn"><i class="fas fa-sign-in-alt"></i> <span id="authBtnText">Sign In</span></button>
-      <button class="toggle-mode" id="toggleAuthMode">Don't have an account? Sign up</button>
-      <button class="close-auth" id="authCloseBtn">Cancel</button>
-      <div id="authError"></div>
-      <div id="authSuccess"></div>
-    </div>
-  </div>
-
-</div>
-
-<script>
-  (function() {
-    // ---------- SUPABASE CONFIG ----------
-    const SUPABASE_URL = 'https://sb_publishable-nDdWRyOR3CTow6X8E7JdEQ_K8PcFfk5.supabase.co'; 
-    const SUPABASE_ANON_KEY = '10fe1552cf22f407a11d14302f955f46ea1f9d93';
-
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    // ---------- STATE ----------
-    let currentUser = null;
-    let posts = [];
-    let editingId = null;
-    let isSignUp = false;
-
-    // DOM refs
-    const personalContainer = document.getElementById('personalPostsContainer');
-    const allContainer = document.getElementById('allPostsContainer');
-    const titleInput = document.getElementById('titleInput');
-    const contentInput = document.getElementById('contentInput');
-    const saveBtn = document.getElementById('savePostBtn');
-    const cancelBtn = document.getElementById('cancelEditBtn');
-    const formTitle = document.getElementById('formTitle');
-    const editIdHidden = document.getElementById('editId');
-    const loginBtn = document.getElementById('loginToggle');
-    const loginLabel = document.getElementById('loginLabel');
-    const postForm = document.getElementById('postForm');
-
-    const authModal = document.getElementById('authModal');
-    const authEmail = document.getElementById('authEmail');
-    const authPassword = document.getElementById('authPassword');
-    const authSubmit = document.getElementById('authSubmitBtn');
-    const authClose = document.getElementById('authCloseBtn');
-    const authError = document.getElementById('authError');
-    const authSuccess = document.getElementById('authSuccess');
-    const authTitle = document.getElementById('authTitle');
-    const authSubtitle = document.getElementById('authSubtitle');
-    const authBtnText = document.getElementById('authBtnText');
-    const toggleModeBtn = document.getElementById('toggleAuthMode');
-
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    const personalTab = document.getElementById('personalTab');
-    const allTab = document.getElementById('allTab');
-
-    // ---------- HELPERS ----------
-    function formatDate(dateStr) {
-      if (!dateStr) return 'Just now';
-      const d = new Date(dateStr);
-      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    }
-
-    function renderPosts(postsArray, container, showActions = false) {
-      if (!postsArray || postsArray.length === 0) {
-        container.innerHTML = `<div class="empty-state"><i class="fas fa-pen-fancy"></i><p>No posts yet.</p></div>`;
-        return;
-      }
-      let html = `<div class="post-grid">`;
-      postsArray.forEach(post => {
-        html += `
-          <div class="post-card" data-id="${post.id}">
-            <h3>${escapeHtml(post.title) || 'Untitled'}</h3>
-            <div class="meta">
-              <span><i class="far fa-calendar-alt"></i> ${formatDate(post.created_at)}</span>
-              <span><i class="far fa-user-circle"></i> admin</span>
+    <!-- ====== NAVBAR ====== -->
+    <nav class="navbar-custom" id="mainNav">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2">
+                <img src="i.png" alt="Lokendra Gaire Logo" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="w-8 h-8 bg-red-500 rounded-xl flex items-center justify-center text-white font-bold text-lg" style="display:none;">LG</div>
+                <span class="text-xl font-bold heading-font text-heading-custom">Lokendra Gaire</span>
             </div>
-            <div class="excerpt">${escapeHtml(post.content) || 'No content'}</div>
-        `;
-        if (showActions) {
-          html += `
-            <div class="post-actions">
-              <button class="edit-btn" data-id="${post.id}"><i class="fas fa-edit"></i> Edit</button>
-              <button class="delete-btn" data-id="${post.id}"><i class="fas fa-trash-alt"></i> Delete</button>
-              <button class="update-btn" data-id="${post.id}"><i class="fas fa-sync-alt"></i> Update</button>
+
+            <!-- Desktop Nav Links -->
+            <div class="nav-links flex items-center gap-4 text-sm font-medium">
+                <a href="#" onclick="goHome()" class="flex items-center gap-1">🏠 Home</a>
+                <a href="About.html">About</a>
+                <a href="#" onclick="showBlog()" class="text-red-500 font-bold" id="blogNavLink">📝 Personal Blog</a>
+                <a href="slide.html">Gallery</a>
+                <a href="social.html">Social Media</a>
+                <a href="ram.html">Social engagement</a>
             </div>
-          `;
-        }
-        html += `</div>`;
-      });
-      html += `</div>`;
-      container.innerHTML = html;
-    }
 
-    function escapeHtml(text) {
-      if (!text) return '';
-      const map = {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#039;"};
-      return String(text).replace(/[&<>"']/g, m => map[m]);
-    }
+            <!-- Mode Toggle -->
+            <div class="flex gap-1 flex-wrap items-center">
+                <button onclick="setMode('dark')" class="mode-btn" data-mode="dark">🌙 Dark</button>
+                <button onclick="setMode('day')" class="mode-btn" data-mode="day">☀️ Day</button>
+                <button onclick="setMode('comfort')" class="mode-btn" data-mode="comfort">👁️ Comfort</button>
+            </div>
+        </div>
+    </nav>
 
-    function showLoading(container) {
-      container.innerHTML = `<div class="loading"><i class="fas fa-spinner"></i> Loading...</div>`;
-    }
+    <!-- ====== HERO SECTION ====== -->
+    <section id="home" class="min-h-screen flex items-center relative" style="padding-top: 115px;">
+        <div class="absolute inset-0 bg-[url('https://picsum.photos/id/1015/2000/1200')] bg-cover bg-center">
+            <div class="hero-overlay absolute inset-0"></div>
+        </div>
 
-    // ---------- AUTH FUNCTIONS ----------
-    async function signIn(email, password) {
-      try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
-        if (error) throw error;
-        return { success: true, user: data.user };
-      } catch (error) {
-        return { success: false, error: error.message };
-      }
-    }
+        <div class="max-w-7xl mx-auto px-4 relative z-10 py-8 w-full">
+            <div class="grid md:grid-cols-2 gap-10 items-center">
+                <div class="space-y-5">
+                    <div class="text-red-500 tracking-widest text-xs font-semibold">GALKOT-2, BAGLUNG, NEPAL</div>
+                    <h1 class="text-4xl md:text-6xl font-bold heading-font leading-tight text-heading-custom">
+                        Hi, I'm <span class="accent-text">Lokendra Gaire</span>
+                    </h1>
+                    <p class="text-2xl font-medium text-heading-custom">Digital Creator &amp; Tech Enthusiast</p>
+                    <p class="max-w-md text-base text-secondary-custom">Passionate about technology, social media management, creative design and community development.</p>
 
-    async function signUp(email, password) {
-      try {
-        const { data, error } = await supabase.auth.signUp({
-          email: email,
-          password: password
-        });
-        if (error) throw error;
-        if (data.user && data.user.identities && data.user.identities.length === 0) {
-          return { success: false, error: 'User already exists. Please sign in instead.' };
-        }
-        return { success: true, user: data.user };
-      } catch (error) {
-        return { success: false, error: error.message };
-      }
-    }
+                    <div class="flex flex-wrap gap-3 pt-2">
+                        <a href="tel:+9779869065252" class="px-6 py-3 btn-accent rounded-2xl font-semibold flex items-center gap-2 text-sm shadow-lg shadow-red-500/20">📞 Call Me</a>
+                        <a href="https://wa.me/+9779869065252" class="px-6 py-3 btn-outline rounded-2xl font-semibold text-sm">💬 WhatsApp</a>
+                        <a href="/cdn-cgi/l/email-protection#1e7271757b707a6c7f797f776c7b717878777d777f725e79737f7772307d7173" class="px-6 py-3 btn-outline rounded-2xl font-semibold text-sm">✉️ Gmail</a>
+                    </div>
+                </div>
 
-    async function signOut() {
-      await supabase.auth.signOut();
-      currentUser = null;
-      loginLabel.textContent = 'Login';
-      loginBtn.classList.remove('logged');
-      postForm.style.display = 'none';
-      cancelEdit();
-      await fetchPosts();
-    }
+                <div class="flex justify-center">
+                    <img src="brp.jpg" alt="Lokendra Gaire" class="profile-img rounded-2xl max-h-[400px] w-auto object-cover shadow-2xl">
+                </div>
+            </div>
+        </div>
+    </section>
 
-    // ---------- FETCH POSTS ----------
-    async function fetchPosts() {
-      showLoading(personalContainer);
-      showLoading(allContainer);
-      
-      const { data, error } = await supabase
-        .from('posts')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (error) {
-        console.error('Fetch error:', error);
-        personalContainer.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Error loading posts: ${error.message}</p></div>`;
-        allContainer.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Error loading posts</p></div>`;
-        return;
-      }
-      
-      posts = data || [];
-      
-      if (currentUser) {
-        renderPosts(posts, personalContainer, true);
-        postForm.style.display = 'block';
-      } else {
-        personalContainer.innerHTML = `<div class="empty-state"><i class="fas fa-lock"></i><p>Login to manage posts</p></div>`;
-        postForm.style.display = 'none';
-      }
-      renderPosts(posts, allContainer, false);
-    }
+    <!-- ====== BLOG SECTION ====== -->
+    <section id="blogSection" class="blog-section" style="display:none;">
+        <div class="max-w-7xl mx-auto px-4">
+            <!-- Back Button & Admin Toggle -->
+            <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+                <div class="back-btn" onclick="goHome()">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </div>
+                <button class="admin-toggle" id="adminToggleBtn" onclick="toggleAdminPanel()">
+                    🔐 Admin Login
+                </button>
+            </div>
 
-    // ---------- CRUD OPERATIONS ----------
-    async function createPost(title, content) {
-      if (!currentUser) return;
-      const { data, error } = await supabase
-        .from('posts')
-        .insert([{ title, content }])
-        .select();
-      if (error) { 
-        console.error(error); 
-        alert('Error creating post: ' + error.message);
-        return; 
-      }
-      await fetchPosts();
-    }
+            <h2 class="text-3xl md:text-4xl font-bold heading-font text-heading-custom mb-8 text-center">
+                📝 Personal Blog
+            </h2>
 
-    async function updatePost(id, title, content) {
-      if (!currentUser) return;
-      const { error } = await supabase
-        .from('posts')
-        .update({ title, content })
-        .eq('id', id);
-      if (error) { 
-        console.error(error); 
-        alert('Error updating post: ' + error.message);
-        return; 
-      }
-      await fetchPosts();
-      cancelEdit();
-    }
+            <!-- Admin Panel (Create Post Form) -->
+            <div id="adminPanel" style="display:none;">
+                <div class="create-post-form">
+                    <h2>✍️ <span id="formTitle">Create New Post</span></h2>
+                    <form id="blogPostForm" onsubmit="handlePostSubmit(event)">
+                        <div class="form-group">
+                            <label for="postTitle">Title *</label>
+                            <input type="text" id="postTitle" placeholder="Enter post title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="postExcerpt">Excerpt / Summary</label>
+                            <input type="text" id="postExcerpt" placeholder="Brief summary of the post">
+                        </div>
+                        <div class="form-group">
+                            <label for="postContent">Content *</label>
+                            <textarea id="postContent" placeholder="Write your post content here..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="postTags">Tags (comma separated)</label>
+                            <input type="text" id="postTags" placeholder="e.g., tech, life, philosophy">
+                        </div>
+                        <div class="form-group">
+                            <label for="postImage">Image URL</label>
+                            <input type="text" id="postImage" placeholder="https://example.com/image.jpg">
+                        </div>
+                        <div class="form-group">
+                            <label for="postVideo">Video URL (YouTube/Vimeo)</label>
+                            <input type="text" id="postVideo" placeholder="https://www.youtube.com/watch?v=...">
+                        </div>
+                        <div class="form-group">
+                            <label for="postStatus">Status</label>
+                            <select id="postStatus">
+                                <option value="published">Published</option>
+                                <option value="draft">Draft</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary" id="savePostBtn">📌 Publish</button>
+                            <button type="button" class="btn-secondary" id="cancelEditBtn" style="display:none;" onclick="cancelEdit()">Cancel</button>
+                        </div>
+                        <input type="hidden" id="editPostId" value="">
+                    </form>
+                </div>
+                <div style="margin-bottom:24px;">
+                    <button onclick="fetchPosts()" class="mode-btn" style="background:var(--accent);color:#fff;border-color:var(--accent);padding:8px 20px;">
+                        📋 Refresh Posts
+                    </button>
+                    <button onclick="logoutAdmin()" class="mode-btn" style="margin-left:8px;border-color:#ef4444;color:#ef4444;">
+                        🚪 Logout
+                    </button>
+                </div>
+            </div>
 
-    async function deletePost(id) {
-      if (!currentUser) return;
-      if (!confirm('Delete this post?')) return;
-      const { error } = await supabase
-        .from('posts')
-        .delete()
-        .eq('id', id);
-      if (error) { 
-        console.error(error); 
-        alert('Error deleting post: ' + error.message);
-        return; 
-      }
-      await fetchPosts();
-    }
+            <!-- Blog Posts Container -->
+            <div id="blogPostsContainer">
+                <!-- Posts will be rendered here -->
+            </div>
+        </div>
+    </section>
 
-    // ---------- UI EDIT HANDLERS ----------
-    function startEdit(postId) {
-      const post = posts.find(p => p.id === postId);
-      if (!post) return;
-      editingId = postId;
-      titleInput.value = post.title || '';
-      contentInput.value = post.content || '';
-      formTitle.textContent = 'Edit post';
-      saveBtn.innerHTML = '<i class="fas fa-save"></i> Update';
-      cancelBtn.style.display = 'inline-flex';
-      editIdHidden.value = postId;
-    }
+    <!-- ====== FOOTER ====== -->
+    <footer class="footer-custom py-4 px-4 text-center" style="background: var(--bg-nav); border-top: 1px solid var(--border-nav);">
+        <div class="max-w-7xl mx-auto">
+            <p class="text-sm text-secondary-custom">
+                Copyright © Lokendra Gaire 2024
+            </p>
+            <p class="text-xs text-secondary-custom opacity-60 mt-1">
+                Galkot-2, Baglung, Nepal | 📞 +977 9869065252 | 📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="167a797d737872647771777f64737970707f757f777a56717b737f7a3875797b">[email&#160;protected]</a>
+            </p>
+        </div>
+    </footer>
 
-    function cancelEdit() {
-      editingId = null;
-      titleInput.value = '';
-      contentInput.value = '';
-      formTitle.textContent = 'Create new post';
-      saveBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publish';
-      cancelBtn.style.display = 'none';
-      editIdHidden.value = '';
-    }
+    <!-- ====== TOAST ====== -->
+    <div class="toast" id="toast"><span id="toastMessage"></span></div>
 
-    // ---------- AUTH UI ----------
-    function toggleAuthMode() {
-      isSignUp = !isSignUp;
-      if (isSignUp) {
-        authTitle.textContent = 'Sign Up';
-        authSubtitle.textContent = 'Create a new admin account';
-        authBtnText.textContent = 'Sign Up';
-        toggleModeBtn.textContent = 'Already have an account? Sign in';
-        authSubmit.innerHTML = '<i class="fas fa-user-plus"></i> Sign Up';
-      } else {
-        authTitle.textContent = 'Login';
-        authSubtitle.textContent = 'Sign in with your Supabase account';
-        authBtnText.textContent = 'Sign In';
-        toggleModeBtn.textContent = 'Don\'t have an account? Sign up';
-        authSubmit.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
-      }
-      authError.textContent = '';
-      authSuccess.textContent = '';
-    }
+    <!-- ====== JAVASCRIPT ====== -->
+    <script>
+        (function() {
+            "use strict";
 
-    // ---------- EVENT LISTENERS ----------
-    personalContainer.addEventListener('click', (e) => {
-      const target = e.target.closest('button');
-      if (!target) return;
-      const postId = target.dataset.id;
-      if (!postId) return;
+            // ==========================================
+            // SUPABASE CONFIG
+            // ==========================================
+            const SUPABASE_URL = "https://yrvetxtjvkdvknnvngez.supabase.co";
+            const SUPABASE_ANON_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
 
-      if (target.classList.contains('edit-btn')) {
-        if (!currentUser) { alert('Please login first.'); return; }
-        startEdit(postId);
-      } else if (target.classList.contains('delete-btn')) {
-        deletePost(postId);
-      } else if (target.classList.contains('update-btn')) {
-        fetchPosts();
-      }
-    });
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log('✅ Supabase client ready');
 
-    saveBtn.addEventListener('click', async () => {
-      if (!currentUser) {
-        alert('You must login to publish.');
-        return;
-      }
-      const title = titleInput.value.trim();
-      const content = contentInput.value.trim();
-      if (!title || !content) {
-        alert('Title and content are required.');
-        return;
-      }
-      const editId = editIdHidden.value;
-      if (editId) {
-        await updatePost(editId, title, content);
-      } else {
-        await createPost(title, content);
-      }
-      cancelEdit();
-    });
+            // ==========================================
+            // STATE
+            // ==========================================
+            let currentUser = null;
+            let posts = [];
+            let editingPostId = null;
+            let isBlogVisible = false;
+            let isAdminMode = false;
 
-    cancelBtn.addEventListener('click', cancelEdit);
+            // ==========================================
+            // DOM REFS
+            // ==========================================
+            const homeSection = document.getElementById('home');
+            const blogSection = document.getElementById('blogSection');
+            const postsContainer = document.getElementById('blogPostsContainer');
+            const adminPanel = document.getElementById('adminPanel');
+            const adminToggleBtn = document.getElementById('adminToggleBtn');
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
 
-    // Auth events
-    loginBtn.addEventListener('click', () => {
-      if (currentUser) {
-        signOut();
-      } else {
-        authModal.classList.add('open');
-        authEmail.value = '';
-        authPassword.value = '';
-        authError.textContent = '';
-        authSuccess.textContent = '';
-        isSignUp = false;
-        authTitle.textContent = 'Login';
-        authSubtitle.textContent = 'Sign in with your Supabase account';
-        authBtnText.textContent = 'Sign In';
-        toggleModeBtn.textContent = 'Don\'t have an account? Sign up';
-        authSubmit.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
-        authEmail.focus();
-      }
-    });
+            // ==========================================
+            // HELPERS
+            // ==========================================
+            function formatDate(dateStr) {
+                if (!dateStr) return 'Just now';
+                const d = new Date(dateStr);
+                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            }
 
-    authSubmit.addEventListener('click', async () => {
-      const email = authEmail.value.trim();
-      const password = authPassword.value.trim();
-      
-      if (!email || !password) {
-        authError.textContent = 'Please fill in all fields.';
-        return;
-      }
-      
-      authError.textContent = '';
-      authSuccess.textContent = '';
-      authSubmit.disabled = true;
-      authSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-      
-      let result;
-      if (isSignUp) {
-        result = await signUp(email, password);
-        if (result.success) {
-          authSuccess.textContent = 'Account created! You can now sign in.';
-          // Auto switch to sign in mode after signup
-          setTimeout(() => {
-            isSignUp = false;
-            authTitle.textContent = 'Login';
-            authSubtitle.textContent = 'Sign in with your Supabase account';
-            authBtnText.textContent = 'Sign In';
-            toggleModeBtn.textContent = 'Don\'t have an account? Sign up';
-            authSubmit.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
-            authSuccess.textContent = '';
-            authPassword.value = '';
-          }, 2000);
-        }
-      } else {
-        result = await signIn(email, password);
-        if (result.success) {
-          currentUser = result.user;
-          loginLabel.textContent = 'Logout';
-          loginBtn.classList.add('logged');
-          authModal.classList.remove('open');
-          authError.textContent = '';
-          authSuccess.textContent = '';
-          await fetchPosts();
-        }
-      }
-      
-      if (!result.success) {
-        authError.textContent = result.error;
-      }
-      
-      authSubmit.disabled = false;
-      authSubmit.innerHTML = isSignUp ? '<i class="fas fa-user-plus"></i> Sign Up' : '<i class="fas fa-sign-in-alt"></i> Sign In';
-    });
+            function escapeHtml(text) {
+                if (!text) return '';
+                const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": "&#039;" };
+                return String(text).replace(/[&<>"']/g, m => map[m]);
+            }
 
-    authPassword.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') authSubmit.click();
-    });
+            function showToast(message, type = 'success') {
+                toast.className = `toast ${type}`;
+                toastMessage.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }
 
-    authEmail.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') authPassword.focus();
-    });
+            function showLoading(container) {
+                container.innerHTML = `
+                    <div style="text-align:center;padding:60px 0;">
+                        <div class="loading-spinner"></div>
+                        <p style="margin-top:16px;color:var(--text-secondary);">Loading posts...</p>
+                    </div>
+                `;
+            }
 
-    toggleModeBtn.addEventListener('click', toggleAuthMode);
+            // ==========================================
+            // NAVIGATION
+            // ==========================================
+            window.goHome = function() {
+                homeSection.style.display = 'flex';
+                blogSection.style.display = 'none';
+                isBlogVisible = false;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
 
-    authClose.addEventListener('click', () => {
-      authModal.classList.remove('open');
-      authError.textContent = '';
-      authSuccess.textContent = '';
-    });
+            window.showBlog = function() {
+                homeSection.style.display = 'none';
+                blogSection.style.display = 'block';
+                isBlogVisible = true;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                fetchPosts();
+                updateAdminUI();
+            };
 
-    authModal.addEventListener('click', (e) => {
-      if (e.target === authModal) {
-        authModal.classList.remove('open');
-        authError.textContent = '';
-        authSuccess.textContent = '';
-      }
-    });
-
-    // Tabs
-    tabBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        tabBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const tabName = btn.dataset.tab;
-        if (tabName === 'personal') {
-          personalTab.classList.add('active');
-          allTab.classList.remove('active');
-        } else {
-          allTab.classList.add('active');
-          personalTab.classList.remove('active');
-        }
-      });
-    });
-
-    // ---------- CHECK EXISTING SESSION ----------
-    async function checkSession() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        currentUser = session.user;
-        loginLabel.textContent = 'Logout';
-        loginBtn.classList.add('logged');
-        postForm.style.display = 'block';
-      }
-      await fetchPosts();
-    }
-
-    // ---------- INIT ----------
-    checkSession();
-
-    // Listen for auth state changes
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        currentUser = session.user;
-        loginLabel.textContent = 'Logout';
-        loginBtn.classList.add('logged');
-        postForm.style.display = 'block';
-        fetchPosts();
-      } else if (event === 'SIGNED_OUT') {
-        currentUser = null;
-        loginLabel.textContent = 'Login';
-        loginBtn.classList.remove('logged');
-        postForm.style.display = 'none';
-        cancelEdit();
-        fetchPosts();
-      }
-    });
-  })();
-</script>
-</body>
-</html>
+            // ==========================================
+            // RENDER POSTS
+            // ==========================================
+            function renderPosts(postsArray) {
+                if (!postsArray || postsArray.length === 0) {
+                    postsContainer.innerHTML = `
+                        <div style="text-align:center;padding:60px 0;">
+                            <div style="font-size:3rem;margin-bottom:16px;">📝</div>
+                            <h3 style="color:var(--text-secondary);">No posts yet</h3>
+                            <p style="color:var(--text-secondary);font-size:0.9rem;">Check back later for new content!</p>
+                            ${currentUser ? `
