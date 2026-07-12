@@ -329,7 +329,7 @@
             <div class="nav-links flex items-center gap-4 text-sm font-medium">
                 <a href="#" onclick="goHome()" class="flex items-center gap-1">🏠 Home</a>
                 <a href="About.html">About</a>
-                <a href="Portfolio.html">Portfolio</a>
+                <a href="Portfolio.html">Personal Blog</a>
                 <a href="slide.html">Gallery</a>
                 <a href="social.html">Social Media</a>
                 <a href="ram.html">Social engagement</a>
@@ -481,7 +481,7 @@
 
             // ============================================================
             //  AUTO UPDATE: LOCATION, TEMPERATURE, DAY, DATE, TIME, GREETING
-            //  Real-time update every second
+            //  Real-time update every second (FITIKKAI UPDATE)
             // ============================================================
 
             // --- Days of Week ---
@@ -496,7 +496,7 @@
                 return { text: 'Good Night', icon: '🌙' };
             }
 
-            // --- Fetch IP based location & temperature ---
+            // --- Fetch IP based location & temperature (REAL-TIME) ---
             function fetchIPLocation() {
                 // Primary API: ip-api.com (free, no API key needed)
                 fetch('https://ip-api.com/json/')
@@ -535,19 +535,9 @@
                                 document.getElementById('temperature').textContent = temp + '°C';
                             })
                             .catch(() => {
-                                // Final fallback - try freegeoip
-                                fetch('https://ipapi.co/json/')
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        const locationDisplay = data.city + ', ' + data.country_name;
-                                        document.getElementById('locationName').textContent = locationDisplay;
-                                        document.getElementById('temperature').textContent = estimateTemperature(data.city, data.country_name) + '°C';
-                                    })
-                                    .catch(() => {
-                                        // Ultimate fallback
-                                        document.getElementById('locationName').textContent = 'Kathmandu, Nepal';
-                                        document.getElementById('temperature').textContent = '24°C';
-                                    });
+                                // Final fallback
+                                document.getElementById('locationName').textContent = 'Kathmandu, Nepal';
+                                document.getElementById('temperature').textContent = '24°C';
                             });
                     });
             }
@@ -585,7 +575,7 @@
                 return tempMap[country] || 22;
             }
 
-            // --- AUTO UPDATE: Update all display elements every second ---
+            // --- AUTO UPDATE: Update all display elements every second (FITIKKAI) ---
             function updateDisplay() {
                 const now = new Date();
 
@@ -611,12 +601,7 @@
                 document.getElementById('greetingIcon').textContent = greeting.icon;
             }
 
-            // --- Refresh location & temperature periodically (every 5 minutes) ---
-            function refreshLocationAndTemp() {
-                fetchIPLocation();
-            }
-
-            // --- INIT ---
+            // --- INIT - Start everything ---
             document.addEventListener('DOMContentLoaded', function() {
                 loadSavedMode();
 
@@ -626,11 +611,11 @@
                 // Initial display update
                 updateDisplay();
 
-                // Auto update every SECOND for time, date, day, greeting
-                setInterval(updateDisplay, 1000);
-
-                // Refresh location & temperature every 5 minutes (300000 ms)
-                setInterval(refreshLocationAndTemp, 300000);
+                // ============================================================
+                //  FITIKKAI AUTO UPDATE - हरेक १ सेकेन्डमा सबै Update हुन्छ
+                // ============================================================
+                setInterval(updateDisplay, 1000);           // Day, Date, Time, Greeting - हरेक सेकेन्ड
+                setInterval(fetchIPLocation, 30000);        // Location, Temperature - हरेक ३० सेकेन्ड
             });
 
         })();
