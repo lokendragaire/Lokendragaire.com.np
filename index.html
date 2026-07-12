@@ -23,7 +23,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
 
-  <style>
+    <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
         * {
@@ -49,7 +49,7 @@
             --text-secondary: #94a3b8;
             --text-heading: #f1f5f9;
             --card-bg: #1e293b;
-            --shadow-color: rgba(0,0,0,0.5);
+            --shadow-color: rgba(0, 0, 0, 0.5);
             --btn-hover: #334155;
             --accent: #ef4444;
             --accent-hover: #dc2626;
@@ -65,7 +65,7 @@
             --text-secondary: #475569;
             --text-heading: #0f172a;
             --card-bg: #ffffff;
-            --shadow-color: rgba(0,0,0,0.08);
+            --shadow-color: rgba(0, 0, 0, 0.08);
             --btn-hover: #e2e8f0;
             --accent: #ef4444;
             --accent-hover: #b91c1c;
@@ -81,7 +81,7 @@
             --text-secondary: #6b6258;
             --text-heading: #2a231d;
             --card-bg: #faf6f0;
-            --shadow-color: rgba(0,0,0,0.06);
+            --shadow-color: rgba(0, 0, 0, 0.06);
             --btn-hover: #e5d9c8;
             --accent: #b45309;
             --accent-hover: #92400e;
@@ -99,6 +99,11 @@
             background: var(--bg-nav);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-nav);
+            position: fixed;
+            width: 100%;
+            z-index: 50;
+            top: 0;
+            transition: transform 0.3s ease-in-out, top 0.3s ease-in-out;
         }
         .navbar-custom a {
             color: var(--text-primary);
@@ -168,7 +173,7 @@
             color: var(--accent);
         }
 
-        /* ===== TOP INFO BAR - ABOVE NAVBAR ===== */
+        /* ===== TOP INFO BAR - Fixed like Navbar ===== */
         .top-info-bar {
             background: var(--info-bg);
             border-bottom: 1px solid var(--border-nav);
@@ -179,8 +184,16 @@
             justify-content: flex-end;
             gap: 0.8rem 1.5rem;
             font-size: 0.75rem;
-            position: relative;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             z-index: 51;
+            transition: transform 0.3s ease-in-out;
+            transform: translateY(0);
+        }
+        .top-info-bar.hidden-bar {
+            transform: translateY(-100%);
         }
         .top-info-bar .info-item {
             display: flex;
@@ -205,6 +218,48 @@
             font-weight: 600;
         }
 
+        /* Logo styles */
+        .logo-img {
+            height: 36px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        /* Navbar - below top bar */
+        .navbar-custom {
+            top: 38px;
+        }
+
+        section#home {
+            padding-top: 115px;
+            transition: padding-top 0.3s ease-in-out;
+        }
+
+        /* Loading animation for location */
+        .pulse-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulse 1s ease-in-out infinite;
+            margin-left: 4px;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+        }
+
+        /* Update flash animation */
+        @keyframes flashUpdate {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .updating {
+            animation: flashUpdate 0.5s ease;
+        }
+
         @media (max-width: 640px) {
             .top-info-bar {
                 padding: 0.2rem 0.6rem;
@@ -214,6 +269,15 @@
             }
             .top-info-bar .info-divider {
                 height: 12px;
+            }
+            .navbar-custom {
+                top: 32px;
+            }
+            section#home {
+                padding-top: 100px;
+            }
+            .logo-img {
+                height: 28px;
             }
         }
 
@@ -226,22 +290,20 @@
 </head>
 <body>
 
-    <!-- ====== TOP INFO BAR - ABOVE NAVBAR ====== -->
+    <!-- ====== TOP INFO BAR - FIXED ====== -->
     <div class="top-info-bar" id="topInfoBar">
-        <!-- AD Date -->
+        <!-- Day -->
         <div class="info-item">
-            <span class="icon">📅</span>
-            <span class="value" id="adDate">Jul 12, 2026</span>
-            <span style="font-size:0.6rem; opacity:0.5;">AD</span>
+            <span class="icon">📆</span>
+            <span class="value accent-text" id="dayName">Sunday</span>
         </div>
 
         <div class="info-divider"></div>
 
-        <!-- BS Date -->
+        <!-- AD Date -->
         <div class="info-item">
             <span class="icon">📅</span>
-            <span class="value accent-text" id="bsDate">2083 Asar 28</span>
-            <span style="font-size:0.6rem; opacity:0.5;">BS</span>
+            <span class="value" id="adDate">Jul 12, 2026</span>
         </div>
 
         <div class="info-divider"></div>
@@ -249,23 +311,24 @@
         <!-- Time with Seconds -->
         <div class="info-item">
             <span class="icon">🕐</span>
-            <span class="value" id="currentTime">12:88:45 PM</span>
+            <span class="value" id="currentTime">11:18:45 AM</span>
         </div>
 
         <div class="info-divider"></div>
 
-        <!-- Location -->
+        <!-- Location (IP Based - Auto Detected) -->
         <div class="info-item">
             <span class="icon">📍</span>
-            <span class="value accent-text" id="locationName">Kathmandu</span>
+            <span class="value accent-text" id="locationName">Detecting...</span>
+            <span class="pulse-dot" id="locationPulse"></span>
         </div>
 
         <div class="info-divider"></div>
 
-        <!-- Temperature -->
+        <!-- Temperature (IP Based - Auto Detected) -->
         <div class="info-item">
             <span class="icon">🌡️</span>
-            <span class="value" id="temperature">24°C</span>
+            <span class="value" id="temperature">--°C</span>
         </div>
 
         <div class="info-divider"></div>
@@ -278,10 +341,13 @@
     </div>
 
     <!-- ====== NAVBAR ====== -->
-    <nav class="navbar-custom fixed top-0 w-full z-50" style="top: 34px;">
+    <nav class="navbar-custom" id="mainNav">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-red-500 rounded-xl flex items-center justify-center text-white font-bold text-lg">LG</div>
+                <!-- Logo Image - i.png -->
+                <img src="i.png" alt="Lokendra Gaire Logo" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <!-- Fallback if image not found -->
+                <div class="w-8 h-8 bg-red-500 rounded-xl flex items-center justify-center text-white font-bold text-lg" style="display:none;">LG</div>
                 <span class="text-xl font-bold heading-font text-heading-custom">Lokendra Gaire</span>
             </div>
 
@@ -305,7 +371,7 @@
     </nav>
 
     <!-- ====== HERO ====== -->
-    <section id="home" class="min-h-screen flex items-center relative pt-20" style="padding-top: 110px;">
+    <section id="home" class="min-h-screen flex items-center relative" style="padding-top: 115px;">
         <!-- Background image with overlay -->
         <div class="absolute inset-0 bg-[url('https://picsum.photos/id/1015/2000/1200')] bg-cover bg-center">
             <div class="hero-overlay absolute inset-0"></div>
@@ -325,7 +391,7 @@
                     <div class="flex flex-wrap gap-3 pt-2">
                         <a href="tel:+9779869065252" class="px-6 py-3 btn-accent rounded-2xl font-semibold flex items-center gap-2 text-sm shadow-lg shadow-red-500/20">📞 Call Me</a>
                         <a href="https://wa.me/+9779869065252" class="px-6 py-3 btn-outline rounded-2xl font-semibold text-sm">💬 WhatsApp</a>
-                        <a href="/cdn-cgi/l/email-protection#016d6e6a646f65736066606873646e6767686268606d41666c60686d2f626e6c" class="px-6 py-3 btn-outline rounded-2xl font-semibold text-sm">✉️ Gmail</a>
+                        <a href="mailto:lokendragaireofficial@gmail.com" class="px-6 py-3 btn-outline rounded-2xl font-semibold text-sm">✉️ Gmail</a>
                     </div>
                 </div>
 
@@ -343,19 +409,27 @@
                 Copyright © Lokendra Gaire 2024
             </p>
             <p class="text-xs text-secondary-custom opacity-60 mt-1">
-                Galkot-2, Baglung, Nepal | 📞 +977 9869065252 | 📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="86eae9ede3e8e2f4e7e1e7eff4e3e9e0e0efe5efe7eac6e1ebe7efeaa8e5e9eb">[email&#160;protected]</a>
+                Galkot-2, Baglung, Nepal | 📞 +977 9869065252 | 📧 lokendragaireofficial@gmail.com
             </p>
         </div>
     </footer>
 
     <!-- ====== JAVASCRIPT ====== -->
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
         (function() {
             "use strict";
 
             // --- DOM refs ---
             const body = document.body;
             const modeBtns = document.querySelectorAll('.mode-btn');
+            const topBar = document.getElementById('topInfoBar');
+            const navbar = document.getElementById('mainNav');
+            const heroSection = document.getElementById('home');
+            const locationPulse = document.getElementById('locationPulse');
+            const locationNameEl = document.getElementById('locationName');
+            const temperatureEl = document.getElementById('temperature');
+            let lastScrollTop = 0;
+            let isHidden = false;
 
             // --- Set mode function ---
             function setMode(mode) {
@@ -397,38 +471,49 @@
             window.setMode = setMode;
 
             // ============================================================
-            //  DATE, TIME, LOCATION, TEMP, GREETING - AUTO UPDATE
-            //  Using nepali-date-converter library for accurate BS date
+            //  SCROLL HANDLER - Hide/Show BOTH Top Bar & Navbar together
+            // ============================================================
+            function handleScroll() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const topBarHeight = topBar.offsetHeight || 38;
+
+                if (scrollTop > lastScrollTop && scrollTop > 80) {
+                    if (!isHidden) {
+                        isHidden = true;
+                        topBar.classList.add('hidden-bar');
+                        navbar.style.top = '0px';
+                        heroSection.style.paddingTop = '78px';
+                    }
+                } else if (scrollTop < lastScrollTop || scrollTop <= 10) {
+                    if (isHidden || scrollTop <= 10) {
+                        isHidden = false;
+                        topBar.classList.remove('hidden-bar');
+                        navbar.style.top = topBarHeight + 'px';
+                        heroSection.style.paddingTop = (topBarHeight + 78) + 'px';
+                    }
+                }
+
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }
+
+            // --- Throttled scroll listener ---
+            let ticking = false;
+            window.addEventListener('scroll', function() {
+                if (!ticking) {
+                    window.requestAnimationFrame(function() {
+                        handleScroll();
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+
+            // ============================================================
+            //  LIVE LOCATION & TEMPERATURE - AUTO UPDATE (REAL-TIME)
             // ============================================================
 
-            // --- Nepali Months (English) ---
-            const nepaliMonths = ['Baisakh', 'Jestha', 'Asar', 'Shrawan', 'Bhadra', 'Ashwin', 'Kartik', 'Mangsir', 'Poush', 'Magh', 'Falgun', 'Chaitra'];
-
-            // --- Location data (from IP) ---
-            let locationData = {
-                city: 'Kathmandu',
-                temp: 24,
-                region: 'Bagmati',
-                country: 'Nepal'
-            };
-
-            // --- Fetch location from IP ---
-            function fetchLocation() {
-                fetch('https://ipapi.co/json/')
-                    .then(response => response.json())
-                    .then(data => {
-                        locationData.city = data.city || 'Kathmandu';
-                        locationData.region = data.region || 'Bagmati';
-                        locationData.country = data.country_name || 'Nepal';
-                        locationData.temp = Math.round(data.temperature || 24);
-                        document.getElementById('locationName').textContent = locationData.city;
-                        document.getElementById('temperature').textContent = `${locationData.temp}°C`;
-                    })
-                    .catch(() => {
-                        document.getElementById('locationName').textContent = 'Kathmandu';
-                        document.getElementById('temperature').textContent = '24°C';
-                    });
-            }
+            // --- Days of Week ---
+            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
             // --- Get greeting based on time ---
             function getGreeting() {
@@ -439,67 +524,196 @@
                 return { text: 'Good Night', icon: '🌙' };
             }
 
-            // --- Update all display elements ---
+            // --- Show loading state ---
+            function showLoading() {
+                locationPulse.style.display = 'inline-block';
+                locationNameEl.textContent = 'Updating...';
+                temperatureEl.textContent = '--°C';
+            }
+
+            // --- Hide loading state ---
+            function hideLoading() {
+                locationPulse.style.display = 'none';
+            }
+
+            // --- Add flash animation on update ---
+            function flashElement(el) {
+                el.classList.remove('updating');
+                // Trigger reflow
+                void el.offsetWidth;
+                el.classList.add('updating');
+                setTimeout(() => {
+                    el.classList.remove('updating');
+                }, 600);
+            }
+
+            // --- Fetch IP based location & temperature (LIVE) ---
+            function fetchIPLocation() {
+                showLoading();
+
+                // Try multiple APIs
+                const apis = [
+                    'https://ip-api.com/json/',
+                    'https://ipapi.co/json/'
+                ];
+
+                let apiIndex = 0;
+
+                function tryNextApi() {
+                    if (apiIndex >= apis.length) {
+                        // All APIs failed - fallback
+                        locationNameEl.textContent = 'Kathmandu, Nepal';
+                        temperatureEl.textContent = '24°C';
+                        hideLoading();
+                        return;
+                    }
+
+                    fetch(apis[apiIndex])
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('API failed');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            let city, country, temp;
+
+                            if (apis[apiIndex].includes('ip-api.com')) {
+                                if (data.status === 'success') {
+                                    city = data.city || 'Unknown';
+                                    country = data.country || 'Nepal';
+                                    temp = data.temp ? Math.round(data.temp) : getTemperatureForCity(city, country);
+                                } else {
+                                    throw new Error('ip-api.com error');
+                                }
+                            } else if (apis[apiIndex].includes('ipapi.co')) {
+                                city = data.city || 'Unknown';
+                                country = data.country_name || 'Nepal';
+                                temp = data.temperature ? Math.round(data.temperature) : getTemperatureForCity(city, country);
+                            }
+
+                            const locationDisplay = city + ', ' + country;
+                            
+                            // Update DOM with flash animation
+                            locationNameEl.textContent = locationDisplay;
+                            temperatureEl.textContent = temp + '°C';
+                            
+                            flashElement(locationNameEl);
+                            flashElement(temperatureEl);
+                            
+                            hideLoading();
+                        })
+                        .catch(() => {
+                            apiIndex++;
+                            tryNextApi();
+                        });
+                }
+
+                tryNextApi();
+            }
+
+            // --- Get temperature for city (fallback when API doesn't provide) ---
+            function getTemperatureForCity(city, country) {
+                // Nepal cities temperature map
+                if (country === 'Nepal' || country === 'NP') {
+                    const tempMap = {
+                        'Kathmandu': 24, 'Pokhara': 22, 'Baglung': 20, 'Butwal': 26,
+                        'Biratnagar': 28, 'Janakpur': 27, 'Nepalgunj': 29, 'Dharan': 25,
+                        'Itahari': 25, 'Gorkha': 20, 'Lamjung': 18, 'Kaski': 22,
+                        'Syangja': 21, 'Palpa': 20, 'Gulmi': 19, 'Arghakhanchi': 21,
+                        'Kapilvastu': 27, 'Rupandehi': 26, 'Nawalparasi': 25, 'Chitwan': 26,
+                        'Makwanpur': 23, 'Sindhuli': 22, 'Udayapur': 24, 'Saptari': 28,
+                        'Siraha': 27, 'Dhanusa': 27, 'Mahottari': 27, 'Sarlahi': 26,
+                        'Rautahat': 27, 'Bara': 26, 'Parsa': 27, 'Banke': 29,
+                        'Bardiya': 28, 'Surkhet': 24, 'Dailekh': 20, 'Jajarkot': 18,
+                        'Rukum': 17, 'Rolpa': 18, 'Pyuthan': 20, 'Dang': 25,
+                        'Salyan': 19, 'Jumla': 14, 'Kalikot': 13, 'Mugu': 12,
+                        'Humla': 10, 'Dolpa': 11, 'Mustang': 12, 'Manang': 10,
+                        'Gandaki': 15, 'Myagdi': 16, 'Parbat': 18
+                    };
+                    return tempMap[city] || 22;
+                }
+
+                // Other countries temperature map
+                const tempMap = {
+                    'India': 28, 'USA': 22, 'UK': 15, 'Australia': 25,
+                    'Canada': 12, 'Germany': 16, 'France': 18, 'Japan': 20,
+                    'China': 22, 'Brazil': 27, 'South Africa': 20, 'Egypt': 30,
+                    'UAE': 35, 'Saudi Arabia': 33, 'Singapore': 28, 'Malaysia': 27,
+                    'Thailand': 29, 'Vietnam': 26, 'Philippines': 28, 'Indonesia': 27
+                };
+                return tempMap[country] || 22;
+            }
+
+            // --- AUTO UPDATE: Update all display elements every second ---
             function updateDisplay() {
                 const now = new Date();
-                
-                // AD Date: Jul 12, 2026
+
+                // DAY - Auto update
+                document.getElementById('dayName').textContent = daysOfWeek[now.getDay()];
+
+                // AD DATE - Auto update
                 const adOptions = { month: 'short', day: 'numeric', year: 'numeric' };
-                const adDate = now.toLocaleDateString('en-US', adOptions);
-                document.getElementById('adDate').textContent = adDate;
-                
-                // BS Date: Using nepali-date-converter library
-                try {
-                    // Convert AD to BS
-                    const bsDate = new NepaliDate(now);
-                    const bsYear = bsDate.getYear();
-                    const bsMonth = bsDate.getMonth(); // 0-11
-                    const bsDay = bsDate.getDate();
-                    document.getElementById('bsDate').textContent = `${bsYear} ${nepaliMonths[bsMonth]} ${bsDay}`;
-                } catch (e) {
-                    // Fallback if library fails
-                    const year = now.getFullYear() + 56;
-                    const month = now.getMonth();
-                    let day = now.getDate() + 15;
-                    let bsMonth = month;
-                    let bsDay = day;
-                    if (bsDay > 30) {
-                        bsDay -= 30;
-                        bsMonth += 1;
-                    }
-                    if (bsMonth >= 12) {
-                        bsMonth -= 12;
-                    }
-                    document.getElementById('bsDate').textContent = `${year} ${nepaliMonths[bsMonth]} ${bsDay}`;
-                }
-                
-                // Time with seconds: 11:18:45 AM
+                document.getElementById('adDate').textContent = now.toLocaleDateString('en-US', adOptions);
+
+                // TIME with seconds - Auto update every second
                 const hours = now.getHours();
                 const minutes = now.getMinutes();
                 const seconds = now.getSeconds();
                 const ampm = hours >= 12 ? 'PM' : 'AM';
                 const hours12 = hours % 12 || 12;
-                const timeStr = `${String(hours12).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} ${ampm}`;
-                document.getElementById('currentTime').textContent = timeStr;
-                
-                // Greeting
+                document.getElementById('currentTime').textContent =
+                    `${String(hours12).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} ${ampm}`;
+
+                // GREETING - Auto update based on time
                 const greeting = getGreeting();
                 document.getElementById('greetingText').textContent = greeting.text;
                 document.getElementById('greetingIcon').textContent = greeting.icon;
             }
 
-            // --- Init ---
+            // --- Get user's actual location using Geolocation API (if available) ---
+            function getActualLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            // We have actual coordinates, but we still use IP for city name
+                            // This just enables the permission prompt
+                            console.log('Geolocation available:', position.coords.latitude, position.coords.longitude);
+                        },
+                        function(error) {
+                            // User denied or error - fallback to IP
+                            console.log('Geolocation error:', error.message);
+                        }
+                    );
+                }
+            }
+
+            // --- INIT - Start everything ---
             document.addEventListener('DOMContentLoaded', function() {
                 loadSavedMode();
-                fetchLocation();
+
+                // Request geolocation permission (optional)
+                getActualLocation();
+
+                // ============================================================
+                //  LIVE LOCATION & TEMPERATURE AUTO UPDATE
+                //  - हरेक ३० सेकेन्डमा Location Refresh
+                //  - हरेक १ सेकेन्डमा Time, Date, Day, Greeting Update
+                // ============================================================
+
+                // Fetch location & temperature immediately
+                fetchIPLocation();
+
+                // Initial display update
                 updateDisplay();
-                // Update every second (for real-time clock)
-                setInterval(updateDisplay, 1000);
+
+                // Set intervals for auto updates
+                setInterval(updateDisplay, 1000);           // Time, Date, Day, Greeting - हरेक सेकेन्ड
+                setInterval(fetchIPLocation, 30000);        // Location, Temperature - हरेक ३० सेकेन्ड (LIVE)
             });
 
         })();
     </script>
 
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"cf5153463d15490bb52e4fdbdb29adaf","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
