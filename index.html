@@ -291,7 +291,7 @@
 
         <div class="info-divider"></div>
 
-        <!-- Location (Auto-detected) -->
+        <!-- Location (IP Based - Auto Detected) -->
         <div class="info-item">
             <span class="icon">📍</span>
             <span class="value accent-text" id="locationName">Detecting...</span>
@@ -299,7 +299,7 @@
 
         <div class="info-divider"></div>
 
-        <!-- Temperature (Auto-detected) -->
+        <!-- Temperature (IP Based - Auto Detected) -->
         <div class="info-item">
             <span class="icon">🌡️</span>
             <span class="value" id="temperature">--°C</span>
@@ -487,166 +487,6 @@
             // --- Days of Week ---
             const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-            // --- Location data (will be updated from API) ---
-            let locationData = {
-                city: 'Detecting...',
-                temp: '--',
-                region: '',
-                country: ''
-            };
-
-            // --- Fetch location & temperature from IP (REAL-TIME) ---
-            function fetchLocationAndTemp() {
-                // Try multiple APIs for better accuracy
-                const apis = [
-                    'https://ipapi.co/json/',
-                    'https://ip-api.com/json/',
-                    'https://api.ipify.org?format=json'
-                ];
-
-                // First try ipapi.co (most accurate)
-                fetch('https://ipapi.co/json/')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('ipapi.co failed');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        // Update location data
-                        locationData.city = data.city || data.region || 'Unknown';
-                        locationData.region = data.region || '';
-                        locationData.country = data.country_name || '';
-                        // ipapi.co doesn't provide temperature, we'll estimate
-                        locationData.temp = estimateTemperature(data.city, data.country_name);
-                        
-                        updateLocationDisplay();
-                    })
-                    .catch(() => {
-                        // Fallback to ip-api.com
-                        fetch('https://ip-api.com/json/')
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('ip-api.com failed');
-                                }
-                                return response.json();
-                            })
-                            .then(data => {
-                                if (data.status === 'success') {
-                                    locationData.city = data.city || 'Unknown';
-                                    locationData.region = data.regionName || '';
-                                    locationData.country = data.country || '';
-                                    locationData.temp = estimateTemperature(data.city, data.country);
-                                } else {
-                                    throw new Error('ip-api.com returned error');
-                                }
-                                updateLocationDisplay();
-                            })
-                            .catch(() => {
-                                // Final fallback
-                                document.getElementById('locationName').textContent = 'Kathmandu, Nepal';
-                                document.getElementById('temperature').textContent = '24°C';
-                            });
-                    });
-            }
-
-            // --- Estimate temperature based on location (since free APIs don't always provide temp) ---
-            function estimateTemperature(city, country) {
-                // If we have a city, we can try to estimate temperature
-                // For Nepal cities
-                if (country === 'Nepal' || country === 'NP') {
-                    const tempMap = {
-                        'Kathmandu': 24,
-                        'Pokhara': 22,
-                        'Baglung': 20,
-                        'Butwal': 26,
-                        'Biratnagar': 28,
-                        'Janakpur': 27,
-                        'Nepalgunj': 29,
-                        'Dharan': 25,
-                        'Itahari': 25,
-                        'Dhading': 22,
-                        'Gorkha': 20,
-                        'Lamjung': 18,
-                        'Kaski': 22,
-                        'Syangja': 21,
-                        'Palpa': 20,
-                        'Gulmi': 19,
-                        'Arghakhanchi': 21,
-                        'Kapilvastu': 27,
-                        'Rupandehi': 26,
-                        'Nawalparasi': 25,
-                        'Chitwan': 26,
-                        'Makwanpur': 23,
-                        'Sindhuli': 22,
-                        'Udayapur': 24,
-                        'Saptari': 28,
-                        'Siraha': 27,
-                        'Dhanusa': 27,
-                        'Mahottari': 27,
-                        'Sarlahi': 26,
-                        'Rautahat': 27,
-                        'Bara': 26,
-                        'Parsa': 27,
-                        'Banke': 29,
-                        'Bardiya': 28,
-                        'Surkhet': 24,
-                        'Dailekh': 20,
-                        'Jajarkot': 18,
-                        'Rukum': 17,
-                        'Rolpa': 18,
-                        'Pyuthan': 20,
-                        'Dang': 25,
-                        'Salyan': 19,
-                        'Jumla': 14,
-                        'Kalikot': 13,
-                        'Mugu': 12,
-                        'Humla': 10,
-                        'Dolpa': 11,
-                        'Mustang': 12,
-                        'Manang': 10,
-                        'Gandaki': 15,
-                        'Kaski': 22,
-                        'Myagdi': 16,
-                        'Parbat': 18,
-                        'Baglung': 20
-                    };
-                    return tempMap[city] || 22;
-                }
-                
-                // Default temperature for other countries
-                const tempMap = {
-                    'India': 28,
-                    'USA': 22,
-                    'UK': 15,
-                    'Australia': 25,
-                    'Canada': 12,
-                    'Germany': 16,
-                    'France': 18,
-                    'Japan': 20,
-                    'China': 22,
-                    'Brazil': 27,
-                    'South Africa': 20,
-                    'Egypt': 30,
-                    'UAE': 35,
-                    'Saudi Arabia': 33,
-                    'Singapore': 28,
-                    'Malaysia': 27,
-                    'Thailand': 29,
-                    'Vietnam': 26,
-                    'Philippines': 28,
-                    'Indonesia': 27
-                };
-                return tempMap[country] || 22;
-            }
-
-            // --- Update location display ---
-            function updateLocationDisplay() {
-                const locationDisplay = locationData.city + (locationData.country ? ', ' + locationData.country : '');
-                document.getElementById('locationName').textContent = locationDisplay;
-                document.getElementById('temperature').textContent = locationData.temp !== '--' ? locationData.temp + '°C' : '--°C';
-            }
-
             // --- Get greeting based on time ---
             function getGreeting() {
                 const hour = new Date().getHours();
@@ -654,6 +494,95 @@
                 if (hour >= 12 && hour < 17) return { text: 'Good Afternoon', icon: '☀️' };
                 if (hour >= 17 && hour < 20) return { text: 'Good Evening', icon: '🌅' };
                 return { text: 'Good Night', icon: '🌙' };
+            }
+
+            // --- Fetch IP based location & temperature ---
+            function fetchIPLocation() {
+                // Primary API: ip-api.com (free, no API key needed)
+                fetch('https://ip-api.com/json/')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('ip-api.com failed');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.status === 'success') {
+                            const locationDisplay = data.city + ', ' + data.country;
+                            document.getElementById('locationName').textContent = locationDisplay;
+                            
+                            // Temperature from API (if available) or estimate
+                            let temp = data.temp ? Math.round(data.temp) : estimateTemperature(data.city, data.country);
+                            document.getElementById('temperature').textContent = temp + '°C';
+                        } else {
+                            throw new Error('ip-api.com returned error');
+                        }
+                    })
+                    .catch(() => {
+                        // Fallback to ipapi.co
+                        fetch('https://ipapi.co/json/')
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('ipapi.co failed');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                const locationDisplay = data.city + ', ' + data.country_name;
+                                document.getElementById('locationName').textContent = locationDisplay;
+                                
+                                let temp = data.temperature ? Math.round(data.temperature) : estimateTemperature(data.city, data.country_name);
+                                document.getElementById('temperature').textContent = temp + '°C';
+                            })
+                            .catch(() => {
+                                // Final fallback - try freegeoip
+                                fetch('https://ipapi.co/json/')
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        const locationDisplay = data.city + ', ' + data.country_name;
+                                        document.getElementById('locationName').textContent = locationDisplay;
+                                        document.getElementById('temperature').textContent = estimateTemperature(data.city, data.country_name) + '°C';
+                                    })
+                                    .catch(() => {
+                                        // Ultimate fallback
+                                        document.getElementById('locationName').textContent = 'Kathmandu, Nepal';
+                                        document.getElementById('temperature').textContent = '24°C';
+                                    });
+                            });
+                    });
+            }
+
+            // --- Estimate temperature based on location ---
+            function estimateTemperature(city, country) {
+                // Nepal cities temperature map
+                if (country === 'Nepal' || country === 'NP') {
+                    const tempMap = {
+                        'Kathmandu': 24, 'Pokhara': 22, 'Baglung': 20, 'Butwal': 26,
+                        'Biratnagar': 28, 'Janakpur': 27, 'Nepalgunj': 29, 'Dharan': 25,
+                        'Itahari': 25, 'Gorkha': 20, 'Lamjung': 18, 'Kaski': 22,
+                        'Syangja': 21, 'Palpa': 20, 'Gulmi': 19, 'Arghakhanchi': 21,
+                        'Kapilvastu': 27, 'Rupandehi': 26, 'Nawalparasi': 25, 'Chitwan': 26,
+                        'Makwanpur': 23, 'Sindhuli': 22, 'Udayapur': 24, 'Saptari': 28,
+                        'Siraha': 27, 'Dhanusa': 27, 'Mahottari': 27, 'Sarlahi': 26,
+                        'Rautahat': 27, 'Bara': 26, 'Parsa': 27, 'Banke': 29,
+                        'Bardiya': 28, 'Surkhet': 24, 'Dailekh': 20, 'Jajarkot': 18,
+                        'Rukum': 17, 'Rolpa': 18, 'Pyuthan': 20, 'Dang': 25,
+                        'Salyan': 19, 'Jumla': 14, 'Kalikot': 13, 'Mugu': 12,
+                        'Humla': 10, 'Dolpa': 11, 'Mustang': 12, 'Manang': 10,
+                        'Gandaki': 15, 'Myagdi': 16, 'Parbat': 18
+                    };
+                    return tempMap[city] || 22;
+                }
+                
+                // Other countries temperature map
+                const tempMap = {
+                    'India': 28, 'USA': 22, 'UK': 15, 'Australia': 25,
+                    'Canada': 12, 'Germany': 16, 'France': 18, 'Japan': 20,
+                    'China': 22, 'Brazil': 27, 'South Africa': 20, 'Egypt': 30,
+                    'UAE': 35, 'Saudi Arabia': 33, 'Singapore': 28, 'Malaysia': 27,
+                    'Thailand': 29, 'Vietnam': 26, 'Philippines': 28, 'Indonesia': 27
+                };
+                return tempMap[country] || 22;
             }
 
             // --- AUTO UPDATE: Update all display elements every second ---
@@ -684,7 +613,7 @@
 
             // --- Refresh location & temperature periodically (every 5 minutes) ---
             function refreshLocationAndTemp() {
-                fetchLocationAndTemp();
+                fetchIPLocation();
             }
 
             // --- INIT ---
@@ -692,7 +621,7 @@
                 loadSavedMode();
 
                 // Fetch location & temperature immediately
-                fetchLocationAndTemp();
+                fetchIPLocation();
 
                 // Initial display update
                 updateDisplay();
