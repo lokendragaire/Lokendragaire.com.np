@@ -6,7 +6,6 @@
     <title>Lokendra Gaire | Digital Creator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
@@ -258,9 +257,6 @@
 
         <div class="info-divider"></div>
 
-       
-        <div class="info-divider"></div>
-
         <!-- Time with Seconds -->
         <div class="info-item">
             <span class="icon">🕐</span>
@@ -455,12 +451,9 @@
             });
 
             // ============================================================
-            //  CALENDAR: AD + BS - AUTO UPDATE WITH ACCURATE DATES
-            //  Using nepali-date-converter library
-            //  Supports: 28, 29, 30, 31, 32 (Nepali months)
+            //  DAY, DATE, TIME, LOCATION, TEMP, GREETING - AUTO UPDATE
             // ============================================================
 
-           
             // --- Days of Week ---
             const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -499,66 +492,14 @@
             function updateDisplay() {
                 const now = new Date();
                 
-                // === DAY (AD) ===
+                // Day Name
                 document.getElementById('dayName').textContent = daysOfWeek[now.getDay()];
                 
-                // === AD DATE ===
+                // AD Date
                 const adOptions = { month: 'short', day: 'numeric', year: 'numeric' };
                 document.getElementById('adDate').textContent = now.toLocaleDateString('en-US', adOptions);
                 
-                // === BS DATE - Using nepali-date-converter library (ACCURATE) ===
-                try {
-                    let bsDate;
-                    
-                    // Check if NepaliDate is available globally
-                    if (typeof NepaliDate !== 'undefined') {
-                        bsDate = new NepaliDate(now);
-                    } else if (typeof window.NepaliDate !== 'undefined') {
-                        bsDate = new window.NepaliDate(now);
-                    } else {
-                        // Fallback - if library not loaded, show approximate
-                        const year = now.getFullYear() + 56;
-                        const month = now.getMonth();
-                        let day = now.getDate() + 15;
-                        let bsMonth = month;
-                        let bsDay = day;
-                        if (bsDay > 30) {
-                            bsDay -= 30;
-                            bsMonth += 1;
-                        }
-                        if (bsMonth >= 12) {
-                            bsMonth -= 12;
-                        }
-                        document.getElementById('bsDate').textContent = `${year} ${nepaliMonths[bsMonth]} ${bsDay}`;
-                        return;
-                    }
-                    
-                    // Get accurate BS year, month (0-11), day
-                    const bsYear = bsDate.getYear();
-                    const bsMonth = bsDate.getMonth(); // 0 = Baisakh, 1 = Jestha, ...
-                    const bsDay = bsDate.getDate(); // Can be 28, 29, 30, 31, 32
-                    
-                    // Format: 2083 Asar 28
-                    document.getElementById('bsDate').textContent = `${bsYear} ${nepaliMonths[bsMonth]} ${bsDay}`;
-                } catch (e) {
-                    // Fallback if library fails
-                    console.log('NepaliDate library error:', e);
-                    const year = now.getFullYear() + 56;
-                    const month = now.getMonth();
-                    let day = now.getDate() + 15;
-                    let bsMonth = month;
-                    let bsDay = day;
-                    if (bsDay > 30) {
-                        bsDay -= 30;
-                        bsMonth += 1;
-                    }
-                    if (bsMonth >= 12) {
-                        bsMonth -= 12;
-                    }
-                    document.getElementById('bsDate').textContent = `${year} ${nepaliMonths[bsMonth]} ${bsDay}`;
-                }
-                
-                // === TIME with seconds ===
+                // Time with seconds
                 const hours = now.getHours();
                 const minutes = now.getMinutes();
                 const seconds = now.getSeconds();
@@ -567,7 +508,7 @@
                 document.getElementById('currentTime').textContent = 
                     `${String(hours12).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} ${ampm}`;
                 
-                // === GREETING ===
+                // Greeting
                 const greeting = getGreeting();
                 document.getElementById('greetingText').textContent = greeting.text;
                 document.getElementById('greetingIcon').textContent = greeting.icon;
@@ -577,8 +518,7 @@
             document.addEventListener('DOMContentLoaded', function() {
                 loadSavedMode();
                 fetchLocation();
-                // Wait for library to load
-                setTimeout(updateDisplay, 150);
+                updateDisplay();
                 // Update every second (real-time)
                 setInterval(updateDisplay, 1000);
             });
