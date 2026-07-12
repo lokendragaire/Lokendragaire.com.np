@@ -22,7 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Lato:wght@400;700;400italic;700italic&display=swap" rel="stylesheet" />
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
+     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
         * {
@@ -280,18 +280,18 @@
 
         <div class="info-divider"></div>
 
-        <!-- Location -->
+        <!-- Location (Auto-detected) -->
         <div class="info-item">
             <span class="icon">📍</span>
-            <span class="value accent-text" id="locationName">Kathmandu</span>
+            <span class="value accent-text" id="locationName">Detecting...</span>
         </div>
 
         <div class="info-divider"></div>
 
-        <!-- Temperature -->
+        <!-- Temperature (Auto-detected) -->
         <div class="info-item">
             <span class="icon">🌡️</span>
-            <span class="value" id="temperature">24°C</span>
+            <span class="value" id="temperature">--°C</span>
         </div>
 
         <div class="info-divider"></div>
@@ -466,32 +466,67 @@
             });
 
             // ============================================================
-            //  AUTO UPDATE: DAY, DATE, TIME, LOCATION, TEMP, GREETING
-            //  Updates every second (real-time)
+            //  AUTO UPDATE: LOCATION, TEMPERATURE, DAY, DATE, TIME, GREETING
+            //  Real-time update every second
             // ============================================================
 
             // --- Days of Week ---
             const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-            // --- Location data ---
+            // --- Location data (will be updated from API) ---
             let locationData = {
-                city: 'Kathmandu',
-                temp: 24
+                city: 'Detecting...',
+                temp: '--',
+                region: '',
+                country: ''
             };
 
-            // --- Fetch location from IP (once on load) ---
-            function fetchLocation() {
+            // --- Fetch location & temperature from IP (REAL-TIME) ---
+            function fetchLocationAndTemp() {
+                // Using ipapi.co for accurate location and temperature
                 fetch('https://ipapi.co/json/')
-                    .then(response => response.json())
-                    .then(data => {
-                        locationData.city = data.city || 'Kathmandu';
-                        locationData.temp = Math.round(data.temperature || 24);
-                        document.getElementById('locationName').textContent = locationData.city;
-                        document.getElementById('temperature').textContent = `${locationData.temp}°C`;
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
                     })
-                    .catch(() => {
-                        document.getElementById('locationName').textContent = 'Kathmandu';
-                        document.getElementById('temperature').textContent = '24°C';
+                    .then(data => {
+                        // Update location data
+                        locationData.city = data.city || 'Unknown';
+                        locationData.region = data.region || '';
+                        locationData.country = data.country_name || '';
+                        locationData.temp = data.temperature ? Math.round(data.temperature) : '--';
+                        
+                        // Update DOM
+                        const locationDisplay = locationData.city + (locationData.country ? ', ' + locationData.country : '');
+                        document.getElementById('locationName').textContent = locationDisplay;
+                        document.getElementById('temperature').textContent = locationData.temp !== '--' ? locationData.temp + '°C' : '--°C';
+                    })
+                    .catch((error) => {
+                        console.log('Location API error:', error);
+                        // Fallback - try alternative API
+                        fetch('https://api.ipify.org?format=json')
+                            .then(res => res.json())
+                            .then(ipData => {
+                                // Get location from IP using freegeoip
+                                return fetch(`https://ipapi.co/${ipData.ip}/json/`);
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                locationData.city = data.city || 'Unknown';
+                                locationData.country = data.country_name || '';
+                                locationData.temp = data.temperature ? Math.round(data.temperature) : '--';
+                                
+                                const locationDisplay = locationData.city + (locationData.country ? ', ' + locationData.country : '');
+                                document.getElementById('locationName').textContent = locationDisplay;
+                                document.getElementById('temperature').textContent = locationData.temp !== '--' ? locationData.temp + '°C' : '--°C';
+                            })
+                            .catch(() => {
+                                // Final fallback
+                                document.getElementById('locationName').textContent = 'Kathmandu, Nepal';
+                                document.getElementById('temperature').textContent = '24°C';
+                            });
                     });
             }
 
@@ -528,17 +563,28 @@
                 const greeting = getGreeting();
                 document.getElementById('greetingText').textContent = greeting.text;
                 document.getElementById('greetingIcon').textContent = greeting.icon;
-                
-                // LOCATION & TEMP - Already set from fetchLocation()
-                // They only update on page refresh (IP doesn't change while browsing)
+            }
+
+            // --- Refresh location & temperature periodically (every 5 minutes) ---
+            function refreshLocationAndTemp() {
+                fetchLocationAndTemp();
             }
 
             // --- INIT ---
             document.addEventListener('DOMContentLoaded', function() {
                 loadSavedMode();
-                fetchLocation();        // Fetch location once on load
-                updateDisplay();        // Initial display
-                setInterval(updateDisplay, 1000);  // Auto update every SECOND (real-time)
+                
+                // Fetch location & temperature immediately
+                fetchLocationAndTemp();
+                
+                // Initial display update
+                updateDisplay();
+                
+                // Auto update every SECOND for time, date, day, greeting
+                setInterval(updateDisplay, 1000);
+                
+                // Refresh location & temperature every 5 minutes (300000 ms)
+                setInterval(refreshLocationAndTemp, 300000);
             });
 
         })();
