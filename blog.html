@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -373,7 +374,7 @@
       background: white;
       padding: 2.5rem 2rem;
       border-radius: 40px;
-      max-width: 400px;
+      max-width: 420px;
       width: 100%;
       box-shadow: 0 40px 70px rgba(0,0,0,0.15);
       transform: scale(0.96);
@@ -384,8 +385,13 @@
     }
     .auth-box h2 {
       font-size: 1.6rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.5rem;
       color: #0b1e3a;
+    }
+    .auth-box .subtitle {
+      color: #6f7e94;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
     }
     .auth-box input {
       width: 100%;
@@ -393,6 +399,12 @@
       border: 1px solid #dce6f2;
       border-radius: 30px;
       margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+    .auth-box input:focus {
+      outline: none;
+      border-color: #2d7aff;
+      box-shadow: 0 0 0 4px rgba(45, 122, 255, 0.08);
     }
     .auth-box button {
       width: 100%;
@@ -404,6 +416,7 @@
       font-weight: 700;
       cursor: pointer;
       transition: 0.2s;
+      font-size: 1rem;
     }
     .auth-box button:hover {
       background: #1b5fd9;
@@ -416,6 +429,44 @@
     }
     .auth-box .close-auth:hover {
       background: #eef2f6;
+    }
+    .auth-box .toggle-mode {
+      background: transparent;
+      color: #2d7aff;
+      margin-top: 0.5rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    .auth-box .toggle-mode:hover {
+      background: transparent;
+      text-decoration: underline;
+    }
+    #authError {
+      color: #b13e4b;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    #authSuccess {
+      color: #1e7b4b;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    /* loading spinner */
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #6f7e94;
+    }
+    .loading i {
+      font-size: 2rem;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
     /* responsive */
@@ -447,7 +498,7 @@
   <div class="content">
     <!-- Personal tab (admin posts) -->
     <div id="personalTab" class="tab-panel active">
-      <div class="post-form" id="postForm">
+      <div class="post-form" id="postForm" style="display:none;">
         <h2><i class="fas fa-feather-alt" style="color:#2d7aff;"></i> <span id="formTitle">Create new post</span></h2>
         <input type="text" id="titleInput" placeholder="Post title" />
         <textarea id="contentInput" placeholder="Write your post content..."></textarea>
@@ -471,11 +522,15 @@
   <!-- Auth Modal -->
   <div class="auth-modal" id="authModal">
     <div class="auth-box">
-      <h2><i class="fas fa-lock" style="color:#2d7aff; margin-right: 8px;"></i> Admin access</h2>
-      <input type="password" id="authPassword" placeholder="Enter admin password" />
-      <button id="authSubmitBtn"><i class="fas fa-sign-in-alt"></i> Unlock</button>
+      <h2><i class="fas fa-lock" style="color:#2d7aff; margin-right: 8px;"></i> <span id="authTitle">Login</span></h2>
+      <p class="subtitle" id="authSubtitle">Sign in with your Supabase account</p>
+      <input type="email" id="authEmail" placeholder="Email address" />
+      <input type="password" id="authPassword" placeholder="Password" />
+      <button id="authSubmitBtn"><i class="fas fa-sign-in-alt"></i> <span id="authBtnText">Sign In</span></button>
+      <button class="toggle-mode" id="toggleAuthMode">Don't have an account? Sign up</button>
       <button class="close-auth" id="authCloseBtn">Cancel</button>
-      <div id="authError" style="color:#b13e4b; margin-top: 10px; font-size:0.9rem;"></div>
+      <div id="authError"></div>
+      <div id="authSuccess"></div>
     </div>
   </div>
 
@@ -490,9 +545,10 @@
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // ---------- STATE ----------
-    let currentUser = null;        // null = not logged, { id, email } = logged
-    let posts = [];              // all posts from supabase
-    let editingId = null;        // if editing, store post id
+    let currentUser = null;
+    let posts = [];
+    let editingId = null;
+    let isSignUp = false;
 
     // DOM refs
     const personalContainer = document.getElementById('personalPostsContainer');
@@ -505,14 +561,20 @@
     const editIdHidden = document.getElementById('editId');
     const loginBtn = document.getElementById('loginToggle');
     const loginLabel = document.getElementById('loginLabel');
+    const postForm = document.getElementById('postForm');
 
     const authModal = document.getElementById('authModal');
+    const authEmail = document.getElementById('authEmail');
     const authPassword = document.getElementById('authPassword');
     const authSubmit = document.getElementById('authSubmitBtn');
     const authClose = document.getElementById('authCloseBtn');
     const authError = document.getElementById('authError');
+    const authSuccess = document.getElementById('authSuccess');
+    const authTitle = document.getElementById('authTitle');
+    const authSubtitle = document.getElementById('authSubtitle');
+    const authBtnText = document.getElementById('authBtnText');
+    const toggleModeBtn = document.getElementById('toggleAuthMode');
 
-    // tabs
     const tabBtns = document.querySelectorAll('.tab-btn');
     const personalTab = document.getElementById('personalTab');
     const allTab = document.getElementById('allTab');
@@ -561,35 +623,91 @@
       return String(text).replace(/[&<>"']/g, m => map[m]);
     }
 
+    function showLoading(container) {
+      container.innerHTML = `<div class="loading"><i class="fas fa-spinner"></i> Loading...</div>`;
+    }
+
+    // ---------- AUTH FUNCTIONS ----------
+    async function signIn(email, password) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+        if (error) throw error;
+        return { success: true, user: data.user };
+      } catch (error) {
+        return { success: false, error: error.message };
+      }
+    }
+
+    async function signUp(email, password) {
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email: email,
+          password: password
+        });
+        if (error) throw error;
+        if (data.user && data.user.identities && data.user.identities.length === 0) {
+          return { success: false, error: 'User already exists. Please sign in instead.' };
+        }
+        return { success: true, user: data.user };
+      } catch (error) {
+        return { success: false, error: error.message };
+      }
+    }
+
+    async function signOut() {
+      await supabase.auth.signOut();
+      currentUser = null;
+      loginLabel.textContent = 'Login';
+      loginBtn.classList.remove('logged');
+      postForm.style.display = 'none';
+      cancelEdit();
+      await fetchPosts();
+    }
+
     // ---------- FETCH POSTS ----------
     async function fetchPosts() {
+      showLoading(personalContainer);
+      showLoading(allContainer);
+      
       const { data, error } = await supabase
         .from('posts')
         .select('*')
         .order('created_at', { ascending: false });
+      
       if (error) {
         console.error('Fetch error:', error);
+        personalContainer.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Error loading posts: ${error.message}</p></div>`;
+        allContainer.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Error loading posts</p></div>`;
         return;
       }
+      
       posts = data || [];
-      // render personal (if logged) otherwise show empty / login prompt
+      
       if (currentUser) {
         renderPosts(posts, personalContainer, true);
+        postForm.style.display = 'block';
       } else {
         personalContainer.innerHTML = `<div class="empty-state"><i class="fas fa-lock"></i><p>Login to manage posts</p></div>`;
+        postForm.style.display = 'none';
       }
-      // render all tab
       renderPosts(posts, allContainer, false);
     }
 
-    // ---------- CRUD OPERATIONS (only if logged) ----------
+    // ---------- CRUD OPERATIONS ----------
     async function createPost(title, content) {
       if (!currentUser) return;
       const { data, error } = await supabase
         .from('posts')
         .insert([{ title, content }])
         .select();
-      if (error) { console.error(error); return; }
+      if (error) { 
+        console.error(error); 
+        alert('Error creating post: ' + error.message);
+        return; 
+      }
       await fetchPosts();
     }
 
@@ -599,7 +717,11 @@
         .from('posts')
         .update({ title, content })
         .eq('id', id);
-      if (error) { console.error(error); return; }
+      if (error) { 
+        console.error(error); 
+        alert('Error updating post: ' + error.message);
+        return; 
+      }
       await fetchPosts();
       cancelEdit();
     }
@@ -611,7 +733,11 @@
         .from('posts')
         .delete()
         .eq('id', id);
-      if (error) { console.error(error); return; }
+      if (error) { 
+        console.error(error); 
+        alert('Error deleting post: ' + error.message);
+        return; 
+      }
       await fetchPosts();
     }
 
@@ -638,7 +764,27 @@
       editIdHidden.value = '';
     }
 
-    // ---------- EVENT LISTENERS (delegation) ----------
+    // ---------- AUTH UI ----------
+    function toggleAuthMode() {
+      isSignUp = !isSignUp;
+      if (isSignUp) {
+        authTitle.textContent = 'Sign Up';
+        authSubtitle.textContent = 'Create a new admin account';
+        authBtnText.textContent = 'Sign Up';
+        toggleModeBtn.textContent = 'Already have an account? Sign in';
+        authSubmit.innerHTML = '<i class="fas fa-user-plus"></i> Sign Up';
+      } else {
+        authTitle.textContent = 'Login';
+        authSubtitle.textContent = 'Sign in with your Supabase account';
+        authBtnText.textContent = 'Sign In';
+        toggleModeBtn.textContent = 'Don\'t have an account? Sign up';
+        authSubmit.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+      }
+      authError.textContent = '';
+      authSuccess.textContent = '';
+    }
+
+    // ---------- EVENT LISTENERS ----------
     personalContainer.addEventListener('click', (e) => {
       const target = e.target.closest('button');
       if (!target) return;
@@ -651,7 +797,6 @@
       } else if (target.classList.contains('delete-btn')) {
         deletePost(postId);
       } else if (target.classList.contains('update-btn')) {
-        // just trigger update: we fetch latest from supabase and re-render
         fetchPosts();
       }
     });
@@ -678,65 +823,103 @@
 
     cancelBtn.addEventListener('click', cancelEdit);
 
-    // ---------- AUTH (simple password) ----------
-    const ADMIN_PASSWORD = 'admin123';  // you can change this
-
-    function login(password) {
-      if (password === ADMIN_PASSWORD) {
-        currentUser = { id: 'admin', email: 'admin@blog' };
-        loginLabel.textContent = 'Logout';
-        loginBtn.classList.add('logged');
-        authModal.classList.remove('open');
-        authError.textContent = '';
-        authPassword.value = '';
-        fetchPosts(); // reload personal
-      } else {
-        authError.textContent = 'Wrong password. Try again.';
-      }
-    }
-
-    function logout() {
-      currentUser = null;
-      loginLabel.textContent = 'Login';
-      loginBtn.classList.remove('logged');
-      cancelEdit();
-      fetchPosts();
-    }
-
+    // Auth events
     loginBtn.addEventListener('click', () => {
       if (currentUser) {
-        logout();
+        signOut();
       } else {
         authModal.classList.add('open');
+        authEmail.value = '';
         authPassword.value = '';
         authError.textContent = '';
-        authPassword.focus();
+        authSuccess.textContent = '';
+        isSignUp = false;
+        authTitle.textContent = 'Login';
+        authSubtitle.textContent = 'Sign in with your Supabase account';
+        authBtnText.textContent = 'Sign In';
+        toggleModeBtn.textContent = 'Don\'t have an account? Sign up';
+        authSubmit.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+        authEmail.focus();
       }
     });
 
-    authSubmit.addEventListener('click', () => {
-      const pass = authPassword.value;
-      login(pass);
+    authSubmit.addEventListener('click', async () => {
+      const email = authEmail.value.trim();
+      const password = authPassword.value.trim();
+      
+      if (!email || !password) {
+        authError.textContent = 'Please fill in all fields.';
+        return;
+      }
+      
+      authError.textContent = '';
+      authSuccess.textContent = '';
+      authSubmit.disabled = true;
+      authSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+      
+      let result;
+      if (isSignUp) {
+        result = await signUp(email, password);
+        if (result.success) {
+          authSuccess.textContent = 'Account created! You can now sign in.';
+          // Auto switch to sign in mode after signup
+          setTimeout(() => {
+            isSignUp = false;
+            authTitle.textContent = 'Login';
+            authSubtitle.textContent = 'Sign in with your Supabase account';
+            authBtnText.textContent = 'Sign In';
+            toggleModeBtn.textContent = 'Don\'t have an account? Sign up';
+            authSubmit.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+            authSuccess.textContent = '';
+            authPassword.value = '';
+          }, 2000);
+        }
+      } else {
+        result = await signIn(email, password);
+        if (result.success) {
+          currentUser = result.user;
+          loginLabel.textContent = 'Logout';
+          loginBtn.classList.add('logged');
+          authModal.classList.remove('open');
+          authError.textContent = '';
+          authSuccess.textContent = '';
+          await fetchPosts();
+        }
+      }
+      
+      if (!result.success) {
+        authError.textContent = result.error;
+      }
+      
+      authSubmit.disabled = false;
+      authSubmit.innerHTML = isSignUp ? '<i class="fas fa-user-plus"></i> Sign Up' : '<i class="fas fa-sign-in-alt"></i> Sign In';
     });
 
     authPassword.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') authSubmit.click();
     });
 
+    authEmail.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') authPassword.focus();
+    });
+
+    toggleModeBtn.addEventListener('click', toggleAuthMode);
+
     authClose.addEventListener('click', () => {
       authModal.classList.remove('open');
       authError.textContent = '';
+      authSuccess.textContent = '';
     });
 
-    // close modal on backdrop click
     authModal.addEventListener('click', (e) => {
       if (e.target === authModal) {
         authModal.classList.remove('open');
         authError.textContent = '';
+        authSuccess.textContent = '';
       }
     });
 
-    // ---------- TABS ----------
+    // Tabs
     tabBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         tabBtns.forEach(b => b.classList.remove('active'));
@@ -752,11 +935,38 @@
       });
     });
 
-    // ---------- INIT ----------
-    fetchPosts();
+    // ---------- CHECK EXISTING SESSION ----------
+    async function checkSession() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        currentUser = session.user;
+        loginLabel.textContent = 'Logout';
+        loginBtn.classList.add('logged');
+        postForm.style.display = 'block';
+      }
+      await fetchPosts();
+    }
 
-    // if user not logged, show login hint in personal tab
-    // re-render personal when fetchPosts done
+    // ---------- INIT ----------
+    checkSession();
+
+    // Listen for auth state changes
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        currentUser = session.user;
+        loginLabel.textContent = 'Logout';
+        loginBtn.classList.add('logged');
+        postForm.style.display = 'block';
+        fetchPosts();
+      } else if (event === 'SIGNED_OUT') {
+        currentUser = null;
+        loginLabel.textContent = 'Login';
+        loginBtn.classList.remove('logged');
+        postForm.style.display = 'none';
+        cancelEdit();
+        fetchPosts();
+      }
+    });
   })();
 </script>
 </body>
