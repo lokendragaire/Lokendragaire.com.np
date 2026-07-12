@@ -3,336 +3,895 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Personal Blog · Admin</title>
+    <title>Lokendra Gaire · Personal Blog</title>
     <!-- Supabase JS library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
     <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
         }
+
         body {
-            background: #f4f7fc;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f4f8;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
             padding: 1.5rem;
         }
+
         .container {
-            max-width: 1100px;
-            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
         }
-        /* header */
-        .blog-header {
+
+        /* ===== HEADER ===== */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 1.2rem 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            background: white;
-            padding: 1.2rem 2rem;
-            border-radius: 2rem;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
-            margin-bottom: 2rem;
-        }
-        .blog-header h1 {
-            font-weight: 600;
-            font-size: 1.8rem;
-            color: #0b1e33;
-            letter-spacing: -0.5px;
-        }
-        .blog-header h1 i {
-            color: #3b82f6;
-            margin-right: 8px;
-        }
-        .auth-btn {
-            background: #1e293b;
-            color: white;
-            border: none;
-            padding: 0.6rem 1.4rem;
-            border-radius: 40px;
-            font-weight: 500;
-            font-size: 0.95rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        }
-        .auth-btn:hover {
-            background: #0f172a;
-            transform: scale(1.02);
-        }
-        .auth-btn i {
-            font-size: 1rem;
-        }
-        .auth-btn.logout {
-            background: #dc2626;
-        }
-        .auth-btn.logout:hover {
-            background: #b91c1c;
+            gap: 1rem;
         }
 
-        /* cards */
-        .card {
-            background: white;
-            border-radius: 1.8rem;
-            padding: 1.8rem 2rem;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.04);
-            margin-bottom: 2rem;
-            transition: 0.15s;
-            border: 1px solid #f0f4fa;
-        }
-        .card-title {
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: #0b1e33;
-            margin-bottom: 1.2rem;
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0f172a;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0.5rem;
         }
-        .card-title i {
+
+        .header h1 i {
             color: #3b82f6;
         }
 
-        /* login panel */
+        .header h1 span {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            padding: 0.6rem 1.4rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+        }
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59,130,246,0.4);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+        }
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #e2e8f0;
+            color: #475569;
+        }
+        .btn-outline:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            background: rgba(59,130,246,0.05);
+        }
+
+        .btn-sm {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.75rem;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #64748b;
+            padding: 0.3rem 0.6rem;
+        }
+        .btn-ghost:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ===== MAIN LAYOUT: Flex Row ===== */
+        .main-layout {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        /* ===== LEFT COLUMN (Posts) ===== */
+        .left-column {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* ===== RIGHT COLUMN (Login + Create) ===== */
+        .right-column {
+            width: 340px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem 1.8rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .card-title i {
+            color: #3b82f6;
+            font-size: 1.1rem;
+        }
+
+        /* ===== LOGIN PANEL (Compact) ===== */
         .login-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+
+        .login-panel .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .login-panel .input-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .login-panel input {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            background: #fafcff;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .login-panel input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.08);
+        }
+
+        .login-panel .login-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 0.3rem;
+        }
+
+        .login-status {
+            font-size: 0.75rem;
+            color: #64748b;
+            padding: 0.3rem 0.6rem;
+            border-radius: 8px;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .login-status.success {
+            color: #10b981;
+            background: #ecfdf5;
+        }
+
+        .login-status.error {
+            color: #ef4444;
+            background: #fef2f2;
+        }
+
+        /* ===== POST FORM (Compact) ===== */
+        .post-form {
+            display: none;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .post-form.visible {
+            display: flex;
+        }
+
+        .post-form input,
+        .post-form textarea {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            background: #fafcff;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .post-form input:focus,
+        .post-form textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.08);
+        }
+
+        .post-form textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* ===== FILE UPLOAD ===== */
+        .file-upload-zone {
+            border: 2px dashed #e2e8f0;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fafcff;
+        }
+
+        .file-upload-zone:hover {
+            border-color: #3b82f6;
+            background: rgba(59,130,246,0.04);
+        }
+
+        .file-upload-zone i {
+            font-size: 1.5rem;
+            color: #3b82f6;
+            margin-bottom: 0.2rem;
+        }
+
+        .file-upload-zone p {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .file-upload-zone .file-name {
+            color: #3b82f6;
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+        }
+
+        .file-upload-zone input[type="file"] {
+            display: none;
+        }
+
+        .login-required-msg {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            padding: 0.5rem 0;
+        }
+
+        .login-required-msg i {
+            margin-right: 0.4rem;
+        }
+
+        /* ===== POSTS ===== */
+        .posts-grid {
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
-        .login-panel .input-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-            align-items: center;
-        }
-        .login-panel input {
-            flex: 1 1 180px;
-            padding: 0.7rem 1.2rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 60px;
-            font-size: 0.95rem;
-            background: #fafcff;
-            transition: 0.2s;
-        }
-        .login-panel input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
-        }
-        .login-panel .btn-primary {
-            background: #3b82f6;
-            border: none;
-            color: white;
-            padding: 0.7rem 1.8rem;
-            border-radius: 60px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.15s;
-            font-size: 0.95rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .login-panel .btn-primary:hover {
-            background: #2563eb;
-        }
-        .login-status {
-            font-size: 0.9rem;
-            color: #475569;
-        }
-        .login-status.success {
-            color: #16a34a;
-        }
-        .login-status.error {
-            color: #dc2626;
+
+        .post-item {
+            background: white;
+            padding: 1.2rem 1.5rem;
+            border-radius: 16px;
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
         }
 
-        /* post form (visible only when logged in) */
-        .post-form {
-            display: none;
-            flex-direction: column;
-            gap: 1.2rem;
+        .post-item:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            transform: translateX(4px);
         }
-        .post-form.visible {
+
+        .post-item .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .post-item h3 {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #0f172a;
+            flex: 1;
+        }
+
+        .post-item .post-actions {
+            display: flex;
+            gap: 0.3rem;
+        }
+
+        .post-item .post-content {
+            color: #475569;
+            margin-top: 0.5rem;
+            line-height: 1.6;
+            font-size: 0.9rem;
+            word-break: break-word;
+        }
+
+        .post-item .post-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+        }
+
+        .post-item .post-file {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.85rem;
+        }
+
+        .post-item .post-file i {
+            color: #3b82f6;
+            font-size: 1.2rem;
+        }
+
+        .post-item .post-file a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        .post-item .post-file a:hover {
+            text-decoration: underline;
+        }
+
+        .post-item .post-meta {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 0.6rem;
+            padding-top: 0.6rem;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .post-item .post-meta span i {
+            margin-right: 0.3rem;
+            color: #3b82f6;
+        }
+
+        .empty-posts {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+        }
+
+        .empty-posts i {
+            font-size: 2.5rem;
+            color: #cbd5e0;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-posts h3 {
+            color: #0f172a;
+            margin-bottom: 0.3rem;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        .modal-overlay.active {
             display: flex;
         }
-        .post-form input, 
-        .post-form textarea {
-            padding: 0.8rem 1.2rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 30px;
-            font-size: 0.95rem;
-            background: #fafcff;
-            transition: 0.2s;
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            max-width: 600px;
             width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            animation: slideUp 0.3s ease;
         }
-        .post-form textarea {
-            border-radius: 24px;
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .modal-header h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .modal-header h2 i {
+            color: #3b82f6;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: 0.3s;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+        }
+
+        .modal-close:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+            transform: rotate(90deg);
+        }
+
+        .modal .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .modal .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #475569;
+            margin-bottom: 0.3rem;
+        }
+
+        .modal .form-control {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .modal .form-control:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.08);
+        }
+
+        .modal textarea.form-control {
             resize: vertical;
             min-height: 120px;
         }
-        .post-form input:focus, 
-        .post-form textarea:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+
+        .modal .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
         }
-        .post-form .btn-success {
-            background: #0f172a;
-            border: none;
+
+        .modal .form-actions {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #f1f5f9;
+            justify-content: flex-end;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
             color: white;
-            padding: 0.8rem 2rem;
-            border-radius: 60px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.15s;
-            align-self: flex-start;
-            font-size: 0.95rem;
-        }
-        .post-form .btn-success:hover {
-            background: #1e293b;
-        }
-
-        /* posts list */
-        .posts-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 1.2rem;
-        }
-        .post-item {
-            background: #fafcff;
-            padding: 1.2rem 1.6rem;
-            border-radius: 1.6rem;
-            border-left: 5px solid #3b82f6;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-            transition: 0.1s;
-        }
-        .post-item h3 {
             font-weight: 600;
-            font-size: 1.2rem;
-            color: #0b1e33;
-            margin-bottom: 4px;
-        }
-        .post-item .post-meta {
-            font-size: 0.8rem;
-            color: #64748b;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin-top: 0.4rem;
-            border-top: 1px solid #eef2f6;
-            padding-top: 0.6rem;
-        }
-        .post-item .post-meta span i {
-            margin-right: 4px;
-            color: #3b82f6;
-        }
-        .post-item .post-content {
-            color: #1e293b;
-            margin-top: 0.3rem;
-            line-height: 1.5;
-            word-break: break-word;
-        }
-        .empty-posts {
-            color: #64748b;
-            font-style: italic;
-            padding: 0.8rem 0;
-        }
-        .delete-btn {
-            background: transparent;
-            border: none;
-            color: #94a3b8;
-            cursor: pointer;
             font-size: 0.9rem;
-            padding: 0 6px;
-            transition: 0.1s;
-        }
-        .delete-btn:hover {
-            color: #dc2626;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+            display: none;
+            max-width: 400px;
         }
 
-        /* utility */
-        .flex-row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
+        .toast.success {
+            background: #10b981;
         }
-        .gap-2 { gap: 0.8rem; }
-        .mt-2 { margin-top: 0.6rem; }
-        .hidden { display: none; }
-        .text-center { text-align: center; }
+        .toast.error {
+            background: #ef4444;
+        }
+        .toast.info {
+            background: #3b82f6;
+        }
 
-        @media (max-width: 600px) {
-            .blog-header { flex-direction: column; align-items: start; gap: 0.8rem; }
+        .toast.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ===== LOADING ===== */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+        }
+
+        .spinner {
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 0.8rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .main-layout {
+                flex-direction: column;
+            }
+
+            .right-column {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .right-column .card {
+                flex: 1;
+                min-width: 280px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header {
+                padding: 1rem 1.2rem;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .header h1 {
+                font-size: 1.3rem;
+            }
+
+            .header-actions {
+                flex-wrap: wrap;
+            }
+
+            .right-column {
+                flex-direction: column;
+            }
+
+            .right-column .card {
+                min-width: auto;
+            }
+
+            .modal {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .modal .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .post-item {
+                padding: 1rem;
+            }
+
+            .post-item h3 {
+                font-size: 1rem;
+            }
+
+            .toast {
+                bottom: 1rem;
+                right: 1rem;
+                left: 1rem;
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.1rem;
+            }
+
+            .btn {
+                padding: 0.4rem 1rem;
+                font-size: 0.75rem;
+            }
+
+            .card {
+                padding: 1rem 1.2rem;
+            }
+
+            .login-panel .login-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .login-panel .login-actions .btn {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-<div class="container">
 
-    <!-- Header -->
-    <header class="blog-header">
-        <h1><i class="fas fa-pen-fancy"></i> My Blog</h1>
-        <div>
-            <button id="authToggleBtn" class="auth-btn"><i class="fas fa-sign-in-alt"></i> Admin login</button>
+<div class="container">
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+        <h1><i class="fas fa-feather-alt"></i> My <span>Blog</span></h1>
+        <div class="header-actions">
+            <button id="authToggleBtn" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> Admin
+            </button>
         </div>
     </header>
 
-    <!-- Login Panel (always visible) -->
-    <div class="card" id="loginCard">
-        <div class="card-title"><i class="fas fa-lock"></i> Admin access</div>
-        <div class="login-panel">
-            <div class="input-group">
-                <input type="text" id="loginEmail" placeholder="Email" value="admin@blog.com" />
-                <input type="password" id="loginPassword" placeholder="Password" value="12345678" />
-                <button id="loginBtn" class="btn-primary"><i class="fas fa-arrow-right-to-bracket"></i> Login</button>
-                <button id="logoutBtn" class="btn-primary" style="background:#64748b; display:none;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    <!-- ===== MAIN LAYOUT ===== -->
+    <div class="main-layout">
+        <!-- LEFT COLUMN: Posts -->
+        <div class="left-column">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-list-ul"></i> All Posts
+                </div>
+                <div id="postsContainer" class="posts-grid">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading posts...</p>
+                    </div>
+                </div>
             </div>
-            <div id="loginStatus" class="login-status">🔐 Use demo credentials or sign up</div>
+        </div>
+
+        <!-- RIGHT COLUMN: Login + Create -->
+        <div class="right-column">
+            <!-- Login Card -->
+            <div class="card" id="loginCard">
+                <div class="card-title">
+                    <i class="fas fa-lock"></i> Admin Access
+                </div>
+                <div class="login-panel">
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" placeholder="admin@blog.com" value="admin@blog.com" />
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••" value="12345678" />
+                    </div>
+                    <div class="login-actions">
+                        <button id="loginBtn" class="btn btn-primary btn-sm">
+                            <i class="fas fa-arrow-right"></i> Login
+                        </button>
+                        <button id="logoutBtn" class="btn btn-danger btn-sm hidden">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                        <div id="loginStatus" class="login-status">
+                            <i class="fas fa-info-circle"></i> Demo credentials
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Post Card -->
+            <div class="card" id="postCard">
+                <div class="card-title">
+                    <i class="fas fa-pencil-alt"></i> New Post
+                </div>
+
+                <div id="postFormWrapper" class="post-form">
+                    <input type="text" id="postTitle" placeholder="Post title..." />
+                    <textarea id="postContent" placeholder="Write your content here..."></textarea>
+
+                    <div class="file-upload-zone" id="fileUploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload image or file</p>
+                        <div class="file-name" id="fileName">No file selected</div>
+                        <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx,.txt" />
+                    </div>
+
+                    <button id="publishBtn" class="btn btn-success">
+                        <i class="fas fa-cloud-upload-alt"></i> Publish
+                    </button>
+                    <div id="publishStatus" style="font-size:0.8rem; color:#64748b;"></div>
+                </div>
+
+                <div id="loginRequiredMsg" class="login-required-msg">
+                    <i class="fas fa-info-circle"></i> Log in to create posts.
+                </div>
+            </div>
         </div>
     </div>
-
-    <!-- Create Post (visible when logged in) -->
-    <div class="card" id="postCard">
-        <div class="card-title"><i class="fas fa-pencil"></i> Write new post</div>
-        <div id="postFormWrapper" class="post-form">
-            <input type="text" id="postTitle" placeholder="Post title" />
-            <textarea id="postContent" placeholder="Write your blog content here..."></textarea>
-            <button id="publishBtn" class="btn-success"><i class="fas fa-cloud-upload-alt"></i> Publish</button>
-            <div id="publishStatus" style="font-size:0.9rem; color:#475569;"></div>
-        </div>
-        <div id="loginRequiredMsg" style="color:#94a3b8; padding:0.2rem 0; font-size:0.95rem;">
-            <i class="fas fa-info-circle"></i> Log in to create posts.
-        </div>
-    </div>
-
-    <!-- Posts list -->
-    <div class="card">
-        <div class="card-title"><i class="fas fa-list-ul"></i> All posts</div>
-        <div id="postsContainer" class="posts-grid">
-            <div class="empty-posts">Loading posts...</div>
-        </div>
-    </div>
-
 </div>
+
+<!-- ===== EDIT MODAL ===== -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2><i class="fas fa-edit"></i> <span id="editModalTitle">Edit Post</span></h2>
+            <button class="modal-close" id="closeModalBtn">&times;</button>
+        </div>
+
+        <input type="hidden" id="editPostId" />
+
+        <div class="form-group">
+            <label>Title</label>
+            <input type="text" id="editTitle" class="form-control" placeholder="Post title..." />
+        </div>
+
+        <div class="form-group">
+            <label>Content</label>
+            <textarea id="editContent" class="form-control" placeholder="Post content..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>File (optional)</label>
+            <div class="file-upload-zone" id="editFileUploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click to change file</p>
+                <div class="file-name" id="editFileName">No file selected</div>
+                <input type="file" id="editFileInput" accept="image/*,.pdf,.doc,.docx,.txt" />
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-outline" id="cancelModalBtn">Cancel</button>
+            <button class="btn btn-primary" id="saveEditBtn">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
 
 <script>
     (function() {
-        // ---------- SUPABASE CONFIG ----------
+        'use strict';
+
+        // ===== SUPABASE CONFIG =====
         const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5';
 
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // ---------- DOM REFS ----------
+        // ===== DOM REFS =====
         const authToggleBtn = document.getElementById('authToggleBtn');
         const loginEmail = document.getElementById('loginEmail');
         const loginPassword = document.getElementById('loginPassword');
@@ -347,229 +906,410 @@
         const publishBtn = document.getElementById('publishBtn');
         const publishStatus = document.getElementById('publishStatus');
 
+        const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
+        const fileUploadArea = document.getElementById('fileUploadArea');
+
         const postsContainer = document.getElementById('postsContainer');
 
-        // ---------- STATE ----------
-        let currentUser = null;          // will store user object if logged in
-        let sessionToken = null;         // not strictly needed, but we keep
+        const editModal = document.getElementById('editModal');
+        const editPostId = document.getElementById('editPostId');
+        const editTitle = document.getElementById('editTitle');
+        const editContent = document.getElementById('editContent');
+        const editFileInput = document.getElementById('editFileInput');
+        const editFileName = document.getElementById('editFileName');
+        const saveEditBtn = document.getElementById('saveEditBtn');
+        const cancelModalBtn = document.getElementById('cancelModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
 
-        // ---------- HELPER: fetch posts from Supabase ----------
+        const toast = document.getElementById('toast');
+
+        // ===== STATE =====
+        let currentUser = null;
+        let editingId = null;
+        let currentFileUrl = null;
+
+        // ===== TOAST =====
+        function showToast(message, type = 'success') {
+            toast.textContent = message;
+            toast.className = 'toast ' + type + ' show';
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // ===== FILE UPLOAD =====
+        fileUploadArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const size = (file.size / 1024).toFixed(1);
+                fileName.textContent = `📎 ${file.name} (${size} KB)`;
+            } else {
+                fileName.textContent = 'No file selected';
+            }
+        });
+
+        editFileUploadArea.addEventListener('click', () => editFileInput.click());
+        editFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const size = (file.size / 1024).toFixed(1);
+                editFileName.textContent = `📎 ${file.name} (${size} KB)`;
+            } else {
+                editFileName.textContent = 'No file selected';
+            }
+        });
+
+        async function uploadFile(file) {
+            if (!file) return null;
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}.${fileExt}`;
+            const filePath = `blog-files/${fileName}`;
+
+            const { error } = await supabase.storage
+                .from('blog-files')
+                .upload(filePath, file);
+
+            if (error) throw error;
+
+            const { data } = supabase.storage
+                .from('blog-files')
+                .getPublicUrl(filePath);
+
+            return data.publicUrl;
+        }
+
+        // ===== FETCH POSTS =====
         async function fetchPosts() {
             try {
                 const { data, error } = await supabase
-                    .from('posts')
+                    .from('blogs')
                     .select('*')
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
                 renderPosts(data || []);
             } catch (err) {
-                console.error('Fetch posts error:', err);
-                postsContainer.innerHTML = `<div class="empty-posts">⚠️ Could not load posts. ${err.message}</div>`;
+                console.error('Fetch error:', err);
+                postsContainer.innerHTML = `
+                    <div class="empty-posts">
+                        <i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i>
+                        <h3>Error loading posts</h3>
+                        <p>${err.message}</p>
+                    </div>
+                `;
             }
         }
 
-        // ---------- RENDER POSTS ----------
+        // ===== RENDER POSTS =====
         function renderPosts(posts) {
             if (!posts || posts.length === 0) {
-                postsContainer.innerHTML = `<div class="empty-posts"><i class="fas fa-newspaper"></i> No blog posts yet.</div>`;
+                postsContainer.innerHTML = `
+                    <div class="empty-posts">
+                        <i class="fas fa-newspaper"></i>
+                        <h3>No posts yet</h3>
+                        <p>Create your first blog post!</p>
+                    </div>
+                `;
                 return;
             }
 
             let html = '';
             posts.forEach(post => {
-                const created = post.created_at ? new Date(post.created_at).toLocaleDateString('en-US', { 
-                    year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-                }) : 'unknown date';
+                const date = post.created_at ? new Date(post.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'short', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                }) : 'Unknown date';
+
+                let fileHtml = '';
+                if (post.file_url) {
+                    const isImage = post.file_url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i);
+                    if (isImage) {
+                        fileHtml = `
+                            <div class="post-file">
+                                <i class="fas fa-image"></i>
+                                <a href="${post.file_url}" target="_blank">View Image</a>
+                            </div>
+                            <img src="${post.file_url}" alt="Post image" style="max-width:100%;border-radius:8px;margin-top:0.5rem;" />
+                        `;
+                    } else {
+                        fileHtml = `
+                            <div class="post-file">
+                                <i class="fas fa-paperclip"></i>
+                                <a href="${post.file_url}" target="_blank">Download File</a>
+                            </div>
+                        `;
+                    }
+                }
+
                 html += `
                     <div class="post-item" data-id="${post.id}">
-                        <h3>${escapeHtml(post.title) || 'Untitled'}</h3>
-                        <div class="post-content">${escapeHtml(post.content) || ''}</div>
+                        <div class="post-header">
+                            <h3>${escapeHtml(post.title) || 'Untitled'}</h3>
+                            ${currentUser ? `
+                                <div class="post-actions">
+                                    <button class="btn btn-primary btn-sm" onclick="window.editPost('${post.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="window.deletePost('${post.id}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="post-content">${post.content || ''}</div>
+                        ${fileHtml}
                         <div class="post-meta">
-                            <span><i class="far fa-calendar-alt"></i> ${created}</span>
-                            <span>
-                                <i class="far fa-user"></i> ${escapeHtml(post.author_email) || 'admin'}
-                                ${currentUser ? `<button class="delete-btn" data-id="${post.id}" title="Delete post"><i class="fas fa-trash-can"></i></button>` : ''}
-                            </span>
+                            <span><i class="far fa-calendar-alt"></i> ${date}</span>
+                            <span><i class="far fa-user"></i> ${escapeHtml(post.author_email) || 'admin'}</span>
                         </div>
                     </div>
                 `;
             });
-            postsContainer.innerHTML = html;
 
-            // Attach delete events if logged in
-            if (currentUser) {
-                document.querySelectorAll('.delete-btn').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        e.stopPropagation();
-                        const postId = btn.dataset.id;
-                        if (!postId) return;
-                        if (!confirm('Delete this post?')) return;
-                        try {
-                            const { error } = await supabase
-                                .from('posts')
-                                .delete()
-                                .eq('id', postId);
-                            if (error) throw error;
-                            fetchPosts(); // refresh
-                            publishStatus.innerText = '🗑️ Post deleted.';
-                            setTimeout(() => publishStatus.innerText = '', 2500);
-                        } catch (err) {
-                            alert('Delete failed: ' + err.message);
-                        }
-                    });
-                });
-            }
+            postsContainer.innerHTML = html;
         }
 
-        // simple escape
+        // ===== ESCAPE HTML =====
         function escapeHtml(text) {
             if (!text) return '';
-            return String(text).replace(/[&<>"]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                if (m === '"') return '&quot;';
-                return m;
-            });
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
-        // ---------- UI UPDATE (login/logout) ----------
+        // ===== UPDATE UI =====
         function updateUIForUser(user) {
             currentUser = user;
             if (user) {
-                // logged in
                 loginStatus.className = 'login-status success';
-                loginStatus.innerHTML = `✅ Logged in as <strong>${user.email}</strong>`;
-                loginBtn.style.display = 'none';
-                logoutBtn.style.display = 'inline-flex';
+                loginStatus.innerHTML = `<i class="fas fa-check-circle"></i> Logged in as ${user.email}`;
+                loginBtn.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
                 authToggleBtn.innerHTML = `<i class="fas fa-user-cog"></i> ${user.email}`;
-                authToggleBtn.className = 'auth-btn';
+                authToggleBtn.className = 'btn btn-primary';
 
                 postFormWrapper.classList.add('visible');
                 loginRequiredMsg.style.display = 'none';
-                // show delete buttons via re-render
                 fetchPosts();
             } else {
-                // logged out
                 loginStatus.className = 'login-status';
-                loginStatus.innerHTML = '🔐 Logged out. Use demo credentials.';
-                loginBtn.style.display = 'inline-flex';
-                logoutBtn.style.display = 'none';
-                authToggleBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> Admin login`;
-                authToggleBtn.className = 'auth-btn';
+                loginStatus.innerHTML = '<i class="fas fa-info-circle"></i> Demo credentials';
+                loginBtn.classList.remove('hidden');
+                logoutBtn.classList.add('hidden');
+                authToggleBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Admin';
+                authToggleBtn.className = 'btn btn-primary';
 
                 postFormWrapper.classList.remove('visible');
                 loginRequiredMsg.style.display = 'block';
-                // re-render posts without delete buttons
                 fetchPosts();
             }
         }
 
-        // ---------- LOGIN ----------
+        // ===== LOGIN =====
         async function handleLogin() {
             const email = loginEmail.value.trim();
             const password = loginPassword.value.trim();
+
             if (!email || !password) {
                 loginStatus.className = 'login-status error';
-                loginStatus.innerText = '❌ Email and password required.';
+                loginStatus.innerHTML = '<i class="fas fa-times-circle"></i> Email and password required';
                 return;
             }
 
             try {
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email: email,
-                    password: password,
-                });
-
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) throw error;
                 if (data?.user) {
-                    sessionToken = data.session?.access_token;
                     updateUIForUser(data.user);
                     loginStatus.className = 'login-status success';
-                    loginStatus.innerText = `✅ Welcome ${data.user.email}`;
-                } else {
-                    throw new Error('No user data returned');
+                    loginStatus.innerHTML = `<i class="fas fa-check-circle"></i> Welcome ${data.user.email}`;
+                    showToast('✅ Login successful!', 'success');
                 }
             } catch (err) {
-                console.error('Login error:', err);
                 loginStatus.className = 'login-status error';
-                loginStatus.innerText = `❌ Login failed: ${err.message}`;
-                // if error due to user not found, try signup? but we keep it simple: show message.
-                if (err.message.includes('Invalid login credentials')) {
-                    loginStatus.innerText = '❌ Invalid credentials. Try: admin@blog.com / 12345678';
-                }
+                loginStatus.innerHTML = `<i class="fas fa-times-circle"></i> ${err.message}`;
+                showToast('❌ Login failed: ' + err.message, 'error');
             }
         }
 
-        // ---------- LOGOUT ----------
+        // ===== LOGOUT =====
         async function handleLogout() {
             try {
-                const { error } = await supabase.auth.signOut();
-                if (error) throw error;
+                await supabase.auth.signOut();
                 currentUser = null;
-                sessionToken = null;
                 updateUIForUser(null);
                 loginStatus.className = 'login-status';
-                loginStatus.innerText = '🔐 Logged out successfully.';
-                // clear possible sensitive fields
-                loginPassword.value = '';
+                loginStatus.innerHTML = '<i class="fas fa-info-circle"></i> Logged out';
+                showToast('🔐 Logged out successfully', 'info');
             } catch (err) {
-                console.error('Logout error:', err);
-                loginStatus.className = 'login-status error';
-                loginStatus.innerText = `❌ Logout error: ${err.message}`;
+                showToast('❌ Logout error: ' + err.message, 'error');
             }
         }
 
-        // ---------- PUBLISH POST ----------
+        // ===== PUBLISH POST =====
         async function handlePublish() {
             if (!currentUser) {
-                publishStatus.innerText = '⚠️ You must be logged in.';
+                showToast('⚠️ You must be logged in', 'error');
                 return;
             }
+
             const title = postTitle.value.trim() || 'Untitled';
             const content = postContent.value.trim();
             if (!content) {
-                publishStatus.innerText = '⚠️ Please write some content.';
+                showToast('⚠️ Please write some content', 'error');
                 return;
             }
 
+            let fileUrl = currentFileUrl;
+            const file = fileInput.files[0];
+            if (file) {
+                try {
+                    fileUrl = await uploadFile(file);
+                } catch (err) {
+                    showToast('❌ File upload failed: ' + err.message, 'error');
+                    return;
+                }
+            }
+
             try {
-                const { data, error } = await supabase
-                    .from('posts')
-                    .insert([
-                        { 
-                            title: title,
-                            content: content,
-                            author_email: currentUser.email,
-                        }
-                    ])
-                    .select();
+                const { error } = await supabase
+                    .from('blogs')
+                    .insert([{
+                        title: title,
+                        content: content,
+                        author_email: currentUser.email,
+                        file_url: fileUrl
+                    }]);
 
                 if (error) throw error;
 
-                publishStatus.innerText = '✅ Post published!';
+                showToast('✅ Post published!', 'success');
                 postTitle.value = '';
                 postContent.value = '';
-                fetchPosts(); // refresh list
-                setTimeout(() => { publishStatus.innerText = ''; }, 3000);
+                fileInput.value = '';
+                fileName.textContent = 'No file selected';
+                currentFileUrl = null;
+                fetchPosts();
             } catch (err) {
-                console.error('Publish error:', err);
-                publishStatus.innerText = `❌ Error: ${err.message}`;
+                showToast('❌ Error: ' + err.message, 'error');
             }
         }
 
-        // ---------- CHECK SESSION ON LOAD ----------
+        // ===== EDIT POST =====
+        window.editPost = function(id) {
+            const post = Array.from(document.querySelectorAll('.post-item')).find(el => el.dataset.id == id);
+            if (!post) {
+                showToast('Post not found', 'error');
+                return;
+            }
+
+            editingId = id;
+            editPostId.value = id;
+
+            // Get post data from Supabase
+            (async () => {
+                try {
+                    const { data, error } = await supabase
+                        .from('blogs')
+                        .select('*')
+                        .eq('id', id)
+                        .single();
+
+                    if (error) throw error;
+
+                    editTitle.value = data.title || '';
+                    editContent.value = data.content || '';
+                    currentFileUrl = data.file_url || null;
+                    editFileName.textContent = currentFileUrl ? '📎 File attached' : 'No file selected';
+                    editFileInput.value = '';
+
+                    editModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                } catch (err) {
+                    showToast('Error loading post: ' + err.message, 'error');
+                }
+            })();
+        };
+
+        // ===== SAVE EDIT =====
+        async function handleSaveEdit() {
+            const id = editPostId.value;
+            if (!id) return;
+
+            const title = editTitle.value.trim() || 'Untitled';
+            const content = editContent.value.trim();
+            if (!content) {
+                showToast('⚠️ Please write some content', 'error');
+                return;
+            }
+
+            let fileUrl = currentFileUrl;
+            const file = editFileInput.files[0];
+            if (file) {
+                try {
+                    fileUrl = await uploadFile(file);
+                } catch (err) {
+                    showToast('❌ File upload failed: ' + err.message, 'error');
+                    return;
+                }
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('blogs')
+                    .update({
+                        title: title,
+                        content: content,
+                        file_url: fileUrl,
+                        updated_at: new Date()
+                    })
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                showToast('✅ Post updated!', 'success');
+                closeEditModal();
+                fetchPosts();
+            } catch (err) {
+                showToast('❌ Update failed: ' + err.message, 'error');
+            }
+        }
+
+        // ===== DELETE POST =====
+        window.deletePost = async function(id) {
+            if (!confirm('Are you sure you want to delete this post?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('blogs')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+                showToast('🗑️ Post deleted', 'info');
+                fetchPosts();
+            } catch (err) {
+                showToast('❌ Delete failed: ' + err.message, 'error');
+            }
+        };
+
+        // ===== CLOSE MODAL =====
+        function closeEditModal() {
+            editModal.classList.remove('active');
+            document.body.style.overflow = '';
+            editingId = null;
+            editPostId.value = '';
+        }
+
+        // ===== CHECK SESSION =====
         async function checkSession() {
             try {
                 const { data: { session }, error } = await supabase.auth.getSession();
                 if (error) throw error;
                 if (session?.user) {
                     currentUser = session.user;
-                    sessionToken = session.access_token;
                     updateUIForUser(currentUser);
-                    loginStatus.className = 'login-status success';
-                    loginStatus.innerText = `✅ Logged in as ${currentUser.email}`;
                 } else {
                     updateUIForUser(null);
                 }
@@ -577,65 +1317,42 @@
                 console.warn('Session check:', err);
                 updateUIForUser(null);
             }
-            // fetch posts anyway
             fetchPosts();
         }
 
-        // ---------- EVENT LISTENERS ----------
+        // ===== EVENT LISTENERS =====
         loginBtn.addEventListener('click', handleLogin);
         logoutBtn.addEventListener('click', handleLogout);
         publishBtn.addEventListener('click', handlePublish);
+        saveEditBtn.addEventListener('click', handleSaveEdit);
 
-        // press enter on password field triggers login
+        cancelModalBtn.addEventListener('click', closeEditModal);
+        closeModalBtn.addEventListener('click', closeEditModal);
+        editModal.addEventListener('click', (e) => {
+            if (e.target === editModal) closeEditModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeEditModal();
+        });
+
         loginPassword.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') handleLogin();
         });
-        loginEmail.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') handleLogin();
-        });
 
-        // auth toggle button: if logged out, focus login; if logged in, show logout? we just use it to scroll or logout 
         authToggleBtn.addEventListener('click', () => {
             if (currentUser) {
-                // if logged in, clicking header button logs out? better ask
-                if (confirm('Logout?')) {
-                    handleLogout();
-                }
+                if (confirm('Logout?')) handleLogout();
             } else {
                 document.getElementById('loginCard').scrollIntoView({ behavior: 'smooth' });
                 loginEmail.focus();
             }
         });
 
-        // init
+        // ===== INIT =====
         checkSession();
-
-        // optional: for demo, prefill demo credentials
-        // (already prefilled in html)
     })();
 </script>
 
-<!-- SQL TABLE schema (for reference, not executed) 
-     You need to create a 'posts' table in Supabase with:
-     id: uuid primary key default gen_random_uuid()
-     title: text
-     content: text
-     author_email: text
-     created_at: timestamptz default now()
--->
-<!-- 
-  SQL to create the table (run in Supabase SQL editor):
-  CREATE TABLE posts (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    title TEXT,
-    content TEXT,
-    author_email TEXT,
-    created_at TIMESTAMPTZ DEFAULT now()
-  );
-  ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
-  CREATE POLICY "Enable all for authenticated users" ON posts
-    FOR ALL USING (true) WITH CHECK (true);
-  -- (or set up your own RLS policies)
--->
 </body>
 </html>
