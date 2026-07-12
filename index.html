@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ne">
 <head>
@@ -214,6 +215,14 @@
 
     <!-- ====== TOP INFO BAR - ABOVE NAVBAR ====== -->
     <div class="top-info-bar" id="topInfoBar">
+        <!-- Day -->
+        <div class="info-item">
+            <span class="icon">📆</span>
+            <span class="value accent-text" id="dayName">Sunday</span>
+        </div>
+
+        <div class="info-divider"></div>
+
         <!-- AD Date -->
         <div class="info-item">
             <span class="icon">📅</span>
@@ -235,7 +244,7 @@
         <!-- Time with Seconds -->
         <div class="info-item">
             <span class="icon">🕐</span>
-            <span class="value" id="currentTime">12:88:45 PM</span>
+            <span class="value" id="currentTime">11:18:45 AM</span>
         </div>
 
         <div class="info-divider"></div>
@@ -264,7 +273,7 @@
     </div>
 
     <!-- ====== NAVBAR ====== -->
-    <nav class="navbar-custom fixed top-0 w-full z-50" style="top: 34px;">
+    <nav class="navbar-custom fixed top-0 w-full z-50" style="top: 38px;">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
             <div class="flex items-center gap-2">
                 <div class="w-8 h-8 bg-red-500 rounded-xl flex items-center justify-center text-white font-bold text-lg">LG</div>
@@ -291,7 +300,7 @@
     </nav>
 
     <!-- ====== HERO ====== -->
-    <section id="home" class="min-h-screen flex items-center relative pt-20" style="padding-top: 110px;">
+    <section id="home" class="min-h-screen flex items-center relative pt-20" style="padding-top: 115px;">
         <!-- Background image with overlay -->
         <div class="absolute inset-0 bg-[url('https://picsum.photos/id/1015/2000/1200')] bg-cover bg-center">
             <div class="hero-overlay absolute inset-0"></div>
@@ -383,12 +392,15 @@
             window.setMode = setMode;
 
             // ============================================================
-            //  DATE, TIME, LOCATION, TEMP, GREETING - AUTO UPDATE
+            //  DAY, DATE, TIME, LOCATION, TEMP, GREETING - AUTO UPDATE
             //  Using nepali-date-converter library for accurate BS date
             // ============================================================
 
             // --- Nepali Months (English) ---
             const nepaliMonths = ['Baisakh', 'Jestha', 'Asar', 'Shrawan', 'Bhadra', 'Ashwin', 'Kartik', 'Mangsir', 'Poush', 'Magh', 'Falgun', 'Chaitra'];
+
+            // --- Days of Week ---
+            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
             // --- Location data (from IP) ---
             let locationData = {
@@ -429,6 +441,10 @@
             function updateDisplay() {
                 const now = new Date();
                 
+                // Day Name
+                const dayName = daysOfWeek[now.getDay()];
+                document.getElementById('dayName').textContent = dayName;
+                
                 // AD Date: Jul 12, 2026
                 const adOptions = { month: 'short', day: 'numeric', year: 'numeric' };
                 const adDate = now.toLocaleDateString('en-US', adOptions);
@@ -443,7 +459,7 @@
                     const bsDay = bsDate.getDate();
                     document.getElementById('bsDate').textContent = `${bsYear} ${nepaliMonths[bsMonth]} ${bsDay}`;
                 } catch (e) {
-                    // Fallback if library fails
+                    // Fallback if library fails - approximate conversion
                     const year = now.getFullYear() + 56;
                     const month = now.getMonth();
                     let day = now.getDate() + 15;
