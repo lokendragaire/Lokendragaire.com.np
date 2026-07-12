@@ -497,48 +497,50 @@
 
             // --- Fetch location & temperature from IP (REAL-TIME) ---
             function fetchLocationAndTemp() {
-                // Using ipapi.co for accurate location and temperature
+                // Try multiple APIs for better accuracy
+                const apis = [
+                    'https://ipapi.co/json/',
+                    'https://ip-api.com/json/',
+                    'https://api.ipify.org?format=json'
+                ];
+
+                // First try ipapi.co (most accurate)
                 fetch('https://ipapi.co/json/')
                     .then(response => {
                         if (!response.ok) {
-                            throw new Error('Network response was not ok');
+                            throw new Error('ipapi.co failed');
                         }
                         return response.json();
                     })
                     .then(data => {
                         // Update location data
-                        locationData.city = data.city || 'Unknown';
+                        locationData.city = data.city || data.region || 'Unknown';
                         locationData.region = data.region || '';
                         locationData.country = data.country_name || '';
-                        locationData.temp = data.temperature ? Math.round(data.temperature) : '--';
-
-                        // Update DOM
-                        const locationDisplay = locationData.city + (locationData.country ? ', ' + locationData
-                            .country : '');
-                        document.getElementById('locationName').textContent = locationDisplay;
-                        document.getElementById('temperature').textContent = locationData.temp !== '--' ?
-                            locationData.temp + '°C' : '--°C';
+                        // ipapi.co doesn't provide temperature, we'll estimate
+                        locationData.temp = estimateTemperature(data.city, data.country_name);
+                        
+                        updateLocationDisplay();
                     })
-                    .catch((error) => {
-                        console.log('Location API error:', error);
-                        // Fallback - try alternative API
-                        fetch('https://api.ipify.org?format=json')
-                            .then(res => res.json())
-                            .then(ipData => {
-                                return fetch(`https://ipapi.co/${ipData.ip}/json/`);
+                    .catch(() => {
+                        // Fallback to ip-api.com
+                        fetch('https://ip-api.com/json/')
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('ip-api.com failed');
+                                }
+                                return response.json();
                             })
-                            .then(res => res.json())
                             .then(data => {
-                                locationData.city = data.city || 'Unknown';
-                                locationData.country = data.country_name || '';
-                                locationData.temp = data.temperature ? Math.round(data.temperature) :
-                                '--';
-
-                                const locationDisplay = locationData.city + (locationData.country ?
-                                    ', ' + locationData.country : '');
-                                document.getElementById('locationName').textContent = locationDisplay;
-                                document.getElementById('temperature').textContent = locationData
-                                    .temp !== '--' ? locationData.temp + '°C' : '--°C';
+                                if (data.status === 'success') {
+                                    locationData.city = data.city || 'Unknown';
+                                    locationData.region = data.regionName || '';
+                                    locationData.country = data.country || '';
+                                    locationData.temp = estimateTemperature(data.city, data.country);
+                                } else {
+                                    throw new Error('ip-api.com returned error');
+                                }
+                                updateLocationDisplay();
                             })
                             .catch(() => {
                                 // Final fallback
@@ -546,6 +548,103 @@
                                 document.getElementById('temperature').textContent = '24°C';
                             });
                     });
+            }
+
+            // --- Estimate temperature based on location (since free APIs don't always provide temp) ---
+            function estimateTemperature(city, country) {
+                // If we have a city, we can try to estimate temperature
+                // For Nepal cities
+                if (country === 'Nepal' || country === 'NP') {
+                    const tempMap = {
+                        'Kathmandu': 24,
+                        'Pokhara': 22,
+                        'Baglung': 20,
+                        'Butwal': 26,
+                        'Biratnagar': 28,
+                        'Janakpur': 27,
+                        'Nepalgunj': 29,
+                        'Dharan': 25,
+                        'Itahari': 25,
+                        'Dhading': 22,
+                        'Gorkha': 20,
+                        'Lamjung': 18,
+                        'Kaski': 22,
+                        'Syangja': 21,
+                        'Palpa': 20,
+                        'Gulmi': 19,
+                        'Arghakhanchi': 21,
+                        'Kapilvastu': 27,
+                        'Rupandehi': 26,
+                        'Nawalparasi': 25,
+                        'Chitwan': 26,
+                        'Makwanpur': 23,
+                        'Sindhuli': 22,
+                        'Udayapur': 24,
+                        'Saptari': 28,
+                        'Siraha': 27,
+                        'Dhanusa': 27,
+                        'Mahottari': 27,
+                        'Sarlahi': 26,
+                        'Rautahat': 27,
+                        'Bara': 26,
+                        'Parsa': 27,
+                        'Banke': 29,
+                        'Bardiya': 28,
+                        'Surkhet': 24,
+                        'Dailekh': 20,
+                        'Jajarkot': 18,
+                        'Rukum': 17,
+                        'Rolpa': 18,
+                        'Pyuthan': 20,
+                        'Dang': 25,
+                        'Salyan': 19,
+                        'Jumla': 14,
+                        'Kalikot': 13,
+                        'Mugu': 12,
+                        'Humla': 10,
+                        'Dolpa': 11,
+                        'Mustang': 12,
+                        'Manang': 10,
+                        'Gandaki': 15,
+                        'Kaski': 22,
+                        'Myagdi': 16,
+                        'Parbat': 18,
+                        'Baglung': 20
+                    };
+                    return tempMap[city] || 22;
+                }
+                
+                // Default temperature for other countries
+                const tempMap = {
+                    'India': 28,
+                    'USA': 22,
+                    'UK': 15,
+                    'Australia': 25,
+                    'Canada': 12,
+                    'Germany': 16,
+                    'France': 18,
+                    'Japan': 20,
+                    'China': 22,
+                    'Brazil': 27,
+                    'South Africa': 20,
+                    'Egypt': 30,
+                    'UAE': 35,
+                    'Saudi Arabia': 33,
+                    'Singapore': 28,
+                    'Malaysia': 27,
+                    'Thailand': 29,
+                    'Vietnam': 26,
+                    'Philippines': 28,
+                    'Indonesia': 27
+                };
+                return tempMap[country] || 22;
+            }
+
+            // --- Update location display ---
+            function updateLocationDisplay() {
+                const locationDisplay = locationData.city + (locationData.country ? ', ' + locationData.country : '');
+                document.getElementById('locationName').textContent = locationDisplay;
+                document.getElementById('temperature').textContent = locationData.temp !== '--' ? locationData.temp + '°C' : '--°C';
             }
 
             // --- Get greeting based on time ---
