@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lokendra · Blog & Dashboard</title>
-  <!-- Font & Icons -->
+  <title>Lokendra · Blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <!-- Supabase SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -41,10 +39,10 @@
       color: var(--text);
       line-height: 1.6;
       transition: background 0.25s, color 0.25s;
-      padding: 0 16px;
     }
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
-    /* navbar */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    
+    /* Navbar */
     .navbar {
       position: sticky;
       top: 0;
@@ -58,12 +56,11 @@
       backdrop-filter: blur(12px);
       background: rgba(var(--surface-rgb,255,255,255),0.8);
       transition: background 0.25s;
-      border-radius: 0 0 12px 12px;
-      margin-bottom: 24px;
     }
     [data-theme="dark"] .navbar { background: rgba(30,41,59,0.85); }
     .logo { font-size: 1.3rem; font-weight: 700; color: var(--brand); display: flex; align-items: center; gap: 8px; }
     .nav-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    
     .btn {
       display: inline-flex;
       align-items: center;
@@ -87,9 +84,7 @@
     .btn-outline:hover { background: var(--brand-light); border-color: var(--brand); }
     .btn-accent { background: var(--accent); color: #0f172a; }
     .btn-accent:hover { background: #d97706; }
-    .btn-success { background: #10b981; color: #fff; }
-    .btn-danger { background: #ef4444; color: #fff; }
-    /* cards */
+    
     .blog-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -100,83 +95,26 @@
       transition: all 0.25s;
     }
     .blog-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
-    .blog-card img { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 14px; background: var(--border); }
+    .blog-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 14px; background: var(--border); }
     .category-badge { background: var(--brand-light); color: var(--brand); padding: 2px 14px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
-    .post-meta { font-size: 0.8rem; color: #94a3b8; margin: 6px 0 10px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .post-meta { font-size: 0.85rem; color: #94a3b8; margin: 6px 0 10px; display: flex; gap: 12px; flex-wrap: wrap; }
     .flex { display: flex; }
     .gap-2 { gap: 8px; }
-    .items-center { align-items: center; }
-    .justify-between { justify-content: space-between; }
     .mb-4 { margin-bottom: 16px; }
-    .mt-4 { margin-top: 16px; }
     .text-center { text-align: center; }
     .text-gray { color: #94a3b8; }
-    /* modal */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(4px);
-      z-index: 300;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-    .modal.active { display: flex; }
-    .modal-content {
-      background: var(--surface);
-      border-radius: 24px;
-      padding: 32px;
-      max-width: 480px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.2);
-    }
-    .form-control {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--bg);
-      color: var(--text);
-      margin-bottom: 14px;
-      font-family: inherit;
-      font-size: 1rem;
-    }
-    .form-control:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-light); }
-    .auth-status { padding: 12px; border-radius: var(--radius); margin-top: 12px; display: none; }
-    .auth-status.error { display: block; background: #fef2f2; color: #dc2626; }
-    .auth-status.success { display: block; background: #f0fdf4; color: #16a34a; }
-    /* skeleton */
+    
     .skeleton { background: var(--border); border-radius: 8px; height: 120px; margin-bottom: 20px; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0%,100%{opacity:0.4;} 50%{opacity:0.8;} }
-    /* cookie banner */
-    .cookie-banner {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 60px;
-      padding: 12px 28px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-      box-shadow: var(--shadow-hover);
-      z-index: 500;
-      max-width: 90%;
-    }
-    .cookie-banner p { font-size: 0.9rem; margin: 0; }
-    @media (max-width: 600px) { .cookie-banner { border-radius: 20px; flex-direction: column; padding: 16px; bottom: 12px; } }
-    /* footer */
+    
     .footer { border-top: 1px solid var(--border); padding: 24px 0; margin-top: 40px; text-align: center; font-size: 0.85rem; color: #94a3b8; }
-    /* hide home/about/blog nav links — we removed them */
-    .nav-links { display: none; }
+    
+    .hero {
+      padding: 60px 0 40px;
+      text-align: center;
+    }
+    .hero h1 { font-size: 2.8rem; margin-bottom: 12px; }
+    .hero p { font-size: 1.2rem; opacity: 0.8; max-width: 600px; margin: 0 auto 24px; }
   </style>
 </head>
 <body>
@@ -185,14 +123,22 @@
     <div class="logo"><i class="fas fa-feather-alt"></i> Lokendra.dev</div>
     <div class="nav-actions">
       <button class="btn btn-outline" id="themeToggle"><i class="fas fa-moon"></i></button>
-      <button class="btn btn-primary" id="createBtn" style="display:none;"><i class="fas fa-plus"></i> New Post</button>
+      <button class="btn btn-primary" id="goToDashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
       <button class="btn btn-outline" id="authBtn"><i class="fas fa-lock"></i> Login</button>
     </div>
   </header>
 
-  <!-- MAIN BLOG -->
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <h1>Write. Share. Inspire.</h1>
+      <p>Personal blog by Nabin Chalise — thoughts on tech, design, and the art of living.</p>
+    </div>
+  </section>
+
+  <!-- BLOG -->
   <main class="container" id="blogSection">
-    <h2 class="mb-4">📝 Latest posts</h2>
+    <h2 class="mb-4">📝 Latest Posts</h2>
     <div id="blogContainer"><div class="skeleton"></div><div class="skeleton"></div></div>
   </main>
 
@@ -201,52 +147,8 @@
     <p>&copy; 2026 Nabin Chalise · Built with <i class="fas fa-heart" style="color:var(--accent);"></i> and Supabase</p>
   </footer>
 
-  <!-- COOKIE BANNER (functional) -->
-  <div class="cookie-banner" id="cookieBanner">
-    <p><i class="fas fa-cookie-bite"></i> We use cookies to improve your experience.</p>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <button class="btn btn-primary" id="acceptCookies">Accept</button>
-      <button class="btn btn-outline" id="declineCookies">Decline</button>
-    </div>
-  </div>
-
-  <!-- LOGIN MODAL (popup) -->
-  <div class="modal" id="loginModal">
-    <div class="modal-content">
-      <h2 class="mb-4"><i class="fas fa-lock"></i> Admin Login</h2>
-      <form id="loginForm">
-        <input type="email" id="loginEmail" class="form-control" placeholder="Email" required />
-        <input type="password" id="loginPassword" class="form-control" placeholder="Password" required />
-        <div class="flex gap-2">
-          <button type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Login</button>
-          <button type="button" class="btn btn-outline" onclick="closeLoginModal()">Cancel</button>
-        </div>
-        <div id="loginStatus" class="auth-status"></div>
-      </form>
-    </div>
-  </div>
-
-  <!-- POST MODAL (create/edit) -->
-  <div class="modal" id="postModal">
-    <div class="modal-content">
-      <h2 id="modalTitle" class="mb-4">Create Post</h2>
-      <form id="postForm">
-        <input type="hidden" id="postId" />
-        <input type="text" id="postTitle" class="form-control" placeholder="Title" required />
-        <input type="text" id="postCategory" class="form-control" placeholder="Category" />
-        <textarea id="postContent" class="form-control" rows="4" placeholder="Content" required></textarea>
-        <input type="url" id="postImage" class="form-control" placeholder="Image URL (optional)" />
-        <div class="flex gap-2">
-          <button type="submit" class="btn btn-success" id="saveBtn"><i class="fas fa-save"></i> Save</button>
-          <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
-        </div>
-        <div id="postStatus" class="auth-status"></div>
-      </form>
-    </div>
-  </div>
-
   <script>
-    /* ===== SUPABASE CONFIG (using provided credentials) ===== */
+    // Supabase Config
     const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -254,24 +156,11 @@
     let currentUser = null;
     let posts = [];
 
-    // DOM refs
     const blogContainer = document.getElementById('blogContainer');
     const authBtn = document.getElementById('authBtn');
-    const createBtn = document.getElementById('createBtn');
-    const loginModal = document.getElementById('loginModal');
-    const postModal = document.getElementById('postModal');
-    const loginStatus = document.getElementById('loginStatus');
-    const postForm = document.getElementById('postForm');
-    const postId = document.getElementById('postId');
-    const postTitle = document.getElementById('postTitle');
-    const postCategory = document.getElementById('postCategory');
-    const postContent = document.getElementById('postContent');
-    const postImage = document.getElementById('postImage');
-    const modalTitle = document.getElementById('modalTitle');
-    const postStatus = document.getElementById('postStatus');
-    const cookieBanner = document.getElementById('cookieBanner');
+    const goToDashboard = document.getElementById('goToDashboard');
 
-    /* ===== THEME ===== */
+    // Theme
     function setTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('theme', theme);
@@ -285,117 +174,38 @@
       setTheme(current === 'dark' ? 'light' : 'dark');
     });
 
-    /* ===== COOKIE BANNER (fully functional) ===== */
-    if (localStorage.getItem('cookiesAccepted') !== null) {
-      cookieBanner.style.display = 'none';
-    }
-    document.getElementById('acceptCookies').addEventListener('click', () => {
-      localStorage.setItem('cookiesAccepted', 'true');
-      cookieBanner.style.display = 'none';
-    });
-    document.getElementById('declineCookies').addEventListener('click', () => {
-      localStorage.setItem('cookiesAccepted', 'false');
-      cookieBanner.style.display = 'none';
-    });
-
-    /* ===== AUTH ===== */
-    async function handleLogin(e) {
-      e.preventDefault();
-      const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value;
-      loginStatus.className = 'auth-status success';
-      loginStatus.textContent = '⏳ Authenticating...';
-      loginStatus.style.display = 'block';
-
-      try {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        currentUser = data.user;
-        loginStatus.textContent = '✅ Login successful! Redirecting to dashboard...';
-        loginStatus.className = 'auth-status success';
+    // Auth
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        currentUser = session.user;
         updateUI();
-        closeLoginModal();
-        // redirect to dashboard.html (simulate by opening in new tab or replace)
-        // we will open dashboard.html in same tab (but we don't have dashboard.html, so we show alert and keep blog)
-        // but requirement: login garda dashboard.html ma jane. We will redirect to a dummy dashboard page.
-        // Since we are in a single HTML, we can simulate by showing a message and hiding blog? Better: open a new page with dashboard content.
-        // We'll create an inline dashboard view: hide blog, show dashboard.
-        // For real, we would redirect to dashboard.html. I'll implement a simple dashboard overlay.
-        showDashboard();
-        fetchPosts();
-      } catch (err) {
-        loginStatus.textContent = '❌ ' + (err.message || 'Login failed');
-        loginStatus.className = 'auth-status error';
       }
     }
 
-    // Dashboard simulation (inline)
-    function showDashboard() {
-      // Redirect to dashboard.html (since we don't have it, we create a mini dashboard)
-      // We'll replace content with dashboard view.
-      const blogSection = document.getElementById('blogSection');
-      blogSection.innerHTML = `
-        <div style="background:var(--surface);border-radius:var(--radius);padding:24px;border:1px solid var(--border);">
-          <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
-          <p>Welcome, ${currentUser?.email || 'Admin'}!</p>
-          <p>Here you can manage your posts.</p>
-          <button class="btn btn-primary" onclick="showCreateModal()"><i class="fas fa-plus"></i> Create New Post</button>
-          <button class="btn btn-outline" onclick="logoutAndReturn()"><i class="fas fa-sign-out-alt"></i> Logout</button>
-          <hr style="margin:20px 0;border-color:var(--border);" />
-          <h3>Your Posts</h3>
-          <div id="dashboardPosts"></div>
-        </div>
-      `;
-      // Also hide createBtn in navbar, show in dashboard
-      createBtn.style.display = 'none';
-      renderDashboardPosts();
-    }
-
-    function renderDashboardPosts() {
-      const container = document.getElementById('dashboardPosts');
-      if (!container) return;
-      if (!posts.length) { container.innerHTML = '<p class="text-gray">No posts yet.</p>'; return; }
-      container.innerHTML = posts.map(p => `
-        <div style="background:var(--bg);padding:12px 16px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);">
-          <span><strong>${escapeHtml(p.title)}</strong> <span class="category-badge">${escapeHtml(p.category||'General')}</span></span>
-          <div class="flex gap-2">
-            <button class="btn btn-primary" onclick="editPost('${p.id}')"><i class="fas fa-edit"></i></button>
-            <button class="btn btn-danger" onclick="deletePost('${p.id}')"><i class="fas fa-trash"></i></button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    async function logoutAndReturn() {
-      await supabase.auth.signOut();
-      currentUser = null;
-      updateUI();
-      // restore blog view
-      location.reload(); // simplest
-    }
-
-    document.getElementById('loginForm').addEventListener('submit', handleLogin);
-
-    function openLoginModal() { loginModal.classList.add('active'); }
-    function closeLoginModal() { loginModal.classList.remove('active'); }
-    window.closeLoginModal = closeLoginModal;
-
     function updateUI() {
-      const isLogged = !!currentUser;
-      const label = isLogged ? '👤 Logout' : '🔐 Login';
-      authBtn.innerHTML = `<i class="fas ${isLogged ? 'fa-sign-out-alt' : 'fa-lock'}"></i> ${isLogged ? 'Logout' : 'Login'}`;
-      createBtn.style.display = isLogged ? 'inline-flex' : 'none';
-      authBtn.onclick = isLogged ? handleLogout : openLoginModal;
+      if (currentUser) {
+        authBtn.innerHTML = `<i class="fas fa-sign-out-alt"></i> Logout`;
+        authBtn.onclick = handleLogout;
+      } else {
+        authBtn.innerHTML = `<i class="fas fa-lock"></i> Login`;
+        authBtn.onclick = () => window.location.href = 'dashboard.html';
+      }
     }
 
     async function handleLogout() {
       await supabase.auth.signOut();
       currentUser = null;
       updateUI();
-      location.reload(); // back to blog
+      fetchPosts();
     }
 
-    /* ===== POST CRUD ===== */
+    // Go to Dashboard
+    goToDashboard.addEventListener('click', () => {
+      window.location.href = 'dashboard.html';
+    });
+
+    // Fetch Posts
     async function fetchPosts() {
       blogContainer.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
       try {
@@ -406,8 +216,6 @@
         if (error) throw error;
         posts = data || [];
         renderPosts();
-        // if dashboard visible, re-render dashboard posts
-        if (document.getElementById('dashboardPosts')) renderDashboardPosts();
       } catch (err) {
         blogContainer.innerHTML = `<p class="text-center text-gray">❌ ${err.message}</p>`;
       }
@@ -430,12 +238,6 @@
             <span>📅 ${new Date(post.created_at).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' })}</span>
           </div>
           <p style="margin:8px 0;">${escapeHtml(post.content)}</p>
-          ${currentUser ? `
-            <div class="flex gap-2" style="margin-top:12px;">
-              <button class="btn btn-primary" onclick="editPost('${post.id}')"><i class="fas fa-edit"></i></button>
-              <button class="btn btn-danger" onclick="deletePost('${post.id}')"><i class="fas fa-trash"></i></button>
-            </div>
-          ` : ''}
         </div>
       `).join('');
     }
@@ -446,116 +248,9 @@
       return div.innerHTML;
     }
 
-    async function deletePost(id) {
-      if (!confirm('Delete this post?')) return;
-      try {
-        await supabase.from('blog_posts').delete().eq('id', id);
-        fetchPosts();
-        if (document.getElementById('dashboardPosts')) renderDashboardPosts();
-      } catch (err) { alert('❌ ' + err.message); }
-    }
-
-    function showCreateModal() {
-      if (!currentUser) return alert('Please login first.');
-      postId.value = '';
-      postTitle.value = '';
-      postCategory.value = '';
-      postContent.value = '';
-      postImage.value = '';
-      modalTitle.textContent = 'Create New Post';
-      postStatus.style.display = 'none';
-      postModal.classList.add('active');
-    }
-
-    async function editPost(id) {
-      if (!currentUser) return alert('Login to edit.');
-      try {
-        const { data, error } = await supabase.from('blog_posts').select('*').eq('id', id).single();
-        if (error) throw error;
-        postId.value = data.id;
-        postTitle.value = data.title;
-        postCategory.value = data.category || '';
-        postContent.value = data.content;
-        postImage.value = data.image_url || '';
-        modalTitle.textContent = 'Edit Post';
-        postStatus.style.display = 'none';
-        postModal.classList.add('active');
-      } catch (err) { alert('❌ ' + err.message); }
-    }
-
-    function closeModal() { postModal.classList.remove('active'); }
-    window.closeModal = closeModal;
-
-    postForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const id = postId.value;
-      const title = postTitle.value.trim();
-      const content = postContent.value.trim();
-      const category = postCategory.value.trim();
-      const image_url = postImage.value.trim();
-      if (!title || !content) return showStatus('Title & content required', 'error');
-
-      const saveBtn = document.getElementById('saveBtn');
-      saveBtn.disabled = true;
-      saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-
-      try {
-        if (id) {
-          await supabase.from('blog_posts').update({
-            title, content, category: category || 'General',
-            image_url: image_url || null,
-            updated_at: new Date().toISOString()
-          }).eq('id', id);
-          showStatus('✅ Updated', 'success');
-        } else {
-          await supabase.from('blog_posts').insert([{
-            title, content, category: category || 'General',
-            image_url: image_url || null,
-            author: currentUser?.email || 'Anonymous'
-          }]);
-          showStatus('✅ Created', 'success');
-        }
-        closeModal();
-        fetchPosts();
-        if (document.getElementById('dashboardPosts')) renderDashboardPosts();
-      } catch (err) {
-        showStatus('❌ ' + err.message, 'error');
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.innerHTML = '<i class="fas fa-save"></i> Save';
-      }
-    });
-
-    function showStatus(msg, type) {
-      postStatus.textContent = msg;
-      postStatus.className = 'auth-status ' + type;
-      postStatus.style.display = 'block';
-      setTimeout(() => postStatus.style.display = 'none', 4000);
-    }
-
-    /* ===== INIT ===== */
-    async function init() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) currentUser = session.user;
-      updateUI();
-      await fetchPosts();
-      // if user is logged in, show dashboard? but we want login popup -> dashboard on login.
-      // only if user logged in from session, we can redirect to dashboard
-      if (currentUser) {
-        // show dashboard automatically
-        showDashboard();
-      }
-    }
-
-    // expose
-    window.deletePost = deletePost;
-    window.editPost = editPost;
-    window.showCreateModal = showCreateModal;
-    window.openLoginModal = openLoginModal;
-    window.closeLoginModal = closeLoginModal;
-    window.logoutAndReturn = logoutAndReturn;
-
-    init();
+    // Init
+    checkAuth();
+    fetchPosts();
   </script>
 </body>
 </html>
