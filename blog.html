@@ -56,4 +56,116 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem
+            font-size: 3rem;
+            color: #94a3b8;
+        }
+        .post-card .image img { width: 100%; height: 100%; object-fit: cover; }
+        .post-card .body { padding: 20px; }
+        .post-card .body h2 { font-size: 1.3rem; margin-bottom: 10px; }
+        .post-card .body p { color: #64748b; line-height: 1.6; }
+        .post-card .body .meta {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            display: flex;
+            justify-content: space-between;
+        }
+        .post-card .body .tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
+        .post-card .body .tag {
+            background: #eff6ff;
+            color: #3b82f6;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .loading { text-align: center; padding: 60px; }
+        .spinner {
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 15px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .empty-state { text-align: center; padding: 60px; color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Lokendra <span>Gaire</span></h1>
+            <p>Personal Blog &amp; Thoughts</p>
+            <a href="dashboard.html" class="login-btn">🔐 Admin Dashboard</a>
+        </div>
+        
+        <div id="loadingState" class="loading">
+            <div class="spinner"></div>
+            <p>Loading posts...</p>
+        </div>
+        
+        <div id="postsContainer" class="posts-grid" style="display:none;"></div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://yrvetxtjvkdvknnvngez.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        async function fetchPosts() {
+            try {
+                const { data, error } = await supabase
+                    .from('blogs')
+                    .select('*')
+                    .eq('status', 'published')
+                    .order('published_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                document.getElementById('loadingState').style.display = 'none';
+                const container = document.getElementById('postsContainer');
+                container.style.display = 'grid';
+                
+                if (!data || data.length === 0) {
+                    container.innerHTML = `<div class="empty-state"><h3>No posts yet</h3><p>Check back later for new content!</p></div>`;
+                    return;
+                }
+                
+                container.innerHTML = data.map(post => `
+                    <div class="post-card">
+                        <div class="image">
+                            ${post.featured_image ? `<img src="${post.featured_image}" alt="${post.title}">` : '📄'}
+                        </div>
+                        <div class="body">
+                            <h2>${escapeHtml(post.title)}</h2>
+                            <p>${escapeHtml(post.excerpt || post.content.substring(0, 150) + '...')}</p>
+                            ${post.tags ? `<div class="tags">${post.tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}</div>` : ''}
+                            <div class="meta">
+                                <span>📅 ${new Date(post.published_at || post.created_at).toLocaleDateString()}</span>
+                                <span>👁️ ${post.views || 0} views</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error('Error:', err);
+                document.getElementById('loadingState').innerHTML = '<p>❌ Failed to load posts</p>';
+            }
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        fetchPosts();
+    </script>
+</body>
+</html>
