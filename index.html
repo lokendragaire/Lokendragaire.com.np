@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ne">
 <head>
@@ -7,6 +6,9 @@
     <title>Lokendra Gaire | Digital Creator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Nepali Date Converter Library -->
+    <script src="https://cdn.jsdelivr.net/npm/nepali-date-converter@2.0.1/dist/index.min.js">
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
@@ -152,57 +154,52 @@
             color: var(--accent);
         }
 
-        /* ===== INFO BOX - Small & Compact ===== */
-        .info-box {
+        /* ===== TOP INFO BAR - ABOVE NAVBAR ===== */
+        .top-info-bar {
             background: var(--info-bg);
-            border: 1px solid var(--border-nav);
-            border-radius: 16px;
-            padding: 0.5rem 1.2rem;
-            box-shadow: var(--shadow-color) 0px 4px 20px;
-            display: inline-flex;
+            border-bottom: 1px solid var(--border-nav);
+            padding: 0.3rem 1rem;
+            display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 0.6rem 1.5rem;
+            justify-content: flex-end;
+            gap: 0.8rem 1.5rem;
+            font-size: 0.75rem;
+            position: relative;
+            z-index: 51;
         }
-        .info-item {
+        .top-info-bar .info-item {
             display: flex;
             align-items: center;
             gap: 0.3rem;
         }
-        .info-item .icon {
-            font-size: 0.8rem;
+        .top-info-bar .info-item .icon {
+            font-size: 0.7rem;
             opacity: 0.7;
         }
-        .info-item .value {
-            font-size: 0.85rem;
+        .top-info-bar .info-item .value {
             font-weight: 600;
             font-family: 'Space Grotesk', sans-serif;
-            white-space: nowrap;
         }
-        .info-item .sub-value {
-            font-size: 0.7rem;
-            opacity: 0.6;
-            margin-left: 0.2rem;
-            font-weight: 400;
-        }
-        .info-divider {
+        .top-info-bar .info-divider {
             width: 1px;
-            height: 24px;
+            height: 16px;
             background: var(--border-nav);
             opacity: 0.3;
         }
+        .top-info-bar .greeting-text {
+            font-weight: 600;
+        }
 
         @media (max-width: 640px) {
-            .info-box {
-                padding: 0.4rem 0.8rem;
-                gap: 0.3rem 1rem;
+            .top-info-bar {
+                padding: 0.2rem 0.6rem;
+                gap: 0.3rem 0.8rem;
+                font-size: 0.6rem;
                 justify-content: center;
             }
-            .info-item .value {
-                font-size: 0.7rem;
-            }
-            .info-divider {
-                height: 18px;
+            .top-info-bar .info-divider {
+                height: 12px;
             }
         }
 
@@ -215,8 +212,59 @@
 </head>
 <body>
 
+    <!-- ====== TOP INFO BAR - ABOVE NAVBAR ====== -->
+    <div class="top-info-bar" id="topInfoBar">
+        <!-- AD Date -->
+        <div class="info-item">
+            <span class="icon">📅</span>
+            <span class="value" id="adDate">Jul 12, 2026</span>
+            <span style="font-size:0.6rem; opacity:0.5;">AD</span>
+        </div>
+
+        <div class="info-divider"></div>
+
+        <!-- BS Date -->
+        <div class="info-item">
+            <span class="icon">📅</span>
+            <span class="value accent-text" id="bsDate">2082 Kartik 27</span>
+            <span style="font-size:0.6rem; opacity:0.5;">BS</span>
+        </div>
+
+        <div class="info-divider"></div>
+
+        <!-- Time with Seconds -->
+        <div class="info-item">
+            <span class="icon">🕐</span>
+            <span class="value" id="currentTime">11:18:45 AM</span>
+        </div>
+
+        <div class="info-divider"></div>
+
+        <!-- Location -->
+        <div class="info-item">
+            <span class="icon">📍</span>
+            <span class="value accent-text" id="locationName">Kathmandu</span>
+        </div>
+
+        <div class="info-divider"></div>
+
+        <!-- Temperature -->
+        <div class="info-item">
+            <span class="icon">🌡️</span>
+            <span class="value" id="temperature">24°C</span>
+        </div>
+
+        <div class="info-divider"></div>
+
+        <!-- Greeting -->
+        <div class="info-item">
+            <span class="greeting-text accent-text" id="greetingText">Good Morning</span>
+            <span class="icon" id="greetingIcon">🌤️</span>
+        </div>
+    </div>
+
     <!-- ====== NAVBAR ====== -->
-    <nav class="navbar-custom fixed top-0 w-full z-50">
+    <nav class="navbar-custom fixed top-0 w-full z-50" style="top: 34px;">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
             <div class="flex items-center gap-2">
                 <div class="w-8 h-8 bg-red-500 rounded-xl flex items-center justify-center text-white font-bold text-lg">LG</div>
@@ -243,66 +291,13 @@
     </nav>
 
     <!-- ====== HERO ====== -->
-    <section id="home" class="min-h-screen flex items-center relative pt-20">
+    <section id="home" class="min-h-screen flex items-center relative pt-20" style="padding-top: 110px;">
         <!-- Background image with overlay -->
         <div class="absolute inset-0 bg-[url('https://picsum.photos/id/1015/2000/1200')] bg-cover bg-center">
             <div class="hero-overlay absolute inset-0"></div>
         </div>
 
         <div class="max-w-7xl mx-auto px-4 relative z-10 py-8 w-full">
-            <!-- Date/Time/Location Info Box - Top Right -->
-            <div class="flex justify-end mb-6">
-                <div class="info-box">
-                    <!-- AD Date -->
-                    <div class="info-item">
-                        <span class="icon">📅</span>
-                        <span class="value" id="adDate">Jul 12, 2026</span>
-                        <span class="sub-value">AD</span>
-                    </div>
-
-                    <div class="info-divider"></div>
-
-                    <!-- BS Date -->
-                    <div class="info-item">
-                        <span class="icon">📅</span>
-                        <span class="value accent-text" id="bsDate">2083 Asar 28</span>
-                        <span class="sub-value">BS</span>
-                    </div>
-
-                    <div class="info-divider"></div>
-
-                    <!-- Time with Seconds -->
-                    <div class="info-item">
-                        <span class="icon">🕐</span>
-                        <span class="value" id="currentTime">11:18:45 AM</span>
-                    </div>
-
-                    <div class="info-divider"></div>
-
-                    <!-- Location (Real-time from IP) -->
-                    <div class="info-item">
-                        <span class="icon">📍</span>
-                        <span class="value accent-text" id="locationName">Kathmandu</span>
-                    </div>
-
-                    <div class="info-divider"></div>
-
-                    <!-- Temperature -->
-                    <div class="info-item">
-                        <span class="icon">🌡️</span>
-                        <span class="value" id="temperature">24°C</span>
-                    </div>
-
-                    <div class="info-divider"></div>
-
-                    <!-- Greeting -->
-                    <div class="info-item">
-                        <span class="value accent-text" id="greetingText">Good Morning</span>
-                        <span class="icon" id="greetingIcon">🌤️</span>
-                    </div>
-                </div>
-            </div>
-
             <!-- Hero Content -->
             <div class="grid md:grid-cols-2 gap-10 items-center">
                 <div class="space-y-5">
@@ -389,31 +384,11 @@
 
             // ============================================================
             //  DATE, TIME, LOCATION, TEMP, GREETING - AUTO UPDATE
+            //  Using nepali-date-converter library for accurate BS date
             // ============================================================
 
             // --- Nepali Months (English) ---
             const nepaliMonths = ['Baisakh', 'Jestha', 'Asar', 'Shrawan', 'Bhadra', 'Ashwin', 'Kartik', 'Mangsir', 'Poush', 'Magh', 'Falgun', 'Chaitra'];
-
-            // --- Approximate Nepali Date (BS) ---
-            function getNepaliDate(gregDate) {
-                const year = gregDate.getFullYear() + 56;
-                const month = gregDate.getMonth();
-                let day = gregDate.getDate() + 15;
-                let bsMonth = month;
-                let bsDay = day;
-                if (bsDay > 30) {
-                    bsDay -= 30;
-                    bsMonth += 1;
-                }
-                if (bsMonth >= 12) {
-                    bsMonth -= 12;
-                }
-                return {
-                    year: year,
-                    month: nepaliMonths[bsMonth] || 'Asar',
-                    day: bsDay
-                };
-            }
 
             // --- Location data (from IP) ---
             let locationData = {
@@ -432,12 +407,10 @@
                         locationData.region = data.region || 'Bagmati';
                         locationData.country = data.country_name || 'Nepal';
                         locationData.temp = Math.round(data.temperature || 24);
-                        // Update location display
                         document.getElementById('locationName').textContent = locationData.city;
                         document.getElementById('temperature').textContent = `${locationData.temp}°C`;
                     })
                     .catch(() => {
-                        // Fallback
                         document.getElementById('locationName').textContent = 'Kathmandu';
                         document.getElementById('temperature').textContent = '24°C';
                     });
@@ -461,10 +434,30 @@
                 const adDate = now.toLocaleDateString('en-US', adOptions);
                 document.getElementById('adDate').textContent = adDate;
                 
-                // BS Date: 2083 Asar 28
-                const nep = getNepaliDate(now);
-                const bsDate = `${nep.year} ${nep.month} ${nep.day}`;
-                document.getElementById('bsDate').textContent = bsDate;
+                // BS Date: Using nepali-date-converter library
+                try {
+                    // Convert AD to BS
+                    const bsDate = new NepaliDate(now);
+                    const bsYear = bsDate.getYear();
+                    const bsMonth = bsDate.getMonth(); // 0-11
+                    const bsDay = bsDate.getDate();
+                    document.getElementById('bsDate').textContent = `${bsYear} ${nepaliMonths[bsMonth]} ${bsDay}`;
+                } catch (e) {
+                    // Fallback if library fails
+                    const year = now.getFullYear() + 56;
+                    const month = now.getMonth();
+                    let day = now.getDate() + 15;
+                    let bsMonth = month;
+                    let bsDay = day;
+                    if (bsDay > 30) {
+                        bsDay -= 30;
+                        bsMonth += 1;
+                    }
+                    if (bsMonth >= 12) {
+                        bsMonth -= 12;
+                    }
+                    document.getElementById('bsDate').textContent = `${year} ${nepaliMonths[bsMonth]} ${bsDay}`;
+                }
                 
                 // Time with seconds: 11:18:45 AM
                 const hours = now.getHours();
@@ -474,9 +467,6 @@
                 const hours12 = hours % 12 || 12;
                 const timeStr = `${String(hours12).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} ${ampm}`;
                 document.getElementById('currentTime').textContent = timeStr;
-                
-                // Location (already set from fetch)
-                // Temperature (already set from fetch)
                 
                 // Greeting
                 const greeting = getGreeting();
