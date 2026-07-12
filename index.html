@@ -8,95 +8,270 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-        
+
+        * {
+            transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
         body {
             font-family: 'Inter', system-ui, sans-serif;
-            transition: all 0.5s ease;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
         .heading-font {
             font-family: 'Space Grotesk', sans-serif;
         }
 
-        .dark-mode { background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%); color: #e2e8f0; }
-        .day-mode { background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%); color: #1e2937; }
-        .comfort-mode { background: linear-gradient(135deg, #f1f5f9 0%, #fef3c7 100%); color: #334155; }
-        .accent-text { color: #ef4444; }
+        /* ----- THEMES (root variables) ----- */
+        :root {
+            --bg-body: #0f172a;
+            --bg-nav: #0f172aee;
+            --border-nav: #334155;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-heading: #f1f5f9;
+            --card-bg: #1e293b;
+            --shadow-color: rgba(0,0,0,0.5);
+            --btn-hover: #334155;
+            --accent: #ef4444;
+            --accent-hover: #dc2626;
+            --hero-overlay: rgba(15, 23, 42, 0.7);
+        }
+
+        .day-mode {
+            --bg-body: #f1f9ff;
+            --bg-nav: #ffffffdd;
+            --border-nav: #d1d5db;
+            --text-primary: #1e2937;
+            --text-secondary: #475569;
+            --text-heading: #0f172a;
+            --card-bg: #ffffff;
+            --shadow-color: rgba(0,0,0,0.08);
+            --btn-hover: #e2e8f0;
+            --accent: #ef4444;
+            --accent-hover: #b91c1c;
+            --hero-overlay: rgba(241, 249, 255, 0.5);
+        }
+
+        .comfort-mode {
+            --bg-body: #f5efe6;
+            --bg-nav: #f5efe6dd;
+            --border-nav: #d6cbb8;
+            --text-primary: #3d352e;
+            --text-secondary: #6b6258;
+            --text-heading: #2a231d;
+            --card-bg: #faf6f0;
+            --shadow-color: rgba(0,0,0,0.06);
+            --btn-hover: #e5d9c8;
+            --accent: #b45309;
+            --accent-hover: #92400e;
+            --hero-overlay: rgba(245, 239, 230, 0.6);
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-primary);
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background: var(--bg-nav);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-nav);
+        }
+        .navbar-custom a {
+            color: var(--text-primary);
+        }
+        .navbar-custom a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero overlay */
+        .hero-overlay {
+            background: var(--hero-overlay);
+        }
+
+        /* Buttons */
+        .btn-accent {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-accent:hover {
+            background: var(--accent-hover);
+        }
+        .btn-outline {
+            border: 2px solid var(--accent);
+            color: var(--text-primary);
+            background: transparent;
+        }
+        .btn-outline:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* Mode toggle buttons */
+        .mode-btn {
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            border: 1px solid var(--border-nav);
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .mode-btn:hover {
+            background: var(--btn-hover);
+        }
+        .mode-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        /* Profile image border */
+        .profile-img {
+            border: 4px solid var(--border-nav);
+            box-shadow: 0 20px 40px var(--shadow-color);
+        }
+
+        /* Text colors */
+        .text-secondary-custom {
+            color: var(--text-secondary);
+        }
+        .text-heading-custom {
+            color: var(--text-heading);
+        }
+        .accent-text {
+            color: var(--accent);
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+        }
     </style>
 </head>
-<body class="dark-mode min-h-screen">
+<body>
 
-    <!-- Navbar -->
-    <nav class="fixed top-0 w-full bg-slate-900/95 backdrop-blur-md border-b border-slate-700 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <!-- ====== NAVBAR ====== -->
+    <nav class="navbar-custom fixed top-0 w-full z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between flex-wrap gap-3">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 bg-red-500 rounded-2xl flex items-center justify-center text-white font-bold text-xl">LG</div>
-                <span class="text-2xl font-bold heading-font">Lokendra Gaire</span>
-            </div>
-            
-            <div class="flex items-center gap-8 text-sm font-medium">
-                <a href="#" onclick="goHome()" class="hover:text-red-400 flex items-center gap-1">🏠 Home</a>
-                <a href="About.html" class="hover:text-red-400">About</a>
-                <a href="Portfolio.html" class="hover:text-red-400">Portfolio</a>
-                <a href="gallery.html" class="hover:text-red-400">Gallery</a>
-                <a href="social.html" class="hover:text-red-400">Social Media</a>
-                <a href="ram.html" class="hover:text-red-400">Social engagement </a>
+                <span class="text-2xl font-bold heading-font text-heading-custom">Lokendra Gaire</span>
             </div>
 
-            <div class="flex gap-2">
-                <button onclick="setMode('dark')" class="px-4 py-2 rounded-2xl hover:bg-slate-800 text-xs">🌙 Dark</button>
-                <button onclick="setMode('day')" class="px-4 py-2 rounded-2xl hover:bg-slate-800 text-xs">☀️ Day</button>
-                <button onclick="setMode('comfort')" class="px-4 py-2 rounded-2xl hover:bg-slate-800 text-xs">👁️ Comfort</button>
+            <!-- Desktop Nav Links -->
+            <div class="nav-links flex items-center gap-6 text-sm font-medium">
+                <a href="#" onclick="goHome()" class="flex items-center gap-1">🏠 Home</a>
+                <a href="About.html">About</a>
+                <a href="Portfolio.html">Portfolio</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="social.html">Social Media</a>
+                <a href="ram.html">Social engagement</a>
+            </div>
+
+            <!-- Mode Toggle Buttons -->
+            <div class="flex gap-1 flex-wrap">
+                <button onclick="setMode('dark')" class="mode-btn" data-mode="dark">🌙 Dark</button>
+                <button onclick="setMode('day')" class="mode-btn" data-mode="day">☀️ Day</button>
+                <button onclick="setMode('comfort')" class="mode-btn" data-mode="comfort">👁️ Comfort</button>
             </div>
         </div>
     </nav>
 
-    <!-- Hero -->
-    <section id="home" class="min-h-screen flex items-center relative">
-        <div class="absolute inset-0 bg-[url('https://picsum.photos/id/1015/2000/1200')] opacity-10 bg-cover"></div>
-        
-        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center relative z-10">
-            <div class="space-y-8">
-                <div class="text-red-500 tracking-widest text-sm">GALKOT-2, BAGLUNG, NEPAL</div>
-                <h1 class="text-6xl md:text-7xl font-bold heading-font leading-none">
+    <!-- ====== HERO ====== -->
+    <section id="home" class="min-h-screen flex items-center relative pt-24">
+        <!-- Background image with overlay -->
+        <div class="absolute inset-0 bg-[url('https://picsum.photos/id/1015/2000/1200')] bg-cover bg-center">
+            <div class="hero-overlay absolute inset-0"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10 py-10">
+            <div class="space-y-6">
+                <div class="text-red-500 tracking-widest text-sm font-semibold">GALKOT-2, BAGLUNG, NEPAL</div>
+                <h1 class="text-5xl md:text-7xl font-bold heading-font leading-tight text-heading-custom">
                     Hi, I'm <span class="accent-text">Lokendra Gaire</span>
                 </h1>
-                <p class="text-4xl">Digital Creator &amp; Tech Enthusiast</p>
-                <p class="max-w-md text-lg">Passionate about technology, social media management, creative design and community development.</p>
-                
-                <div class="flex flex-wrap gap-4">
-                    <a href="tel:+9779869065252" class="px-8 py-4 bg-red-500 hover:bg-red-600 text-white rounded-3xl font-semibold flex items-center gap-3">📞 Call Me</a>
-                    <a href="https://wa.me/+9779869065252" class="px-8 py-4 border border-green-600 hover:bg-green-100 rounded-3xl font-semibold">💬 WhatsApp</a>
-                    <a href="mailto:lokendra.gaire@gmail.com" class="px-8 py-4 border border-blue-600 hover:bg-blue-100 rounded-3xl font-semibold">✉️ Gmail</a>
+                <p class="text-3xl font-medium text-heading-custom">Digital Creator &amp; Tech Enthusiast</p>
+                <p class="max-w-md text-lg text-secondary-custom">Passionate about technology, social media management, creative design and community development.</p>
+
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <a href="tel:+9779869065252" class="px-8 py-4 btn-accent rounded-3xl font-semibold flex items-center gap-3 shadow-lg shadow-red-500/20">📞 Call Me</a>
+                    <a href="https://wa.me/+9779869065252" class="px-8 py-4 btn-outline rounded-3xl font-semibold">💬 WhatsApp</a>
+                    <a href="mailto:lokendra.gaire@gmail.com" class="px-8 py-4 btn-outline rounded-3xl font-semibold">✉️ Gmail</a>
                 </div>
             </div>
-            
+
             <div class="flex justify-center">
-                <img src="brp.jpg" alt="Lokendra Gaire" class="rounded-3xl shadow-2xl border-4 border-slate-600 max-h-[520px] object-cover">
+                <img src="brp.jpg" alt="Lokendra Gaire" class="profile-img rounded-3xl max-h-[520px] w-auto object-cover shadow-2xl">
             </div>
         </div>
     </section>
 
+    <!-- ====== JAVASCRIPT ====== -->
     <script>
-        function goHome() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        (function() {
+            "use strict";
 
-        function setMode(mode) {
+            // --- DOM refs ---
             const body = document.body;
-            body.classList.remove('dark-mode', 'day-mode', 'comfort-mode');
-            
-            if (mode === 'day') body.classList.add('day-mode');
-            else if (mode === 'comfort') body.classList.add('comfort-mode');
-            else body.classList.add('dark-mode');
-            
-            localStorage.setItem('mode', mode);
-        }
+            const modeBtns = document.querySelectorAll('.mode-btn');
 
-        // Load previous mode
-        window.onload = function() {
-            const saved = localStorage.getItem('mode') || 'dark';
-            setMode(saved);
-        };
+            // --- Set mode function ---
+            function setMode(mode) {
+                // Remove all theme classes
+                body.classList.remove('day-mode', 'comfort-mode');
+                // 'dark-mode' is default via CSS (no class needed, but we keep it clean)
+                if (mode === 'dark') {
+                    body.style.background = ''; // let CSS handle
+                } else if (mode === 'day') {
+                    body.classList.add('day-mode');
+                } else if (mode === 'comfort') {
+                    body.classList.add('comfort-mode');
+                }
+
+                // Update active button style
+                modeBtns.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-mode') === mode) {
+                        btn.classList.add('active');
+                    }
+                });
+
+                // Save to localStorage
+                localStorage.setItem('preferredMode', mode);
+            }
+
+            // --- Load saved mode ---
+            function loadSavedMode() {
+                const saved = localStorage.getItem('preferredMode');
+                if (saved && ['dark', 'day', 'comfort'].includes(saved)) {
+                    setMode(saved);
+                } else {
+                    // default: dark
+                    setMode('dark');
+                }
+            }
+
+            // --- Smooth scroll to top ---
+            window.goHome = function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            // --- Expose setMode globally for onclick ---
+            window.setMode = setMode;
+
+            // --- Init on load ---
+            document.addEventListener('DOMContentLoaded', loadSavedMode);
+
+        })();
     </script>
+
 </body>
 </html>
