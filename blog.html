@@ -1,938 +1,641 @@
 <!DOCTYPE html>
-<html lang="ne">
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Lokendra Gaire | Digital Creator</title>
-    <meta name="description" content="Lokendra Gaire's social and community engagement." />
-    <meta name="keywords" content="Lokendra Gaire, social engagement, community, politics, Nepal" />
-    <link rel="canonical" href="https://lokendragaire.com.np/" />
-    <link rel="icon" type="image/x-icon" href="lok.ico" />
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LPGL4SRW14"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'G-LPGL4SRW14');
-    </script>
-
-    <!-- Supabase JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personal Blog · Admin</title>
+    <!-- Supabase JS library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-
         * {
-            transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            min-height: 100vh;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
         }
-        .heading-font {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        /* ----- THEMES ----- */
-        :root {
-            --bg-body: #0f172a;
-            --bg-nav: #0f172aee;
-            --border-nav: #334155;
-            --text-primary: #e2e8f0;
-            --text-secondary: #94a3b8;
-            --text-heading: #f1f5f9;
-            --card-bg: #1e293b;
-            --shadow-color: rgba(0, 0, 0, 0.5);
-            --btn-hover: #334155;
-            --accent: #ef4444;
-            --accent-hover: #dc2626;
-            --hero-overlay: rgba(15, 23, 42, 0.7);
-            --info-bg: #1e293b;
-            --input-bg: #1e293b;
-            --success: #10b981;
-            --warning: #f59e0b;
-        }
-
-        .day-mode {
-            --bg-body: #f1f9ff;
-            --bg-nav: #ffffffdd;
-            --border-nav: #d1d5db;
-            --text-primary: #1e2937;
-            --text-secondary: #475569;
-            --text-heading: #0f172a;
-            --card-bg: #ffffff;
-            --shadow-color: rgba(0, 0, 0, 0.08);
-            --btn-hover: #e2e8f0;
-            --accent: #ef4444;
-            --accent-hover: #b91c1c;
-            --hero-overlay: rgba(241, 249, 255, 0.5);
-            --info-bg: #ffffff;
-            --input-bg: #f1f5f9;
-        }
-
-        .comfort-mode {
-            --bg-body: #f5efe6;
-            --bg-nav: #f5efe6dd;
-            --border-nav: #d6cbb8;
-            --text-primary: #3d352e;
-            --text-secondary: #6b6258;
-            --text-heading: #2a231d;
-            --card-bg: #faf6f0;
-            --shadow-color: rgba(0, 0, 0, 0.06);
-            --btn-hover: #e5d9c8;
-            --accent: #b45309;
-            --accent-hover: #92400e;
-            --hero-overlay: rgba(245, 239, 230, 0.6);
-            --info-bg: #faf6f0;
-            --input-bg: #faf6f0;
-        }
-
         body {
-            background: var(--bg-body);
-            color: var(--text-primary);
-        }
-
-        /* Navbar */
-        .navbar-custom {
-            background: var(--bg-nav);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-nav);
-            position: fixed;
-            width: 100%;
-            z-index: 50;
-            top: 0;
-            transition: transform 0.3s ease-in-out, top 0.3s ease-in-out;
-        }
-        .navbar-custom a {
-            color: var(--text-primary);
-        }
-        .navbar-custom a:hover {
-            color: var(--accent);
-        }
-
-        /* Hero overlay */
-        .hero-overlay {
-            background: var(--hero-overlay);
-        }
-
-        /* Buttons */
-        .btn-accent {
-            background: var(--accent);
-            color: #fff;
-        }
-        .btn-accent:hover {
-            background: var(--accent-hover);
-        }
-        .btn-outline {
-            border: 2px solid var(--accent);
-            color: var(--text-primary);
-            background: transparent;
-        }
-        .btn-outline:hover {
-            background: var(--accent);
-            color: #fff;
-        }
-
-        /* Mode toggle buttons */
-        .mode-btn {
-            padding: 0.3rem 0.8rem;
-            border-radius: 40px;
-            border: 1px solid var(--border-nav);
-            background: transparent;
-            color: var(--text-primary);
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .mode-btn:hover {
-            background: var(--btn-hover);
-        }
-        .mode-btn.active {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-        }
-
-        /* Profile image border */
-        .profile-img {
-            border: 4px solid var(--border-nav);
-            box-shadow: 0 20px 40px var(--shadow-color);
-        }
-
-        /* Text colors */
-        .text-secondary-custom {
-            color: var(--text-secondary);
-        }
-        .text-heading-custom {
-            color: var(--text-heading);
-        }
-        .accent-text {
-            color: var(--accent);
-        }
-
-        /* ===== TOP INFO BAR ===== */
-        .top-info-bar {
-            background: var(--info-bg);
-            border-bottom: 1px solid var(--border-nav);
-            padding: 0.3rem 1rem;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 0.8rem 1.5rem;
-            font-size: 0.75rem;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 51;
-            transition: transform 0.3s ease-in-out;
-            transform: translateY(0);
-        }
-        .top-info-bar.hidden-bar {
-            transform: translateY(-100%);
-        }
-        .top-info-bar .info-item {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        .top-info-bar .info-item .icon {
-            font-size: 0.7rem;
-            opacity: 0.7;
-        }
-        .top-info-bar .info-item .value {
-            font-weight: 600;
-            font-family: 'Space Grotesk', sans-serif;
-        }
-        .top-info-bar .info-divider {
-            width: 1px;
-            height: 16px;
-            background: var(--border-nav);
-            opacity: 0.3;
-        }
-        .top-info-bar .greeting-text {
-            font-weight: 600;
-        }
-
-        /* Logo styles */
-        .logo-img {
-            height: 36px;
-            width: auto;
-            border-radius: 8px;
-        }
-
-        /* Navbar - below top bar */
-        .navbar-custom {
-            top: 38px;
-        }
-
-        section#home {
-            padding-top: 115px;
-            transition: padding-top 0.3s ease-in-out;
-        }
-
-        /* ===== BLOG SECTION ===== */
-        .blog-section {
-            background: var(--bg-body);
-            padding: 40px 0;
+            background: #f4f7fc;
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 1.5rem;
         }
-
-        /* Blog Card */
-        .blog-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-nav);
-            border-radius: 16px;
-            padding: 24px;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-color);
-            margin-bottom: 24px;
-        }
-        .blog-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px var(--shadow-color);
-        }
-
-        .blog-card img {
+        .container {
+            max-width: 1100px;
             width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 16px;
         }
-
-        .blog-card .blog-meta {
+        /* header */
+        .blog-header {
             display: flex;
-            gap: 16px;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-        }
-
-        .blog-card .blog-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--text-heading);
-            margin-bottom: 8px;
-        }
-
-        .blog-card .blog-excerpt {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-bottom: 12px;
-        }
-
-        .blog-card .blog-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .blog-card .blog-tags span {
-            background: rgba(239, 68, 68, 0.1);
-            padding: 2px 12px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            color: var(--accent);
-        }
-
-        .blog-card .blog-status {
-            display: inline-block;
-            padding: 2px 12px;
-            border-radius: 40px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-        .blog-card .blog-status.published {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--success);
-        }
-        .blog-card .blog-status.draft {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--warning);
-        }
-        .blog-card .blog-status.archived {
-            background: rgba(148, 163, 184, 0.2);
-            color: var(--text-secondary);
-        }
-
-        /* Blog Admin Controls */
-        .blog-admin-controls {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border-nav);
-            flex-wrap: wrap;
-        }
-
-        .blog-admin-controls button {
-            padding: 6px 16px;
-            min-height: 32px;
-            font-size: 0.75rem;
-            border-radius: 40px;
-            border: 1px solid var(--border-nav);
-            background: transparent;
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .blog-admin-controls .edit-btn {
-            background: rgba(59, 130, 246, 0.1);
-            border-color: #3b82f6;
-            color: #3b82f6;
-        }
-        .blog-admin-controls .edit-btn:hover {
-            background: #3b82f6;
-            color: #fff;
-        }
-
-        .blog-admin-controls .delete-btn {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: #ef4444;
-            color: #ef4444;
-        }
-        .blog-admin-controls .delete-btn:hover {
-            background: #ef4444;
-            color: #fff;
-        }
-
-        .blog-admin-controls .status-btn {
-            background: rgba(245, 158, 11, 0.1);
-            border-color: #f59e0b;
-            color: #f59e0b;
-        }
-        .blog-admin-controls .status-btn:hover {
-            background: #f59e0b;
-            color: #fff;
-        }
-
-        /* Create Post Form */
-        .create-post-form {
-            background: var(--card-bg);
-            border: 1px solid var(--border-nav);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 32px;
-            box-shadow: var(--shadow-color);
-        }
-
-        .create-post-form h2 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text-heading);
-            margin-bottom: 16px;
-            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 8px;
-        }
-
-        .create-post-form .form-group {
-            margin-bottom: 16px;
-        }
-
-        .create-post-form label {
-            display: block;
-            font-weight: 500;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-        }
-
-        .create-post-form input,
-        .create-post-form textarea,
-        .create-post-form select {
-            width: 100%;
-            padding: 10px 14px;
-            background: var(--input-bg);
-            border: 1px solid var(--border-nav);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: 0.95rem;
-            transition: 0.2s;
-        }
-
-        .create-post-form input:focus,
-        .create-post-form textarea:focus,
-        .create-post-form select:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-        }
-
-        .create-post-form textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .create-post-form .form-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 8px;
             flex-wrap: wrap;
+            background: white;
+            padding: 1.2rem 2rem;
+            border-radius: 2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+            margin-bottom: 2rem;
         }
-
-        .create-post-form .form-actions button {
-            flex: 1;
-            padding: 10px 20px;
+        .blog-header h1 {
+            font-weight: 600;
+            font-size: 1.8rem;
+            color: #0b1e33;
+            letter-spacing: -0.5px;
+        }
+        .blog-header h1 i {
+            color: #3b82f6;
+            margin-right: 8px;
+        }
+        .auth-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.4rem;
             border-radius: 40px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            min-width: 120px;
-        }
-
-        .create-post-form .form-actions .btn-primary {
-            background: var(--accent);
-            color: #fff;
-        }
-
-        .create-post-form .form-actions .btn-primary:hover {
-            background: var(--accent-hover);
-        }
-
-        .create-post-form .form-actions .btn-secondary {
-            background: var(--btn-hover);
-            color: var(--text-primary);
-        }
-
-        /* Login Form for Blog */
-        .blog-login-form {
-            background: var(--card-bg);
-            border: 1px solid var(--border-nav);
-            border-radius: 16px;
-            padding: 32px;
-            max-width: 420px;
-            margin: 40px auto;
-            text-align: center;
-            box-shadow: var(--shadow-color);
-        }
-
-        .blog-login-form h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-heading);
-            margin-bottom: 8px;
-        }
-
-        .blog-login-form p {
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-        }
-
-        .blog-login-form .form-group {
-            margin-bottom: 16px;
-        }
-
-        .blog-login-form input {
-            width: 100%;
-            padding: 12px 16px;
-            background: var(--input-bg);
-            border: 1px solid var(--border-nav);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-family: inherit;
+            font-weight: 500;
             font-size: 0.95rem;
-        }
-
-        .blog-login-form input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-        }
-
-        .blog-login-form button {
-            width: 100%;
-            padding: 12px;
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .blog-login-form button:hover {
-            background: var(--accent-hover);
-        }
-
-        .blog-login-form .login-status {
-            margin-top: 12px;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        /* Toast notifications */
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            padding: 16px 24px;
-            border-radius: 12px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-nav);
-            box-shadow: var(--shadow-color);
-            z-index: 9999;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-            max-width: 400px;
-        }
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        .toast.success { border-left: 4px solid var(--success); }
-        .toast.error { border-left: 4px solid #ef4444; }
-        .toast.info { border-left: 4px solid var(--accent); }
-
-        /* Loading spinner */
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid var(--border-nav);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Back button */
-        .back-btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            color: var(--text-secondary);
             cursor: pointer;
             transition: 0.2s;
-            margin-bottom: 20px;
-            padding: 8px 16px;
-            border-radius: 40px;
-            border: 1px solid var(--border-nav);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
-        .back-btn:hover {
-            color: var(--accent);
-            border-color: var(--accent);
+        .auth-btn:hover {
+            background: #0f172a;
+            transform: scale(1.02);
+        }
+        .auth-btn i {
+            font-size: 1rem;
+        }
+        .auth-btn.logout {
+            background: #dc2626;
+        }
+        .auth-btn.logout:hover {
+            background: #b91c1c;
         }
 
-        /* Admin toggle button */
-        .admin-toggle {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            padding: 6px 16px;
-            border-radius: 40px;
+        /* cards */
+        .card {
+            background: white;
+            border-radius: 1.8rem;
+            padding: 1.8rem 2rem;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.04);
+            margin-bottom: 2rem;
+            transition: 0.15s;
+            border: 1px solid #f0f4fa;
+        }
+        .card-title {
+            font-size: 1.4rem;
             font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
+            color: #0b1e33;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card-title i {
+            color: #3b82f6;
+        }
+
+        /* login panel */
+        .login-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .login-panel .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            align-items: center;
+        }
+        .login-panel input {
+            flex: 1 1 180px;
+            padding: 0.7rem 1.2rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 60px;
+            font-size: 0.95rem;
+            background: #fafcff;
             transition: 0.2s;
         }
-        .admin-toggle:hover {
-            background: var(--accent-hover);
-            transform: scale(1.05);
+        .login-panel input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
         }
-        .admin-toggle.logged-in {
-            background: var(--success);
+        .login-panel .btn-primary {
+            background: #3b82f6;
+            border: none;
+            color: white;
+            padding: 0.7rem 1.8rem;
+            border-radius: 60px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.15s;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-
-        /* Responsive */
-        @media (max-width: 640px) {
-            .top-info-bar {
-                padding: 0.2rem 0.6rem;
-                gap: 0.3rem 0.8rem;
-                font-size: 0.6rem;
-                justify-content: center;
-            }
-            .top-info-bar .info-divider {
-                height: 12px;
-            }
-            .navbar-custom {
-                top: 32px;
-            }
-            section#home {
-                padding-top: 100px;
-            }
-            .logo-img {
-                height: 28px;
-            }
-            .blog-card img {
-                height: 150px;
-            }
-            .create-post-form .form-actions {
-                flex-direction: column;
-            }
-            .blog-login-form {
-                margin: 20px 16px;
-                padding: 24px;
-            }
+        .login-panel .btn-primary:hover {
+            background: #2563eb;
+        }
+        .login-status {
+            font-size: 0.9rem;
+            color: #475569;
+        }
+        .login-status.success {
+            color: #16a34a;
+        }
+        .login-status.error {
+            color: #dc2626;
         }
 
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
+        /* post form (visible only when logged in) */
+        .post-form {
+            display: none;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+        .post-form.visible {
+            display: flex;
+        }
+        .post-form input, 
+        .post-form textarea {
+            padding: 0.8rem 1.2rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            background: #fafcff;
+            transition: 0.2s;
+            width: 100%;
+        }
+        .post-form textarea {
+            border-radius: 24px;
+            resize: vertical;
+            min-height: 120px;
+        }
+        .post-form input:focus, 
+        .post-form textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+        .post-form .btn-success {
+            background: #0f172a;
+            border: none;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 60px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.15s;
+            align-self: flex-start;
+            font-size: 0.95rem;
+        }
+        .post-form .btn-success:hover {
+            background: #1e293b;
+        }
+
+        /* posts list */
+        .posts-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+        .post-item {
+            background: #fafcff;
+            padding: 1.2rem 1.6rem;
+            border-radius: 1.6rem;
+            border-left: 5px solid #3b82f6;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            transition: 0.1s;
+        }
+        .post-item h3 {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #0b1e33;
+            margin-bottom: 4px;
+        }
+        .post-item .post-meta {
+            font-size: 0.8rem;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 0.4rem;
+            border-top: 1px solid #eef2f6;
+            padding-top: 0.6rem;
+        }
+        .post-item .post-meta span i {
+            margin-right: 4px;
+            color: #3b82f6;
+        }
+        .post-item .post-content {
+            color: #1e293b;
+            margin-top: 0.3rem;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .empty-posts {
+            color: #64748b;
+            font-style: italic;
+            padding: 0.8rem 0;
+        }
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0 6px;
+            transition: 0.1s;
+        }
+        .delete-btn:hover {
+            color: #dc2626;
+        }
+
+        /* utility */
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .gap-2 { gap: 0.8rem; }
+        .mt-2 { margin-top: 0.6rem; }
+        .hidden { display: none; }
+        .text-center { text-align: center; }
+
+        @media (max-width: 600px) {
+            .blog-header { flex-direction: column; align-items: start; gap: 0.8rem; }
         }
     </style>
 </head>
 <body>
+<div class="container">
 
-    <!-- ====== TOP INFO BAR ====== -->
-    <div class="top-info-bar" id="topInfoBar">
-        <div class="info-item">
-            <span class="icon">📆</span>
-            <span class="value accent-text" id="dayName">Sunday</span>
+    <!-- Header -->
+    <header class="blog-header">
+        <h1><i class="fas fa-pen-fancy"></i> My Blog</h1>
+        <div>
+            <button id="authToggleBtn" class="auth-btn"><i class="fas fa-sign-in-alt"></i> Admin login</button>
         </div>
-        <div class="info-divider"></div>
-        <div class="info-item">
-            <span class="icon">📅</span>
-            <span class="value" id="adDate">Jul 12, 2026</span>
-        </div>
-        <div class="info-divider"></div>
-        <div class="info-item">
-            <span class="icon">🕐</span>
-            <span class="value" id="currentTime">11:18:45 AM</span>
-        </div>
-        <div class="info-divider"></div>
-        <div class="info-item">
-            <span class="icon">📍</span>
-            <span class="value accent-text" id="locationName">Kathmandu, Nepal</span>
-        </div>
-        <div class="info-divider"></div>
-        <div class="info-item">
-            <span class="icon">🌡️</span>
-            <span class="value" id="temperature">24°C</span>
-        </div>
-        <div class="info-divider"></div>
-        <div class="info-item">
-            <span class="greeting-text accent-text" id="greetingText">Good Morning</span>
-            <span class="icon" id="greetingIcon">🌤️</span>
+    </header>
+
+    <!-- Login Panel (always visible) -->
+    <div class="card" id="loginCard">
+        <div class="card-title"><i class="fas fa-lock"></i> Admin access</div>
+        <div class="login-panel">
+            <div class="input-group">
+                <input type="text" id="loginEmail" placeholder="Email" value="admin@blog.com" />
+                <input type="password" id="loginPassword" placeholder="Password" value="12345678" />
+                <button id="loginBtn" class="btn-primary"><i class="fas fa-arrow-right-to-bracket"></i> Login</button>
+                <button id="logoutBtn" class="btn-primary" style="background:#64748b; display:none;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+            <div id="loginStatus" class="login-status">🔐 Use demo credentials or sign up</div>
         </div>
     </div>
 
-    <!-- ====== NAVBAR ====== -->
-    <nav class="navbar-custom" id="mainNav">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
-            <div class="flex items-center gap-2">
-                <img src="i.png" alt="Lokendra Gaire Logo" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="w-8 h-8 bg-red-500 rounded-xl flex items-center justify-center text-white font-bold text-lg" style="display:none;">LG</div>
-                <span class="text-xl font-bold heading-font text-heading-custom">Lokendra Gaire</span>
-            </div>
-
-            <!-- Desktop Nav Links -->
-            <div class="nav-links flex items-center gap-4 text-sm font-medium">
-                <a href="#" onclick="goHome()" class="flex items-center gap-1">🏠 Home</a>
-                <a href="About.html">About</a>
-                <a href="#" onclick="showBlog()" class="text-red-500 font-bold" id="blogNavLink">📝 Personal Blog</a>
-                <a href="slide.html">Gallery</a>
-                <a href="social.html">Social Media</a>
-                <a href="ram.html">Social engagement</a>
-            </div>
-
-            <!-- Mode Toggle -->
-            <div class="flex gap-1 flex-wrap items-center">
-                <button onclick="setMode('dark')" class="mode-btn" data-mode="dark">🌙 Dark</button>
-                <button onclick="setMode('day')" class="mode-btn" data-mode="day">☀️ Day</button>
-                <button onclick="setMode('comfort')" class="mode-btn" data-mode="comfort">👁️ Comfort</button>
-            </div>
+    <!-- Create Post (visible when logged in) -->
+    <div class="card" id="postCard">
+        <div class="card-title"><i class="fas fa-pencil"></i> Write new post</div>
+        <div id="postFormWrapper" class="post-form">
+            <input type="text" id="postTitle" placeholder="Post title" />
+            <textarea id="postContent" placeholder="Write your blog content here..."></textarea>
+            <button id="publishBtn" class="btn-success"><i class="fas fa-cloud-upload-alt"></i> Publish</button>
+            <div id="publishStatus" style="font-size:0.9rem; color:#475569;"></div>
         </div>
-    </nav>
-
-    <!-- ====== HERO SECTION ====== -->
-    <section id="home" class="min-h-screen flex items-center relative" style="padding-top: 115px;">
-        <div class="absolute inset-0 bg-[url('https://picsum.photos/id/1015/2000/1200')] bg-cover bg-center">
-            <div class="hero-overlay absolute inset-0"></div>
+        <div id="loginRequiredMsg" style="color:#94a3b8; padding:0.2rem 0; font-size:0.95rem;">
+            <i class="fas fa-info-circle"></i> Log in to create posts.
         </div>
+    </div>
 
-        <div class="max-w-7xl mx-auto px-4 relative z-10 py-8 w-full">
-            <div class="grid md:grid-cols-2 gap-10 items-center">
-                <div class="space-y-5">
-                    <div class="text-red-500 tracking-widest text-xs font-semibold">GALKOT-2, BAGLUNG, NEPAL</div>
-                    <h1 class="text-4xl md:text-6xl font-bold heading-font leading-tight text-heading-custom">
-                        Hi, I'm <span class="accent-text">Lokendra Gaire</span>
-                    </h1>
-                    <p class="text-2xl font-medium text-heading-custom">Digital Creator &amp; Tech Enthusiast</p>
-                    <p class="max-w-md text-base text-secondary-custom">Passionate about technology, social media management, creative design and community development.</p>
-
-                    <div class="flex flex-wrap gap-3 pt-2">
-                        <a href="tel:+9779869065252" class="px-6 py-3 btn-accent rounded-2xl font-semibold flex items-center gap-2 text-sm shadow-lg shadow-red-500/20">📞 Call Me</a>
-                        <a href="https://wa.me/+9779869065252" class="px-6 py-3 btn-outline rounded-2xl font-semibold text-sm">💬 WhatsApp</a>
-                        <a href="/cdn-cgi/l/email-protection#1e7271757b707a6c7f797f776c7b717878777d777f725e79737f7772307d7173" class="px-6 py-3 btn-outline rounded-2xl font-semibold text-sm">✉️ Gmail</a>
-                    </div>
-                </div>
-
-                <div class="flex justify-center">
-                    <img src="brp.jpg" alt="Lokendra Gaire" class="profile-img rounded-2xl max-h-[400px] w-auto object-cover shadow-2xl">
-                </div>
-            </div>
+    <!-- Posts list -->
+    <div class="card">
+        <div class="card-title"><i class="fas fa-list-ul"></i> All posts</div>
+        <div id="postsContainer" class="posts-grid">
+            <div class="empty-posts">Loading posts...</div>
         </div>
-    </section>
+    </div>
 
-    <!-- ====== BLOG SECTION ====== -->
-    <section id="blogSection" class="blog-section" style="display:none;">
-        <div class="max-w-7xl mx-auto px-4">
-            <!-- Back Button & Admin Toggle -->
-            <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
-                <div class="back-btn" onclick="goHome()">
-                    <i class="fas fa-arrow-left"></i> Back to Home
-                </div>
-                <button class="admin-toggle" id="adminToggleBtn" onclick="toggleAdminPanel()">
-                    🔐 Admin Login
-                </button>
-            </div>
+</div>
 
-            <h2 class="text-3xl md:text-4xl font-bold heading-font text-heading-custom mb-8 text-center">
-                📝 Personal Blog
-            </h2>
+<script>
+    (function() {
+        // ---------- SUPABASE CONFIG ----------
+        const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5';
 
-            <!-- Admin Panel (Create Post Form) -->
-            <div id="adminPanel" style="display:none;">
-                <div class="create-post-form">
-                    <h2>✍️ <span id="formTitle">Create New Post</span></h2>
-                    <form id="blogPostForm" onsubmit="handlePostSubmit(event)">
-                        <div class="form-group">
-                            <label for="postTitle">Title *</label>
-                            <input type="text" id="postTitle" placeholder="Enter post title" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="postExcerpt">Excerpt / Summary</label>
-                            <input type="text" id="postExcerpt" placeholder="Brief summary of the post">
-                        </div>
-                        <div class="form-group">
-                            <label for="postContent">Content *</label>
-                            <textarea id="postContent" placeholder="Write your post content here..." required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="postTags">Tags (comma separated)</label>
-                            <input type="text" id="postTags" placeholder="e.g., tech, life, philosophy">
-                        </div>
-                        <div class="form-group">
-                            <label for="postImage">Image URL</label>
-                            <input type="text" id="postImage" placeholder="https://example.com/image.jpg">
-                        </div>
-                        <div class="form-group">
-                            <label for="postVideo">Video URL (YouTube/Vimeo)</label>
-                            <input type="text" id="postVideo" placeholder="https://www.youtube.com/watch?v=...">
-                        </div>
-                        <div class="form-group">
-                            <label for="postStatus">Status</label>
-                            <select id="postStatus">
-                                <option value="published">Published</option>
-                                <option value="draft">Draft</option>
-                                <option value="archived">Archived</option>
-                            </select>
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn-primary" id="savePostBtn">📌 Publish</button>
-                            <button type="button" class="btn-secondary" id="cancelEditBtn" style="display:none;" onclick="cancelEdit()">Cancel</button>
-                        </div>
-                        <input type="hidden" id="editPostId" value="">
-                    </form>
-                </div>
-                <div style="margin-bottom:24px;">
-                    <button onclick="fetchPosts()" class="mode-btn" style="background:var(--accent);color:#fff;border-color:var(--accent);padding:8px 20px;">
-                        📋 Refresh Posts
-                    </button>
-                    <button onclick="logoutAdmin()" class="mode-btn" style="margin-left:8px;border-color:#ef4444;color:#ef4444;">
-                        🚪 Logout
-                    </button>
-                </div>
-            </div>
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-            <!-- Blog Posts Container -->
-            <div id="blogPostsContainer">
-                <!-- Posts will be rendered here -->
-            </div>
-        </div>
-    </section>
+        // ---------- DOM REFS ----------
+        const authToggleBtn = document.getElementById('authToggleBtn');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const loginStatus = document.getElementById('loginStatus');
 
-    <!-- ====== FOOTER ====== -->
-    <footer class="footer-custom py-4 px-4 text-center" style="background: var(--bg-nav); border-top: 1px solid var(--border-nav);">
-        <div class="max-w-7xl mx-auto">
-            <p class="text-sm text-secondary-custom">
-                Copyright © Lokendra Gaire 2024
-            </p>
-            <p class="text-xs text-secondary-custom opacity-60 mt-1">
-                Galkot-2, Baglung, Nepal | 📞 +977 9869065252 | 📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="167a797d737872647771777f64737970707f757f777a56717b737f7a3875797b">[email&#160;protected]</a>
-            </p>
-        </div>
-    </footer>
+        const postFormWrapper = document.getElementById('postFormWrapper');
+        const loginRequiredMsg = document.getElementById('loginRequiredMsg');
+        const postTitle = document.getElementById('postTitle');
+        const postContent = document.getElementById('postContent');
+        const publishBtn = document.getElementById('publishBtn');
+        const publishStatus = document.getElementById('publishStatus');
 
-    <!-- ====== TOAST ====== -->
-    <div class="toast" id="toast"><span id="toastMessage"></span></div>
+        const postsContainer = document.getElementById('postsContainer');
 
-    <!-- ====== JAVASCRIPT ====== -->
-    <script>
-        (function() {
-            "use strict";
+        // ---------- STATE ----------
+        let currentUser = null;          // will store user object if logged in
+        let sessionToken = null;         // not strictly needed, but we keep
 
-            // ==========================================
-            // SUPABASE CONFIG
-            // ==========================================
-            const SUPABASE_URL = "https://yrvetxtjvkdvknnvngez.supabase.co";
-            const SUPABASE_ANON_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
+        // ---------- HELPER: fetch posts from Supabase ----------
+        async function fetchPosts() {
+            try {
+                const { data, error } = await supabase
+                    .from('posts')
+                    .select('*')
+                    .order('created_at', { ascending: false });
 
-            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            console.log('✅ Supabase client ready');
+                if (error) throw error;
+                renderPosts(data || []);
+            } catch (err) {
+                console.error('Fetch posts error:', err);
+                postsContainer.innerHTML = `<div class="empty-posts">⚠️ Could not load posts. ${err.message}</div>`;
+            }
+        }
 
-            // ==========================================
-            // STATE
-            // ==========================================
-            let currentUser = null;
-            let posts = [];
-            let editingPostId = null;
-            let isBlogVisible = false;
-            let isAdminMode = false;
-
-            // ==========================================
-            // DOM REFS
-            // ==========================================
-            const homeSection = document.getElementById('home');
-            const blogSection = document.getElementById('blogSection');
-            const postsContainer = document.getElementById('blogPostsContainer');
-            const adminPanel = document.getElementById('adminPanel');
-            const adminToggleBtn = document.getElementById('adminToggleBtn');
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-
-            // ==========================================
-            // HELPERS
-            // ==========================================
-            function formatDate(dateStr) {
-                if (!dateStr) return 'Just now';
-                const d = new Date(dateStr);
-                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        // ---------- RENDER POSTS ----------
+        function renderPosts(posts) {
+            if (!posts || posts.length === 0) {
+                postsContainer.innerHTML = `<div class="empty-posts"><i class="fas fa-newspaper"></i> No blog posts yet.</div>`;
+                return;
             }
 
-            function escapeHtml(text) {
-                if (!text) return '';
-                const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": "&#039;" };
-                return String(text).replace(/[&<>"']/g, m => map[m]);
-            }
-
-            function showToast(message, type = 'success') {
-                toast.className = `toast ${type}`;
-                toastMessage.textContent = message;
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 3000);
-            }
-
-            function showLoading(container) {
-                container.innerHTML = `
-                    <div style="text-align:center;padding:60px 0;">
-                        <div class="loading-spinner"></div>
-                        <p style="margin-top:16px;color:var(--text-secondary);">Loading posts...</p>
+            let html = '';
+            posts.forEach(post => {
+                const created = post.created_at ? new Date(post.created_at).toLocaleDateString('en-US', { 
+                    year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+                }) : 'unknown date';
+                html += `
+                    <div class="post-item" data-id="${post.id}">
+                        <h3>${escapeHtml(post.title) || 'Untitled'}</h3>
+                        <div class="post-content">${escapeHtml(post.content) || ''}</div>
+                        <div class="post-meta">
+                            <span><i class="far fa-calendar-alt"></i> ${created}</span>
+                            <span>
+                                <i class="far fa-user"></i> ${escapeHtml(post.author_email) || 'admin'}
+                                ${currentUser ? `<button class="delete-btn" data-id="${post.id}" title="Delete post"><i class="fas fa-trash-can"></i></button>` : ''}
+                            </span>
+                        </div>
                     </div>
                 `;
+            });
+            postsContainer.innerHTML = html;
+
+            // Attach delete events if logged in
+            if (currentUser) {
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        const postId = btn.dataset.id;
+                        if (!postId) return;
+                        if (!confirm('Delete this post?')) return;
+                        try {
+                            const { error } = await supabase
+                                .from('posts')
+                                .delete()
+                                .eq('id', postId);
+                            if (error) throw error;
+                            fetchPosts(); // refresh
+                            publishStatus.innerText = '🗑️ Post deleted.';
+                            setTimeout(() => publishStatus.innerText = '', 2500);
+                        } catch (err) {
+                            alert('Delete failed: ' + err.message);
+                        }
+                    });
+                });
+            }
+        }
+
+        // simple escape
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text).replace(/[&<>"]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                if (m === '"') return '&quot;';
+                return m;
+            });
+        }
+
+        // ---------- UI UPDATE (login/logout) ----------
+        function updateUIForUser(user) {
+            currentUser = user;
+            if (user) {
+                // logged in
+                loginStatus.className = 'login-status success';
+                loginStatus.innerHTML = `✅ Logged in as <strong>${user.email}</strong>`;
+                loginBtn.style.display = 'none';
+                logoutBtn.style.display = 'inline-flex';
+                authToggleBtn.innerHTML = `<i class="fas fa-user-cog"></i> ${user.email}`;
+                authToggleBtn.className = 'auth-btn';
+
+                postFormWrapper.classList.add('visible');
+                loginRequiredMsg.style.display = 'none';
+                // show delete buttons via re-render
+                fetchPosts();
+            } else {
+                // logged out
+                loginStatus.className = 'login-status';
+                loginStatus.innerHTML = '🔐 Logged out. Use demo credentials.';
+                loginBtn.style.display = 'inline-flex';
+                logoutBtn.style.display = 'none';
+                authToggleBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> Admin login`;
+                authToggleBtn.className = 'auth-btn';
+
+                postFormWrapper.classList.remove('visible');
+                loginRequiredMsg.style.display = 'block';
+                // re-render posts without delete buttons
+                fetchPosts();
+            }
+        }
+
+        // ---------- LOGIN ----------
+        async function handleLogin() {
+            const email = loginEmail.value.trim();
+            const password = loginPassword.value.trim();
+            if (!email || !password) {
+                loginStatus.className = 'login-status error';
+                loginStatus.innerText = '❌ Email and password required.';
+                return;
             }
 
-            // ==========================================
-            // NAVIGATION
-            // ==========================================
-            window.goHome = function() {
-                homeSection.style.display = 'flex';
-                blogSection.style.display = 'none';
-                isBlogVisible = false;
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            };
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
 
-            window.showBlog = function() {
-                homeSection.style.display = 'none';
-                blogSection.style.display = 'block';
-                isBlogVisible = true;
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                fetchPosts();
-                updateAdminUI();
-            };
+                if (error) throw error;
+                if (data?.user) {
+                    sessionToken = data.session?.access_token;
+                    updateUIForUser(data.user);
+                    loginStatus.className = 'login-status success';
+                    loginStatus.innerText = `✅ Welcome ${data.user.email}`;
+                } else {
+                    throw new Error('No user data returned');
+                }
+            } catch (err) {
+                console.error('Login error:', err);
+                loginStatus.className = 'login-status error';
+                loginStatus.innerText = `❌ Login failed: ${err.message}`;
+                // if error due to user not found, try signup? but we keep it simple: show message.
+                if (err.message.includes('Invalid login credentials')) {
+                    loginStatus.innerText = '❌ Invalid credentials. Try: admin@blog.com / 12345678';
+                }
+            }
+        }
 
-            // ==========================================
-            // RENDER POSTS
-            // ==========================================
-            function renderPosts(postsArray) {
-                if (!postsArray || postsArray.length === 0) {
-                    postsContainer.innerHTML = `
-                        <div style="text-align:center;padding:60px 0;">
-                            <div style="font-size:3rem;margin-bottom:16px;">📝</div>
-                            <h3 style="color:var(--text-secondary);">No posts yet</h3>
-                            <p style="color:var(--text-secondary);font-size:0.9rem;">Check back later for new content!</p>
-                            ${currentUser ? `
+        // ---------- LOGOUT ----------
+        async function handleLogout() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+                currentUser = null;
+                sessionToken = null;
+                updateUIForUser(null);
+                loginStatus.className = 'login-status';
+                loginStatus.innerText = '🔐 Logged out successfully.';
+                // clear possible sensitive fields
+                loginPassword.value = '';
+            } catch (err) {
+                console.error('Logout error:', err);
+                loginStatus.className = 'login-status error';
+                loginStatus.innerText = `❌ Logout error: ${err.message}`;
+            }
+        }
+
+        // ---------- PUBLISH POST ----------
+        async function handlePublish() {
+            if (!currentUser) {
+                publishStatus.innerText = '⚠️ You must be logged in.';
+                return;
+            }
+            const title = postTitle.value.trim() || 'Untitled';
+            const content = postContent.value.trim();
+            if (!content) {
+                publishStatus.innerText = '⚠️ Please write some content.';
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('posts')
+                    .insert([
+                        { 
+                            title: title,
+                            content: content,
+                            author_email: currentUser.email,
+                        }
+                    ])
+                    .select();
+
+                if (error) throw error;
+
+                publishStatus.innerText = '✅ Post published!';
+                postTitle.value = '';
+                postContent.value = '';
+                fetchPosts(); // refresh list
+                setTimeout(() => { publishStatus.innerText = ''; }, 3000);
+            } catch (err) {
+                console.error('Publish error:', err);
+                publishStatus.innerText = `❌ Error: ${err.message}`;
+            }
+        }
+
+        // ---------- CHECK SESSION ON LOAD ----------
+        async function checkSession() {
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+                if (error) throw error;
+                if (session?.user) {
+                    currentUser = session.user;
+                    sessionToken = session.access_token;
+                    updateUIForUser(currentUser);
+                    loginStatus.className = 'login-status success';
+                    loginStatus.innerText = `✅ Logged in as ${currentUser.email}`;
+                } else {
+                    updateUIForUser(null);
+                }
+            } catch (err) {
+                console.warn('Session check:', err);
+                updateUIForUser(null);
+            }
+            // fetch posts anyway
+            fetchPosts();
+        }
+
+        // ---------- EVENT LISTENERS ----------
+        loginBtn.addEventListener('click', handleLogin);
+        logoutBtn.addEventListener('click', handleLogout);
+        publishBtn.addEventListener('click', handlePublish);
+
+        // press enter on password field triggers login
+        loginPassword.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+        loginEmail.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        // auth toggle button: if logged out, focus login; if logged in, show logout? we just use it to scroll or logout 
+        authToggleBtn.addEventListener('click', () => {
+            if (currentUser) {
+                // if logged in, clicking header button logs out? better ask
+                if (confirm('Logout?')) {
+                    handleLogout();
+                }
+            } else {
+                document.getElementById('loginCard').scrollIntoView({ behavior: 'smooth' });
+                loginEmail.focus();
+            }
+        });
+
+        // init
+        checkSession();
+
+        // optional: for demo, prefill demo credentials
+        // (already prefilled in html)
+    })();
+</script>
+
+<!-- SQL TABLE schema (for reference, not executed) 
+     You need to create a 'posts' table in Supabase with:
+     id: uuid primary key default gen_random_uuid()
+     title: text
+     content: text
+     author_email: text
+     created_at: timestamptz default now()
+-->
+<!-- 
+  SQL to create the table (run in Supabase SQL editor):
+  CREATE TABLE posts (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    title TEXT,
+    content TEXT,
+    author_email TEXT,
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
+  CREATE POLICY "Enable all for authenticated users" ON posts
+    FOR ALL USING (true) WITH CHECK (true);
+  -- (or set up your own RLS policies)
+-->
+</body>
+</html>
