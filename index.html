@@ -23,6 +23,8 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
         * {
             transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
@@ -266,7 +268,6 @@
         <div class="info-item">
             <span class="icon">📅</span>
             <span class="value" id="adDate">Jul 12, 2026</span>
-            <span style="font-size:0.6rem; opacity:0.5;">AD</span>
         </div>
 
         <div class="info-divider"></div>
@@ -465,7 +466,8 @@
             });
 
             // ============================================================
-            //  DAY, DATE, TIME, LOCATION, TEMP, GREETING - AUTO UPDATE
+            //  AUTO UPDATE: DAY, DATE, TIME, LOCATION, TEMP, GREETING
+            //  Updates every second (real-time)
             // ============================================================
 
             // --- Days of Week ---
@@ -477,7 +479,7 @@
                 temp: 24
             };
 
-            // --- Fetch location from IP ---
+            // --- Fetch location from IP (once on load) ---
             function fetchLocation() {
                 fetch('https://ipapi.co/json/')
                     .then(response => response.json())
@@ -502,18 +504,18 @@
                 return { text: 'Good Night', icon: '🌙' };
             }
 
-            // --- Update all display elements ---
+            // --- AUTO UPDATE: Update all display elements every second ---
             function updateDisplay() {
                 const now = new Date();
                 
-                // Day Name
+                // DAY - Auto update
                 document.getElementById('dayName').textContent = daysOfWeek[now.getDay()];
                 
-                // AD Date
+                // AD DATE - Auto update
                 const adOptions = { month: 'short', day: 'numeric', year: 'numeric' };
                 document.getElementById('adDate').textContent = now.toLocaleDateString('en-US', adOptions);
                 
-                // Time with seconds
+                // TIME with seconds - Auto update every second
                 const hours = now.getHours();
                 const minutes = now.getMinutes();
                 const seconds = now.getSeconds();
@@ -522,19 +524,21 @@
                 document.getElementById('currentTime').textContent = 
                     `${String(hours12).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} ${ampm}`;
                 
-                // Greeting
+                // GREETING - Auto update based on time
                 const greeting = getGreeting();
                 document.getElementById('greetingText').textContent = greeting.text;
                 document.getElementById('greetingIcon').textContent = greeting.icon;
+                
+                // LOCATION & TEMP - Already set from fetchLocation()
+                // They only update on page refresh (IP doesn't change while browsing)
             }
 
-            // --- Init ---
+            // --- INIT ---
             document.addEventListener('DOMContentLoaded', function() {
                 loadSavedMode();
-                fetchLocation();
-                updateDisplay();
-                // Update every second (real-time)
-                setInterval(updateDisplay, 1000);
+                fetchLocation();        // Fetch location once on load
+                updateDisplay();        // Initial display
+                setInterval(updateDisplay, 1000);  // Auto update every SECOND (real-time)
             });
 
         })();
