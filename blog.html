@@ -1105,20 +1105,16 @@
 
             // ============ GET GOOGLE ACCOUNT NAME ============
             function getGoogleAccountName() {
-                // Try to get from localStorage first
                 let name = localStorage.getItem('commenter_name');
                 if (name) return name;
 
-                // Try to detect from browser's Google account
                 try {
-                    // Check if user is logged into Google
                     const googleUser = JSON.parse(localStorage.getItem('gapi_auth_user') || '{}');
                     if (googleUser && googleUser.name) {
                         return googleUser.name;
                     }
                 } catch (e) {}
 
-                // Try to get from Google's cookies
                 try {
                     const cookies = document.cookie.split(';');
                     for (let cookie of cookies) {
@@ -1126,7 +1122,6 @@
                             const parts = cookie.split('=');
                             if (parts.length > 1) {
                                 const value = decodeURIComponent(parts[1]);
-                                // Try to extract name from Google cookie
                                 const nameMatch = value.match(/[A-Za-z]+\s[A-Za-z]+/);
                                 if (nameMatch) {
                                     return nameMatch[0];
@@ -1136,24 +1131,12 @@
                     }
                 } catch (e) {}
 
-                // Prompt user for their name if not detected
                 const savedName = localStorage.getItem('user_display_name');
                 if (savedName) return savedName;
-
-                // Ask user for their name (first time only)
-                const askName = confirm('Would you like to use your Google name for comments? Click OK to enter your name, or Cancel to stay Anonymous.');
-                if (askName) {
-                    const userName = prompt('Enter your name (this will be used for comments):');
-                    if (userName && userName.trim()) {
-                        localStorage.setItem('user_display_name', userName.trim());
-                        return userName.trim();
-                    }
-                }
 
                 return null;
             }
 
-            // Set name when page loads
             const googleName = getGoogleAccountName();
             if (googleName) {
                 localStorage.setItem('commenter_name', googleName);
@@ -1199,7 +1182,7 @@
             // ============ PUBLIC REACTION - WORKS WITHOUT LOGIN ============
             window.addPublicReaction = async function(postId, type) {
                 try {
-                    // Get current reactions
+                    // Get current reactions from database
                     const { data: post, error: fetchError } = await supabase
                         .from('blogs')
                         .select('reactions')
@@ -1208,8 +1191,11 @@
                     if (fetchError) throw fetchError;
 
                     let reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
+                    
+                    // Increment the reaction count
                     reactions[type] = (reactions[type] || 0) + 1;
 
+                    // Update in database
                     const { error: updateError } = await supabase
                         .from('blogs')
                         .update({ reactions: reactions })
@@ -1237,7 +1223,6 @@
                     return;
                 }
 
-                // Get Google account name or user's name
                 let authorName = localStorage.getItem('commenter_name') || localStorage.getItem('user_display_name') || 'Anonymous';
 
                 try {
@@ -1273,7 +1258,6 @@
                     return;
                 }
 
-                // Use stored name or input name
                 let authorName = localStorage.getItem('commenter_name') || localStorage.getItem('user_display_name') || 'Anonymous';
                 const customName = nameInput ? nameInput.value.trim() : '';
                 if (customName) {
