@@ -18,7 +18,7 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #f0f4f8;
             min-height: 100vh;
-            padding: 1.5rem;
+            padding: 1rem;
         }
         .container {
             max-width: 1400px;
@@ -57,6 +57,7 @@
             display: flex;
             align-items: center;
             gap: 0.8rem;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -81,12 +82,10 @@
         .btn-primary:hover {
             background: #2563eb;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
         }
         .btn-success {
             background: #10b981;
             color: white;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
         .btn-success:hover {
             background: #059669;
@@ -95,7 +94,6 @@
         .btn-danger {
             background: #ef4444;
             color: white;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
         .btn-danger:hover {
             background: #dc2626;
@@ -109,7 +107,6 @@
         .btn-outline:hover {
             border-color: #3b82f6;
             color: #3b82f6;
-            background: rgba(59, 130, 246, 0.05);
         }
         .btn-sm {
             padding: 0.3rem 0.8rem;
@@ -142,10 +139,6 @@
             padding: 1.5rem 1.8rem;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
             border: 1px solid rgba(0, 0, 0, 0.04);
-            transition: all 0.3s ease;
-        }
-        .card:hover {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
         }
         .card-title {
             font-size: 1rem;
@@ -364,7 +357,8 @@
         .post-item .post-file a:hover {
             text-decoration: underline;
         }
-        .post-item .post-meta {
+
+        .post-meta {
             font-size: 0.8rem;
             color: #94a3b8;
             display: flex;
@@ -374,7 +368,7 @@
             padding-top: 0.8rem;
             border-top: 1px solid #f1f5f9;
         }
-        .post-item .post-meta span i {
+        .post-meta span i {
             margin-right: 0.3rem;
             color: #3b82f6;
         }
@@ -384,7 +378,7 @@
             font-weight: 600;
             cursor: pointer;
             display: inline-block;
-            margin-top: 0.3rem;
+            margin: 0.5rem 0;
             font-size: 0.9rem;
             text-decoration: none;
         }
@@ -392,116 +386,72 @@
             text-decoration: underline;
         }
 
-        .reactions {
+        /* Reactions on post item */
+        .post-reactions {
             display: flex;
-            gap: 0.8rem;
-            margin: 0.6rem 0 0.4rem;
+            gap: 0.5rem;
             flex-wrap: wrap;
+            margin: 0.5rem 0;
         }
-        .reaction-btn {
+        .post-reactions .reaction-badge {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-radius: 30px;
-            padding: 0.3rem 0.8rem;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            border-radius: 20px;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.8rem;
             display: flex;
             align-items: center;
             gap: 0.3rem;
-            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
-        .reaction-btn:hover {
+        .post-reactions .reaction-badge:hover {
             background: #e2e8f0;
             transform: scale(1.05);
         }
-        .reaction-btn .count {
-            font-size: 0.7rem;
-            color: #64748b;
+        .post-reactions .reaction-badge .count {
             font-weight: 600;
-        }
-        .reaction-btn.active {
-            background: #dbeafe;
-            border-color: #3b82f6;
+            color: #475569;
+            font-size: 0.7rem;
         }
 
-        .comments-section {
-            margin-top: 1rem;
-            padding-top: 0.8rem;
+        /* Quick comment on post */
+        .post-quick-comment {
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
             border-top: 1px solid #f1f5f9;
         }
-        .comments-section h4 {
-            font-size: 0.85rem;
-            color: #0f172a;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-        .comment-item {
-            background: #f8fafc;
-            border-radius: 8px;
-            padding: 0.5rem 0.8rem;
-            margin-bottom: 0.4rem;
-            font-size: 0.85rem;
-        }
-        .comment-item .comment-author {
-            font-weight: 600;
-            color: #0f172a;
+        .post-quick-comment .comment-preview {
             font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 0.3rem;
         }
-        .comment-item .comment-text {
-            color: #475569;
-            margin-top: 0.1rem;
+        .post-quick-comment .comment-preview i {
+            color: #3b82f6;
+            margin-right: 0.3rem;
         }
-        .comment-item .comment-time {
-            font-size: 0.65rem;
-            color: #94a3b8;
-            margin-top: 0.1rem;
-        }
-        .comment-input-group {
+        .post-quick-comment .comment-input-row {
             display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        .comment-input-group .comment-row {
-            display: flex;
-            gap: 0.5rem;
+            gap: 0.3rem;
             flex-wrap: wrap;
         }
-        .comment-input-group input {
+        .post-quick-comment input {
             flex: 1;
-            padding: 0.4rem 0.8rem;
+            min-width: 100px;
+            padding: 0.3rem 0.6rem;
             border: 2px solid #e2e8f0;
             border-radius: 8px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-family: 'Inter', sans-serif;
             background: #fafcff;
-            min-width: 120px;
         }
-        .comment-input-group input:focus {
+        .post-quick-comment input:focus {
             outline: none;
             border-color: #3b82f6;
         }
-        .comment-input-group .comment-submit-row {
-            display: flex;
-            gap: 0.5rem;
-        }
-        .comment-input-group .comment-submit-row input {
-            flex: 1;
-        }
-        .comment-input-group .btn {
-            padding: 0.3rem 1rem;
-            font-size: 0.75rem;
-        }
-        .guest-note {
+        .post-quick-comment .btn {
+            padding: 0.2rem 0.8rem;
             font-size: 0.7rem;
-            color: #94a3b8;
-            margin-top: 0.2rem;
-        }
-        .guest-note i {
-            margin-right: 0.2rem;
         }
 
         .empty-posts {
@@ -519,6 +469,7 @@
             margin-bottom: 0.3rem;
         }
 
+        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -665,6 +616,110 @@
             border-bottom: 1px solid #f1f5f9;
         }
 
+        /* Detail reactions */
+        .detail-reactions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        .detail-reactions .reaction-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 30px;
+            padding: 0.4rem 1rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .detail-reactions .reaction-btn:hover {
+            background: #e2e8f0;
+            transform: scale(1.05);
+        }
+        .detail-reactions .reaction-btn .count {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        /* Detail comments */
+        .detail-comments {
+            margin-top: 1rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid #f1f5f9;
+        }
+        .detail-comments h4 {
+            font-size: 0.85rem;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .comment-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 0.5rem 0.8rem;
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
+        }
+        .comment-item .comment-author {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 0.8rem;
+        }
+        .comment-item .comment-text {
+            color: #475569;
+            margin-top: 0.1rem;
+        }
+        .comment-item .comment-time {
+            font-size: 0.65rem;
+            color: #94a3b8;
+            margin-top: 0.1rem;
+        }
+
+        .detail-comment-input {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .detail-comment-input .comment-row {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .detail-comment-input input {
+            flex: 1;
+            padding: 0.4rem 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-family: 'Inter', sans-serif;
+            background: #fafcff;
+            min-width: 120px;
+        }
+        .detail-comment-input input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        .detail-comment-input .btn {
+            padding: 0.3rem 1rem;
+            font-size: 0.75rem;
+        }
+        .guest-note {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-top: 0.2rem;
+        }
+        .guest-note i {
+            margin-right: 0.2rem;
+        }
+
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -739,18 +794,13 @@
         }
         @media (max-width: 768px) {
             body {
-                padding: 1rem;
+                padding: 0.5rem;
             }
             .header {
-                padding: 1rem 1.2rem;
-                flex-direction: column;
-                align-items: stretch;
+                padding: 1rem;
             }
             .header h1 {
-                font-size: 1.3rem;
-            }
-            .header-actions {
-                flex-wrap: wrap;
+                font-size: 1.1rem;
             }
             .right-column {
                 flex-direction: column;
@@ -759,8 +809,8 @@
                 min-width: auto;
             }
             .modal {
-                padding: 1.5rem;
-                margin: 1rem;
+                padding: 1rem;
+                margin: 0.5rem;
             }
             .post-item {
                 padding: 1rem;
@@ -774,23 +824,17 @@
                 left: 1rem;
                 max-width: none;
             }
-            .comment-input-group .comment-row {
-                flex-direction: column;
-            }
-            .comment-input-group .comment-row input {
-                width: 100%;
-            }
         }
         @media (max-width: 480px) {
             .header h1 {
-                font-size: 1.1rem;
+                font-size: 1rem;
             }
             .btn {
-                padding: 0.4rem 1rem;
-                font-size: 0.75rem;
+                padding: 0.3rem 0.8rem;
+                font-size: 0.7rem;
             }
             .card {
-                padding: 1rem 1.2rem;
+                padding: 0.8rem 1rem;
             }
             .login-panel .login-actions {
                 flex-direction: column;
@@ -927,8 +971,8 @@
             <div id="detailBody">
                 <div class="post-detail-meta" id="detailMeta"></div>
                 <div class="post-detail-content" id="detailContent"></div>
-                <div id="detailReactions" class="reactions" style="margin-top:1rem;"></div>
-                <div id="detailComments" class="comments-section"></div>
+                <div class="detail-reactions" id="detailReactions"></div>
+                <div class="detail-comments" id="detailComments"></div>
             </div>
         </div>
     </div>
@@ -1022,6 +1066,97 @@
                 return div.innerHTML;
             }
 
+            // PUBLIC REACTION - No login required
+            window.addPublicReaction = async function(postId, type) {
+                try {
+                    const { data: post, error: fetchError } = await supabase
+                        .from('blogs')
+                        .select('reactions')
+                        .eq('id', postId)
+                        .single();
+                    if (fetchError) throw fetchError;
+
+                    let reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
+                    reactions[type] = (reactions[type] || 0) + 1;
+
+                    const { error: updateError } = await supabase
+                        .from('blogs')
+                        .update({ reactions: reactions })
+                        .eq('id', postId);
+                    if (updateError) throw updateError;
+
+                    await viewPost(postId);
+                    fetchPosts();
+                    showToast(`👍 Added ${type} reaction!`, 'success');
+                } catch (err) {
+                    showToast('Error: ' + err.message, 'error');
+                }
+            };
+
+            // PUBLIC COMMENT - No login required (for detail view)
+            window.addPublicComment = async function(postId) {
+                const nameInput = document.getElementById('detailCommentName');
+                const contentInput = document.getElementById('detailCommentInput');
+
+                if (!contentInput) return;
+                const content = contentInput.value.trim();
+                if (!content) {
+                    showToast('Please write a comment', 'error');
+                    return;
+                }
+
+                let authorName = 'Anonymous';
+                const name = nameInput ? nameInput.value.trim() : '';
+                if (name) authorName = name;
+
+                try {
+                    const { error } = await supabase
+                        .from('comments')
+                        .insert([{
+                            post_id: postId,
+                            author_name: authorName,
+                            author_email: null,
+                            content: content
+                        }]);
+                    if (error) throw error;
+                    if (contentInput) contentInput.value = '';
+                    if (nameInput) nameInput.value = '';
+                    showToast('💬 Comment added!', 'success');
+                    await renderDetailComments(postId);
+                    fetchPosts();
+                } catch (err) {
+                    showToast('Error: ' + err.message, 'error');
+                }
+            };
+
+            // Quick comment from post list
+            window.addQuickComment = async function(postId) {
+                const input = document.getElementById(`quick_comment_${postId}`);
+                if (!input) return;
+                const content = input.value.trim();
+                if (!content) {
+                    showToast('Please write a comment', 'error');
+                    return;
+                }
+
+                try {
+                    const { error } = await supabase
+                        .from('comments')
+                        .insert([{
+                            post_id: postId,
+                            author_name: 'Anonymous',
+                            author_email: null,
+                            content: content
+                        }]);
+                    if (error) throw error;
+                    input.value = '';
+                    showToast('💬 Comment added!', 'success');
+                    fetchPosts();
+                } catch (err) {
+                    showToast('Error: ' + err.message, 'error');
+                }
+            };
+
             function renderPosts(posts) {
                 if (!posts || posts.length === 0) {
                     postsContainer.innerHTML =
@@ -1065,7 +1200,24 @@
                     }
 
                     const reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
-                    const totalReactions = Object.values(reactions).reduce((a, b) => a + b, 0);
+                    const reactionEmojis = { like: '👍', love: '❤️', laugh: '😄', sad: '😢', angry: '😡' };
+                    let reactionHtml = '';
+                    for (const [key, emoji] of Object.entries(reactionEmojis)) {
+                        const count = reactions[key] || 0;
+                        if (count > 0) {
+                            reactionHtml += `
+                                <span class="reaction-badge" onclick="window.addPublicReaction('${post.id}','${key}')">
+                                    ${emoji} <span class="count">${count}</span>
+                                </span>
+                            `;
+                        }
+                    }
+
+                    // Get comments count
+                    let commentCount = 0;
+                    if (post.comment_count) {
+                        commentCount = post.comment_count;
+                    }
 
                     html += `
                         <div class="post-item" data-id="${post.id}">
@@ -1081,10 +1233,27 @@
                             <div class="post-content">${contentHtml}</div>
                             ${readMore}
                             ${fileHtml}
+
+                            <!-- Reactions on post -->
+                            ${reactionHtml ? `<div class="post-reactions">${reactionHtml}</div>` : ''}
+
                             <div class="post-meta">
                                 <span><i class="far fa-calendar-alt"></i> ${date}</span>
                                 <span><i class="far fa-user"></i> ${escapeHtml(post.author_name) || escapeHtml(post.author_email) || 'admin'}</span>
-                                ${totalReactions > 0 ? `<span><i class="far fa-smile"></i> ${totalReactions} reactions</span>` : ''}
+                                <span><i class="far fa-comments"></i> ${commentCount || 0}</span>
+                            </div>
+
+                            <!-- Quick Comment -->
+                            <div class="post-quick-comment">
+                                <div class="comment-preview">
+                                    <i class="fas fa-comment"></i> Leave a comment
+                                </div>
+                                <div class="comment-input-row">
+                                    <input type="text" id="quick_comment_${post.id}" placeholder="Write a comment..." />
+                                    <button class="btn btn-primary btn-sm" onclick="window.addQuickComment('${post.id}')">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -1094,95 +1263,29 @@
 
             async function fetchPosts() {
                 try {
-                    const { data, error } = await supabase.from('blogs').select('*').order('created_at', { ascending: false });
+                    // Fetch posts with comment counts
+                    const { data: posts, error } = await supabase
+                        .from('blogs')
+                        .select(`
+                            *,
+                            comments (count)
+                        `)
+                        .order('created_at', { ascending: false });
+
                     if (error) throw error;
-                    renderPosts(data || []);
+
+                    // Add comment count to each post
+                    const postsWithCount = posts.map(post => ({
+                        ...post,
+                        comment_count: post.comments ? post.comments[0].count : 0
+                    }));
+
+                    renderPosts(postsWithCount || []);
                 } catch (err) {
                     postsContainer.innerHTML =
                         `<div class="empty-posts"><i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i><h3>Error loading posts</h3><p>${err.message}</p></div>`;
                 }
             }
-
-            // PUBLIC REACTION - No login required
-            window.addPublicReaction = async function(postId, type) {
-                try {
-                    // Get current post
-                    const { data: post, error: fetchError } = await supabase
-                        .from('blogs')
-                        .select('reactions')
-                        .eq('id', postId)
-                        .single();
-                    if (fetchError) throw fetchError;
-
-                    let reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
-                    
-                    // Simply increment the reaction
-                    reactions[type] = (reactions[type] || 0) + 1;
-
-                    const { error: updateError } = await supabase
-                        .from('blogs')
-                        .update({ reactions: reactions })
-                        .eq('id', postId);
-                    if (updateError) throw updateError;
-
-                    // Refresh the view
-                    await viewPost(postId);
-                    fetchPosts();
-                    showToast(`👍 Added ${type} reaction!`, 'success');
-                } catch (err) {
-                    showToast('Error: ' + err.message, 'error');
-                }
-            };
-
-            // PUBLIC COMMENT - No login required
-            window.addPublicComment = async function(postId) {
-                const nameInput = document.getElementById('commentNameInput');
-                const emailInput = document.getElementById('commentEmailInput');
-                const contentInput = document.getElementById('commentInput');
-
-                if (!contentInput) return;
-                const content = contentInput.value.trim();
-                if (!content) {
-                    showToast('Please write a comment', 'error');
-                    return;
-                }
-
-                // If Gmail is provided, use it as author name
-                let authorName = 'Anonymous';
-                const email = emailInput ? emailInput.value.trim() : '';
-                if (email) {
-                    // Extract name from Gmail (before @)
-                    const namePart = email.split('@')[0];
-                    // Format: capitalize first letter, replace dots with spaces
-                    authorName = namePart
-                        .split('.')
-                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                        .join(' ');
-                } else if (nameInput) {
-                    const name = nameInput.value.trim();
-                    if (name) authorName = name;
-                }
-
-                try {
-                    const { error } = await supabase
-                        .from('comments')
-                        .insert([{
-                            post_id: postId,
-                            author_name: authorName,
-                            author_email: email || null,
-                            content: content
-                        }]);
-                    if (error) throw error;
-                    if (contentInput) contentInput.value = '';
-                    if (nameInput) nameInput.value = '';
-                    if (emailInput) emailInput.value = '';
-                    showToast('💬 Comment added!', 'success');
-                    await renderComments(postId);
-                    fetchPosts();
-                } catch (err) {
-                    showToast('Error: ' + err.message, 'error');
-                }
-            };
 
             window.viewPost = async function(id) {
                 try {
@@ -1214,7 +1317,7 @@
                     }
                     detailContent.innerHTML = contentHtml;
 
-                    // Reactions - PUBLIC (no login required)
+                    // Reactions - PUBLIC
                     const reactions = data.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
                     const reactionEmojis = { like: '👍', love: '❤️', laugh: '😄', sad: '😢', angry: '😡' };
                     let reactionHtml = '';
@@ -1228,8 +1331,8 @@
                     }
                     detailReactions.innerHTML = reactionHtml;
 
-                    // Comments - PUBLIC with Gmail support
-                    await renderComments(id);
+                    // Comments
+                    await renderDetailComments(id);
 
                     detailModal.classList.add('active');
                     document.body.style.overflow = 'hidden';
@@ -1238,7 +1341,7 @@
                 }
             };
 
-            async function renderComments(postId) {
+            async function renderDetailComments(postId) {
                 try {
                     const { data, error } = await supabase
                         .from('comments')
@@ -1268,15 +1371,14 @@
                         html += `<p style="color:#94a3b8;font-size:0.85rem;">No comments yet. Be the first!</p>`;
                     }
 
-                    // PUBLIC comment form - with Gmail support
+                    // PUBLIC comment form
                     html += `
-                        <div class="comment-input-group">
+                        <div class="detail-comment-input">
                             <div class="comment-row">
-                                <input type="text" id="commentNameInput" placeholder="Your name (optional)" style="flex:0 0 180px;" />
-                                <input type="email" id="commentEmailInput" placeholder="Gmail (optional, shows as your name)" style="flex:0 0 220px;" />
-                                <input type="text" id="commentInput" placeholder="Write a comment..." style="flex:1;" />
+                                <input type="text" id="detailCommentName" placeholder="Your name (optional)" style="flex:0 0 180px;" />
+                                <input type="text" id="detailCommentInput" placeholder="Write a comment..." style="flex:1;" />
                             </div>
-                            <div class="comment-submit-row">
+                            <div>
                                 <button class="btn btn-primary btn-sm" onclick="window.addPublicComment('${postId}')">
                                     <i class="fas fa-paper-plane"></i> Post Comment
                                 </button>
@@ -1290,7 +1392,7 @@
                 }
             }
 
-            // Admin functions (login required)
+            // Admin functions
             window.editPost = function(id) {
                 editingId = id;
                 editPostId.value = id;
@@ -1361,7 +1463,6 @@
                 }
             }
 
-            // Login/Logout
             async function handleLogin() {
                 const email = loginEmail.value.trim();
                 const password = loginPassword.value.trim();
