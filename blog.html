@@ -497,6 +497,7 @@
             cursor: pointer;
             display: inline-block;
             margin-top: 0.3rem;
+            font-weight: 600;
         }
         .post-comments .view-all-comments:hover {
             text-decoration: underline;
@@ -1102,6 +1103,24 @@
             let editingId = null;
             let currentFileUrl = null;
 
+            // Get Google account name from browser
+            function getGoogleAccountName() {
+                // Try to get from localStorage first
+                let name = localStorage.getItem('commenter_name');
+                if (name) return name;
+
+                // Try to detect from browser
+                try {
+                    // Check if user is logged into Google
+                    const googleUser = JSON.parse(localStorage.getItem('gapi_auth_user') || '{}');
+                    if (googleUser && googleUser.name) {
+                        return googleUser.name;
+                    }
+                } catch (e) {}
+
+                return null;
+            }
+
             function showToast(message, type = 'success') {
                 toast.textContent = message;
                 toast.className = 'toast ' + type + ' show';
@@ -1139,10 +1158,9 @@
                 return div.innerHTML;
             }
 
-            // ============ PUBLIC REACTION - UPDATES COUNT PROPERLY ============
+            // ============ PUBLIC REACTION - WORKS WITHOUT LOGIN ============
             window.addPublicReaction = async function(postId, type) {
                 try {
-                    // Get current reactions
                     const { data: post, error: fetchError } = await supabase
                         .from('blogs')
                         .select('reactions')
@@ -1159,18 +1177,17 @@
                         .eq('id', postId);
                     if (updateError) throw updateError;
 
-                    // Refresh everything to show updated counts
                     await fetchPosts();
                     if (currentDetailPostId === postId) {
                         await viewPost(postId);
                     }
-                    showToast(`👍 Added ${type} reaction!`, 'success');
+                    showToast(`👍 Added reaction!`, 'success');
                 } catch (err) {
                     showToast('Error: ' + err.message, 'error');
                 }
             };
 
-            // ============ PUBLIC COMMENT ============
+            // ============ PUBLIC COMMENT - SHOWS GOOGLE NAME ============
             window.addQuickComment = async function(postId) {
                 const input = document.getElementById(`quick_comment_${postId}`);
                 if (!input) return;
@@ -1180,12 +1197,15 @@
                     return;
                 }
 
+                // Get Google account name
+                let authorName = getGoogleAccountName() || 'Anonymous';
+
                 try {
                     const { error } = await supabase
                         .from('comments')
                         .insert([{
                             post_id: postId,
-                            author_name: 'Anonymous',
+                            author_name: authorName,
                             author_email: null,
                             content: content
                         }]);
@@ -1213,9 +1233,10 @@
                     return;
                 }
 
-                let authorName = 'Anonymous';
-                const name = nameInput ? nameInput.value.trim() : '';
-                if (name) authorName = name;
+                // Use Google name if available, otherwise use input name
+                let authorName = getGoogleAccountName() || 'Anonymous';
+                const customName = nameInput ? nameInput.value.trim() : '';
+                if (customName) authorName = customName;
 
                 try {
                     const { error } = await supabase
@@ -1236,6 +1257,11 @@
                 } catch (err) {
                     showToast('Error: ' + err.message, 'error');
                 }
+            };
+
+            // ============ VIEW ALL COMMENTS ============
+            window.viewAllComments = function(postId) {
+                viewPost(postId);
             };
 
             // ============ ADMIN DELETE COMMENT ============
@@ -1261,7 +1287,6 @@
                 }
             };
 
-            // ============ DELETE COMMENT FROM POST LIST ============
             window.deleteCommentFromList = async function(commentId, postId) {
                 if (!currentUser) {
                     showToast('⚠️ You must be logged in as admin', 'error');
@@ -1292,7 +1317,6 @@
 
                     if (error) throw error;
 
-                    // Get comments for each post
                     const postsWithData = await Promise.all((posts || []).map(async (post) => {
                         const { data: comments, error: commentError } = await supabase
                             .from('comments')
@@ -1360,7 +1384,6 @@
                         }
                     }
 
-                    // Reactions - show counts
                     const reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
                     const reactionEmojis = { like: '👍', love: '❤️', laugh: '😄', sad: '😢', angry: '😡' };
                     let reactionHtml = '';
@@ -1375,7 +1398,6 @@
                         `;
                     }
 
-                    // Comments section
                     const comments = post.comments || [];
                     let commentsHtml = '';
                     if (comments.length > 0) {
@@ -1400,7 +1422,7 @@
                             `;
                         });
                         if (comments.length > 3) {
-                            commentsHtml += `<div class="view-all-comments" onclick="window.viewPost('${post.id}')">
+                            commentsHtml += `<div class="view-all-comments" onclick="window.viewAllComments('${post.id}')">
                                 View all ${comments.length} comments →
                             </div>`;
                         }
@@ -1422,7 +1444,6 @@
                             ${readMore}
                             ${fileHtml}
 
-                            <!-- Reactions with counts -->
                             <div class="post-reactions">
                                 ${reactionHtml}
                                 ${totalReactions === 0 ? '<span style="font-size:0.8rem;color:#94a3b8;">Be the first to react!</span>' : ''}
@@ -1435,7 +1456,6 @@
                                 ${totalReactions > 0 ? `<span><i class="far fa-smile"></i> ${totalReactions}</span>` : ''}
                             </div>
 
-                            <!-- Comments Section -->
                             <div class="post-comments">
                                 ${commentsHtml}
                                 <div class="comment-input-row">
@@ -1444,6 +1464,7 @@
                                         <i class="fas fa-paper-plane"></i>
                                     </button>
                                 </div>
+                                <div class="guest-note"><i class="fas fa-user"></i> ${getGoogleAccountName() ? 'Commenting as: ' + getGoogleAccountName() : 'Comment as guest'}</div>
                             </div>
                         </div>
                     `;
@@ -1487,7 +1508,6 @@
                     }
                     detailContent.innerHTML = contentHtml;
 
-                    // Reactions with counts
                     const reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
                     const reactionEmojis = { like: '👍', love: '❤️', laugh: '😄', sad: '😢', angry: '😡' };
                     let reactionHtml = '';
@@ -1501,7 +1521,6 @@
                     }
                     detailReactions.innerHTML = reactionHtml;
 
-                    // Comments
                     await renderDetailComments(id);
 
                     detailModal.classList.add('active');
@@ -1548,11 +1567,11 @@
                         html += `<p style="color:#94a3b8;font-size:0.85rem;">No comments yet. Be the first!</p>`;
                     }
 
-                    // Comment form
+                    const googleName = getGoogleAccountName();
                     html += `
                         <div class="detail-comment-input">
                             <div class="comment-row">
-                                <input type="text" id="detailCommentName" placeholder="Your name (optional)" style="flex:0 0 180px;" />
+                                <input type="text" id="detailCommentName" placeholder="Your name (optional)" style="flex:0 0 180px;" value="${googleName || ''}" />
                                 <input type="text" id="detailCommentInput" placeholder="Write a comment..." style="flex:1;" />
                             </div>
                             <div>
@@ -1560,7 +1579,7 @@
                                     <i class="fas fa-paper-plane"></i> Post Comment
                                 </button>
                             </div>
-                            <div class="guest-note"><i class="fas fa-globe"></i> Comment as guest — no login required</div>
+                            <div class="guest-note"><i class="fas fa-user"></i> ${googleName ? 'Commenting as: ' + googleName : 'Comment as guest'}</div>
                         </div>
                     `;
                     detailComments.innerHTML = html;
