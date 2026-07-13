@@ -1103,13 +1103,13 @@
             let editingId = null;
             let currentFileUrl = null;
 
-            // Get Google account name from browser
+            // ============ GET GOOGLE ACCOUNT NAME ============
             function getGoogleAccountName() {
                 // Try to get from localStorage first
                 let name = localStorage.getItem('commenter_name');
                 if (name) return name;
 
-                // Try to detect from browser
+                // Try to detect from browser's Google account
                 try {
                     // Check if user is logged into Google
                     const googleUser = JSON.parse(localStorage.getItem('gapi_auth_user') || '{}');
@@ -1118,7 +1118,45 @@
                     }
                 } catch (e) {}
 
+                // Try to get from Google's cookies
+                try {
+                    const cookies = document.cookie.split(';');
+                    for (let cookie of cookies) {
+                        if (cookie.includes('google')) {
+                            const parts = cookie.split('=');
+                            if (parts.length > 1) {
+                                const value = decodeURIComponent(parts[1]);
+                                // Try to extract name from Google cookie
+                                const nameMatch = value.match(/[A-Za-z]+\s[A-Za-z]+/);
+                                if (nameMatch) {
+                                    return nameMatch[0];
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {}
+
+                // Prompt user for their name if not detected
+                const savedName = localStorage.getItem('user_display_name');
+                if (savedName) return savedName;
+
+                // Ask user for their name (first time only)
+                const askName = confirm('Would you like to use your Google name for comments? Click OK to enter your name, or Cancel to stay Anonymous.');
+                if (askName) {
+                    const userName = prompt('Enter your name (this will be used for comments):');
+                    if (userName && userName.trim()) {
+                        localStorage.setItem('user_display_name', userName.trim());
+                        return userName.trim();
+                    }
+                }
+
                 return null;
+            }
+
+            // Set name when page loads
+            const googleName = getGoogleAccountName();
+            if (googleName) {
+                localStorage.setItem('commenter_name', googleName);
             }
 
             function showToast(message, type = 'success') {
@@ -1161,6 +1199,7 @@
             // ============ PUBLIC REACTION - WORKS WITHOUT LOGIN ============
             window.addPublicReaction = async function(postId, type) {
                 try {
+                    // Get current reactions
                     const { data: post, error: fetchError } = await supabase
                         .from('blogs')
                         .select('reactions')
@@ -1177,11 +1216,12 @@
                         .eq('id', postId);
                     if (updateError) throw updateError;
 
+                    // Refresh everything to show updated counts
                     await fetchPosts();
                     if (currentDetailPostId === postId) {
                         await viewPost(postId);
                     }
-                    showToast(`👍 Added reaction!`, 'success');
+                    showToast(`👍 Added ${type} reaction!`, 'success');
                 } catch (err) {
                     showToast('Error: ' + err.message, 'error');
                 }
@@ -1197,8 +1237,8 @@
                     return;
                 }
 
-                // Get Google account name
-                let authorName = getGoogleAccountName() || 'Anonymous';
+                // Get Google account name or user's name
+                let authorName = localStorage.getItem('commenter_name') || localStorage.getItem('user_display_name') || 'Anonymous';
 
                 try {
                     const { error } = await supabase
@@ -1233,10 +1273,13 @@
                     return;
                 }
 
-                // Use Google name if available, otherwise use input name
-                let authorName = getGoogleAccountName() || 'Anonymous';
+                // Use stored name or input name
+                let authorName = localStorage.getItem('commenter_name') || localStorage.getItem('user_display_name') || 'Anonymous';
                 const customName = nameInput ? nameInput.value.trim() : '';
-                if (customName) authorName = customName;
+                if (customName) {
+                    authorName = customName;
+                    localStorage.setItem('commenter_name', customName);
+                }
 
                 try {
                     const { error } = await supabase
@@ -1429,6 +1472,8 @@
                         commentsHtml += `</div>`;
                     }
 
+                    const displayName = localStorage.getItem('commenter_name') || localStorage.getItem('user_display_name') || 'Guest';
+
                     html += `
                         <div class="post-item" data-id="${post.id}">
                             <div class="post-header">
@@ -1464,7 +1509,7 @@
                                         <i class="fas fa-paper-plane"></i>
                                     </button>
                                 </div>
-                                <div class="guest-note"><i class="fas fa-user"></i> ${getGoogleAccountName() ? 'Commenting as: ' + getGoogleAccountName() : 'Comment as guest'}</div>
+                                <div class="guest-note"><i class="fas fa-user"></i> ${displayName !== 'Guest' ? 'Commenting as: ' + displayName : 'Comment as guest'}</div>
                             </div>
                         </div>
                     `;
@@ -1567,11 +1612,11 @@
                         html += `<p style="color:#94a3b8;font-size:0.85rem;">No comments yet. Be the first!</p>`;
                     }
 
-                    const googleName = getGoogleAccountName();
+                    const displayName = localStorage.getItem('commenter_name') || localStorage.getItem('user_display_name') || '';
                     html += `
                         <div class="detail-comment-input">
                             <div class="comment-row">
-                                <input type="text" id="detailCommentName" placeholder="Your name (optional)" style="flex:0 0 180px;" value="${googleName || ''}" />
+                                <input type="text" id="detailCommentName" placeholder="Your name (optional)" style="flex:0 0 180px;" value="${displayName}" />
                                 <input type="text" id="detailCommentInput" placeholder="Write a comment..." style="flex:1;" />
                             </div>
                             <div>
@@ -1579,7 +1624,7 @@
                                     <i class="fas fa-paper-plane"></i> Post Comment
                                 </button>
                             </div>
-                            <div class="guest-note"><i class="fas fa-user"></i> ${googleName ? 'Commenting as: ' + googleName : 'Comment as guest'}</div>
+                            <div class="guest-note"><i class="fas fa-user"></i> ${displayName ? 'Commenting as: ' + displayName : 'Comment as guest'}</div>
                         </div>
                     `;
                     detailComments.innerHTML = html;
