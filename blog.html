@@ -836,24 +836,25 @@
             position: absolute;
             right: 0;
             background: white;
-            min-width: 180px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            min-width: 200px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
             border-radius: 12px;
-            z-index: 10;
+            z-index: 100;
             padding: 0.5rem;
-            border: 1px solid #f1f5f9;
+            border: 1px solid #e2e8f0;
         }
-        .share-dropdown:hover .share-dropdown-content {
+        .share-dropdown:hover .share-dropdown-content,
+        .share-dropdown.active .share-dropdown-content {
             display: block;
         }
         .share-dropdown-content a {
             display: flex;
             align-items: center;
-            gap: 0.6rem;
-            padding: 0.4rem 0.8rem;
+            gap: 0.8rem;
+            padding: 0.5rem 0.8rem;
             text-decoration: none;
             color: #1e293b;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             border-radius: 8px;
             transition: 0.2s;
             cursor: pointer;
@@ -865,9 +866,17 @@
             background: #f1f5f9;
         }
         .share-dropdown-content a i {
-            width: 20px;
+            width: 24px;
             text-align: center;
+            font-size: 1.1rem;
         }
+        .share-dropdown-content a .fa-facebook-f { color: #1877f2; }
+        .share-dropdown-content a .fa-twitter { color: #1da1f2; }
+        .share-dropdown-content a .fa-whatsapp { color: #25d366; }
+        .share-dropdown-content a .fa-messenger { color: #0084ff; }
+        .share-dropdown-content a .fa-envelope { color: #ea4335; }
+        .share-dropdown-content a .fa-link { color: #64748b; }
+        .share-dropdown-content a .fa-share-alt { color: #3b82f6; }
 
         @media (max-width: 992px) {
             .main-layout {
@@ -937,6 +946,10 @@
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
             }
+            .share-dropdown-content {
+                min-width: 160px;
+                right: -40px;
+            }
         }
     </style>
 </head>
@@ -978,11 +991,11 @@
                     <div class="login-panel">
                         <div class="input-group">
                             <label>Email</label>
-                            <input type="email" id="loginEmail" placeholder="admin@blog.com" value="admin@blog.com" />
+                            <input type="email" id="loginEmail" placeholder="admin@blog.com" value="" />
                         </div>
                         <div class="input-group">
                             <label>Password</label>
-                            <input type="password" id="loginPassword" placeholder="••••••••" value="12345678" />
+                            <input type="password" id="loginPassword" placeholder="••••••••" value="" />
                         </div>
                         <div class="login-actions">
                             <button id="loginBtn" class="btn btn-primary btn-sm">
@@ -992,7 +1005,7 @@
                                 <i class="fas fa-sign-out-alt"></i> Logout
                             </button>
                             <div id="loginStatus" class="login-status">
-                                <i class="fas fa-info-circle"></i> Demo credentials
+                                <i class="fas fa-info-circle"></i> Enter credentials to login
                             </div>
                         </div>
                     </div>
@@ -1021,7 +1034,6 @@
                     </div>
                 </div>
 
-                <!-- Stats Card - Only visible to admin -->
                 <div class="card" id="statsCard" style="display:none;">
                     <div class="card-title">
                         <i class="fas fa-chart-simple"></i> Blog Stats
@@ -1144,8 +1156,6 @@
             let currentDetailPostId = null;
             let editingId = null;
             let currentFileUrl = null;
-
-            // total views counter (in-memory for demo) - only shown to admin
             let viewCount = 0;
 
             function getGoogleAccountName() {
@@ -1196,38 +1206,95 @@
                 return div.innerHTML;
             }
 
-            // ===== SHARE FUNCTION (native & fallback) =====
+            // ===== SHARE FUNCTION - FIXED =====
             function sharePost(postId, title) {
-                const url = window.location.href.split('?')[0] + '?post=' + postId;
-                const shareData = {
-                    title: title || 'Lokendra\'s Blog',
-                    text: 'Check out this post: ' + (title || ''),
-                    url: url
-                };
+                const baseUrl = window.location.href.split('?')[0];
+                const shareUrl = baseUrl + '?post=' + postId;
+                const shareTitle = title || 'Lokendra\'s Blog';
+                const shareText = 'Check out this post: ' + shareTitle;
 
-                // Use native Web Share API if available (shows all apps: FB, Messenger, WhatsApp, Gmail, etc.)
+                console.log('Sharing:', { shareUrl, shareTitle, shareText });
+
                 if (navigator.share) {
-                    navigator.share(shareData).catch((err) => {
+                    navigator.share({
+                        title: shareTitle,
+                        text: shareText,
+                        url: shareUrl
+                    }).then(() => {
+                        console.log('Share successful');
+                    }).catch((err) => {
                         if (err.name !== 'AbortError') {
-                            console.warn('Share cancelled or error:', err);
+                            console.log('Share cancelled or error:', err);
+                            copyLinkToClipboard(shareUrl);
                         }
                     });
+                    return;
+                }
+
+                copyLinkToClipboard(shareUrl);
+            }
+
+            function copyLinkToClipboard(url) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(url).then(() => {
+                        showToast('🔗 Link copied to clipboard! Share it anywhere.', 'success');
+                    }).catch(() => {
+                        promptCopyLink(url);
+                    });
                 } else {
-                    // Fallback: try to copy link
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(url).then(() => {
-                            showToast('🔗 Link copied to clipboard! Share it anywhere.', 'success');
-                        }).catch(() => {
-                            prompt('Copy this link to share:', url);
-                        });
-                    } else {
-                        prompt('Copy this link to share:', url);
-                    }
+                    promptCopyLink(url);
                 }
             }
 
-            // Expose share function globally
+            function promptCopyLink(url) {
+                const input = document.createElement('input');
+                input.value = url;
+                document.body.appendChild(input);
+                input.select();
+                try {
+                    document.execCommand('copy');
+                    showToast('🔗 Link copied to clipboard!', 'success');
+                } catch (err) {
+                    prompt('Copy this link to share:', url);
+                }
+                document.body.removeChild(input);
+            }
+
+            // Direct share to specific platforms
+            function shareToPlatform(postId, title, platform) {
+                const baseUrl = window.location.href.split('?')[0];
+                const shareUrl = encodeURIComponent(baseUrl + '?post=' + postId);
+                const shareTitle = encodeURIComponent(title || 'Lokendra\'s Blog');
+                let shareLink = '';
+
+                switch(platform) {
+                    case 'facebook':
+                        shareLink = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`;
+                        break;
+                    case 'twitter':
+                        shareLink = `https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}`;
+                        break;
+                    case 'whatsapp':
+                        shareLink = `https://api.whatsapp.com/send?text=${shareTitle}%20${shareUrl}`;
+                        break;
+                    case 'messenger':
+                        shareLink = `https://www.facebook.com/dialog/send?link=${shareUrl}&app_id=123456789&redirect_uri=${shareUrl}`;
+                        break;
+                    case 'gmail':
+                        shareLink = `mailto:?subject=${shareTitle}&body=Check%20out%20this%20post%3A%20${shareUrl}`;
+                        break;
+                    case 'native':
+                    default:
+                        sharePost(postId, title);
+                        return;
+                }
+
+                window.open(shareLink, '_blank', 'width=600,height=500');
+            }
+
+            // Expose share functions globally
             window.sharePost = sharePost;
+            window.shareToPlatform = shareToPlatform;
 
             // ============ PUBLIC COMMENT ============
             window.addQuickComment = async function(postId) {
@@ -1363,7 +1430,6 @@
                         };
                     }));
 
-                    // Update stats (only if admin is logged in)
                     if (currentUser) {
                         totalPostsEl.textContent = postsWithData.length;
                         viewCount += 1;
@@ -1454,33 +1520,37 @@
                     }
 
                     const displayName = localStorage.getItem('commenter_name') || 'Guest';
+                    const escapedTitle = escapeHtml(post.title) || 'Untitled';
 
                     html += `
                         <div class="post-item" data-id="${post.id}">
                             <div class="post-header">
-                                <h3 onclick="window.openPostInNewTab('${post.id}')" style="cursor:pointer;">${escapeHtml(post.title) || 'Untitled'}</h3>
+                                <h3 onclick="window.openPostInNewTab('${post.id}')" style="cursor:pointer;">${escapedTitle}</h3>
                                 <div style="display:flex; gap:0.3rem; align-items:center;">
-                                    <div class="share-dropdown">
-                                        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();">
+                                    <div class="share-dropdown" onclick="event.stopPropagation();">
+                                        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); this.parentElement.classList.toggle('active')">
                                             <i class="fas fa-share-alt"></i> Share
                                         </button>
                                         <div class="share-dropdown-content">
-                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')">
-                                                <i class="fas fa-share-alt"></i> Share (Native)
+                                            <a onclick="event.stopPropagation(); window.shareToPlatform('${post.id}','${escapedTitle}','native')">
+                                                <i class="fas fa-share-alt" style="color:#3b82f6;"></i> Share (Native)
                                             </a>
-                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')">
+                                            <a onclick="event.stopPropagation(); window.shareToPlatform('${post.id}','${escapedTitle}','facebook')">
                                                 <i class="fab fa-facebook-f"></i> Facebook
                                             </a>
-                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')">
+                                            <a onclick="event.stopPropagation(); window.shareToPlatform('${post.id}','${escapedTitle}','messenger')">
+                                                <i class="fab fa-messenger"></i> Messenger
+                                            </a>
+                                            <a onclick="event.stopPropagation(); window.shareToPlatform('${post.id}','${escapedTitle}','twitter')">
                                                 <i class="fab fa-twitter"></i> Twitter
                                             </a>
-                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')">
+                                            <a onclick="event.stopPropagation(); window.shareToPlatform('${post.id}','${escapedTitle}','whatsapp')">
                                                 <i class="fab fa-whatsapp"></i> WhatsApp
                                             </a>
-                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')">
+                                            <a onclick="event.stopPropagation(); window.shareToPlatform('${post.id}','${escapedTitle}','gmail')">
                                                 <i class="fas fa-envelope"></i> Gmail
                                             </a>
-                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')">
+                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapedTitle}')">
                                                 <i class="fas fa-link"></i> Copy Link
                                             </a>
                                         </div>
@@ -1519,18 +1589,15 @@
                 postsContainer.innerHTML = html;
             }
 
-            // Open post in new tab
             window.openPostInNewTab = function(postId) {
                 const url = window.location.href.split('?')[0] + '?post=' + postId;
                 window.open(url, '_blank');
             };
 
-            // If URL has ?post=ID, open that post in a new tab automatically (for share links)
             (function handleShareLink() {
                 const params = new URLSearchParams(window.location.search);
                 const postId = params.get('post');
                 if (postId) {
-                    // Open the post detail in a new tab
                     setTimeout(() => {
                         viewPost(postId);
                     }, 300);
@@ -1736,7 +1803,7 @@
                     currentUser = null;
                     updateUIForUser(null);
                     loginStatus.className = 'login-status';
-                    loginStatus.innerHTML = '<i class="fas fa-info-circle"></i> Logged out';
+                    loginStatus.innerHTML = '<i class="fas fa-info-circle"></i> Enter credentials to login';
                     showToast('🔐 Logged out successfully', 'info');
                 } catch (err) {
                     showToast('❌ Logout error: ' + err.message, 'error');
@@ -1801,7 +1868,7 @@
                     fetchPosts();
                 } else {
                     loginStatus.className = 'login-status';
-                    loginStatus.innerHTML = '<i class="fas fa-info-circle"></i> Demo credentials';
+                    loginStatus.innerHTML = '<i class="fas fa-info-circle"></i> Enter credentials to login';
                     loginBtn.classList.remove('hidden');
                     logoutBtn.classList.add('hidden');
                     authToggleBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Admin';
@@ -1842,13 +1909,21 @@
                 fetchPosts();
             }
 
-            // Home button: go to index.html (dashboard)
             homeBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 window.location.href = 'index.html';
             });
 
-            // ============ EVENT LISTENERS ============
+            // Close share dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                const dropdowns = document.querySelectorAll('.share-dropdown');
+                dropdowns.forEach(dropdown => {
+                    if (!dropdown.contains(e.target)) {
+                        dropdown.classList.remove('active');
+                    }
+                });
+            });
+
             loginBtn.addEventListener('click', handleLogin);
             logoutBtn.addEventListener('click', handleLogout);
             publishBtn.addEventListener('click', handlePublish);
