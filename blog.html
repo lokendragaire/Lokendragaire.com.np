@@ -5,9 +5,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lokendra Gaire · Personal Blog</title>
-    <!-- Supabase JS library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
-    <!-- Font Awesome for icons -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js">
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
@@ -16,33 +15,30 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #f0f4f8;
             min-height: 100vh;
             padding: 1.5rem;
         }
-
         .container {
             max-width: 1400px;
             margin: 0 auto;
         }
 
-        /* ===== HEADER ===== */
+        /* Header */
         .header {
             background: white;
             border-radius: 20px;
             padding: 1.2rem 2rem;
             margin-bottom: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
         }
-
         .header h1 {
             font-size: 1.6rem;
             font-weight: 800;
@@ -51,24 +47,21 @@
             align-items: center;
             gap: 0.5rem;
         }
-
         .header h1 i {
             color: #3b82f6;
         }
-
         .header h1 span {
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .header-actions {
             display: flex;
             align-items: center;
             gap: 0.8rem;
         }
 
-        /* ===== BUTTONS ===== */
+        /* Buttons */
         .btn {
             padding: 0.6rem 1.4rem;
             border: none;
@@ -81,39 +74,36 @@
             align-items: center;
             gap: 0.5rem;
             font-family: 'Inter', sans-serif;
+            text-decoration: none;
         }
-
         .btn-primary {
             background: #3b82f6;
             color: white;
-            box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
         .btn-primary:hover {
             background: #2563eb;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59,130,246,0.4);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
         }
-
         .btn-success {
             background: #10b981;
             color: white;
-            box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
         .btn-success:hover {
             background: #059669;
             transform: translateY(-2px);
         }
-
         .btn-danger {
             background: #ef4444;
             color: white;
-            box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
         .btn-danger:hover {
             background: #dc2626;
             transform: translateY(-2px);
         }
-
         .btn-outline {
             background: transparent;
             border: 2px solid #e2e8f0;
@@ -122,14 +112,12 @@
         .btn-outline:hover {
             border-color: #3b82f6;
             color: #3b82f6;
-            background: rgba(59,130,246,0.05);
+            background: rgba(59, 130, 246, 0.05);
         }
-
         .btn-sm {
             padding: 0.3rem 0.8rem;
             font-size: 0.75rem;
         }
-
         .btn-ghost {
             background: transparent;
             color: #64748b;
@@ -139,25 +127,20 @@
             background: #f1f5f9;
             color: #0f172a;
         }
-
         .hidden {
             display: none !important;
         }
 
-        /* ===== MAIN LAYOUT: Flex Row ===== */
+        /* Main Layout */
         .main-layout {
             display: flex;
             gap: 1.5rem;
             align-items: flex-start;
         }
-
-        /* ===== LEFT COLUMN (Posts) ===== */
         .left-column {
             flex: 1;
             min-width: 0;
         }
-
-        /* ===== RIGHT COLUMN (Login + Create) ===== */
         .right-column {
             width: 340px;
             flex-shrink: 0;
@@ -166,20 +149,18 @@
             gap: 1.2rem;
         }
 
-        /* ===== CARDS ===== */
+        /* Cards */
         .card {
             background: white;
             border-radius: 16px;
             padding: 1.5rem 1.8rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-            border: 1px solid rgba(0,0,0,0.04);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.04);
             transition: all 0.3s ease;
         }
-
         .card:hover {
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
         }
-
         .card-title {
             font-size: 1rem;
             font-weight: 700;
@@ -189,25 +170,22 @@
             align-items: center;
             gap: 0.6rem;
         }
-
         .card-title i {
             color: #3b82f6;
             font-size: 1.1rem;
         }
 
-        /* ===== LOGIN PANEL (Compact) ===== */
+        /* Login */
         .login-panel {
             display: flex;
             flex-direction: column;
             gap: 0.7rem;
         }
-
         .login-panel .input-group {
             display: flex;
             flex-direction: column;
             gap: 0.4rem;
         }
-
         .login-panel .input-group label {
             font-size: 0.75rem;
             font-weight: 600;
@@ -215,7 +193,6 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-
         .login-panel input {
             width: 100%;
             padding: 0.6rem 1rem;
@@ -226,13 +203,11 @@
             background: #fafcff;
             font-family: 'Inter', sans-serif;
         }
-
         .login-panel input:focus {
             outline: none;
             border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.08);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
         }
-
         .login-panel .login-actions {
             display: flex;
             gap: 0.5rem;
@@ -240,7 +215,6 @@
             flex-wrap: wrap;
             margin-top: 0.3rem;
         }
-
         .login-status {
             font-size: 0.75rem;
             color: #64748b;
@@ -251,28 +225,24 @@
             align-items: center;
             gap: 0.4rem;
         }
-
         .login-status.success {
             color: #10b981;
             background: #ecfdf5;
         }
-
         .login-status.error {
             color: #ef4444;
             background: #fef2f2;
         }
 
-        /* ===== POST FORM (Compact) ===== */
+        /* Post Form */
         .post-form {
             display: none;
             flex-direction: column;
             gap: 0.8rem;
         }
-
         .post-form.visible {
             display: flex;
         }
-
         .post-form input,
         .post-form textarea {
             width: 100%;
@@ -284,20 +254,18 @@
             background: #fafcff;
             font-family: 'Inter', sans-serif;
         }
-
         .post-form input:focus,
         .post-form textarea:focus {
             outline: none;
             border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.08);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
         }
-
         .post-form textarea {
             resize: vertical;
             min-height: 100px;
         }
 
-        /* ===== FILE UPLOAD ===== */
+        /* File Upload */
         .file-upload-zone {
             border: 2px dashed #e2e8f0;
             border-radius: 10px;
@@ -307,30 +275,25 @@
             transition: all 0.3s ease;
             background: #fafcff;
         }
-
         .file-upload-zone:hover {
             border-color: #3b82f6;
-            background: rgba(59,130,246,0.04);
+            background: rgba(59, 130, 246, 0.04);
         }
-
         .file-upload-zone i {
             font-size: 1.5rem;
             color: #3b82f6;
             margin-bottom: 0.2rem;
         }
-
         .file-upload-zone p {
             font-size: 0.75rem;
             color: #94a3b8;
         }
-
         .file-upload-zone .file-name {
             color: #3b82f6;
             font-weight: 600;
             font-size: 0.8rem;
             margin-top: 0.2rem;
         }
-
         .file-upload-zone input[type="file"] {
             display: none;
         }
@@ -340,32 +303,30 @@
             color: #94a3b8;
             padding: 0.5rem 0;
         }
-
         .login-required-msg i {
             margin-right: 0.4rem;
         }
 
-        /* ===== POSTS ===== */
+        /* Posts Grid */
         .posts-grid {
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
 
+        /* Post Item */
         .post-item {
             background: white;
-            padding: 1.2rem 1.5rem;
+            padding: 1.5rem;
             border-radius: 16px;
             border-left: 4px solid #3b82f6;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
             transition: all 0.3s ease;
         }
-
         .post-item:hover {
-            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
             transform: translateX(4px);
         }
-
         .post-item .post-header {
             display: flex;
             justify-content: space-between;
@@ -373,33 +334,32 @@
             flex-wrap: wrap;
             gap: 0.5rem;
         }
-
         .post-item h3 {
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #0f172a;
             flex: 1;
+            cursor: pointer;
         }
-
+        .post-item h3:hover {
+            color: #3b82f6;
+        }
         .post-item .post-actions {
             display: flex;
             gap: 0.3rem;
         }
-
         .post-item .post-content {
             color: #475569;
             margin-top: 0.5rem;
-            line-height: 1.6;
-            font-size: 0.9rem;
+            line-height: 1.7;
+            font-size: 0.95rem;
             word-break: break-word;
         }
-
         .post-item .post-content img {
             max-width: 100%;
             border-radius: 8px;
             margin: 0.5rem 0;
         }
-
         .post-item .post-file {
             background: #f8fafc;
             border-radius: 8px;
@@ -410,37 +370,138 @@
             gap: 0.6rem;
             font-size: 0.85rem;
         }
-
         .post-item .post-file i {
             color: #3b82f6;
             font-size: 1.2rem;
         }
-
         .post-item .post-file a {
             color: #3b82f6;
             text-decoration: none;
             font-weight: 500;
             word-break: break-all;
         }
-
         .post-item .post-file a:hover {
             text-decoration: underline;
         }
-
         .post-item .post-meta {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: #94a3b8;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            margin-top: 0.6rem;
-            padding-top: 0.6rem;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
             border-top: 1px solid #f1f5f9;
         }
-
         .post-item .post-meta span i {
             margin-right: 0.3rem;
             color: #3b82f6;
+        }
+
+        /* Read More */
+        .read-more-btn {
+            color: #3b82f6;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 0.3rem;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+        .read-more-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* Reactions */
+        .reactions {
+            display: flex;
+            gap: 0.8rem;
+            margin: 0.6rem 0 0.4rem;
+            flex-wrap: wrap;
+        }
+        .reaction-btn {
+            background: #f8fafc;
+            border: none;
+            border-radius: 30px;
+            padding: 0.3rem 0.8rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .reaction-btn:hover {
+            background: #e2e8f0;
+            transform: scale(1.05);
+        }
+        .reaction-btn .count {
+            font-size: 0.7rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+        .reaction-btn.active {
+            background: #dbeafe;
+            border-color: #3b82f6;
+        }
+
+        /* Comments */
+        .comments-section {
+            margin-top: 1rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid #f1f5f9;
+        }
+        .comments-section h4 {
+            font-size: 0.85rem;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .comment-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 0.5rem 0.8rem;
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
+        }
+        .comment-item .comment-author {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 0.8rem;
+        }
+        .comment-item .comment-text {
+            color: #475569;
+            margin-top: 0.1rem;
+        }
+        .comment-item .comment-time {
+            font-size: 0.65rem;
+            color: #94a3b8;
+            margin-top: 0.1rem;
+        }
+        .comment-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .comment-input-group input {
+            flex: 1;
+            padding: 0.4rem 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-family: 'Inter', sans-serif;
+            background: #fafcff;
+        }
+        .comment-input-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        .comment-input-group .btn {
+            padding: 0.3rem 1rem;
+            font-size: 0.75rem;
         }
 
         .empty-posts {
@@ -448,19 +509,17 @@
             padding: 2rem;
             color: #94a3b8;
         }
-
         .empty-posts i {
             font-size: 2.5rem;
             color: #cbd5e0;
             margin-bottom: 0.5rem;
         }
-
         .empty-posts h3 {
             color: #0f172a;
             margin-bottom: 0.3rem;
         }
 
-        /* ===== MODAL ===== */
+        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -468,29 +527,26 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(8px);
             z-index: 1000;
             justify-content: center;
             align-items: center;
             padding: 1.5rem;
         }
-
         .modal-overlay.active {
             display: flex;
         }
-
         .modal {
             background: white;
             border-radius: 20px;
-            max-width: 600px;
+            max-width: 700px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
             padding: 2rem;
             animation: slideUp 0.3s ease;
         }
-
         @keyframes slideUp {
             from {
                 opacity: 0;
@@ -501,7 +557,6 @@
                 transform: translateY(0) scale(1);
             }
         }
-
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -510,7 +565,6 @@
             padding-bottom: 1rem;
             border-bottom: 2px solid #f1f5f9;
         }
-
         .modal-header h2 {
             font-size: 1.3rem;
             font-weight: 700;
@@ -519,11 +573,9 @@
             align-items: center;
             gap: 0.6rem;
         }
-
         .modal-header h2 i {
             color: #3b82f6;
         }
-
         .modal-close {
             background: none;
             border: none;
@@ -534,17 +586,14 @@
             padding: 0.2rem 0.5rem;
             border-radius: 8px;
         }
-
         .modal-close:hover {
             background: #f1f5f9;
             color: #0f172a;
             transform: rotate(90deg);
         }
-
         .modal .form-group {
             margin-bottom: 1rem;
         }
-
         .modal .form-group label {
             display: block;
             font-weight: 600;
@@ -552,7 +601,6 @@
             color: #475569;
             margin-bottom: 0.3rem;
         }
-
         .modal .form-control {
             width: 100%;
             padding: 0.7rem 1rem;
@@ -562,24 +610,15 @@
             transition: all 0.3s ease;
             font-family: 'Inter', sans-serif;
         }
-
         .modal .form-control:focus {
             outline: none;
             border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.08);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
         }
-
         .modal textarea.form-control {
             resize: vertical;
             min-height: 120px;
         }
-
-        .modal .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
         .modal .form-actions {
             display: flex;
             gap: 0.8rem;
@@ -589,7 +628,46 @@
             justify-content: flex-end;
         }
 
-        /* ===== TOAST ===== */
+        /* Post Detail Modal */
+        .post-detail-content {
+            line-height: 1.8;
+            font-size: 1rem;
+            color: #1e293b;
+        }
+        .post-detail-content h1,
+        .post-detail-content h2,
+        .post-detail-content h3 {
+            margin: 1rem 0 0.5rem;
+            color: #0f172a;
+        }
+        .post-detail-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+        }
+        .post-detail-content .post-file {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .post-detail-content .post-file a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .post-detail-meta {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin: 0.5rem 0 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -599,13 +677,12 @@
             color: white;
             font-weight: 600;
             font-size: 0.9rem;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
             z-index: 2000;
             animation: slideIn 0.3s ease;
             display: none;
             max-width: 400px;
         }
-
         .toast.success {
             background: #10b981;
         }
@@ -615,11 +692,9 @@
         .toast.info {
             background: #3b82f6;
         }
-
         .toast.show {
             display: block;
         }
-
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -631,13 +706,11 @@
             }
         }
 
-        /* ===== LOADING ===== */
         .loading {
             text-align: center;
             padding: 2rem;
             color: #94a3b8;
         }
-
         .spinner {
             border: 3px solid #e2e8f0;
             border-top: 3px solid #3b82f6;
@@ -647,75 +720,58 @@
             animation: spin 0.8s linear infinite;
             margin: 0 auto 0.8rem;
         }
-
         @keyframes spin {
             to {
                 transform: rotate(360deg);
             }
         }
 
-        /* ===== RESPONSIVE ===== */
+        /* Responsive */
         @media (max-width: 992px) {
             .main-layout {
                 flex-direction: column;
             }
-
             .right-column {
                 width: 100%;
                 flex-direction: row;
                 flex-wrap: wrap;
             }
-
             .right-column .card {
                 flex: 1;
                 min-width: 280px;
             }
         }
-
         @media (max-width: 768px) {
             body {
                 padding: 1rem;
             }
-
             .header {
                 padding: 1rem 1.2rem;
                 flex-direction: column;
                 align-items: stretch;
             }
-
             .header h1 {
                 font-size: 1.3rem;
             }
-
             .header-actions {
                 flex-wrap: wrap;
             }
-
             .right-column {
                 flex-direction: column;
             }
-
             .right-column .card {
                 min-width: auto;
             }
-
             .modal {
                 padding: 1.5rem;
                 margin: 1rem;
             }
-
-            .modal .form-row {
-                grid-template-columns: 1fr;
-            }
-
             .post-item {
                 padding: 1rem;
             }
-
             .post-item h3 {
                 font-size: 1rem;
             }
-
             .toast {
                 bottom: 1rem;
                 right: 1rem;
@@ -723,26 +779,21 @@
                 max-width: none;
             }
         }
-
         @media (max-width: 480px) {
             .header h1 {
                 font-size: 1.1rem;
             }
-
             .btn {
                 padding: 0.4rem 1rem;
                 font-size: 0.75rem;
             }
-
             .card {
                 padding: 1rem 1.2rem;
             }
-
             .login-panel .login-actions {
                 flex-direction: column;
                 align-items: stretch;
             }
-
             .login-panel .login-actions .btn {
                 justify-content: center;
             }
@@ -751,610 +802,756 @@
 </head>
 <body>
 
-<div class="container">
-    <!-- ===== HEADER ===== -->
-    <header class="header">
-        <h1><i class="fas fa-feather-alt"></i> Lokenra's <span>Blog</span></h1>
-        <div class="header-actions">
-            <button id="authToggleBtn" class="btn btn-primary">
-                <i class="fas fa-sign-in-alt"></i> Admin
-            </button>
-        </div>
-    </header>
-
-    <!-- ===== MAIN LAYOUT ===== -->
-    <div class="main-layout">
-        <!-- LEFT COLUMN: Posts -->
-        <div class="left-column">
-            <div class="card">
-                <div class="card-title">
-                    <i class="fas fa-list-ul"></i> All Posts
-                </div>
-                <div id="postsContainer" class="posts-grid">
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <p>Loading posts...</p>
-                    </div>
-                </div>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1><i class="fas fa-feather-alt"></i> Lokendra's <span>Blog</span></h1>
+            <div class="header-actions">
+                <button id="authToggleBtn" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Admin
+                </button>
             </div>
-        </div>
+        </header>
 
-        <!-- RIGHT COLUMN: Login + Create -->
-        <div class="right-column">
-            <!-- Login Card -->
-            <div class="card" id="loginCard">
-                <div class="card-title">
-                    <i class="fas fa-lock"></i> Admin Access
-                </div>
-                <div class="login-panel">
-                    <div class="input-group">
-                        <label>Email</label>
-                        <input type="email" id="loginEmail" placeholder="admin@blog.com" value="admin@blog.com" />
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Left Column: Posts -->
+            <div class="left-column">
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-list-ul"></i> All Posts
                     </div>
-                    <div class="input-group">
-                        <label>Password</label>
-                        <input type="password" id="loginPassword" placeholder="••••••••" value="12345678" />
-                    </div>
-                    <div class="login-actions">
-                        <button id="loginBtn" class="btn btn-primary btn-sm">
-                            <i class="fas fa-arrow-right"></i> Login
-                        </button>
-                        <button id="logoutBtn" class="btn btn-danger btn-sm hidden">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </button>
-                        <div id="loginStatus" class="login-status">
-                            <i class="fas fa-info-circle"></i> Demo credentials
+                    <div id="postsContainer" class="posts-grid">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Loading posts...</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Create Post Card -->
-            <div class="card" id="postCard">
-                <div class="card-title">
-                    <i class="fas fa-pencil-alt"></i> New Post
-                </div>
-
-                <div id="postFormWrapper" class="post-form">
-                    <input type="text" id="postTitle" placeholder="Post title..." />
-                    <textarea id="postContent" placeholder="Write your content here..."></textarea>
-
-                    <div class="file-upload-zone" id="fileUploadArea">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <p>Click to upload image or file</p>
-                        <div class="file-name" id="fileName">No file selected</div>
-                        <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx,.txt" />
+            <!-- Right Column -->
+            <div class="right-column">
+                <!-- Login Card -->
+                <div class="card" id="loginCard">
+                    <div class="card-title">
+                        <i class="fas fa-lock"></i> Admin Access
                     </div>
-
-                    <button id="publishBtn" class="btn btn-success">
-                        <i class="fas fa-cloud-upload-alt"></i> Publish
-                    </button>
-                    <div id="publishStatus" style="font-size:0.8rem; color:#64748b;"></div>
+                    <div class="login-panel">
+                        <div class="input-group">
+                            <label>Email</label>
+                            <input type="email" id="loginEmail" placeholder="admin@blog.com" value="admin@blog.com" />
+                        </div>
+                        <div class="input-group">
+                            <label>Password</label>
+                            <input type="password" id="loginPassword" placeholder="••••••••" value="12345678" />
+                        </div>
+                        <div class="login-actions">
+                            <button id="loginBtn" class="btn btn-primary btn-sm">
+                                <i class="fas fa-arrow-right"></i> Login
+                            </button>
+                            <button id="logoutBtn" class="btn btn-danger btn-sm hidden">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                            <div id="loginStatus" class="login-status">
+                                <i class="fas fa-info-circle"></i> Demo credentials
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div id="loginRequiredMsg" class="login-required-msg">
-                    <i class="fas fa-info-circle"></i> Log in to create posts.
+                <!-- Create Post Card -->
+                <div class="card" id="postCard">
+                    <div class="card-title">
+                        <i class="fas fa-pencil-alt"></i> New Post
+                    </div>
+                    <div id="postFormWrapper" class="post-form">
+                        <input type="text" id="postTitle" placeholder="Post title..." />
+                        <textarea id="postContent" placeholder="Write your content here..."></textarea>
+                        <div class="file-upload-zone" id="fileUploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload image or file</p>
+                            <div class="file-name" id="fileName">No file selected</div>
+                            <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx,.txt" />
+                        </div>
+                        <button id="publishBtn" class="btn btn-success">
+                            <i class="fas fa-cloud-upload-alt"></i> Publish
+                        </button>
+                        <div id="publishStatus" style="font-size:0.8rem; color:#64748b;"></div>
+                    </div>
+                    <div id="loginRequiredMsg" class="login-required-msg">
+                        <i class="fas fa-info-circle"></i> Log in to create posts.
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- ===== EDIT MODAL ===== -->
-<div class="modal-overlay" id="editModal">
-    <div class="modal">
-        <div class="modal-header">
-            <h2><i class="fas fa-edit"></i> <span id="editModalTitle">Edit Post</span></h2>
-            <button class="modal-close" id="closeModalBtn">&times;</button>
-        </div>
-
-        <input type="hidden" id="editPostId" />
-
-        <div class="form-group">
-            <label>Title</label>
-            <input type="text" id="editTitle" class="form-control" placeholder="Post title..." />
-        </div>
-
-        <div class="form-group">
-            <label>Content</label>
-            <textarea id="editContent" class="form-control" placeholder="Post content..."></textarea>
-        </div>
-
-        <div class="form-group">
-            <label>File (optional)</label>
-            <div class="file-upload-zone" id="editFileUploadArea">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Click to change file</p>
-                <div class="file-name" id="editFileName">No file selected</div>
-                <input type="file" id="editFileInput" accept="image/*,.pdf,.doc,.docx,.txt" />
+    <!-- Edit Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit"></i> <span id="editModalTitle">Edit Post</span></h2>
+                <button class="modal-close" id="closeEditModalBtn">&times;</button>
+            </div>
+            <input type="hidden" id="editPostId" />
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="editTitle" class="form-control" placeholder="Post title..." />
+            </div>
+            <div class="form-group">
+                <label>Content</label>
+                <textarea id="editContent" class="form-control" placeholder="Post content..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>File (optional)</label>
+                <div class="file-upload-zone" id="editFileUploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to change file</p>
+                    <div class="file-name" id="editFileName">No file selected</div>
+                    <input type="file" id="editFileInput" accept="image/*,.pdf,.doc,.docx,.txt" />
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-outline" id="cancelEditBtn">Cancel</button>
+                <button class="btn btn-primary" id="saveEditBtn">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
             </div>
         </div>
+    </div>
 
-        <div class="form-actions">
-            <button class="btn btn-outline" id="cancelModalBtn">Cancel</button>
-            <button class="btn btn-primary" id="saveEditBtn">
-                <i class="fas fa-save"></i> Save Changes
-            </button>
+    <!-- Post Detail Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-book-open"></i> <span id="detailTitle">Post</span></h2>
+                <button class="modal-close" id="closeDetailModalBtn">&times;</button>
+            </div>
+            <div id="detailBody">
+                <div class="post-detail-meta" id="detailMeta"></div>
+                <div class="post-detail-content" id="detailContent"></div>
+                <div id="detailReactions" class="reactions" style="margin-top:1rem;"></div>
+                <div id="detailComments" class="comments-section"></div>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- ===== TOAST ===== -->
-<div class="toast" id="toast"></div>
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
 
-<script>
-    (function() {
-        'use strict';
+    <script>
+        (function() {
+            'use strict';
 
-        // ===== SUPABASE CONFIG =====
-        const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5';
+            const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
+            const SUPABASE_ANON_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5';
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            // DOM refs
+            const authToggleBtn = document.getElementById('authToggleBtn');
+            const loginEmail = document.getElementById('loginEmail');
+            const loginPassword = document.getElementById('loginPassword');
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const loginStatus = document.getElementById('loginStatus');
+            const postFormWrapper = document.getElementById('postFormWrapper');
+            const loginRequiredMsg = document.getElementById('loginRequiredMsg');
+            const postTitle = document.getElementById('postTitle');
+            const postContent = document.getElementById('postContent');
+            const publishBtn = document.getElementById('publishBtn');
+            const fileInput = document.getElementById('fileInput');
+            const fileName = document.getElementById('fileName');
+            const fileUploadArea = document.getElementById('fileUploadArea');
+            const postsContainer = document.getElementById('postsContainer');
 
-        // ===== DOM REFS =====
-        const authToggleBtn = document.getElementById('authToggleBtn');
-        const loginEmail = document.getElementById('loginEmail');
-        const loginPassword = document.getElementById('loginPassword');
-        const loginBtn = document.getElementById('loginBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const loginStatus = document.getElementById('loginStatus');
+            const editModal = document.getElementById('editModal');
+            const editPostId = document.getElementById('editPostId');
+            const editTitle = document.getElementById('editTitle');
+            const editContent = document.getElementById('editContent');
+            const editFileInput = document.getElementById('editFileInput');
+            const editFileName = document.getElementById('editFileName');
+            const saveEditBtn = document.getElementById('saveEditBtn');
+            const cancelEditBtn = document.getElementById('cancelEditBtn');
+            const closeEditModalBtn = document.getElementById('closeEditModalBtn');
 
-        const postFormWrapper = document.getElementById('postFormWrapper');
-        const loginRequiredMsg = document.getElementById('loginRequiredMsg');
-        const postTitle = document.getElementById('postTitle');
-        const postContent = document.getElementById('postContent');
-        const publishBtn = document.getElementById('publishBtn');
-        const publishStatus = document.getElementById('publishStatus');
+            const detailModal = document.getElementById('detailModal');
+            const detailTitle = document.getElementById('detailTitle');
+            const detailMeta = document.getElementById('detailMeta');
+            const detailContent = document.getElementById('detailContent');
+            const detailReactions = document.getElementById('detailReactions');
+            const detailComments = document.getElementById('detailComments');
+            const closeDetailModalBtn = document.getElementById('closeDetailModalBtn');
 
-        const fileInput = document.getElementById('fileInput');
-        const fileName = document.getElementById('fileName');
-        const fileUploadArea = document.getElementById('fileUploadArea');
+            const toast = document.getElementById('toast');
 
-        const postsContainer = document.getElementById('postsContainer');
+            let currentUser = null;
+            let currentDetailPostId = null;
+            let editingId = null;
+            let currentFileUrl = null;
 
-        const editModal = document.getElementById('editModal');
-        const editPostId = document.getElementById('editPostId');
-        const editTitle = document.getElementById('editTitle');
-        const editContent = document.getElementById('editContent');
-        const editFileInput = document.getElementById('editFileInput');
-        const editFileName = document.getElementById('editFileName');
-        const saveEditBtn = document.getElementById('saveEditBtn');
-        const cancelModalBtn = document.getElementById('cancelModalBtn');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-
-        const toast = document.getElementById('toast');
-
-        // ===== STATE =====
-        let currentUser = null;
-        let editingId = null;
-        let currentFileUrl = null;
-
-        // ===== TOAST =====
-        function showToast(message, type = 'success') {
-            toast.textContent = message;
-            toast.className = 'toast ' + type + ' show';
-            clearTimeout(toast._timeout);
-            toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-
-        // ===== FILE UPLOAD =====
-        fileUploadArea.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const size = (file.size / 1024).toFixed(1);
-                fileName.textContent = `📎 ${file.name} (${size} KB)`;
-            } else {
-                fileName.textContent = 'No file selected';
-            }
-        });
-
-        editFileUploadArea.addEventListener('click', () => editFileInput.click());
-        editFileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const size = (file.size / 1024).toFixed(1);
-                editFileName.textContent = `📎 ${file.name} (${size} KB)`;
-            } else {
-                editFileName.textContent = 'No file selected';
-            }
-        });
-
-        async function uploadFile(file) {
-            if (!file) return null;
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}.${fileExt}`;
-            const filePath = `blog-files/${fileName}`;
-
-            const { error } = await supabase.storage
-                .from('blog-files')
-                .upload(filePath, file);
-
-            if (error) throw error;
-
-            const { data } = supabase.storage
-                .from('blog-files')
-                .getPublicUrl(filePath);
-
-            return data.publicUrl;
-        }
-
-        // ===== FETCH POSTS =====
-        async function fetchPosts() {
-            try {
-                const { data, error } = await supabase
-                    .from('blogs')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-                renderPosts(data || []);
-            } catch (err) {
-                console.error('Fetch error:', err);
-                postsContainer.innerHTML = `
-                    <div class="empty-posts">
-                        <i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i>
-                        <h3>Error loading posts</h3>
-                        <p>${err.message}</p>
-                    </div>
-                `;
-            }
-        }
-
-        // ===== RENDER POSTS =====
-        function renderPosts(posts) {
-            if (!posts || posts.length === 0) {
-                postsContainer.innerHTML = `
-                    <div class="empty-posts">
-                        <i class="fas fa-newspaper"></i>
-                        <h3>No posts yet</h3>
-                        <p>Create your first blog post!</p>
-                    </div>
-                `;
-                return;
+            // Toast
+            function showToast(message, type = 'success') {
+                toast.textContent = message;
+                toast.className = 'toast ' + type + ' show';
+                clearTimeout(toast._timeout);
+                toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
             }
 
-            let html = '';
-            posts.forEach(post => {
-                const date = post.created_at ? new Date(post.created_at).toLocaleDateString('en-US', {
-                    year: 'numeric', month: 'short', day: 'numeric',
-                    hour: '2-digit', minute: '2-digit'
-                }) : 'Unknown date';
-
-                let fileHtml = '';
-                if (post.file_url) {
-                    const isImage = post.file_url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i);
-                    if (isImage) {
-                        fileHtml = `
-                            <div class="post-file">
-                                <i class="fas fa-image"></i>
-                                <a href="${post.file_url}" target="_blank">View Image</a>
-                            </div>
-                            <img src="${post.file_url}" alt="Post image" style="max-width:100%;border-radius:8px;margin-top:0.5rem;" />
-                        `;
-                    } else {
-                        fileHtml = `
-                            <div class="post-file">
-                                <i class="fas fa-paperclip"></i>
-                                <a href="${post.file_url}" target="_blank">Download File</a>
-                            </div>
-                        `;
-                    }
-                }
-
-                html += `
-                    <div class="post-item" data-id="${post.id}">
-                        <div class="post-header">
-                            <h3>${escapeHtml(post.title) || 'Untitled'}</h3>
-                            ${currentUser ? `
-                                <div class="post-actions">
-                                    <button class="btn btn-primary btn-sm" onclick="window.editPost('${post.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-danger btn-sm" onclick="window.deletePost('${post.id}')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            ` : ''}
-                        </div>
-                        <div class="post-content">${post.content || ''}</div>
-                        ${fileHtml}
-                        <div class="post-meta">
-                            <span><i class="far fa-calendar-alt"></i> ${date}</span>
-                            <span><i class="far fa-user"></i> ${escapeHtml(post.author_email) || 'admin'}</span>
-                        </div>
-                    </div>
-                `;
+            // File upload
+            fileUploadArea.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                fileName.textContent = file ? `📎 ${file.name} (${(file.size/1024).toFixed(1)} KB)` : 'No file selected';
             });
 
-            postsContainer.innerHTML = html;
-        }
+            editFileUploadArea.addEventListener('click', () => editFileInput.click());
+            editFileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                editFileName.textContent = file ? `📎 ${file.name} (${(file.size/1024).toFixed(1)} KB)` : 'No file selected';
+            });
 
-        // ===== ESCAPE HTML =====
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // ===== UPDATE UI =====
-        function updateUIForUser(user) {
-            currentUser = user;
-            if (user) {
-                loginStatus.className = 'login-status success';
-                loginStatus.innerHTML = `<i class="fas fa-check-circle"></i> Logged in as ${user.email}`;
-                loginBtn.classList.add('hidden');
-                logoutBtn.classList.remove('hidden');
-                authToggleBtn.innerHTML = `<i class="fas fa-user-cog"></i> ${user.email}`;
-                authToggleBtn.className = 'btn btn-primary';
-
-                postFormWrapper.classList.add('visible');
-                loginRequiredMsg.style.display = 'none';
-                fetchPosts();
-            } else {
-                loginStatus.className = 'login-status';
-                loginStatus.innerHTML = '<i class="fas fa-info-circle"></i> Demo credentials';
-                loginBtn.classList.remove('hidden');
-                logoutBtn.classList.add('hidden');
-                authToggleBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Admin';
-                authToggleBtn.className = 'btn btn-primary';
-
-                postFormWrapper.classList.remove('visible');
-                loginRequiredMsg.style.display = 'block';
-                fetchPosts();
-            }
-        }
-
-        // ===== LOGIN =====
-        async function handleLogin() {
-            const email = loginEmail.value.trim();
-            const password = loginPassword.value.trim();
-
-            if (!email || !password) {
-                loginStatus.className = 'login-status error';
-                loginStatus.innerHTML = '<i class="fas fa-times-circle"></i> Email and password required';
-                return;
-            }
-
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            async function uploadFile(file) {
+                if (!file) return null;
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}.${fileExt}`;
+                const filePath = `blog-files/${fileName}`;
+                const { error } = await supabase.storage.from('blog-files').upload(filePath, file);
                 if (error) throw error;
-                if (data?.user) {
-                    updateUIForUser(data.user);
-                    loginStatus.className = 'login-status success';
-                    loginStatus.innerHTML = `<i class="fas fa-check-circle"></i> Welcome ${data.user.email}`;
-                    showToast('✅ Login successful!', 'success');
-                }
-            } catch (err) {
-                loginStatus.className = 'login-status error';
-                loginStatus.innerHTML = `<i class="fas fa-times-circle"></i> ${err.message}`;
-                showToast('❌ Login failed: ' + err.message, 'error');
-            }
-        }
-
-        // ===== LOGOUT =====
-        async function handleLogout() {
-            try {
-                await supabase.auth.signOut();
-                currentUser = null;
-                updateUIForUser(null);
-                loginStatus.className = 'login-status';
-                loginStatus.innerHTML = '<i class="fas fa-info-circle"></i> Logged out';
-                showToast('🔐 Logged out successfully', 'info');
-            } catch (err) {
-                showToast('❌ Logout error: ' + err.message, 'error');
-            }
-        }
-
-        // ===== PUBLISH POST =====
-        async function handlePublish() {
-            if (!currentUser) {
-                showToast('⚠️ You must be logged in', 'error');
-                return;
+                const { data } = supabase.storage.from('blog-files').getPublicUrl(filePath);
+                return data.publicUrl;
             }
 
-            const title = postTitle.value.trim() || 'Untitled';
-            const content = postContent.value.trim();
-            if (!content) {
-                showToast('⚠️ Please write some content', 'error');
-                return;
-            }
-
-            let fileUrl = currentFileUrl;
-            const file = fileInput.files[0];
-            if (file) {
-                try {
-                    fileUrl = await uploadFile(file);
-                } catch (err) {
-                    showToast('❌ File upload failed: ' + err.message, 'error');
+            // Render posts with read more
+            function renderPosts(posts) {
+                if (!posts || posts.length === 0) {
+                    postsContainer.innerHTML =
+                        `<div class="empty-posts"><i class="fas fa-newspaper"></i><h3>No posts yet</h3><p>Be the first to write!</p></div>`;
                     return;
                 }
+
+                let html = '';
+                posts.forEach(post => {
+                    const date = post.created_at ? new Date(post.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }) : 'Unknown';
+
+                    let contentHtml = post.content || '';
+                    let readMore = '';
+                    if (contentHtml.length > 300) {
+                        const preview = contentHtml.substring(0, 300);
+                        const lastSpace = preview.lastIndexOf(' ');
+                        const trimmed = lastSpace > 0 ? preview.substring(0, lastSpace) : preview;
+                        contentHtml = `${trimmed}...`;
+                        readMore =
+                            `<a class="read-more-btn" onclick="window.viewPost('${post.id}')">Read more <i class="fas fa-arrow-right"></i></a>`;
+                    }
+
+                    let fileHtml = '';
+                    if (post.file_url) {
+                        const isImage = post.file_url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i);
+                        if (isImage) {
+                            fileHtml = `
+                                <div class="post-file"><i class="fas fa-image"></i> <a href="${post.file_url}" target="_blank">View Image</a></div>
+                                <img src="${post.file_url}" alt="Post image" style="max-width:100%;border-radius:8px;margin-top:0.5rem;" />
+                            `;
+                        } else {
+                            fileHtml =
+                                `<div class="post-file"><i class="fas fa-paperclip"></i> <a href="${post.file_url}" target="_blank">Download File</a></div>`;
+                        }
+                    }
+
+                    // Reactions summary
+                    const reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
+                    const totalReactions = Object.values(reactions).reduce((a, b) => a + b, 0);
+
+                    html += `
+                        <div class="post-item" data-id="${post.id}">
+                            <div class="post-header">
+                                <h3 onclick="window.viewPost('${post.id}')">${escapeHtml(post.title) || 'Untitled'}</h3>
+                                ${currentUser ? `
+                                    <div class="post-actions">
+                                        <button class="btn btn-primary btn-sm" onclick="window.editPost('${post.id}')"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-danger btn-sm" onclick="window.deletePost('${post.id}')"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="post-content">${contentHtml}</div>
+                            ${readMore}
+                            ${fileHtml}
+                            <div class="post-meta">
+                                <span><i class="far fa-calendar-alt"></i> ${date}</span>
+                                <span><i class="far fa-user"></i> ${escapeHtml(post.author_name) || escapeHtml(post.author_email) || 'admin'}</span>
+                                ${totalReactions > 0 ? `<span><i class="far fa-smile"></i> ${totalReactions}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                postsContainer.innerHTML = html;
             }
 
-            try {
-                const { error } = await supabase
-                    .from('blogs')
-                    .insert([{
-                        title: title,
-                        content: content,
-                        author_email: currentUser.email,
-                        file_url: fileUrl
-                    }]);
-
-                if (error) throw error;
-
-                showToast('✅ Post published!', 'success');
-                postTitle.value = '';
-                postContent.value = '';
-                fileInput.value = '';
-                fileName.textContent = 'No file selected';
-                currentFileUrl = null;
-                fetchPosts();
-            } catch (err) {
-                showToast('❌ Error: ' + err.message, 'error');
-            }
-        }
-
-        // ===== EDIT POST =====
-        window.editPost = function(id) {
-            const post = Array.from(document.querySelectorAll('.post-item')).find(el => el.dataset.id == id);
-            if (!post) {
-                showToast('Post not found', 'error');
-                return;
+            function escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
             }
 
-            editingId = id;
-            editPostId.value = id;
-
-            // Get post data from Supabase
-            (async () => {
+            // Fetch posts
+            async function fetchPosts() {
                 try {
-                    const { data, error } = await supabase
-                        .from('blogs')
-                        .select('*')
-                        .eq('id', id)
-                        .single();
-
+                    const { data, error } = await supabase.from('blogs').select('*').order('created_at', { ascending: false });
                     if (error) throw error;
+                    renderPosts(data || []);
+                } catch (err) {
+                    postsContainer.innerHTML =
+                        `<div class="empty-posts"><i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i><h3>Error loading posts</h3><p>${err.message}</p></div>`;
+                }
+            }
 
-                    editTitle.value = data.title || '';
-                    editContent.value = data.content || '';
-                    currentFileUrl = data.file_url || null;
-                    editFileName.textContent = currentFileUrl ? '📎 File attached' : 'No file selected';
-                    editFileInput.value = '';
+            // View post detail
+            window.viewPost = async function(id) {
+                try {
+                    const { data, error } = await supabase.from('blogs').select('*').eq('id', id).single();
+                    if (error) throw error;
+                    currentDetailPostId = id;
+                    detailTitle.textContent = data.title || 'Untitled';
 
-                    editModal.classList.add('active');
+                    const date = data.created_at ? new Date(data.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }) : 'Unknown';
+                    detailMeta.innerHTML =
+                        `<i class="far fa-user"></i> ${escapeHtml(data.author_name) || escapeHtml(data.author_email) || 'admin'} &nbsp;·&nbsp; <i class="far fa-calendar-alt"></i> ${date}`;
+
+                    let contentHtml = data.content || '';
+                    if (data.file_url) {
+                        const isImage = data.file_url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i);
+                        if (isImage) {
+                            contentHtml +=
+                                `<br><img src="${data.file_url}" alt="Post image" style="max-width:100%;border-radius:8px;margin:0.5rem 0;" />`;
+                        } else {
+                            contentHtml +=
+                                `<br><div class="post-file"><i class="fas fa-paperclip"></i> <a href="${data.file_url}" target="_blank">Download File</a></div>`;
+                        }
+                    }
+                    detailContent.innerHTML = contentHtml;
+
+                    // Reactions
+                    const reactions = data.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
+                    const reactionEmojis = { like: '👍', love: '❤️', laugh: '😄', sad: '😢', angry: '😡' };
+                    let reactionHtml = '';
+                    let userReaction = data.user_reaction || null;
+                    if (currentUser) {
+                        // Get user's reaction from localStorage or session
+                        const stored = localStorage.getItem(`reaction_${id}_${currentUser.id}`);
+                        if (stored) userReaction = stored;
+                    }
+                    for (const [key, emoji] of Object.entries(reactionEmojis)) {
+                        const count = reactions[key] || 0;
+                        const active = userReaction === key ? 'active' : '';
+                        reactionHtml += `
+                            <button class="reaction-btn ${active}" onclick="window.addReaction('${id}','${key}')">
+                                ${emoji} <span class="count">${count}</span>
+                            </button>
+                        `;
+                    }
+                    detailReactions.innerHTML = reactionHtml;
+
+                    // Comments
+                    await renderComments(id);
+
+                    detailModal.classList.add('active');
                     document.body.style.overflow = 'hidden';
                 } catch (err) {
                     showToast('Error loading post: ' + err.message, 'error');
                 }
-            })();
-        };
+            };
 
-        // ===== SAVE EDIT =====
-        async function handleSaveEdit() {
-            const id = editPostId.value;
-            if (!id) return;
+            // Render comments
+            async function renderComments(postId) {
+                try {
+                    const { data, error } = await supabase
+                        .from('comments')
+                        .select('*')
+                        .eq('post_id', postId)
+                        .order('created_at', { ascending: true });
+                    if (error) throw error;
 
-            const title = editTitle.value.trim() || 'Untitled';
-            const content = editContent.value.trim();
-            if (!content) {
-                showToast('⚠️ Please write some content', 'error');
-                return;
+                    let html = `<h4><i class="fas fa-comments"></i> Comments (${data?.length || 0})</h4>`;
+                    if (data && data.length > 0) {
+                        data.forEach(c => {
+                            const d = c.created_at ? new Date(c.created_at).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric'
+                            }) : '';
+                            html += `
+                                <div class="comment-item">
+                                    <div class="comment-author">${escapeHtml(c.author_name) || 'Anonymous'}</div>
+                                    <div class="comment-text">${escapeHtml(c.content)}</div>
+                                    <div class="comment-time">${d}</div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        html += `<p style="color:#94a3b8;font-size:0.85rem;">No comments yet. Be the first!</p>`;
+                    }
+
+                    // Comment input
+                    if (currentUser) {
+                        html += `
+                            <div class="comment-input-group">
+                                <input type="text" id="commentInput" placeholder="Write a comment..." />
+                                <button class="btn btn-primary btn-sm" onclick="window.addComment('${postId}')"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        `;
+                    } else {
+                        html +=
+                            `<p style="color:#94a3b8;font-size:0.75rem;margin-top:0.5rem;"><i class="fas fa-lock"></i> Log in to comment</p>`;
+                    }
+                    detailComments.innerHTML = html;
+                } catch (err) {
+                    detailComments.innerHTML = `<p style="color:#ef4444;">Error loading comments</p>`;
+                }
             }
 
-            let fileUrl = currentFileUrl;
-            const file = editFileInput.files[0];
-            if (file) {
-                try {
-                    fileUrl = await uploadFile(file);
-                } catch (err) {
-                    showToast('❌ File upload failed: ' + err.message, 'error');
+            // Add reaction
+            window.addReaction = async function(postId, type) {
+                if (!currentUser) {
+                    showToast('Please log in to react', 'error');
                     return;
                 }
-            }
+                try {
+                    // Get current post
+                    const { data: post, error: fetchError } = await supabase
+                        .from('blogs')
+                        .select('reactions, user_reaction')
+                        .eq('id', postId)
+                        .single();
+                    if (fetchError) throw fetchError;
 
-            try {
-                const { error } = await supabase
-                    .from('blogs')
-                    .update({
-                        title: title,
-                        content: content,
-                        file_url: fileUrl,
-                        updated_at: new Date()
-                    })
-                    .eq('id', id);
+                    let reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
+                    let userReaction = post.user_reaction || null;
 
-                if (error) throw error;
+                    // If same reaction, remove it
+                    if (userReaction === type) {
+                        reactions[type] = Math.max(0, (reactions[type] || 0) - 1);
+                        userReaction = null;
+                    } else {
+                        // Remove previous reaction
+                        if (userReaction && reactions[userReaction]) {
+                            reactions[userReaction] = Math.max(0, (reactions[userReaction] || 0) - 1);
+                        }
+                        reactions[type] = (reactions[type] || 0) + 1;
+                        userReaction = type;
+                    }
 
-                showToast('✅ Post updated!', 'success');
-                closeEditModal();
-                fetchPosts();
-            } catch (err) {
-                showToast('❌ Update failed: ' + err.message, 'error');
-            }
-        }
+                    // Update with user_reaction field
+                    const { error: updateError } = await supabase
+                        .from('blogs')
+                        .update({
+                            reactions: reactions,
+                            user_reaction: userReaction
+                        })
+                        .eq('id', postId);
+                    if (updateError) throw updateError;
 
-        // ===== DELETE POST =====
-        window.deletePost = async function(id) {
-            if (!confirm('Are you sure you want to delete this post?')) return;
+                    // Store in localStorage for this user
+                    if (currentUser) {
+                        localStorage.setItem(`reaction_${postId}_${currentUser.id}`, userReaction || '');
+                    }
 
-            try {
-                const { error } = await supabase
-                    .from('blogs')
-                    .delete()
-                    .eq('id', id);
+                    // Refresh detail view
+                    await viewPost(postId);
+                    fetchPosts();
+                } catch (err) {
+                    showToast('Error: ' + err.message, 'error');
+                }
+            };
 
-                if (error) throw error;
-                showToast('🗑️ Post deleted', 'info');
-                fetchPosts();
-            } catch (err) {
-                showToast('❌ Delete failed: ' + err.message, 'error');
-            }
-        };
+            // Add comment
+            window.addComment = async function(postId) {
+                if (!currentUser) {
+                    showToast('Please log in to comment', 'error');
+                    return;
+                }
+                const input = document.getElementById('commentInput');
+                if (!input) return;
+                const content = input.value.trim();
+                if (!content) {
+                    showToast('Please write a comment', 'error');
+                    return;
+                }
 
-        // ===== CLOSE MODAL =====
-        function closeEditModal() {
-            editModal.classList.remove('active');
-            document.body.style.overflow = '';
-            editingId = null;
-            editPostId.value = '';
-        }
+                try {
+                    const { error } = await supabase
+                        .from('comments')
+                        .insert([{
+                            post_id: postId,
+                            author_name: currentUser.email || currentUser.user_metadata?.name || 'Anonymous',
+                            author_email: currentUser.email,
+                            content: content
+                        }]);
+                    if (error) throw error;
+                    input.value = '';
+                    showToast('Comment added!', 'success');
+                    await renderComments(postId);
+                    fetchPosts();
+                } catch (err) {
+                    showToast('Error: ' + err.message, 'error');
+                }
+            };
 
-        // ===== CHECK SESSION =====
-        async function checkSession() {
-            try {
-                const { data: { session }, error } = await supabase.auth.getSession();
-                if (error) throw error;
-                if (session?.user) {
-                    currentUser = session.user;
-                    updateUIForUser(currentUser);
+            // Update UI for user
+            function updateUIForUser(user) {
+                currentUser = user;
+                if (user) {
+                    loginStatus.className = 'login-status success';
+                    loginStatus.innerHTML = `<i class="fas fa-check-circle"></i> Logged in as ${user.email}`;
+                    loginBtn.classList.add('hidden');
+                    logoutBtn.classList.remove('hidden');
+                    authToggleBtn.innerHTML = `<i class="fas fa-user-cog"></i> ${user.email}`;
+                    authToggleBtn.className = 'btn btn-primary';
+                    postFormWrapper.classList.add('visible');
+                    loginRequiredMsg.style.display = 'none';
+                    fetchPosts();
                 } else {
+                    loginStatus.className = 'login-status';
+                    loginStatus.innerHTML = '<i class="fas fa-info-circle"></i> Demo credentials';
+                    loginBtn.classList.remove('hidden');
+                    logoutBtn.classList.add('hidden');
+                    authToggleBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Admin';
+                    authToggleBtn.className = 'btn btn-primary';
+                    postFormWrapper.classList.remove('visible');
+                    loginRequiredMsg.style.display = 'block';
+                    fetchPosts();
+                }
+            }
+
+            // Login
+            async function handleLogin() {
+                const email = loginEmail.value.trim();
+                const password = loginPassword.value.trim();
+                if (!email || !password) {
+                    loginStatus.className = 'login-status error';
+                    loginStatus.innerHTML = '<i class="fas fa-times-circle"></i> Email and password required';
+                    return;
+                }
+                try {
+                    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                    if (error) throw error;
+                    if (data?.user) {
+                        updateUIForUser(data.user);
+                        showToast('✅ Login successful!', 'success');
+                    }
+                } catch (err) {
+                    loginStatus.className = 'login-status error';
+                    loginStatus.innerHTML = `<i class="fas fa-times-circle"></i> ${err.message}`;
+                    showToast('❌ Login failed: ' + err.message, 'error');
+                }
+            }
+
+            // Logout
+            async function handleLogout() {
+                try {
+                    await supabase.auth.signOut();
+                    currentUser = null;
+                    updateUIForUser(null);
+                    loginStatus.className = 'login-status';
+                    loginStatus.innerHTML = '<i class="fas fa-info-circle"></i> Logged out';
+                    showToast('🔐 Logged out successfully', 'info');
+                } catch (err) {
+                    showToast('❌ Logout error: ' + err.message, 'error');
+                }
+            }
+
+            // Publish
+            async function handlePublish() {
+                if (!currentUser) {
+                    showToast('⚠️ You must be logged in', 'error');
+                    return;
+                }
+                const title = postTitle.value.trim() || 'Untitled';
+                const content = postContent.value.trim();
+                if (!content) {
+                    showToast('⚠️ Please write some content', 'error');
+                    return;
+                }
+                let fileUrl = null;
+                const file = fileInput.files[0];
+                if (file) {
+                    try {
+                        fileUrl = await uploadFile(file);
+                    } catch (err) {
+                        showToast('❌ File upload failed: ' + err.message, 'error');
+                        return;
+                    }
+                }
+                try {
+                    const { error } = await supabase
+                        .from('blogs')
+                        .insert([{
+                            title: title,
+                            content: content,
+                            author_email: currentUser.email,
+                            author_name: currentUser.user_metadata?.name || currentUser.email,
+                            file_url: fileUrl,
+                            reactions: { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 }
+                        }]);
+                    if (error) throw error;
+                    showToast('✅ Post published!', 'success');
+                    postTitle.value = '';
+                    postContent.value = '';
+                    fileInput.value = '';
+                    fileName.textContent = 'No file selected';
+                    fetchPosts();
+                } catch (err) {
+                    showToast('❌ Error: ' + err.message, 'error');
+                }
+            }
+
+            // Edit
+            window.editPost = function(id) {
+                editingId = id;
+                editPostId.value = id;
+                (async () => {
+                    try {
+                        const { data, error } = await supabase.from('blogs').select('*').eq('id', id).single();
+                        if (error) throw error;
+                        editTitle.value = data.title || '';
+                        editContent.value = data.content || '';
+                        currentFileUrl = data.file_url || null;
+                        editFileName.textContent = currentFileUrl ? '📎 File attached' : 'No file selected';
+                        editFileInput.value = '';
+                        editModal.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                    } catch (err) {
+                        showToast('Error loading post: ' + err.message, 'error');
+                    }
+                })();
+            };
+
+            // Save edit
+            async function handleSaveEdit() {
+                const id = editPostId.value;
+                if (!id) return;
+                const title = editTitle.value.trim() || 'Untitled';
+                const content = editContent.value.trim();
+                if (!content) {
+                    showToast('⚠️ Please write some content', 'error');
+                    return;
+                }
+                let fileUrl = currentFileUrl;
+                const file = editFileInput.files[0];
+                if (file) {
+                    try {
+                        fileUrl = await uploadFile(file);
+                    } catch (err) {
+                        showToast('❌ File upload failed: ' + err.message, 'error');
+                        return;
+                    }
+                }
+                try {
+                    const { error } = await supabase
+                        .from('blogs')
+                        .update({
+                            title: title,
+                            content: content,
+                            file_url: fileUrl,
+                            updated_at: new Date()
+                        })
+                        .eq('id', id);
+                    if (error) throw error;
+                    showToast('✅ Post updated!', 'success');
+                    closeEditModal();
+                    fetchPosts();
+                } catch (err) {
+                    showToast('❌ Update failed: ' + err.message, 'error');
+                }
+            }
+
+            // Delete
+            window.deletePost = async function(id) {
+                if (!confirm('Are you sure you want to delete this post?')) return;
+                try {
+                    const { error } = await supabase.from('blogs').delete().eq('id', id);
+                    if (error) throw error;
+                    showToast('🗑️ Post deleted', 'info');
+                    fetchPosts();
+                } catch (err) {
+                    showToast('❌ Delete failed: ' + err.message, 'error');
+                }
+            };
+
+            // Close modals
+            function closeEditModal() {
+                editModal.classList.remove('active');
+                document.body.style.overflow = '';
+                editingId = null;
+                editPostId.value = '';
+            }
+
+            function closeDetailModal() {
+                detailModal.classList.remove('active');
+                document.body.style.overflow = '';
+                currentDetailPostId = null;
+            }
+
+            // Check session
+            async function checkSession() {
+                try {
+                    const { data: { session }, error } = await supabase.auth.getSession();
+                    if (error) throw error;
+                    if (session?.user) {
+                        currentUser = session.user;
+                        updateUIForUser(currentUser);
+                    } else {
+                        updateUIForUser(null);
+                    }
+                } catch (err) {
                     updateUIForUser(null);
                 }
-            } catch (err) {
-                console.warn('Session check:', err);
-                updateUIForUser(null);
+                fetchPosts();
             }
-            fetchPosts();
-        }
 
-        // ===== EVENT LISTENERS =====
-        loginBtn.addEventListener('click', handleLogin);
-        logoutBtn.addEventListener('click', handleLogout);
-        publishBtn.addEventListener('click', handlePublish);
-        saveEditBtn.addEventListener('click', handleSaveEdit);
+            // Event listeners
+            loginBtn.addEventListener('click', handleLogin);
+            logoutBtn.addEventListener('click', handleLogout);
+            publishBtn.addEventListener('click', handlePublish);
+            saveEditBtn.addEventListener('click', handleSaveEdit);
+            cancelEditBtn.addEventListener('click', closeEditModal);
+            closeEditModalBtn.addEventListener('click', closeEditModal);
+            closeDetailModalBtn.addEventListener('click', closeDetailModal);
 
-        cancelModalBtn.addEventListener('click', closeEditModal);
-        closeModalBtn.addEventListener('click', closeEditModal);
-        editModal.addEventListener('click', (e) => {
-            if (e.target === editModal) closeEditModal();
-        });
+            editModal.addEventListener('click', (e) => { if (e.target === editModal) closeEditModal(); });
+            detailModal.addEventListener('click', (e) => { if (e.target === detailModal) closeDetailModal(); });
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeEditModal();
-        });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') { closeEditModal();
+                    closeDetailModal(); }
+            });
 
-        loginPassword.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') handleLogin();
-        });
+            loginPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
 
-        authToggleBtn.addEventListener('click', () => {
-            if (currentUser) {
-                if (confirm('Logout?')) handleLogout();
-            } else {
-                document.getElementById('loginCard').scrollIntoView({ behavior: 'smooth' });
-                loginEmail.focus();
-            }
-        });
+            authToggleBtn.addEventListener('click', () => {
+                if (currentUser) {
+                    if (confirm('Logout?')) handleLogout();
+                } else {
+                    document.getElementById('loginCard').scrollIntoView({ behavior: 'smooth' });
+                    loginEmail.focus();
+                }
+            });
 
-        // ===== INIT =====
-        checkSession();
-    })();
-</script>
-
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"cf5153463d15490bb52e4fdbdb29adaf","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+            // Init
+            checkSession();
+        })();
+    </script>
 </body>
 </html>
