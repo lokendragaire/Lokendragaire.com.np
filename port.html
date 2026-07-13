@@ -309,6 +309,14 @@
             color: var(--accent);
             width: 1.1rem;
         }
+        .hero-right .quick-badge a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 450;
+        }
+        .hero-right .quick-badge a:hover {
+            color: var(--accent);
+        }
 
         @media (max-width: 680px) {
             .hero-left .name {
@@ -1043,7 +1051,8 @@
             <span>Lokendra Gaire</span>
         </div>
         <div class="nav-actions">
-            <button class="nav-btn" id="goHomeBtn" aria-label="Go to top">
+            <!-- Home button now goes to previous page -->
+            <button class="nav-btn" id="goHomeBtn" aria-label="Go to previous page">
                 <i class="fas fa-home"></i>
                 <span class="label">Home</span>
             </button>
@@ -1054,7 +1063,7 @@
         </div>
     </nav>
 
-    <!-- ===== FLOATING HOME BUTTON ===== -->
+    <!-- ===== FLOATING TOP BUTTON (scrolls to top) ===== -->
     <button class="home-btn" id="floatingHomeBtn" aria-label="Scroll to top">
         <i class="fas fa-arrow-up"></i>
         <span>Top</span>
@@ -1102,7 +1111,7 @@
                     <span><i class="fas fa-map-pin"></i> Galkot-2, Baglung</span>
                     <span><i class="fas fa-calendar-alt"></i> 22 May 2001</span>
                     <span><i class="fas fa-flag"></i> Nepali</span>
-                    <span><i class="fas fa-envelope"></i> lokendra.gaire.70@gmail.com</span>
+                    <span><i class="fas fa-envelope"></i> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b9d5d6d2dcd7ddcbd897ded8d0cbdc978e89f9ded4d8d0d597dad6d4">[email&#160;protected]</a></span>
                 </div>
             </div>
         </header>
@@ -1112,7 +1121,7 @@
             <div class="section-title reveal">
                 <i class="fas fa-briefcase"></i> Work Experience &amp; Responsibilities
                 <span style="font-size:0.7rem; font-weight:400; color:var(--text-muted); margin-left:auto;">
-                   
+                    <i class="fas fa-camera"></i> click any card for photo
                 </span>
             </div>
 
@@ -1303,10 +1312,10 @@
         <div class="footer-actions">
             <div class="social-links">
                 <span class="label"><i class="fas fa-share-alt"></i> Connect</span>
-                <a href="#" data-social="https://www.facebook.com/lokendragaire7"><i class="fab fa-facebook"></i> Facebook</a>
-                <a href="#" data-social=""https://www.tiktok.com/@mr.gairelokendra""><i class="fab fa-instagram"></i> TikTok</a>
-                <a href="#" data-social="https://www.linkedin.com/in/lokendra-gaire-70b1b1275/"><i class="fab fa-linkedin"></i> LinkedIn</a>
-                <a href="#" data-social="https://www.youtube.com/@hamrogalkot9"><i class="fab fa-youtube"></i> YouTube</a>
+                <a href="https://www.facebook.com/lokendragaire7" target="_blank" rel="noopener"><i class="fab fa-facebook"></i> Facebook</a>
+                <a href="https://www.tiktok.com/@mr.gairelokendra" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i> TikTok</a>
+                <a href="https://www.linkedin.com/in/lokendra-gaire-70b1b1275/" target="_blank" rel="noopener"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                <a href="https://www.youtube.com/@hamrogalkot9" target="_blank" rel="noopener"><i class="fab fa-youtube"></i> YouTube</a>
             </div>
             <div class="download-btn">
                 <a href="#" id="downloadBtn"><i class="fas fa-download"></i> Download / Print PDF</a>
@@ -1322,6 +1331,7 @@
     <div id="toast" class="toast">📄 PDF download ready</div>
 
     <!-- ===== JAVASCRIPT ===== -->
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script>
         (function() {
             'use strict';
@@ -1348,7 +1358,6 @@
             const modalCloseTop = document.getElementById('modalCloseTop');
 
             let toastTimeout = null;
-            let currentModalImage = '';
 
             // ========== THEME ==========
             function getTheme() {
@@ -1399,17 +1408,34 @@
                 }, 2800);
             }
 
-            // ========== HOME / SCROLL TO TOP ==========
-            function scrollToTop() {
+            // ========== HOME BUTTON: GO TO PREVIOUS PAGE ==========
+            function goToPreviousPage() {
+                if (document.referrer && document.referrer.length > 0) {
+                    // If there's a referrer, go back
+                    window.history.back();
+                } else {
+                    // Fallback: scroll to top if no history
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    showToast('🏠 No previous page, scrolled to top');
+                }
+            }
+
+            // Navbar Home button -> previous page
+            goHomeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                goToPreviousPage();
+            });
+
+            // Floating "Top" button -> scroll to top
+            floatingHomeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 portfolio.setAttribute('tabindex', '-1');
                 portfolio.focus({ preventScroll: true });
                 setTimeout(() => portfolio.removeAttribute('tabindex'), 600);
-            }
+            });
 
-            goHomeBtn.addEventListener('click', scrollToTop);
-            floatingHomeBtn.addEventListener('click', scrollToTop);
-
+            // Show/hide floating top button
             function handleScroll() {
                 const scrollY = window.scrollY;
                 if (scrollY > 400) {
@@ -1433,75 +1459,50 @@
                 }, 350);
             });
 
-            // ========== SOCIAL LINKS ==========
-            document.querySelectorAll('.social-links a[data-social]').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const name = this.getAttribute('data-social') || 'social';
-                    showToast(`🔗 ${name} · coming soon`);
-                });
-            });
+            // ========== SOCIAL LINKS - already have href, no override needed ==========
 
             // ========== IMAGE MODAL ==========
             function openModal(imageSrc, title, sub) {
-                // set caption
                 modalCaption.textContent = title || 'Photo';
                 modalSub.textContent = sub || '';
 
-                // handle image
                 if (imageSrc && imageSrc.trim() !== '') {
-                    // check if image exists by trying to load it
                     const img = new Image();
                     img.onload = function() {
                         modalImage.src = imageSrc;
                         modalImage.style.display = 'block';
                         modalNoImage.style.display = 'none';
-                        currentModalImage = imageSrc;
                     };
                     img.onerror = function() {
-                        // fallback: show no image
                         modalImage.style.display = 'none';
                         modalNoImage.style.display = 'flex';
-                        currentModalImage = '';
-                        // still try to show the image with a placeholder style
                         modalImage.src = '';
                     };
                     img.src = imageSrc;
                 } else {
                     modalImage.style.display = 'none';
                     modalNoImage.style.display = 'flex';
-                    currentModalImage = '';
                 }
 
                 modal.classList.add('open');
                 document.body.style.overflow = 'hidden';
-                // focus trap
                 modal.focus();
             }
 
             function closeModal() {
                 modal.classList.remove('open');
                 document.body.style.overflow = '';
-                // reset image after transition
-                setTimeout(() => {
-                    if (!modal.classList.contains('open')) {
-                        // keep image for smooth re-open
-                    }
-                }, 400);
             }
 
-            // close modal events
             modalCloseBtn.addEventListener('click', closeModal);
             modalCloseTop.addEventListener('click', closeModal);
 
-            // click outside modal content to close
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) {
                     closeModal();
                 }
             });
 
-            // ESC key to close
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && modal.classList.contains('open')) {
                     closeModal();
@@ -1511,19 +1512,17 @@
             // ===== CLICK HANDLERS FOR TIMELINE ITEMS =====
             document.querySelectorAll('.timeline-item').forEach(item => {
                 item.addEventListener('click', function(e) {
-                    // don't trigger if clicking on a link inside
                     if (e.target.closest('a')) return;
 
                     const image = this.getAttribute('data-image') || '';
-                    const title = this.getAttribute('data-title') || this.querySelector('.role')?.textContent?.trim() ||
-                        'Work Experience';
+                    const title = this.getAttribute('data-title') || this.querySelector('.role')
+                        ?.textContent?.trim() || 'Work Experience';
                     const org = this.querySelector('.org')?.textContent?.trim() || '';
                     const date = this.querySelector('.date')?.textContent?.trim() || '';
                     const sub = `${org} · ${date}`;
 
                     openModal(image, title, sub);
 
-                    // highlight effect
                     document.querySelectorAll('.timeline-item').forEach(el => {
                         el.style.background = 'transparent';
                         el.style.boxShadow = 'none';
@@ -1538,7 +1537,7 @@
                 });
             });
 
-        
+            // ===== CLICK HANDLERS FOR EDUCATION CARDS =====
             document.querySelectorAll('.edu-card').forEach(card => {
                 card.addEventListener('click', function() {
                     const image = this.getAttribute('data-image') || '';
@@ -1577,9 +1576,10 @@
                         toggleTheme();
                     }
                 }
-                if (e.key === 'Home' && !e.ctrlKey && !e.metaKey) {
+                // Alt+Home or Ctrl+Home to go back
+                if (e.key === 'Home' && (e.altKey || e.ctrlKey)) {
                     e.preventDefault();
-                    scrollToTop();
+                    goToPreviousPage();
                 }
             });
 
@@ -1605,5 +1605,9 @@
         })();
     </script>
 
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496"
+        integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ=="
+        data-cf-beacon='{"version":"2024.11.0","token":"cf5153463d15490bb52e4fdbdb29adaf","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}'
+        crossorigin="anonymous"></script>
 </body>
 </html>
