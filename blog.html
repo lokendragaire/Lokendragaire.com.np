@@ -415,29 +415,45 @@
             font-size: 0.7rem;
         }
 
-        /* Quick comment on post */
-        .post-quick-comment {
+        /* Comments on post */
+        .post-comments {
             margin-top: 0.8rem;
             padding-top: 0.8rem;
             border-top: 1px solid #f1f5f9;
         }
-        .post-quick-comment .comment-preview {
-            font-size: 0.8rem;
-            color: #64748b;
+        .post-comments .comments-list {
+            margin-bottom: 0.5rem;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .post-comments .comment-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 0.3rem 0.6rem;
             margin-bottom: 0.3rem;
+            font-size: 0.8rem;
         }
-        .post-quick-comment .comment-preview i {
-            color: #3b82f6;
-            margin-right: 0.3rem;
+        .post-comments .comment-item .comment-author {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 0.75rem;
         }
-        .post-quick-comment .comment-input-row {
+        .post-comments .comment-item .comment-text {
+            color: #475569;
+            font-size: 0.8rem;
+        }
+        .post-comments .comment-item .comment-time {
+            font-size: 0.6rem;
+            color: #94a3b8;
+        }
+        .post-comments .comment-input-row {
             display: flex;
             gap: 0.3rem;
             flex-wrap: wrap;
         }
-        .post-quick-comment input {
+        .post-comments .comment-input-row input {
             flex: 1;
-            min-width: 120px;
+            min-width: 100px;
             padding: 0.4rem 0.8rem;
             border: 2px solid #e2e8f0;
             border-radius: 8px;
@@ -445,26 +461,23 @@
             font-family: 'Inter', sans-serif;
             background: #fafcff;
         }
-        .post-quick-comment input:focus {
+        .post-comments .comment-input-row input:focus {
             outline: none;
             border-color: #3b82f6;
         }
-        .post-quick-comment .btn {
+        .post-comments .comment-input-row .btn {
             padding: 0.2rem 0.8rem;
             font-size: 0.7rem;
         }
-        .post-quick-comment .recent-comments {
-            margin-top: 0.4rem;
-            font-size: 0.8rem;
-            color: #64748b;
+        .post-comments .view-all-comments {
+            font-size: 0.75rem;
+            color: #3b82f6;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 0.3rem;
         }
-        .post-quick-comment .recent-comments .rc-item {
-            padding: 0.2rem 0;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        .post-quick-comment .recent-comments .rc-item .rc-author {
-            font-weight: 600;
-            color: #0f172a;
+        .post-comments .view-all-comments:hover {
+            text-decoration: underline;
         }
 
         .empty-posts {
@@ -1104,6 +1117,7 @@
             // ============ PUBLIC REACTION (No Login Required) ============
             window.addPublicReaction = async function(postId, type) {
                 try {
+                    // Get current reactions
                     const { data: post, error: fetchError } = await supabase
                         .from('blogs')
                         .select('reactions')
@@ -1120,7 +1134,7 @@
                         .eq('id', postId);
                     if (updateError) throw updateError;
 
-                    // Refresh everything
+                    // Refresh everything to show updated counts
                     await fetchPosts();
                     if (currentDetailPostId === postId) {
                         await viewPost(postId);
@@ -1153,9 +1167,11 @@
                     if (error) throw error;
                     input.value = '';
                     showToast('💬 Comment added!', 'success');
+                    
+                    // Refresh everything to show new comment
                     await fetchPosts();
                     if (currentDetailPostId === postId) {
-                        await renderDetailComments(postId);
+                        await viewPost(postId);
                     }
                 } catch (err) {
                     showToast('Error: ' + err.message, 'error');
@@ -1190,6 +1206,8 @@
                     if (contentInput) contentInput.value = '';
                     if (nameInput) nameInput.value = '';
                     showToast('💬 Comment added!', 'success');
+                    
+                    // Refresh everything
                     await renderDetailComments(postId);
                     await fetchPosts();
                 } catch (err) {
@@ -1212,6 +1230,8 @@
                         .eq('id', commentId);
                     if (error) throw error;
                     showToast('🗑️ Comment deleted', 'info');
+                    
+                    // Refresh everything
                     await renderDetailComments(postId);
                     await fetchPosts();
                 } catch (err) {
@@ -1219,7 +1239,7 @@
                 }
             };
 
-            // ============ RENDER POSTS ============
+            // ============ FETCH AND RENDER POSTS ============
             async function fetchPosts() {
                 try {
                     const { data: posts, error } = await supabase
@@ -1229,20 +1249,26 @@
 
                     if (error) throw error;
 
-                    // Get comment counts for each post
-                    const postsWithCounts = await Promise.all((posts || []).map(async (post) => {
-                        const { count, error: countError } = await supabase
+                    // Get comments for each post
+                    const postsWithData = await Promise.all((posts || []).map(async (post) => {
+                        const { data: comments, error: commentError } = await supabase
                             .from('comments')
-                            .select('*', { count: 'exact', head: true })
-                            .eq('post_id', post.id);
+                            .select('*')
+                            .eq('post_id', post.id)
+                            .order('created_at', { ascending: false })
+                            .limit(5);
 
-                        if (countError) {
-                            return { ...post, comment_count: 0 };
+                        if (commentError) {
+                            return { ...post, comments: [], comment_count: 0 };
                         }
-                        return { ...post, comment_count: count || 0 };
+                        return { 
+                            ...post, 
+                            comments: comments || [],
+                            comment_count: comments ? comments.length : 0
+                        };
                     }));
 
-                    renderPosts(postsWithCounts || []);
+                    renderPosts(postsWithData || []);
                 } catch (err) {
                     postsContainer.innerHTML =
                         `<div class="empty-posts"><i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i><h3>Error loading posts</h3><p>${err.message}</p></div>`;
@@ -1306,11 +1332,30 @@
                         `;
                     }
 
-                    // Get recent comments for this post
-                    let recentCommentsHtml = '';
-                    if (post.comment_count > 0) {
-                        recentCommentsHtml =
-                            `<div class="recent-comments"><i class="fas fa-comment"></i> ${post.comment_count} comment${post.comment_count > 1 ? 's' : ''}</div>`;
+                    // Comments section
+                    const comments = post.comments || [];
+                    let commentsHtml = '';
+                    if (comments.length > 0) {
+                        commentsHtml += `<div class="comments-list">`;
+                        comments.slice(0, 3).forEach(c => {
+                            const cDate = c.created_at ? new Date(c.created_at).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric'
+                            }) : '';
+                            commentsHtml += `
+                                <div class="comment-item">
+                                    <span class="comment-author">${escapeHtml(c.author_name) || 'Anonymous'}</span>
+                                    <span class="comment-text">${escapeHtml(c.content)}</span>
+                                    <span class="comment-time">${cDate}</span>
+                                </div>
+                            `;
+                        });
+                        if (comments.length > 3) {
+                            commentsHtml += `<div class="view-all-comments" onclick="window.viewPost('${post.id}')">
+                                View all ${comments.length} comments →
+                            </div>`;
+                        }
+                        commentsHtml += `</div>`;
                     }
 
                     html += `
@@ -1328,7 +1373,7 @@
                             ${readMore}
                             ${fileHtml}
 
-                            <!-- Reactions - ALWAYS VISIBLE -->
+                            <!-- Reactions -->
                             <div class="post-reactions">
                                 ${reactionHtml}
                                 ${!hasReactions ? '<span style="font-size:0.8rem;color:#94a3b8;">Be the first to react!</span>' : ''}
@@ -1340,18 +1385,15 @@
                                 <span><i class="far fa-comments"></i> ${post.comment_count || 0}</span>
                             </div>
 
-                            <!-- Quick Comment - ALWAYS VISIBLE -->
-                            <div class="post-quick-comment">
-                                <div class="comment-preview">
-                                    <i class="fas fa-comment"></i> Leave a comment
-                                </div>
+                            <!-- Comments Section -->
+                            <div class="post-comments">
+                                ${commentsHtml}
                                 <div class="comment-input-row">
                                     <input type="text" id="quick_comment_${post.id}" placeholder="Write a comment..." />
                                     <button class="btn btn-primary btn-sm" onclick="window.addQuickComment('${post.id}')">
-                                        <i class="fas fa-paper-plane"></i> Post
+                                        <i class="fas fa-paper-plane"></i>
                                     </button>
                                 </div>
-                                ${recentCommentsHtml}
                             </div>
                         </div>
                     `;
@@ -1362,12 +1404,17 @@
             // ============ VIEW POST DETAIL ============
             window.viewPost = async function(id) {
                 try {
-                    const { data, error } = await supabase.from('blogs').select('*').eq('id', id).single();
+                    const { data: post, error } = await supabase
+                        .from('blogs')
+                        .select('*')
+                        .eq('id', id)
+                        .single();
                     if (error) throw error;
+                    
                     currentDetailPostId = id;
-                    detailTitle.textContent = data.title || 'Untitled';
+                    detailTitle.textContent = post.title || 'Untitled';
 
-                    const date = data.created_at ? new Date(data.created_at).toLocaleDateString('en-US', {
+                    const date = post.created_at ? new Date(post.created_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric',
@@ -1375,23 +1422,23 @@
                         minute: '2-digit'
                     }) : 'Unknown';
                     detailMeta.innerHTML =
-                        `<i class="far fa-user"></i> ${escapeHtml(data.author_name) || escapeHtml(data.author_email) || 'admin'} &nbsp;·&nbsp; <i class="far fa-calendar-alt"></i> ${date}`;
+                        `<i class="far fa-user"></i> ${escapeHtml(post.author_name) || escapeHtml(post.author_email) || 'admin'} &nbsp;·&nbsp; <i class="far fa-calendar-alt"></i> ${date}`;
 
-                    let contentHtml = data.content || '';
-                    if (data.file_url) {
-                        const isImage = data.file_url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i);
+                    let contentHtml = post.content || '';
+                    if (post.file_url) {
+                        const isImage = post.file_url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i);
                         if (isImage) {
                             contentHtml +=
-                                `<br><img src="${data.file_url}" alt="Post image" style="max-width:100%;border-radius:8px;margin:0.5rem 0;" />`;
+                                `<br><img src="${post.file_url}" alt="Post image" style="max-width:100%;border-radius:8px;margin:0.5rem 0;" />`;
                         } else {
                             contentHtml +=
-                                `<br><div class="post-file"><i class="fas fa-paperclip"></i> <a href="${data.file_url}" target="_blank">Download File</a></div>`;
+                                `<br><div class="post-file"><i class="fas fa-paperclip"></i> <a href="${post.file_url}" target="_blank">Download File</a></div>`;
                         }
                     }
                     detailContent.innerHTML = contentHtml;
 
                     // Reactions
-                    const reactions = data.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
+                    const reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
                     const reactionEmojis = { like: '👍', love: '❤️', laugh: '😄', sad: '😢', angry: '😡' };
                     let reactionHtml = '';
                     for (const [key, emoji] of Object.entries(reactionEmojis)) {
@@ -1421,7 +1468,7 @@
                         .from('comments')
                         .select('*')
                         .eq('post_id', postId)
-                        .order('created_at', { ascending: true });
+                        .order('created_at', { ascending: false });
                     if (error) throw error;
 
                     let html = `<h4><i class="fas fa-comments"></i> Comments (${data?.length || 0})</h4>`;
@@ -1451,7 +1498,7 @@
                         html += `<p style="color:#94a3b8;font-size:0.85rem;">No comments yet. Be the first!</p>`;
                     }
 
-                    // Comment form - ALWAYS VISIBLE
+                    // Comment form
                     html += `
                         <div class="detail-comment-input">
                             <div class="comment-row">
