@@ -44,10 +44,6 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            cursor: pointer;
-        }
-        .header h1:hover {
-            color: #3b82f6;
         }
         .header h1 i {
             color: #3b82f6;
@@ -62,6 +58,25 @@
             align-items: center;
             gap: 0.8rem;
             flex-wrap: wrap;
+        }
+        .home-btn {
+            background: #eef2ff;
+            color: #4f46e5;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            transition: 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .home-btn:hover {
+            background: #c7d2fe;
+            transform: translateY(-2px);
         }
 
         .btn {
@@ -115,24 +130,6 @@
         .btn-sm {
             padding: 0.3rem 0.8rem;
             font-size: 0.75rem;
-        }
-        .btn-home {
-            background: #8b5cf6;
-            color: white;
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-        }
-        .btn-home:hover {
-            background: #7c3aed;
-            transform: translateY(-2px);
-        }
-        .btn-share {
-            background: #1da1f2;
-            color: white;
-            box-shadow: 0 4px 12px rgba(29, 161, 242, 0.3);
-        }
-        .btn-share:hover {
-            background: #0d8bdc;
-            transform: translateY(-2px);
         }
         .hidden {
             display: none !important;
@@ -408,18 +405,37 @@
             text-decoration: underline;
         }
 
-        .post-share-btn {
-            display: inline-block;
-            margin: 0.3rem 0;
-            font-size: 0.8rem;
-            color: #1da1f2;
-            cursor: pointer;
+        .post-reactions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 0.5rem 0;
+            padding: 0.5rem 0;
+            border-top: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
         }
-        .post-share-btn:hover {
-            text-decoration: underline;
+        .post-reactions .reaction-badge {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .post-reactions .reaction-badge:hover {
+            background: #e2e8f0;
+            transform: scale(1.05);
+        }
+        .post-reactions .reaction-badge .count {
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.7rem;
         }
 
-        /* Comments on post */
         .post-comments {
             margin-top: 0.5rem;
         }
@@ -519,7 +535,6 @@
             margin-bottom: 0.3rem;
         }
 
-        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -665,14 +680,39 @@
             padding-bottom: 0.8rem;
             border-bottom: 1px solid #f1f5f9;
         }
-        .post-detail-share {
-            margin: 0.5rem 0 1rem;
+
+        .detail-reactions {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.8rem;
             flex-wrap: wrap;
+            margin: 1rem 0;
+            padding: 0.5rem 0;
+            border-top: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .detail-reactions .reaction-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 30px;
+            padding: 0.4rem 1rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .detail-reactions .reaction-btn:hover {
+            background: #e2e8f0;
+            transform: scale(1.05);
+        }
+        .detail-reactions .reaction-btn .count {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 600;
         }
 
-        /* Detail comments */
         .detail-comments {
             margin-top: 1rem;
             padding-top: 0.8rem;
@@ -768,55 +808,6 @@
             margin-right: 0.2rem;
         }
 
-        /* Share Modal */
-        .share-modal .share-options {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            margin: 1rem 0;
-        }
-        .share-modal .share-options .share-link {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            background: #f8fafc;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-        }
-        .share-modal .share-options .share-link input {
-            flex: 1;
-            border: none;
-            background: transparent;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
-            color: #1e293b;
-            padding: 0.3rem;
-        }
-        .share-modal .share-options .share-link input:focus {
-            outline: none;
-        }
-        .share-modal .share-options .share-link button {
-            background: none;
-            border: none;
-            color: #3b82f6;
-            cursor: pointer;
-            font-size: 1rem;
-            padding: 0.3rem;
-        }
-        .share-modal .share-options .share-link button:hover {
-            color: #1d4ed8;
-        }
-        .share-modal .share-options .social-buttons {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        .share-modal .share-options .social-buttons .btn {
-            flex: 1;
-            min-width: 100px;
-            justify-content: center;
-        }
-
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -873,6 +864,68 @@
             to {
                 transform: rotate(360deg);
             }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            margin-top: 0.2rem;
+        }
+        .stat-item {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 0.6rem 0.8rem;
+            text-align: center;
+        }
+        .stat-item .stat-number {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: #0f172a;
+        }
+        .stat-item .stat-label {
+            font-size: 0.65rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .share-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .share-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: white;
+            min-width: 180px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            border-radius: 12px;
+            z-index: 10;
+            padding: 0.5rem;
+            border: 1px solid #f1f5f9;
+        }
+        .share-dropdown-content a {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.4rem 0.8rem;
+            text-decoration: none;
+            color: #1e293b;
+            font-size: 0.8rem;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+        .share-dropdown-content a:hover {
+            background: #f1f5f9;
+        }
+        .share-dropdown-content a i {
+            width: 20px;
+            text-align: center;
+        }
+        .share-dropdown:hover .share-dropdown-content {
+            display: block;
         }
 
         @media (max-width: 992px) {
@@ -940,6 +993,9 @@
             .login-panel .login-actions .btn {
                 justify-content: center;
             }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
     </style>
 </head>
@@ -947,11 +1003,11 @@
 
     <div class="container">
         <header class="header">
-            <h1 onclick="goHome()"><i class="fas fa-feather-alt"></i> Lokendra's <span>Blog</span></h1>
+            <div style="display:flex; align-items:center; gap:1rem;">
+                <a href="#" class="home-btn" id="homeBtn"><i class="fas fa-home"></i> Home</a>
+                <h1><i class="fas fa-feather-alt"></i> Lokendra's <span>Blog</span></h1>
+            </div>
             <div class="header-actions">
-                <button onclick="goHome()" class="btn btn-home">
-                    <i class="fas fa-home"></i> Home
-                </button>
                 <button id="authToggleBtn" class="btn btn-primary">
                     <i class="fas fa-sign-in-alt"></i> Admin
                 </button>
@@ -1023,6 +1079,22 @@
                         <i class="fas fa-info-circle"></i> Log in to create posts.
                     </div>
                 </div>
+
+                <div class="card" id="statsCard">
+                    <div class="card-title">
+                        <i class="fas fa-chart-simple"></i> Blog Stats
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalPosts">0</div>
+                            <div class="stat-label">Posts</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalViews">0</div>
+                            <div class="stat-label">Views</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1071,41 +1143,8 @@
             <div id="detailBody">
                 <div class="post-detail-meta" id="detailMeta"></div>
                 <div class="post-detail-content" id="detailContent"></div>
-                <div class="post-detail-share" id="detailShare"></div>
+                <div class="detail-reactions" id="detailReactions"></div>
                 <div class="detail-comments" id="detailComments"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Share Modal -->
-    <div class="modal-overlay" id="shareModal">
-        <div class="modal share-modal">
-            <div class="modal-header">
-                <h2><i class="fas fa-share-alt"></i> Share this post</h2>
-                <button class="modal-close" id="closeShareModalBtn">&times;</button>
-            </div>
-            <div id="shareBody">
-                <div class="share-options">
-                    <div class="share-link">
-                        <i class="fas fa-link"></i>
-                        <input type="text" id="shareLinkInput" readonly />
-                        <button onclick="copyShareLink()"><i class="fas fa-copy"></i></button>
-                    </div>
-                    <div class="social-buttons">
-                        <button class="btn btn-primary" onclick="shareTo('twitter')">
-                            <i class="fab fa-twitter"></i> Twitter
-                        </button>
-                        <button class="btn btn-primary" onclick="shareTo('facebook')" style="background:#1877f2;">
-                            <i class="fab fa-facebook"></i> Facebook
-                        </button>
-                        <button class="btn btn-primary" onclick="shareTo('linkedin')" style="background:#0a66c2;">
-                            <i class="fab fa-linkedin"></i> LinkedIn
-                        </button>
-                        <button class="btn btn-primary" onclick="shareTo('whatsapp')" style="background:#25d366;">
-                            <i class="fab fa-whatsapp"></i> WhatsApp
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -1136,6 +1175,8 @@
             const fileName = document.getElementById('fileName');
             const fileUploadArea = document.getElementById('fileUploadArea');
             const postsContainer = document.getElementById('postsContainer');
+            const totalPostsEl = document.getElementById('totalPosts');
+            const totalViewsEl = document.getElementById('totalViews');
 
             const editModal = document.getElementById('editModal');
             const editPostId = document.getElementById('editPostId');
@@ -1151,34 +1192,20 @@
             const detailTitle = document.getElementById('detailTitle');
             const detailMeta = document.getElementById('detailMeta');
             const detailContent = document.getElementById('detailContent');
-            const detailShare = document.getElementById('detailShare');
+            const detailReactions = document.getElementById('detailReactions');
             const detailComments = document.getElementById('detailComments');
             const closeDetailModalBtn = document.getElementById('closeDetailModalBtn');
 
-            const shareModal = document.getElementById('shareModal');
-            const shareLinkInput = document.getElementById('shareLinkInput');
-            const closeShareModalBtn = document.getElementById('closeShareModalBtn');
-
             const toast = document.getElementById('toast');
+            const homeBtn = document.getElementById('homeBtn');
 
             let currentUser = null;
             let currentDetailPostId = null;
-            let currentSharePostId = null;
-            let currentShareTitle = '';
             let editingId = null;
             let currentFileUrl = null;
 
-            // ============ HOME FUNCTION ============
-            window.goHome = function() {
-                // Close any open modals
-                closeDetailModal();
-                closeShareModal();
-                closeEditModal();
-                // Scroll to top
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                // Refresh posts
-                fetchPosts();
-            };
+            // total views counter (in-memory for demo)
+            let viewCount = 0;
 
             function getGoogleAccountName() {
                 let name = localStorage.getItem('commenter_name');
@@ -1228,54 +1255,52 @@
                 return div.innerHTML;
             }
 
-            // ============ SHARE FUNCTIONS ============
-            window.sharePost = function(postId, title) {
-                currentSharePostId = postId;
-                currentShareTitle = title;
+            // Share function
+            function sharePost(postId, title) {
                 const url = window.location.href.split('?')[0] + '?post=' + postId;
-                shareLinkInput.value = url;
-                shareModal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            };
-
-            window.copyShareLink = function() {
-                shareLinkInput.select();
-                document.execCommand('copy');
-                showToast('✅ Link copied to clipboard!', 'success');
-            };
-
-            window.shareTo = function(platform) {
-                const url = shareLinkInput.value;
-                const text = currentShareTitle || 'Check out this post!';
-                let shareUrl = '';
-
-                switch(platform) {
-                    case 'twitter':
-                        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
-                        break;
-                    case 'facebook':
-                        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-                        break;
-                    case 'linkedin':
-                        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
-                        break;
-                    case 'whatsapp':
-                        shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`;
-                        break;
-                    default:
-                        return;
+                const shareData = {
+                    title: title || 'Lokendra\'s Blog',
+                    text: 'Check out this post: ' + (title || ''),
+                    url: url
+                };
+                if (navigator.share) {
+                    navigator.share(shareData).catch(() => {});
+                } else {
+                    // fallback: copy link
+                    navigator.clipboard.writeText(url).then(() => {
+                        showToast('🔗 Link copied to clipboard!', 'success');
+                    }).catch(() => {
+                        prompt('Copy this link:', url);
+                    });
                 }
-
-                window.open(shareUrl, '_blank', 'width=600,height=400');
-            };
-
-            function closeShareModal() {
-                shareModal.classList.remove('active');
-                document.body.style.overflow = '';
-                currentSharePostId = null;
             }
 
-            // ============ PUBLIC COMMENT ============
+            // ============ PUBLIC REACTION ============
+            window.addPublicReaction = async function(postId, type) {
+                try {
+                    const { data: post, error: fetchError } = await supabase
+                        .from('blogs')
+                        .select('reactions')
+                        .eq('id', postId)
+                        .single();
+                    if (fetchError) throw fetchError;
+                    let reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
+                    reactions[type] = (reactions[type] || 0) + 1;
+                    const { error: updateError } = await supabase
+                        .from('blogs')
+                        .update({ reactions: reactions })
+                        .eq('id', postId);
+                    if (updateError) throw updateError;
+                    showToast(`👍 Added ${type} reaction!`, 'success');
+                    await fetchPosts();
+                    if (currentDetailPostId === postId) {
+                        await viewPost(postId);
+                    }
+                } catch (err) {
+                    showToast('Error: ' + err.message, 'error');
+                }
+            };
+
             window.addQuickComment = async function(postId) {
                 const input = document.getElementById(`quick_comment_${postId}`);
                 if (!input) return;
@@ -1284,9 +1309,7 @@
                     showToast('Please write a comment', 'error');
                     return;
                 }
-
                 let authorName = localStorage.getItem('commenter_name') || 'Anonymous';
-
                 try {
                     const { error } = await supabase
                         .from('comments')
@@ -1299,7 +1322,6 @@
                     if (error) throw error;
                     input.value = '';
                     showToast('💬 Comment added!', 'success');
-
                     await fetchPosts();
                     if (currentDetailPostId === postId) {
                         await viewPost(postId);
@@ -1312,21 +1334,18 @@
             window.addDetailComment = async function(postId) {
                 const nameInput = document.getElementById('detailCommentName');
                 const contentInput = document.getElementById('detailCommentInput');
-
                 if (!contentInput) return;
                 const content = contentInput.value.trim();
                 if (!content) {
                     showToast('Please write a comment', 'error');
                     return;
                 }
-
                 let authorName = localStorage.getItem('commenter_name') || 'Anonymous';
                 const customName = nameInput ? nameInput.value.trim() : '';
                 if (customName) {
                     authorName = customName;
                     localStorage.setItem('commenter_name', customName);
                 }
-
                 try {
                     const { error } = await supabase
                         .from('comments')
@@ -1340,7 +1359,6 @@
                     if (contentInput) contentInput.value = '';
                     if (nameInput) nameInput.value = '';
                     showToast('💬 Comment added!', 'success');
-
                     await renderDetailComments(postId);
                     await fetchPosts();
                 } catch (err) {
@@ -1352,14 +1370,12 @@
                 viewPost(postId);
             };
 
-            // ============ ADMIN DELETE COMMENT ============
             window.deleteComment = async function(commentId, postId) {
                 if (!currentUser) {
                     showToast('⚠️ You must be logged in as admin', 'error');
                     return;
                 }
                 if (!confirm('Delete this comment?')) return;
-
                 try {
                     const { error } = await supabase
                         .from('comments')
@@ -1367,7 +1383,6 @@
                         .eq('id', commentId);
                     if (error) throw error;
                     showToast('🗑️ Comment deleted', 'info');
-
                     await renderDetailComments(postId);
                     await fetchPosts();
                 } catch (err) {
@@ -1381,7 +1396,6 @@
                     return;
                 }
                 if (!confirm('Delete this comment?')) return;
-
                 try {
                     const { error } = await supabase
                         .from('comments')
@@ -1395,14 +1409,12 @@
                 }
             };
 
-            // ============ FETCH AND RENDER POSTS ============
             async function fetchPosts() {
                 try {
                     const { data: posts, error } = await supabase
                         .from('blogs')
                         .select('*')
                         .order('created_at', { ascending: false });
-
                     if (error) throw error;
 
                     const postsWithData = await Promise.all((posts || []).map(async (post) => {
@@ -1412,7 +1424,6 @@
                             .eq('post_id', post.id)
                             .order('created_at', { ascending: false })
                             .limit(5);
-
                         if (commentError) {
                             return { ...post, comments: [], comment_count: 0 };
                         }
@@ -1422,6 +1433,11 @@
                             comment_count: comments ? comments.length : 0
                         };
                     }));
+
+                    totalPostsEl.textContent = postsWithData.length;
+                    // views: increment by 1 each time (demo)
+                    viewCount += 1;
+                    totalViewsEl.textContent = viewCount;
 
                     renderPosts(postsWithData || []);
                 } catch (err) {
@@ -1472,6 +1488,20 @@
                         }
                     }
 
+                    const reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
+                    const reactionEmojis = { like: '👍', love: '❤️', laugh: '😄', sad: '😢', angry: '😡' };
+                    let reactionHtml = '';
+                    let totalReactions = 0;
+                    for (const [key, emoji] of Object.entries(reactionEmojis)) {
+                        const count = reactions[key] || 0;
+                        totalReactions += count;
+                        reactionHtml += `
+                            <span class="reaction-badge" onclick="window.addPublicReaction('${post.id}','${key}')">
+                                ${emoji} <span class="count">${count}</span>
+                            </span>
+                        `;
+                    }
+
                     const comments = post.comments || [];
                     let commentsHtml = '';
                     if (comments.length > 0) {
@@ -1509,22 +1539,38 @@
                         <div class="post-item" data-id="${post.id}">
                             <div class="post-header">
                                 <h3 onclick="window.viewPost('${post.id}')">${escapeHtml(post.title) || 'Untitled'}</h3>
-                                ${currentUser ? `
-                                    <div class="post-actions">
-                                        <button class="btn btn-primary btn-sm" onclick="window.editPost('${post.id}')"><i class="fas fa-edit"></i></button>
-                                        <button class="btn btn-danger btn-sm" onclick="window.deletePost('${post.id}')"><i class="fas fa-trash"></i></button>
+                                <div style="display:flex; gap:0.3rem; align-items:center;">
+                                    <div class="share-dropdown">
+                                        <button class="btn btn-outline btn-sm"><i class="fas fa-share-alt"></i></button>
+                                        <div class="share-dropdown-content">
+                                            <a href="#" onclick="window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fab fa-facebook-f"></i> Facebook</a>
+                                            <a href="#" onclick="window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fab fa-twitter"></i> Twitter</a>
+                                            <a href="#" onclick="window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                                            <a href="#" onclick="window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fas fa-link"></i> Copy Link</a>
+                                        </div>
                                     </div>
-                                ` : ''}
+                                    ${currentUser ? `
+                                        <div class="post-actions">
+                                            <button class="btn btn-primary btn-sm" onclick="window.editPost('${post.id}')"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-danger btn-sm" onclick="window.deletePost('${post.id}')"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    ` : ''}
+                                </div>
                             </div>
                             <div class="post-content">${contentHtml}</div>
                             ${readMore}
                             ${fileHtml}
 
+                            <div class="post-reactions">
+                                ${reactionHtml}
+                                ${totalReactions === 0 ? '<span style="font-size:0.8rem;color:#94a3b8;">Be the first to react!</span>' : ''}
+                            </div>
+
                             <div class="post-meta">
                                 <span><i class="far fa-calendar-alt"></i> ${date}</span>
                                 <span><i class="far fa-user"></i> ${escapeHtml(post.author_name) || escapeHtml(post.author_email) || 'admin'}</span>
                                 <span><i class="far fa-comments"></i> ${post.comment_count || 0}</span>
-                                <span><i class="fas fa-share-alt" style="cursor:pointer;" onclick="window.sharePost('${post.id}','${escapeHtml(post.title)}')"></i></span>
+                                ${totalReactions > 0 ? `<span><i class="far fa-smile"></i> ${totalReactions}</span>` : ''}
                             </div>
 
                             <div class="post-comments">
@@ -1536,11 +1582,6 @@
                                     </button>
                                 </div>
                                 <div class="guest-note"><i class="fas fa-user"></i> ${displayName !== 'Guest' ? 'Commenting as: ' + displayName : 'Comment as guest'}</div>
-                                <div style="margin-top:0.3rem;">
-                                    <span class="post-share-btn" onclick="window.sharePost('${post.id}','${escapeHtml(post.title)}')">
-                                        <i class="fas fa-share-alt"></i> Share this post
-                                    </span>
-                                </div>
                             </div>
                         </div>
                     `;
@@ -1548,7 +1589,6 @@
                 postsContainer.innerHTML = html;
             }
 
-            // ============ VIEW POST DETAIL ============
             window.viewPost = async function(id) {
                 try {
                     const { data: post, error } = await supabase
@@ -1584,15 +1624,18 @@
                     }
                     detailContent.innerHTML = contentHtml;
 
-                    // Share buttons in detail view
-                    detailShare.innerHTML = `
-                        <button class="btn btn-share btn-sm" onclick="window.sharePost('${id}','${escapeHtml(post.title)}')">
-                            <i class="fas fa-share-alt"></i> Share this post
-                        </button>
-                        <button class="btn btn-home btn-sm" onclick="goHome()">
-                            <i class="fas fa-home"></i> Back to Home
-                        </button>
-                    `;
+                    const reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
+                    const reactionEmojis = { like: '👍', love: '❤️', laugh: '😄', sad: '😢', angry: '😡' };
+                    let reactionHtml = '';
+                    for (const [key, emoji] of Object.entries(reactionEmojis)) {
+                        const count = reactions[key] || 0;
+                        reactionHtml += `
+                            <button class="reaction-btn" onclick="window.addPublicReaction('${id}','${key}')">
+                                ${emoji} <span class="count">${count}</span>
+                            </button>
+                        `;
+                    }
+                    detailReactions.innerHTML = reactionHtml;
 
                     await renderDetailComments(id);
 
@@ -1603,7 +1646,6 @@
                 }
             };
 
-            // ============ RENDER DETAIL COMMENTS ============
             async function renderDetailComments(postId) {
                 try {
                     const { data, error } = await supabase
@@ -1661,7 +1703,6 @@
                 }
             }
 
-            // ============ ADMIN FUNCTIONS ============
             window.editPost = function(id) {
                 editingId = id;
                 editPostId.value = id;
@@ -1732,7 +1773,6 @@
                 }
             }
 
-            // ============ LOGIN/LOGOUT ============
             async function handleLogin() {
                 const email = loginEmail.value.trim();
                 const password = loginPassword.value.trim();
@@ -1797,7 +1837,8 @@
                             content: content,
                             author_email: currentUser.email,
                             author_name: currentUser.user_metadata?.name || currentUser.email,
-                            file_url: fileUrl
+                            file_url: fileUrl,
+                            reactions: { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 }
                         }]);
                     if (error) throw error;
                     showToast('✅ Post published!', 'success');
@@ -1849,10 +1890,6 @@
                 currentDetailPostId = null;
             }
 
-            // Close share modal from outside
-            shareModal.addEventListener('click', (e) => { if (e.target === shareModal) closeShareModal(); });
-            closeShareModalBtn.addEventListener('click', closeShareModal);
-
             async function checkSession() {
                 try {
                     const { data: { session }, error } = await supabase.auth.getSession();
@@ -1869,6 +1906,17 @@
                 fetchPosts();
             }
 
+            // Home button: close modals and scroll to top
+            homeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeDetailModal();
+                closeEditModal();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Expose share function globally
+            window.sharePost = sharePost;
+
             // ============ EVENT LISTENERS ============
             loginBtn.addEventListener('click', handleLogin);
             logoutBtn.addEventListener('click', handleLogout);
@@ -1883,8 +1931,7 @@
 
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') { closeEditModal();
-                    closeDetailModal();
-                    closeShareModal(); }
+                    closeDetailModal(); }
             });
 
             loginPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
@@ -1898,17 +1945,7 @@
                 }
             });
 
-            // Check URL for specific post
-            function checkUrlForPost() {
-                const params = new URLSearchParams(window.location.search);
-                const postId = params.get('post');
-                if (postId) {
-                    setTimeout(() => viewPost(postId), 500);
-                }
-            }
-
             checkSession();
-            checkUrlForPost();
         })();
     </script>
 </body>
