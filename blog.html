@@ -405,37 +405,6 @@
             text-decoration: underline;
         }
 
-        .post-reactions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin: 0.5rem 0;
-            padding: 0.5rem 0;
-            border-top: 1px solid #f1f5f9;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        .post-reactions .reaction-badge {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 20px;
-            padding: 0.2rem 0.7rem;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .post-reactions .reaction-badge:hover {
-            background: #e2e8f0;
-            transform: scale(1.05);
-        }
-        .post-reactions .reaction-badge .count {
-            font-weight: 600;
-            color: #475569;
-            font-size: 0.7rem;
-        }
-
         .post-comments {
             margin-top: 0.5rem;
         }
@@ -679,38 +648,6 @@
             margin: 0.5rem 0 1rem;
             padding-bottom: 0.8rem;
             border-bottom: 1px solid #f1f5f9;
-        }
-
-        .detail-reactions {
-            display: flex;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-            margin: 1rem 0;
-            padding: 0.5rem 0;
-            border-top: 1px solid #f1f5f9;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        .detail-reactions .reaction-btn {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 30px;
-            padding: 0.4rem 1rem;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-family: 'Inter', sans-serif;
-        }
-        .detail-reactions .reaction-btn:hover {
-            background: #e2e8f0;
-            transform: scale(1.05);
-        }
-        .detail-reactions .reaction-btn .count {
-            font-size: 0.75rem;
-            color: #64748b;
-            font-weight: 600;
         }
 
         .detail-comments {
@@ -1081,7 +1018,8 @@
                     </div>
                 </div>
 
-                <div class="card" id="statsCard">
+                <!-- Stats Card - Only visible to admin -->
+                <div class="card" id="statsCard" style="display:none;">
                     <div class="card-title">
                         <i class="fas fa-chart-simple"></i> Blog Stats
                     </div>
@@ -1144,7 +1082,6 @@
             <div id="detailBody">
                 <div class="post-detail-meta" id="detailMeta"></div>
                 <div class="post-detail-content" id="detailContent"></div>
-                <div class="detail-reactions" id="detailReactions"></div>
                 <div class="detail-comments" id="detailComments"></div>
             </div>
         </div>
@@ -1178,6 +1115,7 @@
             const postsContainer = document.getElementById('postsContainer');
             const totalPostsEl = document.getElementById('totalPosts');
             const totalViewsEl = document.getElementById('totalViews');
+            const statsCard = document.getElementById('statsCard');
 
             const editModal = document.getElementById('editModal');
             const editPostId = document.getElementById('editPostId');
@@ -1193,7 +1131,6 @@
             const detailTitle = document.getElementById('detailTitle');
             const detailMeta = document.getElementById('detailMeta');
             const detailContent = document.getElementById('detailContent');
-            const detailReactions = document.getElementById('detailReactions');
             const detailComments = document.getElementById('detailComments');
             const closeDetailModalBtn = document.getElementById('closeDetailModalBtn');
 
@@ -1205,7 +1142,7 @@
             let editingId = null;
             let currentFileUrl = null;
 
-            // total views counter (in-memory for demo)
+            // total views counter (in-memory for demo) - only shown to admin
             let viewCount = 0;
 
             function getGoogleAccountName() {
@@ -1286,32 +1223,7 @@
             // Expose share function globally
             window.sharePost = sharePost;
 
-            // ============ PUBLIC REACTION ============
-            window.addPublicReaction = async function(postId, type) {
-                try {
-                    const { data: post, error: fetchError } = await supabase
-                        .from('blogs')
-                        .select('reactions')
-                        .eq('id', postId)
-                        .single();
-                    if (fetchError) throw fetchError;
-                    let reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
-                    reactions[type] = (reactions[type] || 0) + 1;
-                    const { error: updateError } = await supabase
-                        .from('blogs')
-                        .update({ reactions: reactions })
-                        .eq('id', postId);
-                    if (updateError) throw updateError;
-                    showToast(`👍 Added ${type} reaction!`, 'success');
-                    await fetchPosts();
-                    if (currentDetailPostId === postId) {
-                        await viewPost(postId);
-                    }
-                } catch (err) {
-                    showToast('Error: ' + err.message, 'error');
-                }
-            };
-
+            // ============ PUBLIC COMMENT ============
             window.addQuickComment = async function(postId) {
                 const input = document.getElementById(`quick_comment_${postId}`);
                 if (!input) return;
@@ -1445,9 +1357,15 @@
                         };
                     }));
 
-                    totalPostsEl.textContent = postsWithData.length;
-                    viewCount += 1;
-                    totalViewsEl.textContent = viewCount;
+                    // Update stats (only if admin is logged in)
+                    if (currentUser) {
+                        totalPostsEl.textContent = postsWithData.length;
+                        viewCount += 1;
+                        totalViewsEl.textContent = viewCount;
+                        statsCard.style.display = 'block';
+                    } else {
+                        statsCard.style.display = 'none';
+                    }
 
                     renderPosts(postsWithData || []);
                 } catch (err) {
@@ -1481,7 +1399,7 @@
                         const trimmed = lastSpace > 0 ? preview.substring(0, lastSpace) : preview;
                         contentHtml = `${trimmed}...`;
                         readMore =
-                            `<a class="read-more-btn" onclick="window.viewPost('${post.id}')">Read more <i class="fas fa-arrow-right"></i></a>`;
+                            `<a class="read-more-btn" onclick="window.openPostInNewTab('${post.id}')">Read more <i class="fas fa-arrow-right"></i></a>`;
                     }
 
                     let fileHtml = '';
@@ -1496,20 +1414,6 @@
                             fileHtml =
                                 `<div class="post-file"><i class="fas fa-paperclip"></i> <a href="${post.file_url}" target="_blank">Download File</a></div>`;
                         }
-                    }
-
-                    const reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
-                    const reactionEmojis = { like: '👍', love: '❤️', laugh: '😄', sad: '😢', angry: '😡' };
-                    let reactionHtml = '';
-                    let totalReactions = 0;
-                    for (const [key, emoji] of Object.entries(reactionEmojis)) {
-                        const count = reactions[key] || 0;
-                        totalReactions += count;
-                        reactionHtml += `
-                            <span class="reaction-badge" onclick="window.addPublicReaction('${post.id}','${key}')">
-                                ${emoji} <span class="count">${count}</span>
-                            </span>
-                        `;
                     }
 
                     const comments = post.comments || [];
@@ -1573,16 +1477,10 @@
                             ${readMore}
                             ${fileHtml}
 
-                            <div class="post-reactions">
-                                ${reactionHtml}
-                                ${totalReactions === 0 ? '<span style="font-size:0.8rem;color:#94a3b8;">Be the first to react!</span>' : ''}
-                            </div>
-
                             <div class="post-meta">
                                 <span><i class="far fa-calendar-alt"></i> ${date}</span>
                                 <span><i class="far fa-user"></i> ${escapeHtml(post.author_name) || escapeHtml(post.author_email) || 'admin'}</span>
                                 <span><i class="far fa-comments"></i> ${post.comment_count || 0}</span>
-                                ${totalReactions > 0 ? `<span><i class="far fa-smile"></i> ${totalReactions}</span>` : ''}
                             </div>
 
                             <div class="post-comments">
@@ -1601,7 +1499,7 @@
                 postsContainer.innerHTML = html;
             }
 
-            // Open post in new tab (instead of modal)
+            // Open post in new tab
             window.openPostInNewTab = function(postId) {
                 const url = window.location.href.split('?')[0] + '?post=' + postId;
                 window.open(url, '_blank');
@@ -1612,9 +1510,7 @@
                 const params = new URLSearchParams(window.location.search);
                 const postId = params.get('post');
                 if (postId) {
-                    // Open the post detail in a new tab (we just redirect to the same page with a flag)
-                    // but we want to show the detail modal. Since we are already on the page,
-                    // we can open the modal after a short delay.
+                    // Open the post detail in a new tab
                     setTimeout(() => {
                         viewPost(postId);
                     }, 300);
@@ -1655,19 +1551,6 @@
                         }
                     }
                     detailContent.innerHTML = contentHtml;
-
-                    const reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
-                    const reactionEmojis = { like: '👍', love: '❤️', laugh: '😄', sad: '😢', angry: '😡' };
-                    let reactionHtml = '';
-                    for (const [key, emoji] of Object.entries(reactionEmojis)) {
-                        const count = reactions[key] || 0;
-                        reactionHtml += `
-                            <button class="reaction-btn" onclick="window.addPublicReaction('${id}','${key}')">
-                                ${emoji} <span class="count">${count}</span>
-                            </button>
-                        `;
-                    }
-                    detailReactions.innerHTML = reactionHtml;
 
                     await renderDetailComments(id);
 
@@ -1895,6 +1778,7 @@
                     authToggleBtn.className = 'btn btn-primary';
                     postFormWrapper.classList.add('visible');
                     loginRequiredMsg.style.display = 'none';
+                    statsCard.style.display = 'block';
                     fetchPosts();
                 } else {
                     loginStatus.className = 'login-status';
@@ -1905,6 +1789,7 @@
                     authToggleBtn.className = 'btn btn-primary';
                     postFormWrapper.classList.remove('visible');
                     loginRequiredMsg.style.display = 'block';
+                    statsCard.style.display = 'none';
                     fetchPosts();
                 }
             }
