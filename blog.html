@@ -916,6 +916,7 @@
             font-size: 0.8rem;
             border-radius: 8px;
             transition: 0.2s;
+            cursor: pointer;
         }
         .share-dropdown-content a:hover {
             background: #f1f5f9;
@@ -1255,7 +1256,7 @@
                 return div.innerHTML;
             }
 
-            // Share function
+            // ===== SHARE FUNCTION (native & fallback) =====
             function sharePost(postId, title) {
                 const url = window.location.href.split('?')[0] + '?post=' + postId;
                 const shareData = {
@@ -1263,17 +1264,27 @@
                     text: 'Check out this post: ' + (title || ''),
                     url: url
                 };
+
+                // Use native Web Share API if available (shows all apps: FB, Messenger, WhatsApp, Gmail, etc.)
                 if (navigator.share) {
-                    navigator.share(shareData).catch(() => {});
+                    navigator.share(shareData).catch((err) => {
+                        if (err.name !== 'AbortError') {
+                            console.warn('Share cancelled or error:', err);
+                        }
+                    });
                 } else {
-                    // fallback: copy link
+                    // Fallback: copy link
                     navigator.clipboard.writeText(url).then(() => {
-                        showToast('🔗 Link copied to clipboard!', 'success');
+                        showToast('🔗 Link copied to clipboard! Share it anywhere.', 'success');
                     }).catch(() => {
-                        prompt('Copy this link:', url);
+                        // final fallback
+                        prompt('Copy this link to share:', url);
                     });
                 }
             }
+
+            // Expose share function globally
+            window.sharePost = sharePost;
 
             // ============ PUBLIC REACTION ============
             window.addPublicReaction = async function(postId, type) {
@@ -1435,7 +1446,6 @@
                     }));
 
                     totalPostsEl.textContent = postsWithData.length;
-                    // views: increment by 1 each time (demo)
                     viewCount += 1;
                     totalViewsEl.textContent = viewCount;
 
@@ -1538,21 +1548,23 @@
                     html += `
                         <div class="post-item" data-id="${post.id}">
                             <div class="post-header">
-                                <h3 onclick="window.viewPost('${post.id}')">${escapeHtml(post.title) || 'Untitled'}</h3>
+                                <h3 onclick="window.openPostInNewTab('${post.id}')">${escapeHtml(post.title) || 'Untitled'}</h3>
                                 <div style="display:flex; gap:0.3rem; align-items:center;">
                                     <div class="share-dropdown">
-                                        <button class="btn btn-outline btn-sm"><i class="fas fa-share-alt"></i></button>
+                                        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();"><i class="fas fa-share-alt"></i></button>
                                         <div class="share-dropdown-content">
-                                            <a href="#" onclick="window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fab fa-facebook-f"></i> Facebook</a>
-                                            <a href="#" onclick="window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fab fa-twitter"></i> Twitter</a>
-                                            <a href="#" onclick="window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                                            <a href="#" onclick="window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fas fa-link"></i> Copy Link</a>
+                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fas fa-share-alt"></i> Share (Native)</a>
+                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fab fa-facebook-f"></i> Facebook</a>
+                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fab fa-twitter"></i> Twitter</a>
+                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fas fa-envelope"></i> Gmail</a>
+                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fas fa-link"></i> Copy Link</a>
                                         </div>
                                     </div>
                                     ${currentUser ? `
                                         <div class="post-actions">
-                                            <button class="btn btn-primary btn-sm" onclick="window.editPost('${post.id}')"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-danger btn-sm" onclick="window.deletePost('${post.id}')"><i class="fas fa-trash"></i></button>
+                                            <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); window.editPost('${post.id}')"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-danger btn-sm" onclick="event.stopPropagation(); window.deletePost('${post.id}')"><i class="fas fa-trash"></i></button>
                                         </div>
                                     ` : ''}
                                 </div>
@@ -1588,6 +1600,26 @@
                 });
                 postsContainer.innerHTML = html;
             }
+
+            // Open post in new tab (instead of modal)
+            window.openPostInNewTab = function(postId) {
+                const url = window.location.href.split('?')[0] + '?post=' + postId;
+                window.open(url, '_blank');
+            };
+
+            // If URL has ?post=ID, open that post in a new tab automatically (for share links)
+            (function handleShareLink() {
+                const params = new URLSearchParams(window.location.search);
+                const postId = params.get('post');
+                if (postId) {
+                    // Open the post detail in a new tab (we just redirect to the same page with a flag)
+                    // but we want to show the detail modal. Since we are already on the page,
+                    // we can open the modal after a short delay.
+                    setTimeout(() => {
+                        viewPost(postId);
+                    }, 300);
+                }
+            })();
 
             window.viewPost = async function(id) {
                 try {
@@ -1906,16 +1938,11 @@
                 fetchPosts();
             }
 
-            // Home button: close modals and scroll to top
+            // Home button: go to index.html (dashboard)
             homeBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                closeDetailModal();
-                closeEditModal();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.location.href = 'index.html';
             });
-
-            // Expose share function globally
-            window.sharePost = sharePost;
 
             // ============ EVENT LISTENERS ============
             loginBtn.addEventListener('click', handleLogin);
