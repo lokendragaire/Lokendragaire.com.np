@@ -392,6 +392,9 @@
             gap: 0.5rem;
             flex-wrap: wrap;
             margin: 0.5rem 0;
+            padding: 0.5rem 0;
+            border-top: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
         }
         .post-reactions .reaction-badge {
             background: #f8fafc;
@@ -417,13 +420,11 @@
 
         /* Comments on post */
         .post-comments {
-            margin-top: 0.8rem;
-            padding-top: 0.8rem;
-            border-top: 1px solid #f1f5f9;
+            margin-top: 0.5rem;
         }
         .post-comments .comments-list {
             margin-bottom: 0.5rem;
-            max-height: 150px;
+            max-height: 200px;
             overflow-y: auto;
         }
         .post-comments .comment-item {
@@ -432,6 +433,7 @@
             padding: 0.3rem 0.6rem;
             margin-bottom: 0.3rem;
             font-size: 0.8rem;
+            position: relative;
         }
         .post-comments .comment-item .comment-author {
             font-weight: 600;
@@ -445,6 +447,26 @@
         .post-comments .comment-item .comment-time {
             font-size: 0.6rem;
             color: #94a3b8;
+        }
+        .post-comments .comment-item .comment-delete-btn {
+            position: absolute;
+            right: 4px;
+            top: 4px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 0.1rem 0.3rem;
+            border-radius: 4px;
+            display: none;
+        }
+        .post-comments .comment-item .comment-delete-btn:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+        .post-comments .comment-item:hover .comment-delete-btn {
+            display: block;
         }
         .post-comments .comment-input-row {
             display: flex;
@@ -648,6 +670,9 @@
             gap: 0.8rem;
             flex-wrap: wrap;
             margin: 1rem 0;
+            padding: 0.5rem 0;
+            border-top: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
         }
         .detail-reactions .reaction-btn {
             background: #f8fafc;
@@ -1114,7 +1139,7 @@
                 return div.innerHTML;
             }
 
-            // ============ PUBLIC REACTION (No Login Required) ============
+            // ============ PUBLIC REACTION - UPDATES COUNT PROPERLY ============
             window.addPublicReaction = async function(postId, type) {
                 try {
                     // Get current reactions
@@ -1139,13 +1164,13 @@
                     if (currentDetailPostId === postId) {
                         await viewPost(postId);
                     }
-                    showToast(`👍 Added reaction!`, 'success');
+                    showToast(`👍 Added ${type} reaction!`, 'success');
                 } catch (err) {
                     showToast('Error: ' + err.message, 'error');
                 }
             };
 
-            // ============ PUBLIC COMMENT (No Login Required) ============
+            // ============ PUBLIC COMMENT ============
             window.addQuickComment = async function(postId) {
                 const input = document.getElementById(`quick_comment_${postId}`);
                 if (!input) return;
@@ -1167,8 +1192,7 @@
                     if (error) throw error;
                     input.value = '';
                     showToast('💬 Comment added!', 'success');
-                    
-                    // Refresh everything to show new comment
+
                     await fetchPosts();
                     if (currentDetailPostId === postId) {
                         await viewPost(postId);
@@ -1206,8 +1230,7 @@
                     if (contentInput) contentInput.value = '';
                     if (nameInput) nameInput.value = '';
                     showToast('💬 Comment added!', 'success');
-                    
-                    // Refresh everything
+
                     await renderDetailComments(postId);
                     await fetchPosts();
                 } catch (err) {
@@ -1230,9 +1253,29 @@
                         .eq('id', commentId);
                     if (error) throw error;
                     showToast('🗑️ Comment deleted', 'info');
-                    
-                    // Refresh everything
+
                     await renderDetailComments(postId);
+                    await fetchPosts();
+                } catch (err) {
+                    showToast('Error: ' + err.message, 'error');
+                }
+            };
+
+            // ============ DELETE COMMENT FROM POST LIST ============
+            window.deleteCommentFromList = async function(commentId, postId) {
+                if (!currentUser) {
+                    showToast('⚠️ You must be logged in as admin', 'error');
+                    return;
+                }
+                if (!confirm('Delete this comment?')) return;
+
+                try {
+                    const { error } = await supabase
+                        .from('comments')
+                        .delete()
+                        .eq('id', commentId);
+                    if (error) throw error;
+                    showToast('🗑️ Comment deleted', 'info');
                     await fetchPosts();
                 } catch (err) {
                     showToast('Error: ' + err.message, 'error');
@@ -1261,8 +1304,8 @@
                         if (commentError) {
                             return { ...post, comments: [], comment_count: 0 };
                         }
-                        return { 
-                            ...post, 
+                        return {
+                            ...post,
                             comments: comments || [],
                             comment_count: comments ? comments.length : 0
                         };
@@ -1317,14 +1360,14 @@
                         }
                     }
 
-                    // Reactions
+                    // Reactions - show counts
                     const reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
                     const reactionEmojis = { like: '👍', love: '❤️', laugh: '😄', sad: '😢', angry: '😡' };
                     let reactionHtml = '';
-                    let hasReactions = false;
+                    let totalReactions = 0;
                     for (const [key, emoji] of Object.entries(reactionEmojis)) {
                         const count = reactions[key] || 0;
-                        if (count > 0) hasReactions = true;
+                        totalReactions += count;
                         reactionHtml += `
                             <span class="reaction-badge" onclick="window.addPublicReaction('${post.id}','${key}')">
                                 ${emoji} <span class="count">${count}</span>
@@ -1342,11 +1385,17 @@
                                 month: 'short',
                                 day: 'numeric'
                             }) : '';
+                            const deleteBtn = currentUser ? `
+                                <button class="comment-delete-btn" onclick="window.deleteCommentFromList('${c.id}','${post.id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            ` : '';
                             commentsHtml += `
                                 <div class="comment-item">
                                     <span class="comment-author">${escapeHtml(c.author_name) || 'Anonymous'}</span>
                                     <span class="comment-text">${escapeHtml(c.content)}</span>
                                     <span class="comment-time">${cDate}</span>
+                                    ${deleteBtn}
                                 </div>
                             `;
                         });
@@ -1373,16 +1422,17 @@
                             ${readMore}
                             ${fileHtml}
 
-                            <!-- Reactions -->
+                            <!-- Reactions with counts -->
                             <div class="post-reactions">
                                 ${reactionHtml}
-                                ${!hasReactions ? '<span style="font-size:0.8rem;color:#94a3b8;">Be the first to react!</span>' : ''}
+                                ${totalReactions === 0 ? '<span style="font-size:0.8rem;color:#94a3b8;">Be the first to react!</span>' : ''}
                             </div>
 
                             <div class="post-meta">
                                 <span><i class="far fa-calendar-alt"></i> ${date}</span>
                                 <span><i class="far fa-user"></i> ${escapeHtml(post.author_name) || escapeHtml(post.author_email) || 'admin'}</span>
                                 <span><i class="far fa-comments"></i> ${post.comment_count || 0}</span>
+                                ${totalReactions > 0 ? `<span><i class="far fa-smile"></i> ${totalReactions}</span>` : ''}
                             </div>
 
                             <!-- Comments Section -->
@@ -1410,7 +1460,7 @@
                         .eq('id', id)
                         .single();
                     if (error) throw error;
-                    
+
                     currentDetailPostId = id;
                     detailTitle.textContent = post.title || 'Untitled';
 
@@ -1437,7 +1487,7 @@
                     }
                     detailContent.innerHTML = contentHtml;
 
-                    // Reactions
+                    // Reactions with counts
                     const reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
                     const reactionEmojis = { like: '👍', love: '❤️', laugh: '😄', sad: '😢', angry: '😡' };
                     let reactionHtml = '';
