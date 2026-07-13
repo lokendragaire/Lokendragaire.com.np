@@ -386,7 +386,6 @@
             text-decoration: underline;
         }
 
-        /* Reactions on post */
         .post-reactions {
             display: flex;
             gap: 0.5rem;
@@ -418,7 +417,6 @@
             font-size: 0.7rem;
         }
 
-        /* Comments on post */
         .post-comments {
             margin-top: 0.5rem;
         }
@@ -518,7 +516,6 @@
             margin-bottom: 0.3rem;
         }
 
-        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -665,7 +662,6 @@
             border-bottom: 1px solid #f1f5f9;
         }
 
-        /* Detail reactions */
         .detail-reactions {
             display: flex;
             gap: 0.8rem;
@@ -698,7 +694,6 @@
             font-weight: 600;
         }
 
-        /* Detail comments */
         .detail-comments {
             margin-top: 1rem;
             padding-top: 0.8rem;
@@ -1103,37 +1098,9 @@
             let editingId = null;
             let currentFileUrl = null;
 
-            // ============ GET GOOGLE ACCOUNT NAME ============
             function getGoogleAccountName() {
                 let name = localStorage.getItem('commenter_name');
                 if (name) return name;
-
-                try {
-                    const googleUser = JSON.parse(localStorage.getItem('gapi_auth_user') || '{}');
-                    if (googleUser && googleUser.name) {
-                        return googleUser.name;
-                    }
-                } catch (e) {}
-
-                try {
-                    const cookies = document.cookie.split(';');
-                    for (let cookie of cookies) {
-                        if (cookie.includes('google')) {
-                            const parts = cookie.split('=');
-                            if (parts.length > 1) {
-                                const value = decodeURIComponent(parts[1]);
-                                const nameMatch = value.match(/[A-Za-z]+\s[A-Za-z]+/);
-                                if (nameMatch) {
-                                    return nameMatch[0];
-                                }
-                            }
-                        }
-                    }
-                } catch (e) {}
-
-                const savedName = localStorage.getItem('user_display_name');
-                if (savedName) return savedName;
-
                 return null;
             }
 
@@ -1179,41 +1146,59 @@
                 return div.innerHTML;
             }
 
-            // ============ PUBLIC REACTION - WORKS WITHOUT LOGIN ============
+            // ============ PUBLIC REACTION - FIXED ============
             window.addPublicReaction = async function(postId, type) {
                 try {
-                    // Get current reactions from database
+                    showToast('⏳ Adding reaction...', 'info');
+                    
+                    // Get current reactions
                     const { data: post, error: fetchError } = await supabase
                         .from('blogs')
                         .select('reactions')
                         .eq('id', postId)
                         .single();
-                    if (fetchError) throw fetchError;
+                    
+                    if (fetchError) {
+                        console.error('Fetch error:', fetchError);
+                        showToast('Error fetching post: ' + fetchError.message, 'error');
+                        return;
+                    }
+
+                    console.log('Current reactions:', post.reactions);
 
                     let reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
                     
-                    // Increment the reaction count
+                    // Increment the reaction
                     reactions[type] = (reactions[type] || 0) + 1;
+
+                    console.log('New reactions:', reactions);
 
                     // Update in database
                     const { error: updateError } = await supabase
                         .from('blogs')
                         .update({ reactions: reactions })
                         .eq('id', postId);
-                    if (updateError) throw updateError;
+
+                    if (updateError) {
+                        console.error('Update error:', updateError);
+                        showToast('Error updating reaction: ' + updateError.message, 'error');
+                        return;
+                    }
+
+                    showToast(`👍 Added ${type} reaction!`, 'success');
 
                     // Refresh everything to show updated counts
                     await fetchPosts();
                     if (currentDetailPostId === postId) {
                         await viewPost(postId);
                     }
-                    showToast(`👍 Added ${type} reaction!`, 'success');
                 } catch (err) {
+                    console.error('Reaction error:', err);
                     showToast('Error: ' + err.message, 'error');
                 }
             };
 
-            // ============ PUBLIC COMMENT - SHOWS GOOGLE NAME ============
+            // ============ PUBLIC COMMENT ============
             window.addQuickComment = async function(postId) {
                 const input = document.getElementById(`quick_comment_${postId}`);
                 if (!input) return;
@@ -1223,7 +1208,7 @@
                     return;
                 }
 
-                let authorName = localStorage.getItem('commenter_name') || localStorage.getItem('user_display_name') || 'Anonymous';
+                let authorName = localStorage.getItem('commenter_name') || 'Anonymous';
 
                 try {
                     const { error } = await supabase
@@ -1258,7 +1243,7 @@
                     return;
                 }
 
-                let authorName = localStorage.getItem('commenter_name') || localStorage.getItem('user_display_name') || 'Anonymous';
+                let authorName = localStorage.getItem('commenter_name') || 'Anonymous';
                 const customName = nameInput ? nameInput.value.trim() : '';
                 if (customName) {
                     authorName = customName;
@@ -1286,7 +1271,6 @@
                 }
             };
 
-            // ============ VIEW ALL COMMENTS ============
             window.viewAllComments = function(postId) {
                 viewPost(postId);
             };
@@ -1456,7 +1440,7 @@
                         commentsHtml += `</div>`;
                     }
 
-                    const displayName = localStorage.getItem('commenter_name') || localStorage.getItem('user_display_name') || 'Guest';
+                    const displayName = localStorage.getItem('commenter_name') || 'Guest';
 
                     html += `
                         <div class="post-item" data-id="${post.id}">
@@ -1596,7 +1580,7 @@
                         html += `<p style="color:#94a3b8;font-size:0.85rem;">No comments yet. Be the first!</p>`;
                     }
 
-                    const displayName = localStorage.getItem('commenter_name') || localStorage.getItem('user_display_name') || '';
+                    const displayName = localStorage.getItem('commenter_name') || '';
                     html += `
                         <div class="detail-comment-input">
                             <div class="comment-row">
