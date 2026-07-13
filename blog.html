@@ -1149,7 +1149,7 @@
             // ============ PUBLIC REACTION - FIXED ============
             window.addPublicReaction = async function(postId, type) {
                 try {
-                    showToast('⏳ Adding reaction...', 'info');
+                    console.log('🔄 Adding reaction:', type, 'to post:', postId);
                     
                     // Get current reactions
                     const { data: post, error: fetchError } = await supabase
@@ -1159,19 +1159,19 @@
                         .single();
                     
                     if (fetchError) {
-                        console.error('Fetch error:', fetchError);
+                        console.error('❌ Fetch error:', fetchError);
                         showToast('Error fetching post: ' + fetchError.message, 'error');
                         return;
                     }
 
-                    console.log('Current reactions:', post.reactions);
+                    console.log('📊 Current reactions:', post.reactions);
 
                     let reactions = post.reactions || { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 };
                     
                     // Increment the reaction
                     reactions[type] = (reactions[type] || 0) + 1;
 
-                    console.log('New reactions:', reactions);
+                    console.log('📊 New reactions:', reactions);
 
                     // Update in database
                     const { error: updateError } = await supabase
@@ -1180,11 +1180,12 @@
                         .eq('id', postId);
 
                     if (updateError) {
-                        console.error('Update error:', updateError);
+                        console.error('❌ Update error:', updateError);
                         showToast('Error updating reaction: ' + updateError.message, 'error');
                         return;
                     }
 
+                    console.log('✅ Reaction updated successfully!');
                     showToast(`👍 Added ${type} reaction!`, 'success');
 
                     // Refresh everything to show updated counts
@@ -1193,7 +1194,7 @@
                         await viewPost(postId);
                     }
                 } catch (err) {
-                    console.error('Reaction error:', err);
+                    console.error('❌ Reaction error:', err);
                     showToast('Error: ' + err.message, 'error');
                 }
             };
