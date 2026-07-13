@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     <title>Lokendra Gaire · Personal Blog</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js">
     </script>
@@ -18,7 +18,7 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #f0f4f8;
             min-height: 100vh;
-            padding: 1rem;
+            padding: 0.5rem;
         }
         .container {
             max-width: 1400px;
@@ -27,26 +27,32 @@
 
         .header {
             background: white;
-            border-radius: 20px;
-            padding: 1.2rem 2rem;
-            margin-bottom: 1.5rem;
+            border-radius: 16px;
+            padding: 0.8rem 1.2rem;
+            margin-bottom: 1rem;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 0.5rem;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
         }
         .header h1 {
-            font-size: 1.6rem;
+            font-size: 1.2rem;
             font-weight: 800;
             color: #0f172a;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
         }
         .header h1 i {
             color: #3b82f6;
+            font-size: 1rem;
         }
         .header h1 span {
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
@@ -56,42 +62,47 @@
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
+            gap: 0.5rem;
             flex-wrap: wrap;
         }
         .home-btn {
             background: #eef2ff;
             color: #4f46e5;
-            padding: 0.5rem 1.2rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 50px;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
             text-decoration: none;
             transition: 0.2s;
             border: none;
             cursor: pointer;
+            white-space: nowrap;
         }
         .home-btn:hover {
             background: #c7d2fe;
-            transform: translateY(-2px);
+            transform: translateY(-1px);
+        }
+        .home-btn i {
+            font-size: 0.8rem;
         }
 
         .btn {
-            padding: 0.6rem 1.4rem;
+            padding: 0.4rem 1rem;
             border: none;
             border-radius: 50px;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
             font-family: 'Inter', sans-serif;
             text-decoration: none;
+            white-space: nowrap;
         }
         .btn-primary {
             background: #3b82f6;
@@ -128,8 +139,8 @@
             color: #3b82f6;
         }
         .btn-sm {
-            padding: 0.3rem 0.8rem;
-            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.7rem;
         }
         .hidden {
             display: none !important;
@@ -137,7 +148,7 @@
 
         .main-layout {
             display: flex;
-            gap: 1.5rem;
+            gap: 1rem;
             align-items: flex-start;
         }
         .left-column {
@@ -145,46 +156,46 @@
             min-width: 0;
         }
         .right-column {
-            width: 340px;
+            width: 320px;
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
-            gap: 1.2rem;
+            gap: 1rem;
         }
 
         .card {
             background: white;
-            border-radius: 16px;
-            padding: 1.5rem 1.8rem;
+            border-radius: 14px;
+            padding: 1.2rem 1.2rem;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
             border: 1px solid rgba(0, 0, 0, 0.04);
         }
         .card-title {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: #0f172a;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.5rem;
         }
         .card-title i {
             color: #3b82f6;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .login-panel {
             display: flex;
             flex-direction: column;
-            gap: 0.7rem;
+            gap: 0.5rem;
         }
         .login-panel .input-group {
             display: flex;
             flex-direction: column;
-            gap: 0.4rem;
+            gap: 0.3rem;
         }
         .login-panel .input-group label {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             font-weight: 600;
             color: #64748b;
             text-transform: uppercase;
@@ -192,10 +203,10 @@
         }
         .login-panel input {
             width: 100%;
-            padding: 0.6rem 1rem;
+            padding: 0.5rem 0.8rem;
             border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 0.85rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
             transition: all 0.3s ease;
             background: #fafcff;
             font-family: 'Inter', sans-serif;
@@ -207,20 +218,20 @@
         }
         .login-panel .login-actions {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.4rem;
             align-items: center;
             flex-wrap: wrap;
-            margin-top: 0.3rem;
+            margin-top: 0.2rem;
         }
         .login-status {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: #64748b;
-            padding: 0.3rem 0.6rem;
-            border-radius: 8px;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
             background: #f8fafc;
             display: flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.3rem;
         }
         .login-status.success {
             color: #10b981;
@@ -234,7 +245,7 @@
         .post-form {
             display: none;
             flex-direction: column;
-            gap: 0.8rem;
+            gap: 0.6rem;
         }
         .post-form.visible {
             display: flex;
@@ -242,10 +253,10 @@
         .post-form input,
         .post-form textarea {
             width: 100%;
-            padding: 0.6rem 1rem;
+            padding: 0.5rem 0.8rem;
             border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 0.85rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
             transition: all 0.3s ease;
             background: #fafcff;
             font-family: 'Inter', sans-serif;
@@ -258,13 +269,13 @@
         }
         .post-form textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 80px;
         }
 
         .file-upload-zone {
             border: 2px dashed #e2e8f0;
-            border-radius: 10px;
-            padding: 1rem;
+            border-radius: 8px;
+            padding: 0.8rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -275,61 +286,61 @@
             background: rgba(59, 130, 246, 0.04);
         }
         .file-upload-zone i {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: #3b82f6;
-            margin-bottom: 0.2rem;
+            margin-bottom: 0.1rem;
         }
         .file-upload-zone p {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #94a3b8;
         }
         .file-upload-zone .file-name {
             color: #3b82f6;
             font-weight: 600;
-            font-size: 0.8rem;
-            margin-top: 0.2rem;
+            font-size: 0.7rem;
+            margin-top: 0.1rem;
         }
         .file-upload-zone input[type="file"] {
             display: none;
         }
 
         .login-required-msg {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #94a3b8;
-            padding: 0.5rem 0;
+            padding: 0.3rem 0;
         }
         .login-required-msg i {
-            margin-right: 0.4rem;
+            margin-right: 0.3rem;
         }
 
         .posts-grid {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1rem;
         }
 
         .post-item {
             background: white;
-            padding: 1.5rem;
-            border-radius: 16px;
+            padding: 1.2rem;
+            border-radius: 14px;
             border-left: 4px solid #3b82f6;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
             transition: all 0.3s ease;
         }
         .post-item:hover {
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-            transform: translateX(4px);
+            transform: translateX(3px);
         }
         .post-item .post-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 0.4rem;
         }
         .post-item h3 {
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 1.05rem;
             color: #0f172a;
             flex: 1;
             cursor: pointer;
@@ -339,33 +350,33 @@
         }
         .post-item .post-actions {
             display: flex;
-            gap: 0.3rem;
+            gap: 0.2rem;
         }
         .post-item .post-content {
             color: #475569;
-            margin-top: 0.5rem;
-            line-height: 1.7;
-            font-size: 0.95rem;
+            margin-top: 0.4rem;
+            line-height: 1.6;
+            font-size: 0.88rem;
             word-break: break-word;
         }
         .post-item .post-content img {
             max-width: 100%;
             border-radius: 8px;
-            margin: 0.5rem 0;
+            margin: 0.4rem 0;
         }
         .post-item .post-file {
             background: #f8fafc;
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-            margin: 0.5rem 0;
+            border-radius: 6px;
+            padding: 0.3rem 0.8rem;
+            margin: 0.3rem 0;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
-            font-size: 0.85rem;
+            gap: 0.5rem;
+            font-size: 0.8rem;
         }
         .post-item .post-file i {
             color: #3b82f6;
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
         .post-item .post-file a {
             color: #3b82f6;
@@ -378,17 +389,18 @@
         }
 
         .post-meta {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: #94a3b8;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            margin-top: 0.8rem;
-            padding-top: 0.8rem;
+            margin-top: 0.6rem;
+            padding-top: 0.6rem;
             border-top: 1px solid #f1f5f9;
+            gap: 0.3rem;
         }
         .post-meta span i {
-            margin-right: 0.3rem;
+            margin-right: 0.2rem;
             color: #3b82f6;
         }
 
@@ -397,8 +409,8 @@
             font-weight: 600;
             cursor: pointer;
             display: inline-block;
-            margin: 0.5rem 0;
-            font-size: 0.9rem;
+            margin: 0.3rem 0;
+            font-size: 0.82rem;
             text-decoration: none;
         }
         .read-more-btn:hover {
@@ -406,45 +418,45 @@
         }
 
         .post-comments {
-            margin-top: 0.5rem;
+            margin-top: 0.4rem;
         }
         .post-comments .comments-list {
-            margin-bottom: 0.5rem;
-            max-height: 200px;
+            margin-bottom: 0.4rem;
+            max-height: 150px;
             overflow-y: auto;
         }
         .post-comments .comment-item {
             background: #f8fafc;
-            border-radius: 8px;
-            padding: 0.3rem 0.6rem;
-            margin-bottom: 0.3rem;
-            font-size: 0.8rem;
+            border-radius: 6px;
+            padding: 0.2rem 0.5rem;
+            margin-bottom: 0.2rem;
+            font-size: 0.75rem;
             position: relative;
         }
         .post-comments .comment-item .comment-author {
             font-weight: 600;
             color: #0f172a;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
         .post-comments .comment-item .comment-text {
             color: #475569;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
         .post-comments .comment-item .comment-time {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             color: #94a3b8;
         }
         .post-comments .comment-item .comment-delete-btn {
             position: absolute;
-            right: 4px;
-            top: 4px;
+            right: 3px;
+            top: 3px;
             background: none;
             border: none;
             color: #94a3b8;
             cursor: pointer;
-            font-size: 0.7rem;
-            padding: 0.1rem 0.3rem;
-            border-radius: 4px;
+            font-size: 0.6rem;
+            padding: 0.05rem 0.2rem;
+            border-radius: 3px;
             display: none;
         }
         .post-comments .comment-item .comment-delete-btn:hover {
@@ -456,16 +468,16 @@
         }
         .post-comments .comment-input-row {
             display: flex;
-            gap: 0.3rem;
+            gap: 0.2rem;
             flex-wrap: wrap;
         }
         .post-comments .comment-input-row input {
             flex: 1;
-            min-width: 100px;
-            padding: 0.4rem 0.8rem;
+            min-width: 80px;
+            padding: 0.3rem 0.6rem;
             border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 0.8rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
             font-family: 'Inter', sans-serif;
             background: #fafcff;
         }
@@ -474,15 +486,15 @@
             border-color: #3b82f6;
         }
         .post-comments .comment-input-row .btn {
-            padding: 0.2rem 0.8rem;
-            font-size: 0.7rem;
+            padding: 0.15rem 0.6rem;
+            font-size: 0.65rem;
         }
         .post-comments .view-all-comments {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #3b82f6;
             cursor: pointer;
             display: inline-block;
-            margin-top: 0.3rem;
+            margin-top: 0.2rem;
             font-weight: 600;
         }
         .post-comments .view-all-comments:hover {
@@ -491,17 +503,18 @@
 
         .empty-posts {
             text-align: center;
-            padding: 2rem;
+            padding: 1.5rem;
             color: #94a3b8;
         }
         .empty-posts i {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: #cbd5e0;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
         }
         .empty-posts h3 {
             color: #0f172a;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.2rem;
+            font-size: 1rem;
         }
 
         .modal-overlay {
@@ -516,19 +529,19 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
-            padding: 1.5rem;
+            padding: 1rem;
         }
         .modal-overlay.active {
             display: flex;
         }
         .modal {
             background: white;
-            border-radius: 20px;
-            max-width: 700px;
+            border-radius: 16px;
+            max-width: 600px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            padding: 2rem;
+            padding: 1.5rem;
             animation: slideUp 0.3s ease;
         }
         @keyframes slideUp {
@@ -545,17 +558,17 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
             border-bottom: 2px solid #f1f5f9;
         }
         .modal-header h2 {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #0f172a;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.5rem;
         }
         .modal-header h2 i {
             color: #3b82f6;
@@ -563,12 +576,12 @@
         .modal-close {
             background: none;
             border: none;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             cursor: pointer;
             color: #94a3b8;
             transition: 0.3s;
-            padding: 0.2rem 0.5rem;
-            border-radius: 8px;
+            padding: 0.1rem 0.4rem;
+            border-radius: 6px;
         }
         .modal-close:hover {
             background: #f1f5f9;
@@ -576,21 +589,21 @@
             transform: rotate(90deg);
         }
         .modal .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
         }
         .modal .form-group label {
             display: block;
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #475569;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.2rem;
         }
         .modal .form-control {
             width: 100%;
-            padding: 0.7rem 1rem;
+            padding: 0.5rem 0.8rem;
             border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 0.9rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
             transition: all 0.3s ease;
             font-family: 'Inter', sans-serif;
         }
@@ -601,41 +614,41 @@
         }
         .modal textarea.form-control {
             resize: vertical;
-            min-height: 120px;
+            min-height: 100px;
         }
         .modal .form-actions {
             display: flex;
-            gap: 0.8rem;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
+            gap: 0.6rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
             border-top: 2px solid #f1f5f9;
             justify-content: flex-end;
         }
 
         .post-detail-content {
-            line-height: 1.8;
-            font-size: 1rem;
+            line-height: 1.7;
+            font-size: 0.95rem;
             color: #1e293b;
         }
         .post-detail-content h1,
         .post-detail-content h2,
         .post-detail-content h3 {
-            margin: 1rem 0 0.5rem;
+            margin: 0.8rem 0 0.4rem;
             color: #0f172a;
         }
         .post-detail-content img {
             max-width: 100%;
             border-radius: 8px;
-            margin: 0.5rem 0;
+            margin: 0.4rem 0;
         }
         .post-detail-content .post-file {
             background: #f8fafc;
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-            margin: 0.5rem 0;
+            border-radius: 6px;
+            padding: 0.4rem 0.8rem;
+            margin: 0.4rem 0;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.5rem;
         }
         .post-detail-content .post-file a {
             color: #3b82f6;
@@ -643,59 +656,59 @@
             font-weight: 500;
         }
         .post-detail-meta {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #94a3b8;
-            margin: 0.5rem 0 1rem;
-            padding-bottom: 0.8rem;
+            margin: 0.4rem 0 0.8rem;
+            padding-bottom: 0.6rem;
             border-bottom: 1px solid #f1f5f9;
         }
 
         .detail-comments {
-            margin-top: 1rem;
-            padding-top: 0.8rem;
+            margin-top: 0.8rem;
+            padding-top: 0.6rem;
             border-top: 1px solid #f1f5f9;
         }
         .detail-comments h4 {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #0f172a;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
             display: flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.3rem;
         }
         .comment-item {
             background: #f8fafc;
-            border-radius: 8px;
-            padding: 0.5rem 0.8rem;
-            margin-bottom: 0.4rem;
-            font-size: 0.85rem;
+            border-radius: 6px;
+            padding: 0.4rem 0.6rem;
+            margin-bottom: 0.3rem;
+            font-size: 0.8rem;
             position: relative;
         }
         .comment-item .comment-author {
             font-weight: 600;
             color: #0f172a;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
         .comment-item .comment-text {
             color: #475569;
-            margin-top: 0.1rem;
+            margin-top: 0.05rem;
         }
         .comment-item .comment-time {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: #94a3b8;
-            margin-top: 0.1rem;
+            margin-top: 0.05rem;
         }
         .comment-item .comment-delete {
             position: absolute;
-            right: 8px;
-            top: 8px;
+            right: 6px;
+            top: 6px;
             background: none;
             border: none;
             color: #94a3b8;
             cursor: pointer;
-            font-size: 0.8rem;
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
+            font-size: 0.7rem;
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
             transition: all 0.2s ease;
             display: none;
         }
@@ -710,55 +723,55 @@
         .detail-comment-input {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
+            gap: 0.4rem;
+            margin-top: 0.4rem;
         }
         .detail-comment-input .comment-row {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.4rem;
             flex-wrap: wrap;
         }
         .detail-comment-input input {
             flex: 1;
-            padding: 0.4rem 0.8rem;
+            padding: 0.3rem 0.6rem;
             border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 0.8rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
             font-family: 'Inter', sans-serif;
             background: #fafcff;
-            min-width: 120px;
+            min-width: 100px;
         }
         .detail-comment-input input:focus {
             outline: none;
             border-color: #3b82f6;
         }
         .detail-comment-input .btn {
-            padding: 0.3rem 1rem;
-            font-size: 0.75rem;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.7rem;
         }
         .guest-note {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #94a3b8;
-            margin-top: 0.2rem;
+            margin-top: 0.15rem;
         }
         .guest-note i {
-            margin-right: 0.2rem;
+            margin-right: 0.15rem;
         }
 
         .toast {
             position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
             color: white;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
             z-index: 2000;
             animation: slideIn 0.3s ease;
             display: none;
-            max-width: 400px;
+            max-width: 350px;
         }
         .toast.success {
             background: #10b981;
@@ -785,17 +798,17 @@
 
         .loading {
             text-align: center;
-            padding: 2rem;
+            padding: 1.5rem;
             color: #94a3b8;
         }
         .spinner {
             border: 3px solid #e2e8f0;
             border-top: 3px solid #3b82f6;
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             animation: spin 0.8s linear infinite;
-            margin: 0 auto 0.8rem;
+            margin: 0 auto 0.5rem;
         }
         @keyframes spin {
             to {
@@ -806,22 +819,22 @@
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 0.6rem;
-            margin-top: 0.2rem;
+            gap: 0.5rem;
+            margin-top: 0.1rem;
         }
         .stat-item {
             background: #f8fafc;
-            border-radius: 10px;
-            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            padding: 0.4rem 0.6rem;
             text-align: center;
         }
         .stat-item .stat-number {
             font-weight: 700;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             color: #0f172a;
         }
         .stat-item .stat-label {
-            font-size: 0.65rem;
+            font-size: 0.55rem;
             color: #64748b;
             text-transform: uppercase;
             letter-spacing: 0.3px;
@@ -840,17 +853,17 @@
             z-index: 2000;
             justify-content: center;
             align-items: center;
-            padding: 1.5rem;
+            padding: 1rem;
         }
         .share-dialog-overlay.active {
             display: flex;
         }
         .share-dialog {
             background: white;
-            border-radius: 20px;
-            max-width: 500px;
+            border-radius: 16px;
+            max-width: 420px;
             width: 100%;
-            padding: 2rem;
+            padding: 1.5rem;
             animation: slideUp 0.3s ease;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
@@ -858,15 +871,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
         .share-dialog-header h3 {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 700;
             color: #0f172a;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
         }
         .share-dialog-header h3 i {
             color: #3b82f6;
@@ -874,52 +887,51 @@
         .share-dialog-close {
             background: none;
             border: none;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             cursor: pointer;
             color: #94a3b8;
             transition: 0.3s;
-            padding: 0.2rem 0.5rem;
-            border-radius: 8px;
+            padding: 0.1rem 0.4rem;
+            border-radius: 6px;
             line-height: 1;
         }
         .share-dialog-close:hover {
             background: #f1f5f9;
             color: #0f172a;
-            transform: rotate(90deg);
         }
         .share-dialog-body {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.8rem;
         }
         .share-dialog-body .share-link-input {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.4rem;
             align-items: center;
             background: #f8fafc;
-            border-radius: 10px;
-            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            padding: 0.3rem 0.8rem;
             border: 2px solid #e2e8f0;
         }
         .share-dialog-body .share-link-input input {
             flex: 1;
             border: none;
             background: transparent;
-            font-size: 0.85rem;
+            font-size: 0.78rem;
             color: #0f172a;
             font-family: 'Inter', sans-serif;
             outline: none;
-            padding: 0.3rem 0;
+            padding: 0.2rem 0;
         }
         .share-dialog-body .share-link-input button {
             background: #3b82f6;
             color: white;
             border: none;
-            padding: 0.4rem 1.2rem;
-            border-radius: 8px;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-family: 'Inter', sans-serif;
             transition: 0.2s;
             white-space: nowrap;
@@ -930,32 +942,31 @@
         .share-dialog-body .share-platforms {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 0.6rem;
-            margin-top: 0.5rem;
+            gap: 0.4rem;
         }
         .share-dialog-body .share-platforms button {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.4rem;
-            padding: 0.8rem 0.5rem;
+            gap: 0.2rem;
+            padding: 0.5rem 0.3rem;
             border: 2px solid #e2e8f0;
-            border-radius: 12px;
+            border-radius: 10px;
             background: white;
             cursor: pointer;
             transition: 0.2s;
             font-family: 'Inter', sans-serif;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             color: #475569;
             font-weight: 600;
         }
         .share-dialog-body .share-platforms button:hover {
             border-color: #3b82f6;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
         .share-dialog-body .share-platforms button i {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
         }
         .share-dialog-body .share-platforms button .fa-facebook-f { color: #1877f2; }
         .share-dialog-body .share-platforms button .fa-twitter { color: #1da1f2; }
@@ -964,24 +975,269 @@
         .share-dialog-body .share-platforms button .fa-envelope { color: #ea4335; }
         .share-dialog-body .share-platforms button .fa-share-alt { color: #3b82f6; }
 
-        @media (max-width: 768px) {
-            .share-dialog-body .share-platforms {
-                grid-template-columns: repeat(3, 1fr);
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+
+        /* Tablets and small laptops */
+        @media (max-width: 992px) {
+            .main-layout {
+                flex-direction: column;
             }
-            .share-dialog {
-                padding: 1.5rem;
+            .right-column {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .right-column .card {
+                flex: 1;
+                min-width: 250px;
             }
         }
+
+        /* Mobile phones */
+        @media (max-width: 768px) {
+            body {
+                padding: 0.3rem;
+            }
+            .header {
+                padding: 0.6rem 0.8rem;
+                border-radius: 12px;
+                flex-wrap: wrap;
+            }
+            .header-left {
+                flex: 1;
+                min-width: 0;
+            }
+            .header h1 {
+                font-size: 0.95rem;
+            }
+            .header h1 i {
+                font-size: 0.8rem;
+            }
+            .home-btn {
+                font-size: 0.65rem;
+                padding: 0.3rem 0.6rem;
+            }
+            .home-btn i {
+                font-size: 0.65rem;
+            }
+            .header-actions .btn {
+                font-size: 0.65rem;
+                padding: 0.3rem 0.7rem;
+            }
+            
+            .main-layout {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            .right-column {
+                width: 100%;
+                flex-direction: column;
+                order: 2;
+            }
+            .left-column {
+                order: 1;
+            }
+
+            /* Login card moves to bottom on mobile */
+            .right-column .card:first-child {
+                order: 10;
+                margin-top: 0.5rem;
+            }
+            .right-column .card:nth-child(2) {
+                order: 1;
+            }
+            .right-column .card:nth-child(3) {
+                order: 2;
+            }
+
+            .card {
+                padding: 0.8rem 0.8rem;
+                border-radius: 12px;
+            }
+            .card-title {
+                font-size: 0.8rem;
+                margin-bottom: 0.6rem;
+            }
+
+            .post-item {
+                padding: 0.8rem;
+                border-radius: 12px;
+            }
+            .post-item h3 {
+                font-size: 0.9rem;
+            }
+            .post-item .post-content {
+                font-size: 0.82rem;
+            }
+            .post-item .post-content img {
+                border-radius: 6px;
+            }
+            .post-meta {
+                font-size: 0.6rem;
+            }
+
+            .post-comments .comment-item {
+                font-size: 0.7rem;
+                padding: 0.15rem 0.4rem;
+            }
+            .post-comments .comment-input-row input {
+                font-size: 0.7rem;
+                padding: 0.25rem 0.5rem;
+                min-width: 60px;
+            }
+            .post-comments .comment-input-row .btn {
+                font-size: 0.6rem;
+                padding: 0.15rem 0.5rem;
+            }
+
+            .modal {
+                padding: 1rem;
+                margin: 0.3rem;
+                border-radius: 12px;
+            }
+            .modal-header h2 {
+                font-size: 0.95rem;
+            }
+
+            .share-dialog {
+                padding: 1rem;
+                margin: 0.3rem;
+                border-radius: 12px;
+            }
+            .share-dialog-body .share-platforms {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.3rem;
+            }
+            .share-dialog-body .share-platforms button {
+                padding: 0.4rem 0.2rem;
+                font-size: 0.55rem;
+            }
+            .share-dialog-body .share-platforms button i {
+                font-size: 1.2rem;
+            }
+
+            .toast {
+                bottom: 1rem;
+                right: 0.8rem;
+                left: 0.8rem;
+                max-width: none;
+                font-size: 0.75rem;
+                padding: 0.6rem 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.3rem;
+            }
+            .stat-item .stat-number {
+                font-size: 1rem;
+            }
+            .stat-item .stat-label {
+                font-size: 0.5rem;
+            }
+
+            .login-panel input {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.6rem;
+            }
+            .login-panel .login-actions {
+                flex-wrap: wrap;
+            }
+            .login-panel .login-actions .btn {
+                font-size: 0.65rem;
+                padding: 0.25rem 0.6rem;
+            }
+            .login-status {
+                font-size: 0.6rem;
+                padding: 0.15rem 0.4rem;
+            }
+
+            .post-form input,
+            .post-form textarea {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.6rem;
+            }
+            .file-upload-zone {
+                padding: 0.5rem;
+            }
+            .file-upload-zone i {
+                font-size: 1rem;
+            }
+            .file-upload-zone p {
+                font-size: 0.65rem;
+            }
+
+            .detail-comment-input input {
+                font-size: 0.7rem;
+                padding: 0.25rem 0.5rem;
+                min-width: 80px;
+            }
+            .detail-comment-input .btn {
+                font-size: 0.65rem;
+                padding: 0.2rem 0.6rem;
+            }
+            .guest-note {
+                font-size: 0.6rem;
+            }
+        }
+
+        /* Very small phones */
         @media (max-width: 480px) {
+            .header h1 {
+                font-size: 0.85rem;
+            }
+            .home-btn {
+                font-size: 0.55rem;
+                padding: 0.2rem 0.5rem;
+            }
+            .home-btn i {
+                font-size: 0.55rem;
+            }
+            .header-actions .btn {
+                font-size: 0.55rem;
+                padding: 0.2rem 0.5rem;
+            }
+            
             .share-dialog-body .share-platforms {
                 grid-template-columns: repeat(2, 1fr);
             }
-            .share-dialog-body .share-link-input {
-                flex-wrap: wrap;
+            
+            .post-item .post-header {
+                flex-direction: column;
+                align-items: stretch;
             }
-            .share-dialog-body .share-link-input button {
-                width: 100%;
-                justify-content: center;
+            .post-item .post-header > div {
+                justify-content: flex-start;
+            }
+            .post-item h3 {
+                font-size: 0.85rem;
+            }
+
+            .right-column .card {
+                padding: 0.6rem 0.6rem;
+            }
+        }
+
+        /* Login panel bottom on mobile - specific ordering */
+        @media (max-width: 768px) {
+            .right-column {
+                display: flex;
+                flex-direction: column;
+            }
+            /* Move login card to bottom */
+            .right-column #loginCard {
+                order: 10;
+                margin-top: 0.5rem;
+            }
+            /* Stats card stays in middle */
+            .right-column #statsCard {
+                order: 2;
+            }
+            /* Post card stays on top */
+            .right-column #postCard {
+                order: 1;
             }
         }
     </style>
@@ -990,7 +1246,7 @@
 
     <div class="container">
         <header class="header">
-            <div style="display:flex; align-items:center; gap:1rem;">
+            <div class="header-left">
                 <a href="#" class="home-btn" id="homeBtn"><i class="fas fa-home"></i> Home</a>
                 <h1><i class="fas fa-feather-alt"></i> Lokendra's <span>Blog</span></h1>
             </div>
@@ -1038,7 +1294,7 @@
                                 <i class="fas fa-sign-out-alt"></i> Logout
                             </button>
                             <div id="loginStatus" class="login-status">
-                                <i class="fas fa-info-circle"></i> Enter credentials to login
+                                <i class="fas fa-info-circle"></i> Enter credentials
                             </div>
                         </div>
                     </div>
@@ -1060,7 +1316,7 @@
                         <button id="publishBtn" class="btn btn-success">
                             <i class="fas fa-cloud-upload-alt"></i> Publish
                         </button>
-                        <div id="publishStatus" style="font-size:0.8rem; color:#64748b;"></div>
+                        <div id="publishStatus" style="font-size:0.75rem; color:#64748b;"></div>
                     </div>
                     <div id="loginRequiredMsg" class="login-required-msg">
                         <i class="fas fa-info-circle"></i> Log in to create posts.
@@ -1584,7 +1840,7 @@
                         if (isImage) {
                             fileHtml = `
                                 <div class="post-file"><i class="fas fa-image"></i> <a href="${post.file_url}" target="_blank">View Image</a></div>
-                                <img src="${post.file_url}" alt="Post image" style="max-width:100%;border-radius:8px;margin-top:0.5rem;" />
+                                <img src="${post.file_url}" alt="Post image" style="max-width:100%;border-radius:8px;margin-top:0.4rem;" />
                             `;
                         } else {
                             fileHtml =
@@ -1630,7 +1886,7 @@
                         <div class="post-item" data-id="${post.id}">
                             <div class="post-header">
                                 <h3 onclick="window.openPostInNewTab('${post.id}')" style="cursor:pointer;">${escapedTitle}</h3>
-                                <div style="display:flex; gap:0.3rem; align-items:center;">
+                                <div style="display:flex; gap:0.3rem; align-items:center; flex-wrap:wrap;">
                                     <button class="btn btn-outline btn-sm" onclick="window.openShareDialog('${post.id}','${escapedTitle}')">
                                         <i class="fas fa-share-alt"></i> Share
                                     </button>
@@ -1710,7 +1966,7 @@
                         const isImage = post.file_url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i);
                         if (isImage) {
                             contentHtml +=
-                                `<br><img src="${post.file_url}" alt="Post image" style="max-width:100%;border-radius:8px;margin:0.5rem 0;" />`;
+                                `<br><img src="${post.file_url}" alt="Post image" style="max-width:100%;border-radius:8px;margin:0.4rem 0;" />`;
                         } else {
                             contentHtml +=
                                 `<br><div class="post-file"><i class="fas fa-paperclip"></i> <a href="${post.file_url}" target="_blank">Download File</a></div>`;
@@ -1760,14 +2016,14 @@
                             `;
                         });
                     } else {
-                        html += `<p style="color:#94a3b8;font-size:0.85rem;">No comments yet. Be the first!</p>`;
+                        html += `<p style="color:#94a3b8;font-size:0.8rem;">No comments yet. Be the first!</p>`;
                     }
 
                     const displayName = localStorage.getItem('commenter_name') || '';
                     html += `
                         <div class="detail-comment-input">
                             <div class="comment-row">
-                                <input type="text" id="detailCommentName" placeholder="Your name (optional)" style="flex:0 0 180px;" value="${displayName}" />
+                                <input type="text" id="detailCommentName" placeholder="Your name (optional)" style="flex:0 0 160px;" value="${displayName}" />
                                 <input type="text" id="detailCommentInput" placeholder="Write a comment..." style="flex:1;" />
                             </div>
                             <div>
@@ -1882,7 +2138,7 @@
                     currentUser = null;
                     updateUIForUser(null);
                     loginStatus.className = 'login-status';
-                    loginStatus.innerHTML = '<i class="fas fa-info-circle"></i> Enter credentials to login';
+                    loginStatus.innerHTML = '<i class="fas fa-info-circle"></i> Enter credentials';
                     showToast('🔐 Logged out successfully', 'info');
                 } catch (err) {
                     showToast('❌ Logout error: ' + err.message, 'error');
@@ -1947,7 +2203,7 @@
                     fetchPosts();
                 } else {
                     loginStatus.className = 'login-status';
-                    loginStatus.innerHTML = '<i class="fas fa-info-circle"></i> Enter credentials to login';
+                    loginStatus.innerHTML = '<i class="fas fa-info-circle"></i> Enter credentials';
                     loginBtn.classList.remove('hidden');
                     logoutBtn.classList.add('hidden');
                     authToggleBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Admin';
