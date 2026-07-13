@@ -843,6 +843,9 @@
             padding: 0.5rem;
             border: 1px solid #f1f5f9;
         }
+        .share-dropdown:hover .share-dropdown-content {
+            display: block;
+        }
         .share-dropdown-content a {
             display: flex;
             align-items: center;
@@ -854,6 +857,9 @@
             border-radius: 8px;
             transition: 0.2s;
             cursor: pointer;
+            background: none;
+            border: none;
+            width: 100%;
         }
         .share-dropdown-content a:hover {
             background: #f1f5f9;
@@ -861,9 +867,6 @@
         .share-dropdown-content a i {
             width: 20px;
             text-align: center;
-        }
-        .share-dropdown:hover .share-dropdown-content {
-            display: block;
         }
 
         @media (max-width: 992px) {
@@ -1210,13 +1213,16 @@
                         }
                     });
                 } else {
-                    // Fallback: copy link
-                    navigator.clipboard.writeText(url).then(() => {
-                        showToast('🔗 Link copied to clipboard! Share it anywhere.', 'success');
-                    }).catch(() => {
-                        // final fallback
+                    // Fallback: try to copy link
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(url).then(() => {
+                            showToast('🔗 Link copied to clipboard! Share it anywhere.', 'success');
+                        }).catch(() => {
+                            prompt('Copy this link to share:', url);
+                        });
+                    } else {
                         prompt('Copy this link to share:', url);
-                    });
+                    }
                 }
             }
 
@@ -1452,17 +1458,31 @@
                     html += `
                         <div class="post-item" data-id="${post.id}">
                             <div class="post-header">
-                                <h3 onclick="window.openPostInNewTab('${post.id}')">${escapeHtml(post.title) || 'Untitled'}</h3>
+                                <h3 onclick="window.openPostInNewTab('${post.id}')" style="cursor:pointer;">${escapeHtml(post.title) || 'Untitled'}</h3>
                                 <div style="display:flex; gap:0.3rem; align-items:center;">
                                     <div class="share-dropdown">
-                                        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();"><i class="fas fa-share-alt"></i></button>
+                                        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
                                         <div class="share-dropdown-content">
-                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fas fa-share-alt"></i> Share (Native)</a>
-                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fab fa-facebook-f"></i> Facebook</a>
-                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fab fa-twitter"></i> Twitter</a>
-                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fas fa-envelope"></i> Gmail</a>
-                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')"><i class="fas fa-link"></i> Copy Link</a>
+                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')">
+                                                <i class="fas fa-share-alt"></i> Share (Native)
+                                            </a>
+                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')">
+                                                <i class="fab fa-facebook-f"></i> Facebook
+                                            </a>
+                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')">
+                                                <i class="fab fa-twitter"></i> Twitter
+                                            </a>
+                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')">
+                                                <i class="fab fa-whatsapp"></i> WhatsApp
+                                            </a>
+                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')">
+                                                <i class="fas fa-envelope"></i> Gmail
+                                            </a>
+                                            <a onclick="event.stopPropagation(); window.sharePost('${post.id}','${escapeHtml(post.title)}')">
+                                                <i class="fas fa-link"></i> Copy Link
+                                            </a>
                                         </div>
                                     </div>
                                     ${currentUser ? `
@@ -1752,8 +1772,7 @@
                             content: content,
                             author_email: currentUser.email,
                             author_name: currentUser.user_metadata?.name || currentUser.email,
-                            file_url: fileUrl,
-                            reactions: { like: 0, love: 0, laugh: 0, sad: 0, angry: 0 }
+                            file_url: fileUrl
                         }]);
                     if (error) throw error;
                     showToast('✅ Post published!', 'success');
