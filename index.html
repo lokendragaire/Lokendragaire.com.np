@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ne">
 <head>
@@ -14,7 +13,6 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LPGL4SRW14"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
         gtag('config', 'G-LPGL4SRW14');
@@ -26,11 +24,9 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-
         * {
             transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
-
         body {
             font-family: 'Inter', system-ui, sans-serif;
             min-height: 100vh;
@@ -56,6 +52,7 @@
             --accent-hover: #dc2626;
             --hero-overlay: rgba(15, 23, 42, 0.7);
             --info-bg: #1e293b;
+            --modal-bg: rgba(0, 0, 0, 0.85);
         }
 
         .day-mode {
@@ -72,6 +69,7 @@
             --accent-hover: #b91c1c;
             --hero-overlay: rgba(241, 249, 255, 0.5);
             --info-bg: #ffffff;
+            --modal-bg: rgba(0, 0, 0, 0.75);
         }
 
         .comfort-mode {
@@ -88,6 +86,7 @@
             --accent-hover: #92400e;
             --hero-overlay: rgba(245, 239, 230, 0.6);
             --info-bg: #faf6f0;
+            --modal-bg: rgba(0, 0, 0, 0.7);
         }
 
         body {
@@ -174,7 +173,7 @@
             color: var(--accent);
         }
 
-        /* ===== TOP INFO BAR - Fixed like Navbar ===== */
+        /* ===== TOP INFO BAR ===== */
         .top-info-bar {
             background: var(--info-bg);
             border-bottom: 1px solid var(--border-nav);
@@ -247,15 +246,28 @@
             margin-left: 4px;
         }
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.7); }
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.3;
+                transform: scale(0.7);
+            }
         }
 
         /* Update flash animation */
         @keyframes flashUpdate {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
         }
         .updating {
             animation: flashUpdate 0.5s ease;
@@ -287,54 +299,224 @@
                 display: none;
             }
         }
+
+        /* ============================================================ */
+        /*  POPUP MODAL – auto-detects image OR YouTube video            */
+        /* ============================================================ */
+        .popup-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--modal-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.45s ease;
+            padding: 1.5rem;
+        }
+        .popup-modal.open {
+            display: flex;
+            opacity: 1;
+        }
+        .popup-modal .popup-content {
+            background: var(--bg-secondary, #1e293b);
+            border-radius: 28px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 92vh;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            transform: scale(0.92) translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            padding: 1rem;
+            border: 1px solid var(--border-nav);
+        }
+        .popup-modal.open .popup-content {
+            transform: scale(1) translateY(0);
+        }
+        .popup-modal .popup-close {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.8rem;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            border: none;
+            color: #fff;
+            font-size: 1.8rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            line-height: 1;
+            font-weight: 300;
+        }
+        .popup-modal .popup-close:hover {
+            background: var(--accent);
+            transform: rotate(90deg) scale(1.05);
+        }
+        .popup-modal .popup-body {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 180px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--bg-body);
+        }
+        .popup-modal .popup-body img {
+            max-width: 100%;
+            max-height: 78vh;
+            border-radius: 12px;
+            object-fit: contain;
+            display: block;
+            width: auto;
+            height: auto;
+        }
+        .popup-modal .popup-body iframe {
+            width: 100%;
+            height: 480px;
+            max-height: 78vh;
+            border-radius: 12px;
+            border: none;
+            aspect-ratio: 16 / 9;
+        }
+        .popup-modal .popup-body .no-media {
+            color: var(--text-secondary);
+            padding: 3rem 2rem;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        .popup-modal .popup-body .no-media i {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+        .popup-modal .popup-body .loading-spinner {
+            padding: 3rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        .popup-modal .popup-body .loading-spinner i {
+            font-size: 2.5rem;
+            animation: spin 1s linear infinite;
+            display: block;
+            margin-bottom: 0.8rem;
+        }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Media type badge */
+        .media-type-badge {
+            position: absolute;
+            bottom: 0.8rem;
+            left: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            color: #fff;
+            font-size: 0.6rem;
+            padding: 0.15rem 0.8rem;
+            border-radius: 30px;
+            letter-spacing: 0.05em;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 5;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 640px) {
+            .popup-modal .popup-body iframe {
+                height: 220px;
+            }
+            .popup-modal .popup-content {
+                padding: 0.5rem;
+                border-radius: 18px;
+            }
+            .popup-modal .popup-close {
+                top: 0.2rem;
+                right: 0.3rem;
+                width: 34px;
+                height: 34px;
+                font-size: 1.4rem;
+            }
+            .popup-modal {
+                padding: 0.8rem;
+            }
+            .popup-modal .popup-body img {
+                max-height: 60vh;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <!-- ====== TOP INFO BAR - FIXED ====== -->
+    <!-- ============================================================ -->
+    <!--  POPUP MODAL – auto-detects image OR YouTube video            -->
+    <!--  Close: click ✕, click outside, or press ESC                 -->
+    <!-- ============================================================ -->
+    <div class="popup-modal" id="popupModal">
+        <div class="popup-content">
+            <button class="popup-close" id="popupCloseBtn" aria-label="Close popup">&times;</button>
+            <div class="popup-body" id="popupBody">
+                <div id="popupContentPlaceholder">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner"></i>
+                        <span>Loading media...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="media-type-badge" id="mediaTypeBadge">📷 Image</div>
+        </div>
+    </div>
+
+    <!-- ====== TOP INFO BAR ====== -->
     <div class="top-info-bar" id="topInfoBar">
-        <!-- Day -->
         <div class="info-item">
             <span class="icon">📆</span>
             <span class="value accent-text" id="dayName">Sunday</span>
         </div>
-
         <div class="info-divider"></div>
-
-        <!-- AD Date -->
         <div class="info-item">
             <span class="icon">📅</span>
             <span class="value" id="adDate">Jul 12, 2026</span>
         </div>
-
         <div class="info-divider"></div>
-
-        <!-- Time with Seconds -->
         <div class="info-item">
             <span class="icon">🕐</span>
             <span class="value" id="currentTime">11:18:45 AM</span>
         </div>
-
         <div class="info-divider"></div>
-
-        <!-- Location (IP Based - Auto Detected) -->
         <div class="info-item">
             <span class="icon">📍</span>
             <span class="value accent-text" id="locationName">Detecting...</span>
             <span class="pulse-dot" id="locationPulse"></span>
         </div>
-
         <div class="info-divider"></div>
-
-        <!-- Temperature (IP Based - Auto Detected) -->
         <div class="info-item">
             <span class="icon">🌡️</span>
             <span class="value" id="temperature">--°C</span>
         </div>
-
         <div class="info-divider"></div>
-
-        <!-- Greeting -->
         <div class="info-item">
             <span class="greeting-text accent-text" id="greetingText">Good Morning</span>
             <span class="icon" id="greetingIcon">🌤️</span>
@@ -345,14 +527,10 @@
     <nav class="navbar-custom" id="mainNav">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
             <div class="flex items-center gap-2">
-                <!-- Logo Image - i.png -->
                 <img src="i.png" alt="Lokendra Gaire Logo" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <!-- Fallback if image not found -->
                 <div class="w-8 h-8 bg-red-500 rounded-xl flex items-center justify-center text-white font-bold text-lg" style="display:none;">LG</div>
                 <span class="text-xl font-bold heading-font text-heading-custom">Lokendra Gaire</span>
             </div>
-
-            <!-- Desktop Nav Links -->
             <div class="nav-links flex items-center gap-4 text-sm font-medium">
                 <a href="#" onclick="goHome()" class="flex items-center gap-1">🏠 Home</a>
                 <a href="About.html">About</a>
@@ -360,10 +538,8 @@
                 <a href="slide.html">Gallery</a>
                 <a href="social.html">Social Media</a>
                 <a href="ram.html">Social engagement</a>
-                 <a href="port.html">Portfolio</a>
+                <a href="port.html">Portfolio</a>
             </div>
-
-            <!-- Mode Toggle Buttons -->
             <div class="flex gap-1 flex-wrap">
                 <button onclick="setMode('dark')" class="mode-btn" data-mode="dark">🌙 Dark</button>
                 <button onclick="setMode('day')" class="mode-btn" data-mode="day">☀️ Day</button>
@@ -374,13 +550,11 @@
 
     <!-- ====== HERO ====== -->
     <section id="home" class="min-h-screen flex items-center relative" style="padding-top: 115px;">
-        <!-- Background image with overlay -->
         <div class="absolute inset-0 bg-[url('https://picsum.photos/id/1015/2000/1200')] bg-cover bg-center">
             <div class="hero-overlay absolute inset-0"></div>
         </div>
 
         <div class="max-w-7xl mx-auto px-4 relative z-10 py-8 w-full">
-            <!-- Hero Content -->
             <div class="grid md:grid-cols-2 gap-10 items-center">
                 <div class="space-y-5">
                     <div class="text-red-500 tracking-widest text-xs font-semibold">GALKOT-2, BAGLUNG, NEPAL</div>
@@ -393,10 +567,9 @@
                     <div class="flex flex-wrap gap-3 pt-2">
                         <a href="tel:+9779869065252" class="px-6 py-3 btn-accent rounded-2xl font-semibold flex items-center gap-2 text-sm shadow-lg shadow-red-500/20">📞 Call Me</a>
                         <a href="https://wa.me/+9779869065252" class="px-6 py-3 btn-outline rounded-2xl font-semibold text-sm">💬 WhatsApp</a>
-                        <a href="mailto:lokendragaireofficial@gmail.com" class="px-6 py-3 btn-outline rounded-2xl font-semibold text-sm">✉️ Gmail</a>
+                        <a href="/cdn-cgi/l/email-protection#14787b7f717a70667573757d66717b72727d777d7578547379757d783a777b79" class="px-6 py-3 btn-outline rounded-2xl font-semibold text-sm">✉️ Gmail</a>
                     </div>
                 </div>
-
                 <div class="flex justify-center">
                     <img src="brp.jpg" alt="Lokendra Gaire" class="profile-img rounded-2xl max-h-[400px] w-auto object-cover shadow-2xl">
                 </div>
@@ -404,24 +577,36 @@
         </div>
     </section>
 
-    <!-- ====== FOOTER WITH COPYRIGHT ====== -->
+    <!-- ====== FOOTER ====== -->
     <footer class="footer-custom py-4 px-4 text-center" style="background: var(--bg-nav); border-top: 1px solid var(--border-nav);">
         <div class="max-w-7xl mx-auto">
             <p class="text-sm text-secondary-custom">
                 Copyright © Lokendra Gaire 2024
             </p>
             <p class="text-xs text-secondary-custom opacity-60 mt-1">
-                Galkot-2, Baglung, Nepal | 📞 +977 9869065252 | 📧 lokendragaireofficial@gmail.com
+                Galkot-2, Baglung, Nepal | 📞 +977 9869065252 | 📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6b0704000e050f190a0c0a02190e040d0d0208020a072b0c060a020745080406">[email&#160;protected]</a>
             </p>
         </div>
     </footer>
 
     <!-- ====== JAVASCRIPT ====== -->
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script>
         (function() {
             "use strict";
 
-            // --- DOM refs ---
+            // ================================================================
+            //  ★★★  POPUP MEDIA CONFIG – CHANGE THIS URL  ★★★
+            // ================================================================
+            //  • For IMAGE :  'popup.png'  or  'https://example.com/photo.jpg'
+            //  • For VIDEO :  'https://www.youtube.com/watch?v=VIDEO_ID'
+            //  • No popup  :  '##'   (default – nothing shows)
+            // ================================================================
+            const POPUP_MEDIA_URL = 'popup.png';   // <--- SET YOUR IMAGE OR VIDEO URL HERE
+
+            // ================================================================
+            //  DOM refs
+            // ================================================================
             const body = document.body;
             const modeBtns = document.querySelectorAll('.mode-btn');
             const topBar = document.getElementById('topInfoBar');
@@ -433,7 +618,177 @@
             let lastScrollTop = 0;
             let isHidden = false;
 
-            // --- Set mode function ---
+            // --- Popup refs ---
+            const modal = document.getElementById('popupModal');
+            const modalCloseBtn = document.getElementById('popupCloseBtn');
+            const popupContentPlaceholder = document.getElementById('popupContentPlaceholder');
+            const mediaTypeBadge = document.getElementById('mediaTypeBadge');
+
+            // ================================================================
+            //  POPUP ENGINE – auto-detects image vs YouTube
+            // ================================================================
+
+            // --- Detect if URL is YouTube ---
+            function isYouTubeUrl(url) {
+                return /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)/.test(url);
+            }
+
+            // --- Extract YouTube video ID ---
+            function getYouTubeId(url) {
+                const match = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+                return match ? match[1] : null;
+            }
+
+            // --- Detect if URL is an image (by extension) ---
+            function isImageUrl(url) {
+                return /\.(jpg|jpeg|png|gif|webp|bmp|svg|tiff|ico|avif)(\?.*)?$/i.test(url);
+            }
+
+            // --- Render popup content based on URL ---
+            function renderPopupContent(url) {
+                // Clear previous
+                popupContentPlaceholder.innerHTML = '';
+                mediaTypeBadge.textContent = '';
+
+                const trimmed = url.trim();
+
+                // No popup: if empty or '##' or '$$'
+                if (!trimmed || trimmed === '##' || trimmed === '$$') {
+                    popupContentPlaceholder.innerHTML =
+                        `<div class="no-media"><i class="fas fa-eye-slash"></i><span>No media configured</span></div>`;
+                    mediaTypeBadge.textContent = '⏸️ Disabled';
+                    return false;
+                }
+
+                // --- DEBUG: log the URL being processed ---
+                console.log('📦 Popup loading media from:', trimmed);
+
+                // --- Check if it's a YouTube URL ---
+                if (isYouTubeUrl(trimmed)) {
+                    const videoId = getYouTubeId(trimmed);
+                    if (videoId) {
+                        const iframe = document.createElement('iframe');
+                        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+                        iframe.allow = 'autoplay; encrypted-media; fullscreen';
+                        iframe.allowFullscreen = true;
+                        iframe.setAttribute('loading', 'lazy');
+                        iframe.setAttribute('title', 'YouTube video player');
+                        popupContentPlaceholder.appendChild(iframe);
+                        mediaTypeBadge.textContent = '▶️ Video';
+                        console.log('✅ YouTube video loaded:', videoId);
+                        return true;
+                    } else {
+                        popupContentPlaceholder.innerHTML =
+                            `<div class="no-media"><i class="fas fa-exclamation-triangle"></i><span>Invalid YouTube URL</span></div>`;
+                        mediaTypeBadge.textContent = '⚠️ Error';
+                        return false;
+                    }
+                }
+
+                // --- Check if it's an image URL (by extension) ---
+                if (isImageUrl(trimmed)) {
+                    const img = document.createElement('img');
+                    img.src = trimmed;
+                    img.alt = 'Popup image';
+                    img.onerror = function() {
+                        this.style.display = 'none';
+                        popupContentPlaceholder.innerHTML =
+                            `<div class="no-media"><i class="fas fa-image"></i><span>Image not found: ${trimmed}</span></div>`;
+                        mediaTypeBadge.textContent = '❌ Image Error';
+                        console.warn('❌ Image failed to load:', trimmed);
+                    };
+                    img.onload = function() {
+                        mediaTypeBadge.textContent = '📷 Image';
+                        console.log('✅ Image loaded:', trimmed);
+                    };
+                    popupContentPlaceholder.appendChild(img);
+                    return true;
+                }
+
+                // --- If it's a generic URL (no extension), try as image anyway ---
+                // This handles URLs like 'https://example.com/photo' without extension
+                const img = document.createElement('img');
+                img.src = trimmed;
+                img.alt = 'Popup media';
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    popupContentPlaceholder.innerHTML =
+                        `<div class="no-media"><i class="fas fa-link"></i><span>Unsupported media format: ${trimmed}</span></div>`;
+                    mediaTypeBadge.textContent = '❌ Unknown';
+                    console.warn('❌ Unsupported media:', trimmed);
+                };
+                img.onload = function() {
+                    mediaTypeBadge.textContent = '📷 Image';
+                    console.log('✅ Image loaded from generic URL:', trimmed);
+                };
+                popupContentPlaceholder.appendChild(img);
+                return true;
+            }
+
+            // --- Show popup ---
+            function showPopup() {
+                modal.style.display = 'flex';
+                void modal.offsetWidth;
+                modal.classList.add('open');
+                document.body.style.overflow = 'hidden';
+                console.log('🟢 Popup opened');
+            }
+
+            // --- Close popup ---
+            function closePopup() {
+                modal.classList.remove('open');
+                setTimeout(() => {
+                    if (!modal.classList.contains('open')) {
+                        modal.style.display = 'none';
+                        document.body.style.overflow = '';
+                        console.log('🔴 Popup closed');
+                    }
+                }, 450);
+            }
+
+            // --- Init popup on load ---
+            function initPopup() {
+                const url = POPUP_MEDIA_URL.trim();
+                console.log('📌 Popup init with URL:', url || '(empty)');
+
+                if (url && url !== '##' && url !== '$$') {
+                    const rendered = renderPopupContent(url);
+                    if (rendered) {
+                        setTimeout(showPopup, 600);
+                    } else {
+                        // If rendering failed, hide the modal
+                        modal.style.display = 'none';
+                        modal.classList.remove('open');
+                    }
+                } else {
+                    // No media – hide completely
+                    modal.style.display = 'none';
+                    modal.classList.remove('open');
+                    popupContentPlaceholder.innerHTML =
+                        `<div class="no-media"><i class="fas fa-eye-slash"></i><span>No media configured (set to '##')</span></div>`;
+                    mediaTypeBadge.textContent = '⏸️ Disabled';
+                    console.log('ℹ️ Popup disabled (##)');
+                }
+            }
+
+            // --- Close event listeners ---
+            modalCloseBtn.addEventListener('click', closePopup);
+
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closePopup();
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.classList.contains('open')) {
+                    closePopup();
+                }
+            });
+
+            // ================================================================
+            //  MODE TOGGLE
+            // ================================================================
             function setMode(mode) {
                 body.classList.remove('day-mode', 'comfort-mode');
                 if (mode === 'dark') {
@@ -454,7 +809,6 @@
                 localStorage.setItem('preferredMode', mode);
             }
 
-            // --- Load saved mode ---
             function loadSavedMode() {
                 const saved = localStorage.getItem('preferredMode');
                 if (saved && ['dark', 'day', 'comfort'].includes(saved)) {
@@ -464,17 +818,15 @@
                 }
             }
 
-            // --- Smooth scroll to top ---
+            // --- Expose globals ---
+            window.setMode = setMode;
             window.goHome = function() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             };
 
-            // --- Expose setMode globally ---
-            window.setMode = setMode;
-
-            // ============================================================
-            //  SCROLL HANDLER - Hide/Show BOTH Top Bar & Navbar together
-            // ============================================================
+            // ================================================================
+            //  SCROLL – hide/show top bar + navbar
+            // ================================================================
             function handleScroll() {
                 const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                 const topBarHeight = topBar.offsetHeight || 38;
@@ -494,11 +846,9 @@
                         heroSection.style.paddingTop = (topBarHeight + 78) + 'px';
                     }
                 }
-
                 lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
             }
 
-            // --- Throttled scroll listener ---
             let ticking = false;
             window.addEventListener('scroll', function() {
                 if (!ticking) {
@@ -510,14 +860,11 @@
                 }
             });
 
-            // ============================================================
-            //  LIVE LOCATION & TEMPERATURE - AUTO UPDATE (REAL-TIME)
-            // ============================================================
-
-            // --- Days of Week ---
+            // ================================================================
+            //  LIVE LOCATION & TEMPERATURE
+            // ================================================================
             const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-            // --- Get greeting based on time ---
             function getGreeting() {
                 const hour = new Date().getHours();
                 if (hour >= 5 && hour < 12) return { text: 'Good Morning', icon: '🌤️' };
@@ -526,196 +873,198 @@
                 return { text: 'Good Night', icon: '🌙' };
             }
 
-            // --- Show loading state ---
             function showLoading() {
                 locationPulse.style.display = 'inline-block';
                 locationNameEl.textContent = 'Updating...';
                 temperatureEl.textContent = '--°C';
             }
 
-            // --- Hide loading state ---
             function hideLoading() {
                 locationPulse.style.display = 'none';
             }
 
-            // --- Add flash animation on update ---
             function flashElement(el) {
                 el.classList.remove('updating');
-                // Trigger reflow
                 void el.offsetWidth;
                 el.classList.add('updating');
-                setTimeout(() => {
-                    el.classList.remove('updating');
-                }, 600);
+                setTimeout(() => el.classList.remove('updating'), 600);
             }
 
-            // --- Fetch IP based location & temperature (LIVE) ---
+            function getTemperatureForCity(city, country) {
+                if (country === 'Nepal' || country === 'NP') {
+                    const map = {
+                        'Kathmandu': 24,
+                        'Pokhara': 22,
+                        'Baglung': 20,
+                        'Butwal': 26,
+                        'Biratnagar': 28,
+                        'Janakpur': 27,
+                        'Nepalgunj': 29,
+                        'Dharan': 25,
+                        'Itahari': 25,
+                        'Gorkha': 20,
+                        'Lamjung': 18,
+                        'Kaski': 22,
+                        'Syangja': 21,
+                        'Palpa': 20,
+                        'Gulmi': 19,
+                        'Arghakhanchi': 21,
+                        'Kapilvastu': 27,
+                        'Rupandehi': 26,
+                        'Nawalparasi': 25,
+                        'Chitwan': 26,
+                        'Makwanpur': 23,
+                        'Sindhuli': 22,
+                        'Udayapur': 24,
+                        'Saptari': 28,
+                        'Siraha': 27,
+                        'Dhanusa': 27,
+                        'Mahottari': 27,
+                        'Sarlahi': 26,
+                        'Rautahat': 27,
+                        'Bara': 26,
+                        'Parsa': 27,
+                        'Banke': 29,
+                        'Bardiya': 28,
+                        'Surkhet': 24,
+                        'Dailekh': 20,
+                        'Jajarkot': 18,
+                        'Rukum': 17,
+                        'Rolpa': 18,
+                        'Pyuthan': 20,
+                        'Dang': 25,
+                        'Salyan': 19,
+                        'Jumla': 14,
+                        'Kalikot': 13,
+                        'Mugu': 12,
+                        'Humla': 10,
+                        'Dolpa': 11,
+                        'Mustang': 12,
+                        'Manang': 10,
+                        'Gandaki': 15,
+                        'Myagdi': 16,
+                        'Parbat': 18
+                    };
+                    return map[city] || 22;
+                }
+                const map = {
+                    'India': 28,
+                    'USA': 22,
+                    'UK': 15,
+                    'Australia': 25,
+                    'Canada': 12,
+                    'Germany': 16,
+                    'France': 18,
+                    'Japan': 20,
+                    'China': 22,
+                    'Brazil': 27,
+                    'South Africa': 20,
+                    'Egypt': 30,
+                    'UAE': 35,
+                    'Saudi Arabia': 33,
+                    'Singapore': 28,
+                    'Malaysia': 27,
+                    'Thailand': 29,
+                    'Vietnam': 26,
+                    'Philippines': 28,
+                    'Indonesia': 27
+                };
+                return map[country] || 22;
+            }
+
             function fetchIPLocation() {
                 showLoading();
-
-                // Try multiple APIs
-                const apis = [
-                    'https://ip-api.com/json/',
-                    'https://ipapi.co/json/'
-                ];
-
+                const apis = ['https://ip-api.com/json/', 'https://ipapi.co/json/'];
                 let apiIndex = 0;
 
                 function tryNextApi() {
                     if (apiIndex >= apis.length) {
-                        // All APIs failed - fallback
                         locationNameEl.textContent = 'Kathmandu, Nepal';
                         temperatureEl.textContent = '24°C';
                         hideLoading();
                         return;
                     }
-
                     fetch(apis[apiIndex])
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('API failed');
-                            }
-                            return response.json();
+                        .then(r => {
+                            if (!r.ok) throw new Error('API failed');
+                            return r.json();
                         })
                         .then(data => {
                             let city, country, temp;
-
                             if (apis[apiIndex].includes('ip-api.com')) {
                                 if (data.status === 'success') {
                                     city = data.city || 'Unknown';
                                     country = data.country || 'Nepal';
                                     temp = data.temp ? Math.round(data.temp) : getTemperatureForCity(city, country);
                                 } else {
-                                    throw new Error('ip-api.com error');
+                                    throw new Error('ip-api error');
                                 }
                             } else if (apis[apiIndex].includes('ipapi.co')) {
                                 city = data.city || 'Unknown';
                                 country = data.country_name || 'Nepal';
                                 temp = data.temperature ? Math.round(data.temperature) : getTemperatureForCity(city, country);
                             }
-
-                            const locationDisplay = city + ', ' + country;
-                            
-                            // Update DOM with flash animation
-                            locationNameEl.textContent = locationDisplay;
+                            const display = city + ', ' + country;
+                            locationNameEl.textContent = display;
                             temperatureEl.textContent = temp + '°C';
-                            
                             flashElement(locationNameEl);
                             flashElement(temperatureEl);
-                            
                             hideLoading();
                         })
-                        .catch(() => {
-                            apiIndex++;
-                            tryNextApi();
-                        });
+                        .catch(() => { apiIndex++;
+                            tryNextApi(); });
                 }
-
                 tryNextApi();
             }
 
-            // --- Get temperature for city (fallback when API doesn't provide) ---
-            function getTemperatureForCity(city, country) {
-                // Nepal cities temperature map
-                if (country === 'Nepal' || country === 'NP') {
-                    const tempMap = {
-                        'Kathmandu': 24, 'Pokhara': 22, 'Baglung': 20, 'Butwal': 26,
-                        'Biratnagar': 28, 'Janakpur': 27, 'Nepalgunj': 29, 'Dharan': 25,
-                        'Itahari': 25, 'Gorkha': 20, 'Lamjung': 18, 'Kaski': 22,
-                        'Syangja': 21, 'Palpa': 20, 'Gulmi': 19, 'Arghakhanchi': 21,
-                        'Kapilvastu': 27, 'Rupandehi': 26, 'Nawalparasi': 25, 'Chitwan': 26,
-                        'Makwanpur': 23, 'Sindhuli': 22, 'Udayapur': 24, 'Saptari': 28,
-                        'Siraha': 27, 'Dhanusa': 27, 'Mahottari': 27, 'Sarlahi': 26,
-                        'Rautahat': 27, 'Bara': 26, 'Parsa': 27, 'Banke': 29,
-                        'Bardiya': 28, 'Surkhet': 24, 'Dailekh': 20, 'Jajarkot': 18,
-                        'Rukum': 17, 'Rolpa': 18, 'Pyuthan': 20, 'Dang': 25,
-                        'Salyan': 19, 'Jumla': 14, 'Kalikot': 13, 'Mugu': 12,
-                        'Humla': 10, 'Dolpa': 11, 'Mustang': 12, 'Manang': 10,
-                        'Gandaki': 15, 'Myagdi': 16, 'Parbat': 18
-                    };
-                    return tempMap[city] || 22;
-                }
-
-                // Other countries temperature map
-                const tempMap = {
-                    'India': 28, 'USA': 22, 'UK': 15, 'Australia': 25,
-                    'Canada': 12, 'Germany': 16, 'France': 18, 'Japan': 20,
-                    'China': 22, 'Brazil': 27, 'South Africa': 20, 'Egypt': 30,
-                    'UAE': 35, 'Saudi Arabia': 33, 'Singapore': 28, 'Malaysia': 27,
-                    'Thailand': 29, 'Vietnam': 26, 'Philippines': 28, 'Indonesia': 27
-                };
-                return tempMap[country] || 22;
-            }
-
-            // --- AUTO UPDATE: Update all display elements every second ---
             function updateDisplay() {
                 const now = new Date();
-
-                // DAY - Auto update
                 document.getElementById('dayName').textContent = daysOfWeek[now.getDay()];
-
-                // AD DATE - Auto update
-                const adOptions = { month: 'short', day: 'numeric', year: 'numeric' };
-                document.getElementById('adDate').textContent = now.toLocaleDateString('en-US', adOptions);
-
-                // TIME with seconds - Auto update every second
-                const hours = now.getHours();
-                const minutes = now.getMinutes();
-                const seconds = now.getSeconds();
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-                const hours12 = hours % 12 || 12;
+                document.getElementById('adDate').textContent = now.toLocaleDateString('en-US', { month: 'short',
+                    day: 'numeric', year: 'numeric' });
+                const h = now.getHours(),
+                    m = now.getMinutes(),
+                    s = now.getSeconds();
+                const ampm = h >= 12 ? 'PM' : 'AM';
+                const h12 = h % 12 || 12;
                 document.getElementById('currentTime').textContent =
-                    `${String(hours12).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} ${ampm}`;
-
-                // GREETING - Auto update based on time
-                const greeting = getGreeting();
-                document.getElementById('greetingText').textContent = greeting.text;
-                document.getElementById('greetingIcon').textContent = greeting.icon;
+                    `${String(h12).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')} ${ampm}`;
+                const g = getGreeting();
+                document.getElementById('greetingText').textContent = g.text;
+                document.getElementById('greetingIcon').textContent = g.icon;
             }
 
-            // --- Get user's actual location using Geolocation API (if available) ---
             function getActualLocation() {
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(
-                        function(position) {
-                            // We have actual coordinates, but we still use IP for city name
-                            // This just enables the permission prompt
-                            console.log('Geolocation available:', position.coords.latitude, position.coords.longitude);
-                        },
-                        function(error) {
-                            // User denied or error - fallback to IP
-                            console.log('Geolocation error:', error.message);
-                        }
+                        () => {},
+                        () => {}
                     );
                 }
             }
 
-            // --- INIT - Start everything ---
+            // ================================================================
+            //  INIT
+            // ================================================================
             document.addEventListener('DOMContentLoaded', function() {
                 loadSavedMode();
-
-                // Request geolocation permission (optional)
                 getActualLocation();
 
-                // ============================================================
-                //  LIVE LOCATION & TEMPERATURE AUTO UPDATE
-                //  - हरेक ३० सेकेन्डमा Location Refresh
-                //  - हरेक १ सेकेन्डमा Time, Date, Day, Greeting Update
-                // ============================================================
+                // --- Popup ---
+                initPopup();
 
-                // Fetch location & temperature immediately
+                // --- Location & time ---
                 fetchIPLocation();
-
-                // Initial display update
                 updateDisplay();
-
-                // Set intervals for auto updates
-                setInterval(updateDisplay, 1000);           // Time, Date, Day, Greeting - हरेक सेकेन्ड
-                setInterval(fetchIPLocation, 30000);        // Location, Temperature - हरेक ३० सेकेन्ड (LIVE)
+                setInterval(updateDisplay, 1000);
+                setInterval(fetchIPLocation, 30000);
             });
 
         })();
     </script>
-
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496"
+        integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ=="
+        data-cf-beacon='{"version":"2024.11.0","token":"cf5153463d15490bb52e4fdbdb29adaf","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}'
+        crossorigin="anonymous"></script>
 </body>
 </html>
