@@ -1,295 +1,657 @@
 <!DOCTYPE html>
-<html lang="ne">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Panel - Labour Permit System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department of Foreign Employment - Nepal</title>
+    
+    <!-- Bootstrap 5 CSS for Dashboard Layout -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-        :root {
-            --primary: #1a7a3a;
-            --sidebar-width: 260px;
+        /* ===== GOVT CARD ORIGINAL CSS (हजुरको आफ्नै डिजाइन) ===== */
+        .paper-outer {
+            display: flex;
+            justify-content: center;
+            background: #f3f3f3;
+            padding: 20px 0;
         }
-        * {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        .paper {
+            width: 900px;
+            background: #fff;
+            padding: 30px 40px;
+            box-shadow: 0 0 15px rgba(0,0,0,.15);
+            font-family: "Times New Roman", serif;
+            color: #000;
         }
-        body {
-            background: #f0f2f5;
+        .header {
+            display: flex;
+            align-items: flex-start;
+        }
+        .logo {
+            width: 490px;
+            height: 113px;
+            object-fit: cover;
+        }
+        .header-text {
+            margin-left: 10px;
+            line-height: 1.6;
+        }
+        .header-text h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: normal;
+        }
+        .header-text h3 {
+            margin: 0;
+            font-size: 17px;
+            font-weight: normal;
+        }
+        .header-text h4 {
+            margin: 0;
+            font-size: 15px;
+            font-weight: normal;
+        }
+        .card-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        .card-table td {
+            font-size: 24px;
+            padding: 3px 8px;
+            vertical-align: top;
+            color: #000;
+        }
+        .card-table .label {
+            width: 230px;
+        }
+        .card-table .value {
+            font-weight: normal;
+        }
+        .qr {
+            margin-top: 55px;
+            text-align: center;
+        }
+        .qr img {
+            width: 80px;
+        }
+        .note {
+            margin-top: 20px;
+            display: flex;
+        }
+        .note-title {
+            width: 90px;
+            font-size: 24px;
+        }
+        .note-body {
+            font-size: 17px;
+            line-height: 1.8;
+        }
+        .nep {
+            margin-top: 10px;
+            font-size: 18px;
         }
 
-        /* ===== SIDEBAR ===== */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: var(--sidebar-width);
-            background: linear-gradient(180deg, #0d2b5e, #1a4a8a);
-            padding: 20px 0;
-            color: white;
-            overflow-y: auto;
-            z-index: 1050;
-            transition: all 0.3s;
+        /* ===== PORTAL & SYSTEM CSS ===== */
+        body {
+            background-color: #f8f9fa;
         }
-        .sidebar .brand {
-            padding: 0 20px 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        .search-hero {
+            max-width: 600px;
+            margin: 80px auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .search-hero img {
+            width: 130px;
             margin-bottom: 20px;
         }
-        .sidebar .brand h4 {
-            font-weight: 700;
-            margin: 0;
-        }
-        .sidebar .brand small {
-            opacity: 0.7;
-            font-size: 0.75rem;
-        }
-        .sidebar .nav-link {
-            color: rgba(255,255,255,0.8);
-            padding: 12px 20px;
-            border-radius: 10px;
-            margin: 3px 12px;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background: rgba(255,255,255,0.15);
-            color: white;
-        }
-        .sidebar .nav-link i {
-            width: 24px;
-            text-align: center;
-            margin-right: 10px;
-        }
-        .sidebar .nav-link .badge {
-            margin-left: auto;
-            background: #c62828;
-        }
-
-        /* ===== MAIN ===== */
-        .main-content {
-            margin-left: var(--sidebar-width);
-            padding: 25px 30px;
-        }
-
-        /* ===== STATS ===== */
-        .stat-card {
+        
+        /* Admin Login Card */
+        .login-card {
+            max-width: 400px;
+            margin: 100px auto;
             background: white;
-            border-radius: 16px;
-            padding: 20px 24px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-            border-left: 4px solid var(--primary);
-            transition: all 0.3s;
-        }
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.10);
-        }
-        .stat-card .number {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #1a1a2e;
-        }
-        .stat-card .label {
-            color: #888;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            font-weight: 600;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
         }
 
-        /* ===== TABLE ===== */
-        .table-custom {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-        }
-        .table-custom thead {
-            background: #f8f9fc;
-        }
-        .table-custom th {
-            font-weight: 700;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: #555;
-            border-bottom: 2px solid #e9ecef;
-        }
-        .table-custom td {
-            vertical-align: middle;
-            font-size: 0.9rem;
-            padding: 12px 15px;
-        }
-
-        .status-badge {
-            padding: 4px 14px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 700;
-        }
-        .status-badge.active { background: #e8f5e9; color: #1a7a3a; }
-        .status-badge.pending { background: #fff3e0; color: #e65100; }
-        .status-badge.completed { background: #e3f2fd; color: #0d47a1; }
-
-        .btn-action {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            background: #f0f0f0;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 2px;
-        }
-        .btn-action:hover {
-            background: var(--primary);
-            color: white;
-            transform: scale(1.08);
-        }
-        .btn-action.delete:hover { background: #c62828; }
-
-        /* ===== FORM ===== */
-        .form-control, .form-select {
-            border-radius: 10px;
-            padding: 10px 14px;
-            border: 2px solid #e0e0e0;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(26,122,58,0.12);
-        }
-        .form-label {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #333;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                width: 280px;
-            }
-            .sidebar.open {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-left: 0;
-                padding: 15px;
-            }
-        }
-
-        /* Loading Spinner */
-        .spinner-overlay {
+        /* Admin Dashboard layout */
+        .admin-sidebar {
+            width: 260px;
+            height: 100vh;
+            background: #0d2b5e;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,255,255,0.8);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
+            top: 0; left: 0;
+            padding: 20px 10px;
+            color: white;
         }
-        .spinner-overlay.active {
-            display: flex;
+        .admin-sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            margin: 5px 0;
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: block;
+        }
+        .admin-sidebar .nav-link:hover, .admin-sidebar .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+        }
+        .admin-content {
+            margin-left: 260px;
+            padding: 40px;
+        }
+
+        /* Hide elements on Print */
+        @media print {
+            body * { visibility: hidden; }
+            .paper-outer, .paper, .paper * { visibility: visible; }
+            .paper-outer { position: absolute; left: 0; top: 0; width: 100%; padding: 0; background: #fff; }
+            .no-print { display: none !important; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== LOADING SPINNER ===== -->
-    <div class="spinner-overlay" id="spinner">
-        <div class="spinner-border text-success" style="width: 50px; height: 50px;" role="status">
-            <span class="visually-hidden">Loading...</span>
+    <!-- ========================================== -->
+    <!-- १. PUBLIC PORTAL (सार्वजनिक खोज पोर्टल) -->
+    <!-- ========================================== -->
+    <div id="section-public">
+        <nav class="navbar navbar-light bg-white shadow-sm px-4">
+            <span class="navbar-brand mb-0 h1 text-primary"><i class="fas fa-landmark me-2"></i> DoFE Labour System</span>
+            <button class="btn btn-outline-primary btn-sm" onclick="showAdminLogin()"><i class="fas fa-lock me-1"></i> Admin Login</button>
+        </nav>
+
+        <!-- Search Box -->
+        <div class="container" id="searchArea">
+            <div class="search-hero">
+                <img src="https://feims.dofe.gov.np/images/logo.png" alt="DoFE Nepal Logo">
+                <h3 class="mb-3">श्रम स्वीकृति विवरण खोजी प्रणाली</h3>
+                <p class="text-muted">आफ्नो राहदानी नम्बर (PP No.) प्रविष्ट गरी श्रम अनुमति विवरण हेर्नुहोस्।</p>
+                
+                <div class="input-group mb-3 input-group-lg">
+                    <input type="text" id="publicSearchInput" class="form-control" placeholder="उदा: 11066520" required>
+                    <button class="btn btn-primary px-4" type="button" onclick="searchLabourCard()"><i class="fas fa-search"></i> खोज्नुहोस्</button>
+                </div>
+                <div id="searchMessage" class="text-danger mt-2 fw-bold"></div>
+            </div>
+        </div>
+
+        <!-- LABOUR CARD (RESULT SCREEN) -->
+        <div id="labourCardContainer" class="container" style="display: none;">
+            <div class="text-center mb-4 mt-3 no-print">
+                <button class="btn btn-success btn-lg px-4" onclick="window.print()"><i class="fas fa-print me-2"></i> प्रिन्ट गर्नुहोस् (Print Card)</button>
+                <button class="btn btn-outline-secondary btn-lg px-4 ms-2" onclick="goBackToSearch()"><i class="fas fa-arrow-left me-2"></i> अर्को खोज्नुहोस्</button>
+            </div>
+            
+            <div class="paper-outer">
+                <div class="paper">
+                    <div class="header">
+                        <img src="header.png" class="logo" onerror="this.src='https://feims.dofe.gov.np/images/logo.png'">
+                        <div class="header-text">
+                            <h2>Government of Nepal</h2>
+                            <h3>Ministry of Youth, Labour and Employment</h3>
+                            <h3>Department of Foreign Employment</h3>
+                            <h4>Kathmandu, Nepal</h4>
+                        </div>
+                    </div>
+
+                    <table class="card-table">
+                        <tr><td class="label">PP No:</td><td class="value" id="card-pp">-</td></tr>
+                        <tr><td class="label">Sticker No:</td><td class="value" id="card-sticker">-</td></tr>
+                        <tr><td class="label">Name:</td><td class="value" id="card-name">-</td></tr>
+                        <tr><td class="label">Employer Name:</td><td class="value" id="card-company">-</td></tr>
+                        <tr><td class="label">Country Name:</td><td class="value" id="card-country">-</td></tr>
+                        <tr><td class="label">Profession:</td><td class="value" id="card-profession">-</td></tr>
+                        <tr><td class="label">Salary:</td><td class="value" id="card-salary">-</td></tr>
+                        <tr><td class="label">Approval Date:</td><td class="value" id="card-approval">-</td></tr>
+                        <tr><td class="label">Validity of the Permit:</td><td class="value" id="card-expiry">-</td></tr>
+                        <tr><td class="label">SSID:</td><td class="value" id="card-ssid">-</td></tr>
+                        <tr><td class="label">Type:</td><td class="value" id="card-type">-</td></tr>
+                    </table>
+
+                    <div class="qr">
+                        <img src="qr.png" id="card-qr" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=DoFE-Nepal'">
+                    </div>
+
+                    <div class="note">
+                        <div class="note-title">Note:</div>
+                        <div class="note-body">
+                            Please, re-apply for labour permit renewal before 3 months of its expiry.
+                            <div class="nep">
+                                विदेशमा घर आएका तर फर्किनेहरुले यसको म्याद सकिनुभन्दा ३ महिना अगावै नवीकरण गराउनुहोला ।
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- ===== SIDEBAR ===== -->
-    <aside class="sidebar" id="sidebar">
-        <div class="brand">
-            <h4><i class="fas fa-leaf me-2"></i> FEMS</h4>
-            <small>Foreign Employment Management</small>
-            <div class="mt-2 text-success" style="font-size:0.7rem;">
-                <i class="fas fa-circle me-1" style="font-size:6px;"></i> Admin: <span id="adminName">Admin</span>
+
+    <!-- ========================================== -->
+    <!-- २. ADMIN LOGIN SCREEN (प्रशासक लगइन) -->
+    <!-- ========================================== -->
+    <div id="section-login" style="display: none;">
+        <div class="login-card">
+            <div class="text-center mb-4">
+                <i class="fas fa-user-shield text-primary fa-3x mb-2"></i>
+                <h4>Admin Login</h4>
+                <p class="text-muted small">सञ्चालनका लागि पहिचान प्रमाणित गर्नुहोस्</p>
             </div>
+            <form onsubmit="handleAdminLogin(event)">
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="loginUsername" class="form-control" required placeholder="admin">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="loginPassword" class="form-control" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2 mb-2"><i class="fas fa-sign-in-alt me-2"></i> लगइन गर्नुहोस्</button>
+                <button type="button" class="btn btn-light w-100" onclick="showPublicPortal()"><i class="fas fa-arrow-left me-2"></i> पोर्टलमा फर्कनुहोस्</button>
+            </form>
         </div>
-        <nav class="nav flex-column">
-            <a class="nav-link active" data-page="dashboard">
-                <i class="fas fa-chart-pie"></i> Dashboard
-            </a>
-            <a class="nav-link" data-page="workers">
-                <i class="fas fa-users"></i> श्रमिक सूची
-                <span class="badge" id="workerBadge">0</span>
-            </a>
-            <a class="nav-link" data-page="add-worker">
-                <i class="fas fa-user-plus"></i> नयाँ दर्ता
-            </a>
-            <a class="nav-link" data-page="reports">
-                <i class="fas fa-file-alt"></i> प्रतिवेदन
-            </a>
-            <a class="nav-link" style="margin-top:20px; color:rgba(255,255,255,0.5);" id="logoutBtn">
-                <i class="fas fa-sign-out-alt"></i> लगआउट
-            </a>
-        </nav>
-    </aside>
+    </div>
 
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="main-content" id="mainContent">
 
-        <!-- Top Bar -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <button class="btn btn-light d-md-none me-2" id="sidebarToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <h4 class="d-inline" id="pageTitle">Dashboard</h4>
+    <!-- ========================================== -->
+    <!-- ३. ADMIN DASHBOARD (डाटा इन्ट्री र व्यवस्थापन) -->
+    <!-- ========================================== -->
+    <div id="section-admin" style="display: none;">
+        <aside class="admin-sidebar">
+            <div class="px-3 mb-4">
+                <h4>Admin Panel</h4>
+                <small class="text-white-50">Labour Management</small>
             </div>
-            <div>
-                <span class="badge bg-success me-2">
-                    <i class="fas fa-circle me-1" style="font-size:6px;"></i> Online
-                </span>
-                <a href="saram.html" class="btn btn-outline-primary btn-sm" target="_blank">
-                    <i class="fas fa-eye me-1"></i> Public View
-                </a>
-            </div>
-        </div>
+            <nav class="nav flex-column">
+                <a class="nav-link active" id="btn-tab-list" href="#" onclick="switchAdminTab('list')"><i class="fas fa-users me-2"></i> दर्ता सूची (Workers)</a>
+                <a class="nav-link" id="btn-tab-form" href="#" onclick="switchAdminTab('form')"><i class="fas fa-user-plus me-2"></i> नयाँ प्रविष्टि (Data Entry)</a>
+                <a class="nav-link text-warning" href="#" onclick="logoutAdmin()" style="margin-top: 50px;"><i class="fas fa-power-off me-2"></i> लगआउट (Logout)</a>
+            </nav>
+        </aside>
 
-        <!-- ===== DASHBOARD ===== -->
-        <div id="section-dashboard">
-            <div class="row g-3 mb-4" id="statsRow">
-                <div class="col-md-3 col-6">
-                    <div class="stat-card">
-                        <div class="number" id="statTotal">0</div>
-                        <div class="label">कुल श्रमिक</div>
-                    </div>
+        <main class="admin-content">
+            <!-- ADMIN TAB १: श्रमिक सूची (LIST) -->
+            <div id="admin-tab-list">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3>दर्ता भएका श्रमिकहरूको सूची</h3>
+                    <button class="btn btn-primary" onclick="switchAdminTab('form')"><i class="fas fa-plus me-1"></i> नयाँ श्रमिक थप्नुहोस्</button>
                 </div>
-                <div class="col-md-3 col-6">
-                    <div class="stat-card" style="border-left-color:#0d47a1;">
-                        <div class="number" id="statActive">0</div>
-                        <div class="label">सक्रिय</div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="stat-card" style="border-left-color:#e65100;">
-                        <div class="number" id="statPending">0</div>
-                        <div class="label">पेन्डिङ</div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="stat-card" style="border-left-color:#c62828;">
-                        <div class="number" id="statExpiring">0</div>
-                        <div class="label">म्याद सकिने</div>
+                
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <input type="text" id="adminSearchInput" class="form-control" placeholder="PP No. वा नाम खोज्नुहोस्..." oninput="filterAdminTable()">
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>PP No.</th>
+                                        <th>नाम (Name)</th>
+                                        <th>देश (Country)</th>
+                                        <th>कम्पनी (Company)</th>
+                                        <th>स्वीकृति मिति</th>
+                                        <th class="text-end">कार्यहरू (Actions)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="workerTableBody">
+                                    <!-- Supabase बाट डाटा यहाँ आउँछ -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="table-custom p-3">
-                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                    <h6 class="m-0"><i class="fas fa-list me-2"></i> हालैका श्रमिक</h6>
-                    <div>
-                        <input type="text" class="form-control form-control-sm" style="width:200px; display:inline-block;" placeholder="खोज्नुहो
+            <!-- ADMIN TAB २: डाटा इन्ट्री फारम (FORM) -->
+            <div id="admin-tab-form" style="display: none;">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h4 id="formTitle" class="mb-4 text-primary"><i class="fas fa-user-plus me-2"></i> नयाँ श्रमिक डाटा प्रविष्टि फारम</h4>
+                        <hr>
+                        <form id="workerForm" onsubmit="saveWorkerData(event)">
+                            <input type="hidden" id="worker_id">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">PP No. <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="pp_no" required placeholder="उदा: 11066520">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Sticker No.</label>
+                                    <input type="text" class="form-control" id="sticker_no" placeholder="उदा: 049199778">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control text-uppercase" id="full_name" required placeholder="उदा: DEVENDRA SARKI">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Employer Name</label>
+                                    <input type="text" class="form-control" id="employer_name" placeholder="उदा: NEW W MART SUPERMARKET L.L.C">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Country Name</label>
+                                    <input type="text" class="form-control" id="country_name" placeholder="उदा: UAE">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Profession</label>
+                                    <input type="text" class="form-control" id="profession" placeholder="उदा: BUCHER MAN">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Salary</label>
+                                    <input type="text" class="form-control" id="salary" placeholder="उदा: 1350.00 AED">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">SSID</label>
+                                    <input type="text" class="form-control" id="ssid" placeholder="उदा: 20800583368">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Approval Date</label>
+                                    <input type="date" class="form-control" id="approval_date">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Validity of Permit (Expiry)</label>
+                                    <input type="date" class="form-control" id="validity_date">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Type</label>
+                                    <input type="text" class="form-control" id="permit_type" placeholder="उदा: Automation(R)">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">सम्पर्क फोन नं.</label>
+                                    <input type="text" class="form-control" id="phone" placeholder="98XXXXXXXX">
+                                </div>
+                                <div class="col-12 mt-4 border-top pt-3 text-end">
+                                    <button type="button" class="btn btn-outline-secondary px-4 me-2" onclick="switchAdminTab('list')">रद्द गर्नुहोस् (Cancel)</button>
+                                    <button type="submit" class="btn btn-success px-5"><i class="fas fa-save me-2"></i> डाटा सुरक्षित गर्नुहोस्</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ५. DATABASE SYSTEM JAVASCRIPT -->
+    <!-- ========================================== -->
+    <script>
+        // Supabase Details
+        const SUPABASE_URL = "https://lyzxsqussxalfpqejelv.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
+        
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let allWorkers = [];
+
+        // १. राहदानी खोजी प्रणाली (Public Passport Search)
+        async function searchLabourCard() {
+            const ppNo = document.getElementById('publicSearchInput').value.trim();
+            const messageEl = document.getElementById('searchMessage');
+            messageEl.textContent = "";
+
+            if (!ppNo) {
+                messageEl.textContent = "कृपया पहिले राहदानी नम्बर (PP No.) प्रविष्ट गर्नुहोस्।";
+                return;
+            }
+
+            try {
+                const { data, error } = await _supabase
+                    .from('workers')
+                    .select('*')
+                    .eq('pp_no', ppNo)
+                    .maybeSingle();
+
+                if (error) throw error;
+
+                if (!data) {
+                    messageEl.textContent = "विवरण फेला परेन! कृपया सही राहदानी नम्बर फेरि जाँच गर्नुहोला।";
+                    document.getElementById('labourCardContainer').style.display = 'none';
+                    return;
+                }
+
+                // डाटा सिधै HTML टेम्प्लेटमा भर्ने
+                document.getElementById('card-pp').textContent = data.pp_no || '-';
+                document.getElementById('card-sticker').textContent = data.sticker_no || '-';
+                document.getElementById('card-name').textContent = data.full_name || '-';
+                document.getElementById('card-company').textContent = data.employer_name || '-';
+                document.getElementById('card-country').textContent = data.country_name || '-';
+                document.getElementById('card-profession').textContent = data.profession || '-';
+                document.getElementById('card-salary').textContent = data.salary || '-';
+                document.getElementById('card-approval').textContent = formatDate(data.approval_date);
+                document.getElementById('card-expiry').textContent = formatDate(data.validity_date);
+                document.getElementById('card-ssid').textContent = data.ssid || '-';
+                document.getElementById('card-type').textContent = data.permit_type || '-';
+
+                // QR Code URL अपडेट गर्ने
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=PP:${data.pp_no}%20Name:${encodeURIComponent(data.full_name)}`;
+                document.getElementById('card-qr').src = qrUrl;
+
+                // कार्ड देखाउने
+                document.getElementById('labourCardContainer').style.display = 'block';
+                document.getElementById('searchArea').style.display = 'none';
+
+            } catch (err) {
+                console.error(err);
+                messageEl.textContent = "डाटाबेस सर्भरसँग जडान हुन सकेन। कृपया पछि पुन: प्रयास गर्नुहोस्।";
+            }
+        }
+
+        function goBackToSearch() {
+            document.getElementById('labourCardContainer').style.display = 'none';
+            document.getElementById('searchArea').style.display = 'block';
+            document.getElementById('publicSearchInput').value = '';
+            document.getElementById('searchMessage').textContent = '';
+        }
+
+        // २. Admin Auth नियन्त्रण
+        function showAdminLogin() {
+            document.getElementById('section-public').style.display = 'none';
+            document.getElementById('section-admin').style.display = 'none';
+            document.getElementById('section-login').style.display = 'block';
+        }
+
+        function showPublicPortal() {
+            document.getElementById('section-login').style.display = 'none';
+            document.getElementById('section-admin').style.display = 'none';
+            document.getElementById('section-public').style.display = 'block';
+            goBackToSearch();
+        }
+
+        function handleAdminLogin(event) {
+            event.preventDefault();
+            const user = document.getElementById('loginUsername').value.trim();
+            const pass = document.getElementById('loginPassword').value;
+
+            // सुरक्षित युजरनेम र पासवर्ड
+            if (user === "admin" && pass === "admin123") {
+                document.getElementById('section-login').style.display = 'none';
+                document.getElementById('section-admin').style.display = 'block';
+                switchAdminTab('list');
+                fetchWorkers();
+            } else {
+                alert("🚫 गलत युजरनेम वा पासवर्ड!");
+            }
+        }
+
+        function logoutAdmin() {
+            document.getElementById('section-admin').style.display = 'none';
+            document.getElementById('section-public').style.display = 'block';
+            goBackToSearch();
+        }
+
+        // ३. Tab Switching
+        function switchAdminTab(tab) {
+            document.getElementById('admin-tab-list').style.display = tab === 'list' ? 'block' : 'none';
+            document.getElementById('admin-tab-form').style.display = tab === 'form' ? 'block' : 'none';
+            
+            document.getElementById('btn-tab-list').classList.remove('active');
+            document.getElementById('btn-tab-form').classList.remove('active');
+
+            if (tab === 'list') {
+                document.getElementById('btn-tab-list').classList.add('active');
+            } else {
+                document.getElementById('btn-tab-form').classList.add('active');
+                if(!document.getElementById('worker_id').value) {
+                    resetForm();
+                }
+            }
+        }
+
+        // ४. डेटा तानेर तालिकामा देखाउने (Fetch Workers)
+        async function fetchWorkers() {
+            try {
+                const { data, error } = await _supabase
+                    .from('workers')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                allWorkers = data;
+                renderTable(allWorkers);
+            } catch (err) {
+                console.error("Fetch error:", err);
+            }
+        }
+
+        function renderTable(list) {
+            const tbody = document.getElementById('workerTableBody');
+            tbody.innerHTML = list.map(w => `
+                <tr>
+                    <td><strong>${w.pp_no}</strong></td>
+                    <td>${w.full_name}</td>
+                    <td>${w.country_name || '-'}</td>
+                    <td>${w.employer_name || '-'}</td>
+                    <td>${formatDate(w.approval_date)}</td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editWorker(${w.id})"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteWorker(${w.id})"><i class="fas fa-trash"></i> Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ५. डेटा सुरक्षित गर्ने (Insert & Update)
+        async function saveWorkerData(event) {
+            event.preventDefault();
+            const id = document.getElementById('worker_id').value;
+
+            const payload = {
+                pp_no: document.getElementById('pp_no').value.trim(),
+                sticker_no: document.getElementById('sticker_no').value.trim(),
+                full_name: document.getElementById('full_name').value.trim().toUpperCase(),
+                employer_name: document.getElementById('employer_name').value.trim(),
+                country_name: document.getElementById('country_name').value.trim(),
+                profession: document.getElementById('profession').value.trim(),
+                salary: document.getElementById('salary').value.trim(),
+                ssid: document.getElementById('ssid').value.trim(),
+                approval_date: document.getElementById('approval_date').value || null,
+                validity_date: document.getElementById('validity_date').value || null,
+                permit_type: document.getElementById('permit_type').value.trim(),
+                phone: document.getElementById('phone').value.trim()
+            };
+
+            try {
+                if (id) {
+                    // Update
+                    const { error } = await _supabase
+                        .from('workers')
+                        .update(payload)
+                        .eq('id', id);
+                    if (error) throw error;
+                    alert("✅ विवरण सफलतापूर्वक परिमार्जन भयो!");
+                } else {
+                    // Insert
+                    const { error } = await _supabase
+                        .from('workers')
+                        .insert([payload]);
+                    if (error) throw error;
+                    alert("✅ नयाँ श्रमिक सफलतापूर्वक दर्ता भयो!");
+                }
+
+                resetForm();
+                switchAdminTab('list');
+                fetchWorkers();
+
+            } catch (err) {
+                console.error(err);
+                alert("🚫 त्रुटि: यो पासपोर्ट नम्बर पहिले नै दर्ता भएको हुन सक्छ वा डेटा गलत छ।");
+            }
+        }
+
+        // ६. सम्पादन र मेटाउने (Edit & Delete)
+        function editWorker(id) {
+            const w = allWorkers.find(x => x.id === id);
+            if (!w) return;
+
+            document.getElementById('worker_id').value = w.id;
+            document.getElementById('pp_no').value = w.pp_no || '';
+            document.getElementById('sticker_no').value = w.sticker_no || '';
+            document.getElementById('full_name').value = w.full_name || '';
+            document.getElementById('employer_name').value = w.employer_name || '';
+            document.getElementById('country_name').value = w.country_name || '';
+            document.getElementById('profession').value = w.profession || '';
+            document.getElementById('salary').value = w.salary || '';
+            document.getElementById('ssid').value = w.ssid || '';
+            document.getElementById('approval_date').value = w.approval_date || '';
+            document.getElementById('validity_date').value = w.validity_date || '';
+            document.getElementById('permit_type').value = w.permit_type || '';
+            document.getElementById('phone').value = w.phone || '';
+
+            document.getElementById('formTitle').innerHTML = '<i class="fas fa-edit me-2"></i> श्रमिक विवरण परिमार्जन गर्नुहोस्';
+            switchAdminTab('form');
+        }
+
+        async function deleteWorker(id) {
+            if (confirm("के तपाईं यो विवरण हटाउन निश्चित हुनुहुन्छ?")) {
+                try {
+                    const { error } = await _supabase
+                        .from('workers')
+                        .delete()
+                        .eq('id', id);
+                    if (error) throw error;
+                    alert("🗑️ विवरण सफलतापूर्वक हटाइयो!");
+                    fetchWorkers();
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        }
+
+        // ७. सहयोगी सुविधाहरू
+        function resetForm() {
+            document.getElementById('workerForm').reset();
+            document.getElementById('worker_id').value = '';
+            document.getElementById('formTitle').innerHTML = '<i class="fas fa-user-plus me-2"></i> नयाँ श्रमिक डाटा प्रविष्टि फारम';
+        }
+
+        function filterAdminTable() {
+            const query = document.getElementById('adminSearchInput').value.toLowerCase();
+            const filtered = allWorkers.filter(w => 
+                w.pp_no.toLowerCase().includes(query) || 
+                w.full_name.toLowerCase().includes(query)
+            );
+            renderTable(filtered);
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const d = new Date(dateStr);
+            return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+        }
+    </script>
+</body>
+</html>
