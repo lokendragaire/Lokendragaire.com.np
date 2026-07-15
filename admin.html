@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - Labour Permit System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root {
+            --primary: #1a7a3a;
+            --secondary: #0d5f2e;
+            --sidebar-width: 260px;
+        }
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: #f0f2f5;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, #0d2b5e, #1a4a8a);
+            padding: 20px 0;
+            color: white;
+            overflow-y: auto;
+            z-index: 1050;
+            transition: all 0.3s;
+        }
+        .sidebar .brand {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        .sidebar .brand h4 {
+            font-weight: 700;
+            margin: 0;
+        }
+        .sidebar .brand small {
+            opacity: 0.7;
+            font-size: 0.75rem;
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin: 3px 12px;
+            transition: all 0.3s;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+        .sidebar .nav-link i {
+            width: 24px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        /* ===== MAIN ===== */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 25px 30px;
+        }
+
+        /* ===== STATS ===== */
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.10);
+        }
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1a1a2e;
+        }
+        .stat-card .label {
+            color: #888;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* ===== TABLE ===== */
+        .table-custom {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        .table-custom thead {
+            background: #f8f9fc;
+        }
+        .table-custom th {
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #555;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .table-custom td {
+            vertical-align: middle;
+            font-size: 0.9rem;
+            padding: 12px 15px;
+        }
+
+        .status-badge {
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+        .status-badge.active { background: #e8f5e9; color: #1a7a3a; }
+        .status-badge.pending { background: #fff3e0; color: #e65100; }
+        .status-badge.completed { background: #e3f2fd; color: #0d47a1; }
+
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: #f0f0f0;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-action:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.08);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <h4><i class="fas fa-leaf me-2"></i> FEMS</h4>
+            <small>Foreign Employment Management</small>
+        </div>
+        <nav class="nav flex-column">
+            <a class="nav-link active" href="#" data-page="dashboard">
+                <i class="fas fa-chart-pie"></i> Dashboard
+            </a>
+            <a class="nav-link" href="#" data-page="workers">
+                <i class="fas fa-users"></i> श्रमिक सूची
+            </a>
+            <a class="nav-link" href="#" data-page="add-worker">
+                <i class="fas fa-user-plus"></i> नयाँ दर्ता
+            </a>
+            <a class="nav-link" href="#" data-page="payments">
+                <i class="fas fa-money-bill"></i> भुक्तानी
+            </a>
+            <a class="nav-link" href="#" data-page="reports">
+                <i class="fas fa-file-alt"></i> प्रतिवेदन
+            </a>
+            <a class="nav-link" href="#" data-page="settings">
+                <i class="fas fa-cog"></i> सेटिङ
+            </a>
+            <a class="nav-link" href="#" style="margin-top:20px; color:rgba(255,255,255,0.5);">
+                <i class="fas fa-sign-out-alt"></i> लगआउट
+            </a>
+        </nav>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content" id="mainContent">
+
+        <!-- Top Bar -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <button class="btn btn-light d-md-none me-2" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h4 class="d-inline" id="pageTitle">Dashboard</h4>
+            </div>
+            <div>
+                <span class="badge bg-success me-2"><i class="fas fa-circle me-1" style="font-size:8px;"></i> Online</span>
+                <span class="text-muted">Admin</span>
+            </div>
+        </div>
+
+        <!-- ===== DASHBOARD ===== -->
+        <div id="section-dashboard">
+            <div class="row g-3 mb-4" id="statsRow">
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="number" id="statTotal">0</div>
+                        <div class="label">कुल श्रमिक</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card" style="border-left-color:#0d47a1;">
+                        <div class="number" id="statActive">0</div>
+                        <div class="label">सक्रिय</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card" style="border-left-color:#e65100;">
+                        <div class="number" id="statPending">0</div>
+                        <div class="label">पेन्डिङ</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card" style="border-left-color:#c62828;">
+                        <div class="number" id="statExpiring">0</div>
+                        <div class="label">म्याद सकिने</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-custom p-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="m-0"><i class="fas fa-list me-2"></i> हालैका श्रमिक</h6>
+                    <input type="text" class="form-control form-control-sm" style="width:200px;" placeholder="खोज्नुहोस्..." id="searchInput" />
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom" id="workerTable">
+                        <thead>
+                            <tr>
+                                <th>PP No.</th>
+                                <th>नाम</th>
+                                <th>देश</th>
+                                <th>कम्पनी</th>
+                                <th>प्रगति</th>
+                                <th>स्टेटस</th>
+                                <th class="text-end">कार्य</th>
+                            </tr>
+                        </thead>
+                        <tbody id="workerTableBody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ADD WORKER ===== -->
+        <div id="section-add-worker" style="display:none;">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5><i class="fas fa-user-plus me-2"></i> नयाँ श्रमिक दर्ता</h5>
+                    <hr />
+                    <form id="workerForm">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">PP No. <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="pp_no" required placeholder="11066520" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Sticker No.</label>
+                                <input type="text" class="form-control" id="sticker_no" placeholder="049199778" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">पूरा नाम <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="full_name" required placeholder="DEVENDRA SARKI" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">कम्पनीको नाम</label>
+                                <input type="text" class="form-control" id="employer_name" placeholder="NEW W MART SUPERMARKET L.L.C" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">देश</label>
+                                <select class="form-select" id="country_name">
+                                    <option value="UAE">UAE</option>
+                                    <option value="Saudi">Saudi Arabia</option>
+                                    <option value="Qatar">Qatar</option>
+                                    <option value="Kuwait">Kuwait</option>
+                                    <option value="Malaysia">Malaysia</option>
+                                    <option value="Japan">Japan</option>
+                                    <option value="Korea">Korea</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">पेशा</label>
+                                <input type="text" class="form-control" id="profession" placeholder="BUCHER MAN" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">तलब</label>
+                                <input type="number" class="form-control" id="salary" placeholder="1350" step="0.01" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">SSID</label>
+                                <input type="text" class="form-control" id="ssid" placeholder="20800583368" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">स्वीकृति मिति</label>
+                                <input type="date" class="form-control" id="approval_date" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">म्याद सकिने</label>
+                                <input type="date" class="form-control" id="validity_date" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">प्रकार</label>
+                                <select class="form-select" id="permit_type">
+                                    <option value="Automation(R)">Automation(R)</option>
+                                    <option value="Manual">Manual</option>
+                                    <option value="Renewal">Renewal</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">प्रगति</label>
+                                <select class="form-select" id="progress">
+                                    <option value="Document Collection">📄 कागजात सङ्कलन</option>
+                                    <option value="Medical">💉 मेडिकल</option>
+                                    <option value="Orientation">📚 अभिमुखीकरण</option>
+                                    <option value="Labour Approval">📋 श्रम स्वीकृति</option>
+                                    <option value="Visa">🛂 भिसा</option>
+                                    <option value="Ticket">✈️ टिकट</option>
+                                    <option value="Departure">🚀 प्रस्थान</option>
+                                    <option value="Completed">✅ सम्पन्न</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">सम्पर्क</label>
+                                <input type="text" class="form-control" id="phone" placeholder="९८XXXXXXXX" />
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-success px-5">
+                                    <i class="fas fa-save me-2"></i> दर्ता गर्नुहोस्
+                                </button>
+                                <button type="reset" class="btn btn-outline-secondary px-4 ms-2">खाली</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================================ -->
+    <script>
+        // ============================================================
+        //  DATA (Simulated - Replace with PHP AJAX)
+        // ============================================================
+        let workers = [
+            { id: 1, pp_no: '11066520', sticker_no: '049199778', full_name: 'DEVENDRA SARKI', employer_name: 'NEW W MART SUPERMARKET L.L.C (BRANCH)', country_name: 'UAE', profession: 'BUCHER MAN', salary: '1350.00', approval_date: '2026-07-15', validity_date: '2028-07-15', ssid: '20800583368', permit_type: 'Automation(R)', progress: 'Visa', phone: '9841234567', palika: 'Kathmandu', status: 'Active' },
+            { id: 2, pp_no: '11066521', sticker_no: '049199779', full_name: 'RAM KUMAR SHARMA', employer_name: 'AL RAJHI CO.', country_name: 'Saudi', profession: 'DRIVER', salary: '1200.00', approval_date: '2026-06-20', validity_date: '2028-06-20', ssid: '20800583369', permit_type: 'Automation(R)', progress: 'Labour Approval', phone: '9851234567', palika: 'Lalitpur', status: 'Active' },
+            { id: 3, pp_no: '11066522', sticker_no: '049199780', full_name: 'SITA POKHAREL', employer_name: 'HAMAD MEDICAL', country_name: 'Qatar', profession: 'NURSE', salary: '1800.00', approval_date: '2026-07-01', validity_date: '2028-07-01', ssid: '20800583370', permit_type: 'Manual', progress: 'Medical', phone: '9865432109', palika: 'Bhaktapur', status: 'Active' }
+        ];
+
+        // ============================================================
+        //  RENDER TABLE
+        // ============================================================
+        function renderWorkers() {
+            const tbody = document.getElementById('workerTableBody');
+            tbody.innerHTML = workers.map(w => `
+                <tr>
+                    <td><strong>${w.pp_no}</strong></td>
+                    <td>${w.full_name}</td>
+                    <td>${w.country_name}</td>
+                    <td>${w.employer_name || '-'}</td>
+                    <td><span class="status-badge ${w.progress === 'Completed' ? 'completed' : 'pending'}">${w.progress}</span></td>
+                    <td><span class="status-badge ${w.status === 'Active' ? 'active' : 'pending'}">${w.status}</span></td>
+                    <td class="text-end">
+                        <button class="btn-action" onclick="editWorker(${w.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn-action" onclick="deleteWorker(${w.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+            updateStats();
+        }
+
+        // ============================================================
+        //  STATS
+        // ============================================================
+        function updateStats() {
+            document.getElementById('statTotal').textContent = workers.length;
+            document.getElementById('statActive').textContent = workers.filter(w => w.status === 'Active').length;
+            document.getElementById('statPending').textContent = workers.filter(w => w.progress !== 'Completed').length;
+            const today = new Date();
+            const expiring = workers.filter(w => {
+                if (!w.validity_date) return false;
+                const diff = (new Date(w.validity_date) - today) / (1000 * 60 * 60 * 24);
+                return diff <= 30 && diff >= 0;
+            }).length;
+            document.getElementById('statExpiring').textContent = expiring;
+        }
+
+        // ============================================================
+        //  ADD / EDIT WORKER
+        // ============================================================
+        document.getElementById('workerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const data = {
+                pp_no: document.getElementById('pp_no').value.trim(),
+                sticker_no: document.getElementById('sticker_no').value.trim(),
+                full_name: document.getElementById('full_name').value.trim(),
+                employer_name: document.getElementById('employer_name').value.trim(),
+                country_name: document.getElementById('country_name').value,
+                profession: document.getElementById('profession').value.trim(),
+                salary: document.getElementById('salary').value,
+                ssid: document.getElementById('ssid').value.trim(),
+                approval_date: document.getElementById('approval_date').value,
+                validity_date: document.getElementById('validity_date').value,
+                permit_type: document.getElementById('permit_type').value,
+                progress: document.getElementById('progress').value,
+                phone: document.getElementById('phone').value.trim(),
+                status: 'Active'
+            };
+
+            const editId = this.dataset.editId;
+            if (editId) {
+                const idx = workers.findIndex(w => w.id == editId);
+                if (idx !== -1) workers[idx] = { ...workers[idx], ...data };
+                this.dataset.editId = '';
+                alert('✅ श्रमिक विवरण अपडेट भयो!');
+            } else {
+                data.id = workers.length ? Math.max(...workers.map(w => w.id)) + 1 : 1;
+                workers.push(data);
+                alert('✅ नयाँ श्रमिक दर्ता भयो!');
+            }
+            renderWorkers();
+            this.reset();
+            // Switch to dashboard
+            showPage('dashboard');
+        });
+
+        function editWorker(id) {
+            const w = workers.find(x => x.id === id);
+            if (!w) return;
+            document.getElementById('pp_no').value = w.pp_no || '';
+            document.getElementById('sticker_no').value = w.sticker_no || '';
+            document.getElementById('full_name').value = w.full_name || '';
+            document.getElementById('employer_name').value = w.employer_name || '';
+            document.getElementById('country_name').value = w.country_name || 'UAE';
+            document.getElementById('profession').value = w.profession || '';
+            document.getElementById('salary').value = w.salary || '';
+            document.getElementById('ssid').value = w.ssid || '';
+            document.getElementById('approval_date').value = w.approval_date || '';
+            document.getElementById('validity_date').value = w.validity_date || '';
+            document.getElementById('permit_type').value = w.permit_type || 'Automation(R)';
+            document.getElementById('progress').value = w.progress || 'Document Collection';
+            document.getElementById('phone').value = w.phone || '';
+            document.getElementById('workerForm').dataset.editId = id;
+            showPage('add-worker');
+            document.querySelector('#section-add-worker h5').innerHTML = '<i class="fas fa-edit me-2"></i> श्रमिक विवरण सम्पादन';
+        }
+
+        function deleteWorker(id) {
+            if (confirm('के तपाईं यो श्रमिक मेटाउन चाहनुहुन्छ?')) {
+                workers = workers.filter(w => w.id !== id);
+                renderWorkers();
+                alert('✅ श्रमिक मेटियो!');
+            }
+        }
+
+        // ============================================================
+        //  NAVIGATION
+        // ============================================================
+        function showPage(page) {
+            document.querySelectorAll('[id^="section-"]').forEach(el => el.style.display = 'none');
+            const target = document.getElementById('section-' + page);
+            if (target) target.style.display = 'block';
+            document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelector(`.sidebar .nav-link[data-page="${page}"]`)?.classList.add('active');
+            const titles = {
+                dashboard: 'Dashboard',
+                'add-worker': 'नयाँ दर्ता',
+                workers: 'श्रमिक सूची',
+                payments: 'भुक्तानी',
+                reports: 'प्रतिवेदन',
+                settings: 'सेटिङ'
+            };
+            document.getElementById('pageTitle').textContent = titles[page] || 'Dashboard';
+            if (page === 'add-worker') {
+                document.querySelector('#section-add-worker h5').innerHTML = '<i class="fas fa-user-plus me-2"></i> नयाँ श्रमिक दर्ता';
+                document.getElementById('workerForm').reset();
+                document.getElementById('workerForm').dataset.editId = '';
+            }
+        }
+
+        document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const page = this.dataset.page;
+                if (page) showPage(page);
+                document.getElementById('sidebar').classList.remove('open');
+            });
+        });
+
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        // ============================================================
+        //  SEARCH
+        // ============================================================
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const term = this.value.toLowerCase();
+            document.querySelectorAll('#workerTableBody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+            });
+        });
+
+        // ============================================================
+        //  INIT
+        // ============================================================
+        renderWorkers();
+        console.log('✅ Admin Panel Ready!');
+        console.log('📌 Workers:', workers.length);
+        console.log('📝 Add/Edit/Delete workers from this panel.');
+        console.log('🔗 Connect to PHP + MySQL for persistent storage.');
+    </script>
+
+</body>
+</html>
