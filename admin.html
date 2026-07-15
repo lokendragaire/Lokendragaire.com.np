@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        /* ===== GOVT CARD ORIGINAL CSS (हजुरको आफ्नै डिजाइन) ===== */
+        /* ===== GOVT CARD ORIGINAL CSS ===== */
         .paper-outer {
             display: flex;
             justify-content: center;
@@ -390,9 +390,9 @@
     <!-- ५. DATABASE SYSTEM JAVASCRIPT -->
     <!-- ========================================== -->
     <script>
-        // Supabase Details
+        // Supabase URL र नयाँ API Key सेट गरियो
         const SUPABASE_URL = "https://lyzxsqussxalfpqejelv.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5";
+        const SUPABASE_ANON_KEY = "sb_publishable_KUO0ydmJWPTFhCXiz9Ph3g_aqw5qRmA";
         
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let allWorkers = [];
@@ -401,7 +401,6 @@
         window.addEventListener('DOMContentLoaded', async () => {
             const { data: { session } } = await _supabase.auth.getSession();
             if (session) {
-                // यदि प्रयोगकर्ता पहिले नै लगइन छ भने सीधै ड्यासबोर्ड देखाउने
                 document.getElementById('section-public').style.display = 'none';
                 document.getElementById('section-admin').style.display = 'block';
                 switchAdminTab('list');
@@ -435,7 +434,7 @@
                     return;
                 }
 
-                // डाटा सिधै HTML टेम्प्लेटमा भर्ने
+                // डाटा सिधै HTML मा भर्ने
                 document.getElementById('card-pp').textContent = data.pp_no || '-';
                 document.getElementById('card-sticker').textContent = data.sticker_no || '-';
                 document.getElementById('card-name').textContent = data.full_name || '-';
