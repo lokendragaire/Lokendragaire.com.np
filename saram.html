@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Labour Permit Result</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#f3f3f3;
+    font-family:"Times New Roman",serif;
+}
+
+.paper{
+
+    width:900px;
+    margin:25px auto;
+    background:#fff;
+    padding:30px 40px;
+    box-shadow:0 0 15px rgba(0,0,0,.15);
+
+}
+
+.header{
+
+display:flex;
+align-items:flex-start;
+
+}
+
+.logo{
+
+width:490px;
+height:113px;
+object-fit:cover;
+
+}
+
+.header-text{
+
+margin-left:10px;
+line-height:1.6;
+
+}
+
+.header-text h2{
+
+margin:0;
+font-size:18px;
+font-weight:normal;
+
+}
+
+.header-text h3{
+
+margin:0;
+font-size:17px;
+font-weight:normal;
+
+}
+
+.header-text h4{
+
+margin:0;
+font-size:15px;
+font-weight:normal;
+
+}
+
+table{
+
+width:100%;
+margin-top:20px;
+border-collapse:collapse;
+
+}
+
+td{
+
+font-size:24px;
+padding:3px 8px;
+vertical-align:top;
+
+}
+
+.label{
+
+width:230px;
+
+}
+
+.value{
+
+font-weight:normal;
+
+}
+
+.qr{
+
+margin-top:55px;
+text-align:center;
+
+}
+
+.qr img{
+
+width:80px;
+
+}
+
+.note{
+
+margin-top:20px;
+display:flex;
+
+}
+
+.note-title{
+
+width:90px;
+font-size:24px;
+
+}
+
+.note-body{
+
+font-size:17px;
+line-height:1.8;
+
+}
+
+.nep{
+
+margin-top:10px;
+font-size:18px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="paper">
+
+<div class="header">
+
+<img src="header.png" class="logo">
+
+<div class="header-text">
+
+<h2>Government of Nepal</h2>
+<h3>Ministry of Youth, Labour and Employment</h3>
+<h3>Department of Foreign Employment</h3>
+<h4>Kathmandu, Nepal</h4>
+
+</div>
+
+</div>
+
+<table>
+
+<tr>
+<td class="label">PP No:</td>
+<td class="value">{{passport}}</td>
+</tr>
+
+<tr>
+<td>Sticker No:</td>
+<td>{{sticker}}</td>
+</tr>
+
+<tr>
+<td>Name:</td>
+<td>{{name}}</td>
+</tr>
+
+<tr>
+<td>Employer Name:</td>
+<td>{{company}}</td>
+</tr>
+
+<tr>
+<td>Country Name:</td>
+<td>{{country}}</td>
+</tr>
+
+<tr>
+<td>Profession:</td>
+<td>{{profession}}</td>
+</tr>
+
+<tr>
+<td>Salary:</td>
+<td>{{salary}}</td>
+</tr>
+
+<tr>
+<td>Approval Date:</td>
+<td>{{approval_date}}</td>
+</tr>
+
+<tr>
+<td>Validity of the Permit:</td>
+<td>{{expiry}}</td>
+</tr>
+
+<tr>
+<td>SSID:</td>
+<td>{{ssid}}</td>
+</tr>
+
+<tr>
+<td>Type:</td>
+<td>{{type}}</td>
+</tr>
+
+</table>
+
+<div class="qr">
+
+<img src="qr.png">
+
+</div>
+
+<div class="note">
+
+<div class="note-title">
+Note:
+</div>
+
+<div class="note-body">
+
+Please, re-apply for labour permit renewal before 3 months of its expiry.
+
+<div class="nep">
+
+विदेशमा घर आएका तर फर्किनेहरुले यसको म्याद सकिनुभन्दा ३ महिना अगावै नवीकरण गराउनुहोला ।
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
