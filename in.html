@@ -1030,9 +1030,58 @@
     }
 
     // ========================================================================
-    // 3. AUTHENTICATION - FIXED (user_profiles बाट Role लिने)
+    // 3. CHECK EXISTING SESSION
     // ========================================================================
-    
+    async function checkSession() {
+        if (!supabaseConnected || !supabaseClient) return;
+        try {
+            const { data, error } = await supabaseClient.auth.getSession();
+            if (error) {
+                console.warn('Session error:', error);
+                return;
+            }
+            if (data && data.session) {
+                const user = data.session.user;
+                
+                let userRole = 'user';
+                let username = user.email.split('@')[0];
+                
+                try {
+                    const { data: profileData } = await supabaseClient
+                        .from('user_profiles')
+                        .select('username, role')
+                        .eq('id', user.id)
+                        .single();
+                    
+                    if (profileData) {
+                        userRole = profileData.role || 'user';
+                        username = profileData.username || username;
+                    }
+                } catch(e) {
+                    console.log('No profile found');
+                }
+                
+                currentUser = {
+                    id: user.id,
+                    email: user.email,
+                    username: username,
+                    role: userRole
+                };
+                
+                document.getElementById('loginModal').classList.remove('show');
+                document.getElementById('mainDashboard').style.display = 'block';
+                await loadProjectsFromSupabase();
+                renderAll();
+                console.log('✅ Session restored - Role:', currentUser.role);
+            }
+        } catch(err) {
+            console.warn('Session check error:', err);
+        }
+    }
+
+    // ========================================================================
+    // 4. LOGIN
+    // ========================================================================
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -1063,12 +1112,11 @@
             }
 
             if (data && data.user) {
-                // 🔥 FIX: user_profiles बाट Role लिने
                 let userRole = 'user';
                 let username = data.user.email.split('@')[0];
                 
                 try {
-                    const { data: profileData, error: profileError } = await supabaseClient
+                    const { data: profileData } = await supabaseClient
                         .from('user_profiles')
                         .select('username, role')
                         .eq('id', data.user.id)
@@ -1078,11 +1126,9 @@
                         userRole = profileData.role || 'user';
                         username = profileData.username || username;
                         console.log('✅ Profile loaded:', profileData);
-                    } else {
-                        console.log('ℹ️ No profile found, using defaults');
                     }
-                } catch(profileErr) {
-                    console.warn('Profile fetch error:', profileErr);
+                } catch(e) {
+                    console.log('No profile found, using defaults');
                 }
                 
                 currentUser = {
@@ -1106,7 +1152,9 @@
         }
     });
 
-    // Signup
+    // ========================================================================
+    // 5. SIGNUP
+    // ========================================================================
     document.getElementById('signupForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -1170,13 +1218,30 @@
     }
 
     // ========================================================================
-    // 4. UI UPDATE - FIXED
+    // 6. LOGOUT
+    // ========================================================================
+    async function logout() {
+        if(!confirm('बाहिरिने?')) return;
+        if (supabaseClient) {
+            await supabaseClient.auth.signOut();
+        }
+        currentUser = null;
+        document.getElementById('mainDashboard').style.display = 'none';
+        document.getElementById('loginModal').classList.add('show');
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
+        document.getElementById('loginError').textContent = '';
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('signupForm').style.display = 'none';
+        projects = [];
+        renderAll();
+    }
+
+    // ========================================================================
+    // 7. UI UPDATE
     // ========================================================================
     function updateUIByRole() {
         const isAdminUser = currentUser && currentUser.role === 'admin';
-        
-        console.log('🔄 UI Update - Is Admin?', isAdminUser, 'Role:', currentUser?.role);
-        
         document.getElementById('adminPanel').classList.toggle('show', isAdminUser);
         document.getElementById('btnAddProject').style.display = isAdminUser ? 'inline-block' : 'none';
         document.getElementById('displayRole').textContent = isAdminUser ? 'Admin' : 'User';
@@ -1189,7 +1254,7 @@
     }
 
     // ========================================================================
-    // 5. PROJECT DATA OPERATIONS
+    // 8. SUPABASE DATA OPERATIONS
     // ========================================================================
     const TABLE_NAME = 'projects';
 
@@ -1203,6 +1268,7 @@
             const { data, error } = await supabaseClient
                 .from(TABLE_NAME)
                 .select('*')
+                .eq('user_id', currentUser.id)
                 .order('id', { ascending: true });
 
             if (error) {
@@ -1240,7 +1306,7 @@
             const { error: deleteError } = await supabaseClient
                 .from(TABLE_NAME)
                 .delete()
-                .neq('id', 0);
+                .eq('user_id', currentUser.id);
 
             if (deleteError) {
                 console.warn('Delete error:', deleteError);
@@ -1251,13 +1317,15 @@
                 user_id: currentUser.id
             }));
 
-            const { data, error } = await supabaseClient
-                .from(TABLE_NAME)
-                .insert(projectsToSync);
+            if (projectsToSync.length > 0) {
+                const { data, error } = await supabaseClient
+                    .from(TABLE_NAME)
+                    .insert(projectsToSync);
 
-            if (error) {
-                alert('❌ Sync गर्दा त्रुटि: ' + error.message);
-                return;
+                if (error) {
+                    alert('❌ Sync गर्दा त्रुटि: ' + error.message);
+                    return;
+                }
             }
 
             alert('✅ ' + projects.length + ' वटा कार्यक्रम Supabase मा Sync गरियो!');
@@ -1270,12 +1338,27 @@
         if (!supabaseConnected || !supabaseClient || !currentUser) return;
 
         try {
-            const { error } = await supabaseClient
+            const { data: existing } = await supabaseClient
                 .from(TABLE_NAME)
-                .upsert({ ...project, user_id: currentUser.id });
+                .select('id')
+                .eq('id', project.id)
+                .eq('user_id', currentUser.id)
+                .single();
 
-            if (error) {
-                console.warn('Error saving to Supabase:', error);
+            if (existing) {
+                const { error } = await supabaseClient
+                    .from(TABLE_NAME)
+                    .update({ ...project, user_id: currentUser.id })
+                    .eq('id', project.id)
+                    .eq('user_id', currentUser.id);
+                
+                if (error) console.warn('Update error:', error);
+            } else {
+                const { error } = await supabaseClient
+                    .from(TABLE_NAME)
+                    .insert({ ...project, user_id: currentUser.id });
+                
+                if (error) console.warn('Insert error:', error);
             }
         } catch(err) {
             console.warn('Supabase save error:', err);
@@ -1289,7 +1372,8 @@
             const { error } = await supabaseClient
                 .from(TABLE_NAME)
                 .delete()
-                .eq('id', projectId);
+                .eq('id', projectId)
+                .eq('user_id', currentUser.id);
 
             if (error) {
                 console.warn('Error deleting from Supabase:', error);
@@ -1299,6 +1383,9 @@
         }
     }
 
+    // ========================================================================
+    // 9. PROJECT DATA (Local)
+    // ========================================================================
     function getDefaultBeneficiary() {
         return { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0 };
     }
@@ -1335,7 +1422,21 @@
               method: 'कोषमा दर्ता, मासिक योगदान',
               output: 'सबै करार कर्मचारीको सामाजिक सुरक्षा',
               expenses: [{ title: 'कोष दर्ता शुल्क', amount: 300000, date: '२०८१/०३/२०', remark: 'प्राविधिक सहायता' }],
-              beneficiary: { male: 25, female: 10, dalit: 5, janajati: 8, disabled: 1, returnee: 2, entrepreneur: 0 } }
+              beneficiary: { male: 25, female: 10, dalit: 5, janajati: 8, disabled: 1, returnee: 2, entrepreneur: 0 } },
+            { id: 4, name: 'वित्तीय साक्षरता पुस्तक छपाई', category: 'प्रवर्द्धन', budget: 100000, time: 'Q1-Q2', status: 'प्रगतिमा',
+              responsible: 'सुनिता अर्याल', assistant: 'रमेश भण्डारी', authorized: 'महेश अधिकारी',
+              activities: 'हातेपुस्तिका तयार, छपाई, प्रसारण',
+              method: 'विज्ञ टोलीद्वारा सामग्री तयार',
+              output: 'बचत, ऋण र वित्तीय व्यवस्थापनमा चेतना',
+              expenses: [{ title: 'छपाई खर्च', amount: 25000, date: '२०८१/०२/०५', remark: 'ब्रोसर' }],
+              beneficiary: { male: 15, female: 20, dalit: 8, janajati: 10, disabled: 1, returnee: 3, entrepreneur: 2 } },
+            { id: 5, name: 'सीप रोजगार बैठक र अनुगमन', category: 'अन्य', budget: 150000, time: 'Q1-Q4', status: 'प्रगतिमा',
+              responsible: 'डिल्ली राम खतिवडा', assistant: 'निर्मला न्यौपाने', authorized: 'महेश अधिकारी',
+              activities: 'कार्यान्वयन समितिको बैठक, स्थलगत अनुगमन',
+              method: 'मासिक बैठक, अनुगमन टोली परिचालन',
+              output: 'कार्यक्रमको प्रभावकारी कार्यान्वयन',
+              expenses: [{ title: 'बैठक खर्च', amount: 40000, date: '२०८१/०१/२५', remark: '३ वटा बैठक' }],
+              beneficiary: { male: 8, female: 5, dalit: 2, janajati: 3, disabled: 0, returnee: 1, entrepreneur: 0 } }
         ];
         localStorage.setItem('projectDataV5', JSON.stringify(defaultProjects));
         return defaultProjects;
@@ -1349,7 +1450,7 @@
     }
 
     // ========================================================================
-    // 6. HELPERS
+    // 10. HELPERS
     // ========================================================================
     function getTotalExpenses(project) {
         return (project.expenses || []).reduce((sum, e) => sum + (e.amount || 0), 0);
@@ -1362,7 +1463,7 @@
     }
 
     // ========================================================================
-    // 7. RENDER FUNCTIONS
+    // 11. RENDER FUNCTIONS
     // ========================================================================
     function renderSummary() {
         const totalBudget = projects.reduce((s,p) => s + (p.budget || 0), 0);
@@ -1484,7 +1585,7 @@
     }
 
     // ========================================================================
-    // 8. DETAIL VIEW
+    // 12. DETAIL VIEW
     // ========================================================================
     function openDetailView(id) {
         const p = projects.find(x => x.id === id);
@@ -1554,7 +1655,7 @@
     }
 
     // ========================================================================
-    // 9. PROJECT CRUD OPERATIONS
+    // 13. PROJECT CRUD OPERATIONS
     // ========================================================================
     function openAddModal() {
         if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
@@ -1620,14 +1721,16 @@
             entrepreneur: parseInt(document.getElementById('fBeneficiaryEntrepreneur').value) || 0
         };
         if(!name || budget <= 0) { alert('नाम र बजेट भर्नुहोस्।'); return; }
+        
+        const project = { id: id || Date.now(), name, category, budget, time, status, responsible, assistant, authorized, activities, method, output, beneficiary, expenses: [] };
+        
         if(editMode) {
             const idx = projects.findIndex(p => p.id === id);
             if(idx !== -1) {
                 projects[idx] = { ...projects[idx], name, category, budget, time, status, responsible, assistant, authorized, activities, method, output, beneficiary };
             }
         } else {
-            const newId = projects.length > 0 ? Math.max(...projects.map(p => p.id)) + 1 : 1;
-            projects.push({ id: newId, name, category, budget, time, status, responsible, assistant, authorized, activities, method, output, beneficiary, expenses: [] });
+            projects.push(project);
         }
         saveProjects();
         closeModal('projectModal');
@@ -1646,7 +1749,7 @@
     }
 
     // ========================================================================
-    // 10. EXPENSE MODAL
+    // 14. EXPENSE MODAL
     // ========================================================================
     let currentExpenseProjectId = null;
 
@@ -1723,7 +1826,7 @@
     }
 
     // ========================================================================
-    // 11. BENEFICIARY MODAL
+    // 15. BENEFICIARY MODAL
     // ========================================================================
     let beneficiaryEditProjectId = null;
 
@@ -1798,7 +1901,7 @@
     }
 
     // ========================================================================
-    // 12. USER MANAGEMENT
+    // 16. USER MANAGEMENT
     // ========================================================================
     function openUserManagement() {
         if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
@@ -1840,7 +1943,7 @@
     }
 
     // ========================================================================
-    // 13. DATA EXPORT / IMPORT
+    // 17. DATA EXPORT / IMPORT
     // ========================================================================
     function exportData() {
         if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
@@ -1877,7 +1980,7 @@
     }
 
     // ========================================================================
-    // 14. TABS
+    // 18. TABS
     // ========================================================================
     function switchTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -1894,7 +1997,7 @@
     });
 
     // ========================================================================
-    // 15. REPORT GENERATOR
+    // 19. COMPLETE REPORT GENERATOR (तपाईंको Format अनुसार)
     // ========================================================================
     function generateReport() {
         const container = document.getElementById('reportContent');
@@ -1903,6 +2006,7 @@
             return;
         }
 
+        // ===== Calculate Data =====
         const totalBudget = projects.reduce((s,p) => s + (p.budget || 0), 0);
         const totalExp = projects.reduce((s,p) => s + getTotalExpenses(p), 0);
         const totalBalance = totalBudget - totalExp;
@@ -1911,6 +2015,7 @@
         const completedCount = projects.filter(p => p.status === 'सम्पन्न').length;
         const pendingCount = projects.filter(p => p.status === 'सुरु हुन बाँकी').length;
 
+        // ===== Beneficiary Data =====
         let totalMale = 0, totalFemale = 0, totalDalit = 0, totalJanajati = 0;
         let totalDisabled = 0, totalReturnee = 0, totalEntrepreneur = 0;
         projects.forEach(p => {
@@ -1921,6 +2026,7 @@
         });
         const totalBeneficiaries = totalMale + totalFemale + totalDalit + totalJanajati + totalDisabled + totalReturnee + totalEntrepreneur;
 
+        // ===== Category Data =====
         const categories = {};
         projects.forEach(p => {
             if(!categories[p.category]) categories[p.category] = { budget: 0, expense: 0, count: 0 };
@@ -1929,51 +2035,163 @@
             categories[p.category].count += 1;
         });
 
+        // ===== Activities =====
+        let activitiesRows = '';
+        const allActivities = [];
+        projects.forEach(p => {
+            if(p.activities) {
+                const acts = p.activities.split(',').map(a => a.trim());
+                acts.forEach(a => { if(a) allActivities.push({ activity: a, project: p.name, status: p.status }); });
+            }
+        });
+        allActivities.slice(0, 10).forEach((a, idx) => {
+            activitiesRows += `<tr><td>${idx+1}</td><td>${a.activity}</td><td>${a.project}</td><td>${a.status}</td></tr>`;
+        });
+
+        // ===== Expenses =====
+        let expenseRows = '', expCounter = 1;
+        projects.forEach(p => {
+            (p.expenses || []).forEach(e => {
+                expenseRows += `<tr>
+                    <td>${expCounter++}</td>
+                    <td>${e.date || '-'}</td>
+                    <td>${e.title || 'खर्च'}</td>
+                    <td>${p.name}</td>
+                    <td>रु. ${(e.amount||0).toLocaleString()}</td>
+                    <td>${e.remark || '-'}</td>
+                </tr>`;
+            });
+        });
+
+        // ===== Persons =====
+        let personRows = '';
+        const uniquePersons = [...new Set(projects.filter(p => p.responsible).map(p => p.responsible))];
+        uniquePersons.slice(0, 10).forEach((person, idx) => {
+            const proj = projects.find(p => p.responsible === person);
+            personRows += `<tr>
+                <td>${idx+1}</td>
+                <td>${person}</td>
+                <td>${proj ? proj.authorized || 'प्रमुख' : 'प्रमुख'}</td>
+                <td>${proj ? proj.name : '-'}</td>
+            </tr>`;
+        });
+
+        // ===== Achievements =====
+        let achievementList = '';
+        projects.forEach(p => { if(p.output) achievementList += `<li>${p.output}</li>`; });
+        if(!achievementList) achievementList = '<li>हालसम्म कुनै उपलब्धी रेकर्ड गरिएको छैन।</li>';
+
+        // ===== Remaining Works =====
+        let remainingWorks = '';
+        const incomplete = projects.filter(p => p.status !== 'सम्पन्न');
+        incomplete.forEach(p => {
+            remainingWorks += `<li>${p.name} - ${p.status} (बजेट: रु. ${(p.budget||0).toLocaleString()}, खर्च: रु. ${getTotalExpenses(p).toLocaleString()})</li>`;
+        });
+        if(!remainingWorks) remainingWorks = '<li>सबै कार्यक्रमहरू सम्पन्न भइसकेका छन्।</li>';
+
+        // ===== Challenges =====
+        let challenges = '';
+        if(pendingCount > 0) challenges += `<li>${pendingCount} वटा कार्यक्रम सुरु हुन बाँकी छन्।</li>`;
+        if(activeCount > 0) challenges += `<li>${activeCount} वटा कार्यक्रम प्रगतिमा छन्, समयमै सम्पन्न गर्न थप प्रयास आवश्यक।</li>`;
+        if(!challenges) challenges = '<li>हाल कुनै विशेष समस्या देखिएको छैन।</li>';
+
+        // ===== Strategies =====
+        const strategies = [
+            'स्थानीय तहको सहयोगमा युवा परिचालन र सूचीकरण',
+            'बजारको माग अनुसार सीपमूलक तालिम सञ्चालन',
+            'उद्यमशीलता विकासका लागि परामर्श र अनुदान कार्यक्रम',
+            'नियमित अनुगमन र प्रगति समीक्षा',
+            'सामाजिक सुरक्षा कोषमा आबद्धता'
+        ];
+
+        // ===== Future Plans =====
+        const futurePlans = [
+            'सबै कार्यक्रमहरूलाई समयमै सम्पन्न गर्न नियमित अनुगमन बढाउने',
+            'बाँकी रहेका कार्यहरूको प्राथमिकीकरण र द्रुत कार्यान्वयन',
+            'लाभग्राहीहरूको सन्तुष्टि मूल्याङ्कन गर्ने',
+            'कार्यक्रमको प्रभाव मूल्याङ्कन प्रतिवेदन तयार गर्ने',
+            'आगामी आर्थिक वर्षको लागि आवश्यकता मूल्याङ्कन गर्ने'
+        ];
+
+        // ===== Build Report HTML =====
         let reportHTML = `
+            <!-- HEADER -->
             <div class="report-section">
                 <div class="report-header">
                     <h2>गलकोट नगरपालिका</h2>
                     <h3>रोजगार सेवा केन्द्र</h3>
                     <h4>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रम प्रगति प्रतिवेदन</h4>
                     <p><strong>आर्थिक वर्ष :</strong> २०८१/८२</p>
-                    <p><strong>प्रतिवेदन मिति :</strong> ${new Date().toLocaleDateString('ne-NP', {year:'numeric', month:'long', day:'numeric'})}</p>
+                    <p><strong>प्रतिवेदन अवधि :</strong> ${new Date().toLocaleDateString('ne-NP', {year:'numeric', month:'long', day:'numeric'})}</p>
+                    <p><strong>कार्यक्रमको नाम :</strong> रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रम</p>
+                    <p><strong>कार्यक्रम नं. :</strong> ${projects.length > 0 ? projects[0].id || '१' : '१'}</p>
+                    <p><strong>प्रतिवेदन तयार भएको मिति :</strong> ${new Date().toLocaleDateString('ne-NP', {year:'numeric', month:'long', day:'numeric'})}</p>
                 </div>
             </div>
+
+            <!-- १. परिचय -->
             <div class="report-section">
-                <h4>परिचय</h4>
+                <h4>१. परिचय</h4>
                 <div class="report-introduction">
                     गलकोट नगरपालिका अन्तर्गत रोजगार सेवा केन्द्रमार्फत सञ्चालित रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रम आर्थिक वर्ष २०८१/८२ मा स्वीकृत वार्षिक कार्यक्रम तथा बजेट अनुसार सञ्चालन गरिएको हो। यस कार्यक्रमको मुख्य उद्देश्य स्थानीय युवाहरूलाई रोजगारीमा जोड्नु, सीप विकास गर्नु, उद्यमशीलतालाई प्रवर्द्धन गर्नु र लघुउद्यमहरूलाई सहयोग गर्नु रहेको छ। 
                     ${projects.length > 0 ? `यस अवधिमा कुल ${projects.length} वटा कार्यक्रमहरू सञ्चालन भएका छन् जसमा रु. ${totalBudget.toLocaleString()} बजेट विनियोजन गरिएको थियो। हालसम्म रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ।` : ''}
                 </div>
             </div>
+
+            <!-- २. कार्यक्रमको उद्देश्य -->
             <div class="report-section">
-                <h4>१. कार्यक्रमको संक्षिप्त विवरण</h4>
+                <h4>२. कार्यक्रमको उद्देश्य</h4>
+                <div class="report-introduction">
+                    यस कार्यक्रमको प्रमुख उद्देश्य स्थानीय युवाहरूलाई रोजगारीमा जोड्नु, सीप विकास गर्नु, उद्यमशीलतालाई प्रवर्द्धन गर्नु र लघुउद्यमहरूलाई सहयोग गर्नु रहेको छ। साथै, स्थानीय स्तरमा रोजगारी सिर्जना गर्नु, दक्ष जनशक्ति उत्पादन गर्नु र आत्मनिर्भर अर्थतन्त्रको विकास गर्नु पनि यसका मुख्य उद्देश्यहरू हुन्।
+                </div>
+            </div>
+
+            <!-- ३. कार्यक्रमको संक्षिप्त विवरण -->
+            <div class="report-section">
+                <h4>३. कार्यक्रमको संक्षिप्त विवरण</h4>
                 <div class="row-detail">
-                    <div class="item"><span class="label">कुल कार्यक्रम</span><span class="value">${projects.length} वटा</span></div>
+                    <div class="item"><span class="label">कार्यक्रमको नाम</span><span class="value">रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रम</span></div>
+                    <div class="item"><span class="label">कार्यक्रम नं.</span><span class="value">${projects.length > 0 ? projects[0].id || '१' : '१'}</span></div>
+                    <div class="item"><span class="label">कार्यान्वयन अवधि</span><span class="value">आर्थिक वर्ष २०८१/८२</span></div>
+                    <div class="item"><span class="label">कार्यान्वयन स्थान</span><span class="value">गलकोट नगरपालिका</span></div>
+                    <div class="item"><span class="label">वडा नं.</span><span class="value">सम्पूर्ण वडाहरू</span></div>
                     <div class="item"><span class="label">स्वीकृत बजेट</span><span class="value">रु. ${totalBudget.toLocaleString()}</span></div>
                     <div class="item"><span class="label">हालसम्म खर्च</span><span class="value">रु. ${totalExp.toLocaleString()}</span></div>
                     <div class="item"><span class="label">बाँकी बजेट</span><span class="value">रु. ${totalBalance.toLocaleString()}</span></div>
                     <div class="item"><span class="label">खर्च प्रतिशत</span><span class="value">${progressPercent}%</span></div>
-                    <div class="item"><span class="label">प्रगतिमा</span><span class="value">${activeCount} वटा</span></div>
-                    <div class="item"><span class="label">सम्पन्न</span><span class="value">${completedCount} वटा</span></div>
-                    <div class="item"><span class="label">सुरु हुन बाँकी</span><span class="value">${pendingCount} वटा</span></div>
+                    <div class="item"><span class="label">कार्यक्रमको अवस्था</span><span class="value">${activeCount > 0 ? 'प्रगतिमा' : completedCount > 0 ? 'आंशिक सम्पन्न' : 'सुरु हुन बाँकी'}</span></div>
                 </div>
             </div>
+
+            <!-- ४. कार्यान्वयन रणनीति -->
             <div class="report-section">
-                <h4>२. लाभग्राही विवरण</h4>
-                <div class="row-detail">
-                    <div class="item"><span class="label">👨 पुरुष</span><span class="value">${totalMale}</span></div>
-                    <div class="item"><span class="label">👩 महिला</span><span class="value">${totalFemale}</span></div>
-                    <div class="item"><span class="label">🧑‍🦱 दलित</span><span class="value">${totalDalit}</span></div>
-                    <div class="item"><span class="label">🧑‍🦰 जनजाति</span><span class="value">${totalJanajati}</span></div>
-                    <div class="item"><span class="label">♿ अपाङ्गता</span><span class="value">${totalDisabled}</span></div>
-                    <div class="item"><span class="label">✈️ फर्केका</span><span class="value">${totalReturnee}</span></div>
-                    <div class="item"><span class="label">🚀 नयाँ उद्यमी</span><span class="value">${totalEntrepreneur}</span></div>
-                    <div class="item"><span class="label">📊 कुल लाभग्राही</span><span class="value"><strong>${totalBeneficiaries} जना</strong></span></div>
-                </div>
+                <h4>४. कार्यान्वयन रणनीति</h4>
+                <ol>
+                    ${strategies.map((s, i) => `<li>${s}</li>`).join('')}
+                </ol>
             </div>
+
+            <!-- ५. गतिविधिहरू -->
             <div class="report-section">
-                <h4>३. वित्तीय प्रगति</h4>
+                <h4>५. कार्यक्रम अन्तर्गत सञ्चालन गरिएका गतिविधिहरू</h4>
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>क्र.स</th>
+                            <th>गतिविधि</th>
+                            <th>स्थान</th>
+                            <th>सहभागी</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${activitiesRows || '<tr><td colspan="4" class="empty-msg">कुनै गतिविधि रेकर्ड गरिएको छैन।</td></tr>'}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ६. वित्तीय प्रगति -->
+            <div class="report-section">
+                <h4>६. वित्तीय प्रगति</h4>
                 <div class="row-detail">
                     <div class="item"><span class="label">कुल बजेट</span><span class="value">रु. ${totalBudget.toLocaleString()}</span></div>
                     <div class="item"><span class="label">हालसम्म खर्च</span><span class="value">रु. ${totalExp.toLocaleString()}</span></div>
@@ -1984,28 +2202,143 @@
                     <div class="progress-large"><div class="fill" style="width:${progressPercent}%"></div></div>
                     <div style="text-align:center;font-size:13px;margin-top:4px;">वित्तीय प्रगति: ${progressPercent}%</div>
                 </div>
-            </div>
-            <div class="report-section">
-                <h4>४. चार्ट विश्लेषण</h4>
-                <div class="report-charts" id="reportChartContainer">
-                    <div class="chart-box"><h4>📊 प्रकृति अनुसार बजेट (Pie)</h4><canvas id="reportPieChart"></canvas></div>
-                    <div class="chart-box"><h4>📊 बजेट र खर्च तुलना (Bar)</h4><canvas id="reportBarChart"></canvas></div>
-                    <div class="chart-box"><h4>📈 कार्यक्रम प्रगति (Line)</h4><canvas id="reportLineChart"></canvas></div>
+                <div style="margin-top:10px;">
+                    <div class="report-charts">
+                        <div class="chart-box"><h4>📊 बजेट विनियोजन</h4><canvas id="reportPieChart"></canvas></div>
+                        <div class="chart-box"><h4>📊 बजेट र खर्च तुलना</h4><canvas id="reportBarChart"></canvas></div>
+                        <div class="chart-box"><h4>📈 कार्यक्रम प्रगति</h4><canvas id="reportLineChart"></canvas></div>
+                    </div>
                 </div>
             </div>
+
+            <!-- ७. खर्च विवरण -->
             <div class="report-section">
-                <h4>५. निष्कर्ष</h4>
-                <p>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रमको हालसम्मको वित्तीय तथा भौतिक प्रगति सन्तोषजनक रहेको देखिन्छ। कार्यक्रम अन्तर्गत स्वीकृत बजेटमध्ये रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ भने कार्यक्रमबाट ${totalBeneficiaries} जना प्रत्यक्ष लाभान्वित भएका छन्।</p>
+                <h4>७. खर्च विवरण</h4>
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>मिति</th>
+                            <th>खर्च शीर्षक</th>
+                            <th>स्थान</th>
+                            <th>रकम</th>
+                            <th>बिल नं.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${expenseRows || '<tr><td colspan="5" class="empty-msg">कुनै खर्च रेकर्ड गरिएको छैन।</td></tr>'}
+                    </tbody>
+                </table>
             </div>
+
+            <!-- ८. लाभग्राही विवरण -->
             <div class="report-section">
+                <h4>८. लाभग्राही विवरण</h4>
+                <div class="row-detail">
+                    <div class="item"><span class="label">कुल लाभग्राही</span><span class="value">${totalBeneficiaries}</span></div>
+                    <div class="item"><span class="label">पुरुष</span><span class="value">${totalMale}</span></div>
+                    <div class="item"><span class="label">महिला</span><span class="value">${totalFemale}</span></div>
+                    <div class="item"><span class="label">दलित</span><span class="value">${totalDalit}</span></div>
+                    <div class="item"><span class="label">जनजाति</span><span class="value">${totalJanajati}</span></div>
+                    <div class="item"><span class="label">अपाङ्गता भएका</span><span class="value">${totalDisabled}</span></div>
+                    <div class="item"><span class="label">वैदेशिक रोजगारबाट फर्केका</span><span class="value">${totalReturnee}</span></div>
+                    <div class="item"><span class="label">नयाँ उद्यमी</span><span class="value">${totalEntrepreneur}</span></div>
+                </div>
+            </div>
+
+            <!-- ९. उपलब्धी -->
+            <div class="report-section">
+                <h4>९. कार्यक्रमबाट प्राप्त उपलब्धी</h4>
+                <ul>${achievementList}</ul>
+            </div>
+
+            <!-- १०. संलग्न व्यक्तिहरू -->
+            <div class="report-section">
+                <h4>१०. कार्यक्रम सञ्चालनमा संलग्न व्यक्तिहरू</h4>
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>क्र.स</th>
+                            <th>नाम</th>
+                            <th>पद</th>
+                            <th>भूमिका</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${personRows || '<tr><td colspan="4" class="empty-msg">कुनै व्यक्ति रेकर्ड गरिएको छैन।</td></tr>'}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ११. समस्या -->
+            <div class="report-section">
+                <h4>११. कार्यक्रम सञ्चालनका क्रममा देखिएका समस्या</h4>
+                <ul>${challenges}</ul>
+            </div>
+
+            <!-- १२. समस्या समाधानका लागि गरिएका प्रयास -->
+            <div class="report-section">
+                <h4>१२. समस्या समाधानका लागि गरिएका प्रयास</h4>
+                <ol>
+                    <li>नियमित अनुगमन र सुपरिवेक्षण बढाइएको</li>
+                    <li>कार्यक्रम कार्यान्वयनमा संलग्न निकायहरूसँग समन्वय गरिएको</li>
+                    <li>आवश्यकता अनुसार प्राविधिक सहायता उपलब्ध गराइएको</li>
+                    <li>बजेटको प्रभावकारी परिचालन गरिएको</li>
+                    <li>स्थानीय सरोकारवालाहरूसँग छलफल गरिएको</li>
+                </ol>
+            </div>
+
+            <!-- १३. बाँकी कार्य -->
+            <div class="report-section">
+                <h4>१३. हाल गर्न बाँकी रहेका कार्यहरू</h4>
+                <ul>${remainingWorks}</ul>
+            </div>
+
+            <!-- १४. आगामी कार्ययोजना -->
+            <div class="report-section">
+                <h4>१४. आगामी कार्ययोजना</h4>
+                <ol>
+                    ${futurePlans.map((p, i) => `<li>${p}</li>`).join('')}
+                </ol>
+            </div>
+
+            <!-- १५. निष्कर्ष -->
+            <div class="report-section">
+                <h4>१५. निष्कर्ष</h4>
+                <p>उपरोक्त विवरणका आधारमा रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रमको हालसम्मको वित्तीय तथा भौतिक प्रगति सन्तोषजनक रहेको देखिन्छ। कार्यक्रम अन्तर्गत स्वीकृत बजेटमध्ये रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ भने कार्यक्रमबाट ${totalBeneficiaries} जना प्रत्यक्ष लाभान्वित भएका छन्। बाँकी रहेका कार्यहरू तोकिएको समयसीमाभित्र सम्पन्न गरी निर्धारित लक्ष्य हासिल गरिने अपेक्षा गरिएको छ।</p>
+            </div>
+
+            <!-- १६. हस्ताक्षर -->
+            <div class="report-section">
+                <h4>१६. प्रमाणित गर्ने</h4>
                 <div class="report-sign">
-                    <div class="sign-block"><strong>प्रतिवेदन तयार गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
-                    <div class="sign-block"><strong>प्रमाणित गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
-                    <div class="sign-block"><strong>स्वीकृत गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
+                    <div class="sign-block">
+                        <strong>प्रतिवेदन तयार गर्ने</strong><br>
+                        नाम : ................................<br>
+                        पद : ................................<br>
+                        <div class="line"></div>
+                        हस्ताक्षर
+                    </div>
+                    <div class="sign-block">
+                        <strong>प्रमाणित गर्ने</strong><br>
+                        नाम : ................................<br>
+                        पद : ................................<br>
+                        <div class="line"></div>
+                        हस्ताक्षर
+                    </div>
+                    <div class="sign-block">
+                        <strong>स्वीकृत गर्ने</strong><br>
+                        नाम : ................................<br>
+                        पद : ................................<br>
+                        <div class="line"></div>
+                        हस्ताक्षर
+                    </div>
                 </div>
             </div>
         `;
+
         container.innerHTML = reportHTML;
+
+        // Render charts
         setTimeout(() => {
             renderReportCharts(categories);
         }, 100);
@@ -2066,7 +2399,7 @@
     }
 
     // ========================================================================
-    // 16. EXPORT REPORT TO WORD
+    // 20. EXPORT REPORT TO WORD
     // ========================================================================
     function exportReportWord() {
         const reportElement = document.getElementById('reportContent');
@@ -2131,78 +2464,7 @@
     }
 
     // ========================================================================
-    // 17. LOGOUT
-    // ========================================================================
-    async function logout() {
-        if(!confirm('बाहिरिने?')) return;
-        if (supabaseClient) {
-            await supabaseClient.auth.signOut();
-        }
-        currentUser = null;
-        document.getElementById('mainDashboard').style.display = 'none';
-        document.getElementById('loginModal').classList.add('show');
-        document.getElementById('loginEmail').value = '';
-        document.getElementById('loginPassword').value = '';
-        document.getElementById('loginError').textContent = '';
-        document.getElementById('loginForm').style.display = 'block';
-        document.getElementById('signupForm').style.display = 'none';
-        projects = [];
-        renderAll();
-    }
-
-    // ========================================================================
-    // 18. CHECK EXISTING SESSION
-    // ========================================================================
-    async function checkSession() {
-        if (!supabaseConnected || !supabaseClient) return;
-        try {
-            const { data, error } = await supabaseClient.auth.getSession();
-            if (error) {
-                console.warn('Session error:', error);
-                return;
-            }
-            if (data && data.session) {
-                const user = data.session.user;
-                
-                // 🔥 FIX: user_profiles बाट Role लिने
-                let userRole = 'user';
-                let username = user.email.split('@')[0];
-                
-                try {
-                    const { data: profileData } = await supabaseClient
-                        .from('user_profiles')
-                        .select('username, role')
-                        .eq('id', user.id)
-                        .single();
-                    
-                    if (profileData) {
-                        userRole = profileData.role || 'user';
-                        username = profileData.username || username;
-                    }
-                } catch(e) {
-                    console.log('No profile found');
-                }
-                
-                currentUser = {
-                    id: user.id,
-                    email: user.email,
-                    username: username,
-                    role: userRole
-                };
-                
-                document.getElementById('loginModal').classList.remove('show');
-                document.getElementById('mainDashboard').style.display = 'block';
-                await loadProjectsFromSupabase();
-                renderAll();
-                console.log('✅ Session restored - Role:', currentUser.role);
-            }
-        } catch(err) {
-            console.warn('Session check error:', err);
-        }
-    }
-
-    // ========================================================================
-    // 19. INIT
+    // 21. INIT
     // ========================================================================
     document.querySelectorAll('.modal').forEach(modal => {
         modal.addEventListener('click', function(e) {
