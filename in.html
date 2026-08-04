@@ -8,7 +8,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* ====== ALL STYLES ====== */
         * {
             margin: 0;
             padding: 0;
@@ -735,7 +734,6 @@
         <h2>प्रणाली प्रवेश</h2>
         <p style="text-align:center;color:#777;font-size:14px;margin-bottom:16px;">रोजगार तथा उद्यमशीलता ड्यासबोर्ड</p>
         
-        <!-- Supabase Connection Status -->
         <div style="background:#f5f7fa;padding:10px 14px;border-radius:8px;margin-bottom:12px;border:1px solid #e0e4ea;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
             <span style="font-size:13px;font-weight:600;color:#1a3c5e;">☁️ Supabase</span>
             <span id="supabaseStatus" class="supabase-status connecting">⏳ Connecting...</span>
@@ -743,7 +741,7 @@
 
         <form id="loginForm">
             <label>📧 इमेल (Email)</label>
-            <input type="email" id="loginEmail" placeholder="admin@example.com" required />
+            <input type="email" id="loginEmail" placeholder="info.galkotmun@gmail.com" required />
             <label>🔑 पासवर्ड (Password)</label>
             <input type="password" id="loginPassword" placeholder="पासवर्ड" required />
             <div class="login-error" id="loginError"></div>
@@ -755,7 +753,6 @@
             </div>
         </form>
 
-        <!-- Signup Form -->
         <form id="signupForm" style="display:none;margin-top:12px;border-top:1px solid #eee;padding-top:12px;">
             <h4 style="color:#1a3c5e;font-size:15px;text-align:center;">📝 नयाँ खाता बनाउनुहोस्</h4>
             <label>📧 इमेल</label>
@@ -775,7 +772,6 @@
 
 <!-- ==================== MAIN DASHBOARD ==================== -->
 <div class="container" id="mainDashboard" style="display:none;">
-    <!-- Login Header -->
     <div class="login-header">
         <div class="user-info">
             👤 <span id="displayUsername">User</span> 
@@ -788,13 +784,11 @@
         </div>
     </div>
 
-    <!-- Tabs -->
     <div class="tabs">
         <button class="active" data-tab="tabDashboard">📊 ड्यासबोर्ड</button>
         <button data-tab="tabReport">📄 प्रतिवेदन (Report)</button>
     </div>
 
-    <!-- TAB 1: DASHBOARD -->
     <div class="tab-content active" id="tabDashboard">
         <h1>📊 रोजगार तथा उद्यमशीलता कार्यक्रम ड्यासबोर्ड</h1>
         <div class="subtitle">स्थानीय तह कार्यक्रम कार्यान्वयन समिति · Tracking & Monitoring</div>
@@ -869,7 +863,6 @@
         </div>
     </div>
 
-    <!-- TAB 2: REPORT -->
     <div class="tab-content" id="tabReport">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
             <h1>📄 रोजगार सेवा केन्द्र - कार्यक्रम प्रगति प्रतिवेदन</h1>
@@ -1006,7 +999,7 @@
 
 <script>
     // ========================================================================
-    // 1. SUPABASE CONFIGURATION (Pre-configured)
+    // 1. SUPABASE CONFIGURATION
     // ========================================================================
     const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5';
@@ -1026,28 +1019,25 @@
             supabaseConnected = true;
             document.getElementById('supabaseStatus').textContent = '✅ Connected';
             document.getElementById('supabaseStatus').className = 'supabase-status connected';
-            console.log('✅ Supabase connected successfully');
-            
-            // Check for existing session
+            console.log('✅ Supabase connected');
             checkSession();
         } catch(e) {
-            console.error('Supabase connection error:', e);
-            document.getElementById('supabaseStatus').textContent = '❌ Connection Failed';
+            console.error('Supabase error:', e);
+            document.getElementById('supabaseStatus').textContent = '❌ Failed';
             document.getElementById('supabaseStatus').className = 'supabase-status disconnected';
             supabaseConnected = false;
         }
     }
 
     // ========================================================================
-    // 3. AUTHENTICATION
+    // 3. AUTHENTICATION - FIXED (user_profiles बाट Role लिने)
     // ========================================================================
     
-    // Login
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
         if (!supabaseConnected || !supabaseClient) {
-            document.getElementById('loginError').textContent = '❌ Supabase Connect भएन। पृष्ठ Refresh गर्नुहोस्।';
+            document.getElementById('loginError').textContent = '❌ Supabase Connect भएन।';
             return;
         }
 
@@ -1073,8 +1063,27 @@
             }
 
             if (data && data.user) {
-                const userRole = data.user.user_metadata?.role || 'user';
-                const username = data.user.user_metadata?.username || data.user.email.split('@')[0];
+                // 🔥 FIX: user_profiles बाट Role लिने
+                let userRole = 'user';
+                let username = data.user.email.split('@')[0];
+                
+                try {
+                    const { data: profileData, error: profileError } = await supabaseClient
+                        .from('user_profiles')
+                        .select('username, role')
+                        .eq('id', data.user.id)
+                        .single();
+                    
+                    if (profileData) {
+                        userRole = profileData.role || 'user';
+                        username = profileData.username || username;
+                        console.log('✅ Profile loaded:', profileData);
+                    } else {
+                        console.log('ℹ️ No profile found, using defaults');
+                    }
+                } catch(profileErr) {
+                    console.warn('Profile fetch error:', profileErr);
+                }
                 
                 currentUser = {
                     id: data.user.id,
@@ -1082,6 +1091,8 @@
                     username: username,
                     role: userRole
                 };
+                
+                console.log('✅ Login Success - Role:', currentUser.role);
                 
                 document.getElementById('loginError').textContent = '';
                 document.getElementById('loginModal').classList.remove('show');
@@ -1159,9 +1170,27 @@
     }
 
     // ========================================================================
-    // 4. SUPABASE DATA OPERATIONS
+    // 4. UI UPDATE - FIXED
     // ========================================================================
+    function updateUIByRole() {
+        const isAdminUser = currentUser && currentUser.role === 'admin';
+        
+        console.log('🔄 UI Update - Is Admin?', isAdminUser, 'Role:', currentUser?.role);
+        
+        document.getElementById('adminPanel').classList.toggle('show', isAdminUser);
+        document.getElementById('btnAddProject').style.display = isAdminUser ? 'inline-block' : 'none';
+        document.getElementById('displayRole').textContent = isAdminUser ? 'Admin' : 'User';
+        document.getElementById('displayRole').className = 'role-badge' + (isAdminUser ? ' admin' : '');
+        document.getElementById('displayUsername').textContent = currentUser ? currentUser.username : '';
+    }
 
+    function isAdmin() {
+        return currentUser && currentUser.role === 'admin';
+    }
+
+    // ========================================================================
+    // 5. PROJECT DATA OPERATIONS
+    // ========================================================================
     const TABLE_NAME = 'projects';
 
     async function loadProjectsFromSupabase() {
@@ -1270,10 +1299,6 @@
         }
     }
 
-    // ========================================================================
-    // 5. PROJECT DATA (Local)
-    // ========================================================================
-
     function getDefaultBeneficiary() {
         return { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0 };
     }
@@ -1334,10 +1359,6 @@
         const b = project.beneficiary || getDefaultBeneficiary();
         return (b.male || 0) + (b.female || 0) + (b.dalit || 0) + (b.janajati || 0) + 
                (b.disabled || 0) + (b.returnee || 0) + (b.entrepreneur || 0);
-    }
-
-    function isAdmin() {
-        return currentUser && currentUser.role === 'admin';
     }
 
     // ========================================================================
@@ -1460,15 +1481,6 @@
         populateCategoryFilter();
         updateUIByRole();
         generateReport();
-    }
-
-    function updateUIByRole() {
-        const isAdminUser = isAdmin();
-        document.getElementById('adminPanel').classList.toggle('show', isAdminUser);
-        document.getElementById('btnAddProject').style.display = isAdminUser ? 'inline-block' : 'none';
-        document.getElementById('displayRole').textContent = isAdminUser ? 'Admin' : 'User';
-        document.getElementById('displayRole').className = 'role-badge' + (isAdminUser ? ' admin' : '');
-        document.getElementById('displayUsername').textContent = currentUser ? currentUser.username : '';
     }
 
     // ========================================================================
@@ -2151,17 +2163,38 @@
             }
             if (data && data.session) {
                 const user = data.session.user;
+                
+                // 🔥 FIX: user_profiles बाट Role लिने
+                let userRole = 'user';
+                let username = user.email.split('@')[0];
+                
+                try {
+                    const { data: profileData } = await supabaseClient
+                        .from('user_profiles')
+                        .select('username, role')
+                        .eq('id', user.id)
+                        .single();
+                    
+                    if (profileData) {
+                        userRole = profileData.role || 'user';
+                        username = profileData.username || username;
+                    }
+                } catch(e) {
+                    console.log('No profile found');
+                }
+                
                 currentUser = {
                     id: user.id,
                     email: user.email,
-                    username: user.user_metadata?.username || user.email.split('@')[0],
-                    role: user.user_metadata?.role || 'user'
+                    username: username,
+                    role: userRole
                 };
+                
                 document.getElementById('loginModal').classList.remove('show');
                 document.getElementById('mainDashboard').style.display = 'block';
                 await loadProjectsFromSupabase();
                 renderAll();
-                console.log('✅ Session restored for:', currentUser.username);
+                console.log('✅ Session restored - Role:', currentUser.role);
             }
         } catch(err) {
             console.warn('Session check error:', err);
@@ -2177,7 +2210,6 @@
         });
     });
 
-    // Initialize Supabase
     initSupabase();
 </script>
 </body>
