@@ -898,7 +898,7 @@ function applyFilters() {
     let filtered = projects.filter(p => {
         if(cat && p.category !== cat) return false;
         if(status && p.status !== status) return false;
-        if(search && ().includes(search) && !(p.activities||'').toLowerCase().includes(search)) return false;
+        if(search && !p.name.toLowerCase ().includes(search) && !(p.activities||'').toLowerCase().includes(search)) return false;
         return true;
     });
     renderTable(filtered);
