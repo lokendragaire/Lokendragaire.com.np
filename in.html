@@ -8,672 +8,139 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Nirmala UI', sans-serif;
-        }
-        body {
-            background: #f0f2f5;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1500px;
-            margin: 0 auto;
-        }
-        h1 {
-            color: #1a3c5e;
-            border-left: 5px solid #2e7d32;
-            padding-left: 15px;
-            margin-bottom: 10px;
-            font-size: 26px;
-        }
-        .subtitle {
-            color: #555;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        .login-header {
-            background: #fff;
-            padding: 12px 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .login-header .user-info {
-            font-weight: 600;
-            color: #1a3c5e;
-        }
-        .login-header .user-info span {
-            color: #2e7d32;
-        }
-        .login-header .btn-logout {
-            padding: 6px 18px;
-            background: #d32f2f;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .login-header .btn-logout:hover {
-            background: #b71c1c;
-        }
-        .login-header .role-badge {
-            background: #e8f5e9;
-            color: #2e7d32;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .login-header .role-badge.admin {
-            background: #e3f2fd;
-            color: #0d47a1;
-        }
-        .tabs {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            background: #fff;
-            padding: 6px 12px;
-            border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-        }
-        .tabs button {
-            padding: 8px 18px;
-            border: none;
-            border-radius: 6px;
-            background: transparent;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            color: #555;
-            transition: 0.2s;
-        }
-        .tabs button:hover {
-            background: #e8f0fe;
-        }
-        .tabs button.active {
-            background: #1a3c5e;
-            color: #fff;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-            gap: 14px;
-            margin-bottom: 20px;
-        }
-        .card {
-            background: #fff;
-            padding: 16px 18px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            border-left: 5px solid #2e7d32;
-        }
-        .card .label {
-            font-size: 12px;
-            color: #777;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-        .card .value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1a3c5e;
-            margin-top: 4px;
-        }
-        .card .sub {
-            font-size: 12px;
-            color: #888;
-            margin-top: 2px;
-        }
+        /* CSS - पहिले जस्तै */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Nirmala UI', sans-serif; }
+        body { background: #f0f2f5; padding: 20px; }
+        .container { max-width: 1500px; margin: 0 auto; }
+        h1 { color: #1a3c5e; border-left: 5px solid #2e7d32; padding-left: 15px; margin-bottom: 10px; font-size: 26px; }
+        .subtitle { color: #555; margin-bottom: 20px; font-size: 14px; }
+        .login-header { background: #fff; padding: 12px 20px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.06); flex-wrap: wrap; gap: 10px; }
+        .login-header .user-info { font-weight: 600; color: #1a3c5e; }
+        .login-header .user-info span { color: #2e7d32; }
+        .login-header .btn-logout { padding: 6px 18px; background: #d32f2f; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .login-header .btn-logout:hover { background: #b71c1c; }
+        .login-header .role-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .login-header .role-badge.admin { background: #e3f2fd; color: #0d47a1; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; background: #fff; padding: 6px 12px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+        .tabs button { padding: 8px 18px; border: none; border-radius: 6px; background: transparent; cursor: pointer; font-weight: 600; font-size: 13px; color: #555; transition: 0.2s; }
+        .tabs button:hover { background: #e8f0fe; }
+        .tabs button.active { background: #1a3c5e; color: #fff; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 20px; }
+        .card { background: #fff; padding: 16px 18px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-left: 5px solid #2e7d32; }
+        .card .label { font-size: 12px; color: #777; text-transform: uppercase; letter-spacing: 0.3px; }
+        .card .value { font-size: 24px; font-weight: 700; color: #1a3c5e; margin-top: 4px; }
+        .card .sub { font-size: 12px; color: #888; margin-top: 2px; }
         .card.warning { border-left-color: #f9a825; }
         .card.danger { border-left-color: #d32f2f; }
         .card.info { border-left-color: #1976d2; }
         .card.success { border-left-color: #2e7d32; }
         .card.purple { border-left-color: #6a1b9a; }
-        .filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            background: #fff;
-            padding: 12px 16px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            align-items: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-        }
-        .filters label {
-            font-weight: 600;
-            font-size: 13px;
-            color: #333;
-        }
-        .filters select, .filters input {
-            padding: 6px 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 13px;
-            background: #fafafa;
-        }
-        .filters .btn {
-            padding: 6px 18px;
-            border: none;
-            border-radius: 6px;
-            background: #1a3c5e;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 13px;
-            transition: 0.2s;
-        }
-        .filters .btn:hover {
-            background: #0f2a42;
-        }
-        .filters .btn-add {
-            background: #2e7d32;
-            margin-left: auto;
-        }
-        .filters .btn-add:hover {
-            background: #1f5a22;
-        }
-        .filters .btn-report {
-            background: #e65100;
-        }
-        .filters .btn-report:hover {
-            background: #bf360c;
-        }
-        .admin-toggle {
-            background: #fff;
-            padding: 8px 16px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            display: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-        }
-        .admin-toggle.show {
-            display: block;
-        }
-        .admin-toggle .btn-admin-action {
-            padding: 6px 16px;
-            border: none;
-            border-radius: 6px;
-            background: #6a1b9a;
-            color: #fff;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            margin-right: 8px;
-        }
-        .admin-toggle .btn-admin-action:hover {
-            background: #4a148c;
-        }
-        .admin-toggle .btn-danger {
-            background: #d32f2f;
-        }
-        .admin-toggle .btn-danger:hover {
-            background: #b71c1c;
-        }
-        .admin-toggle .btn-success {
-            background: #2e7d32;
-        }
-        .admin-toggle .btn-success:hover {
-            background: #1f5a22;
-        }
-        .row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 24px;
-        }
-        .chart-box {
-            background: #fff;
-            padding: 14px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-        .chart-box h3 {
-            font-size: 14px;
-            color: #1a3c5e;
-            margin-bottom: 8px;
-        }
-        .chart-box canvas {
-            max-height: 200px;
-            max-width: 100%;
-        }
-        .table-wrap {
-            background: #fff;
-            border-radius: 12px;
-            padding: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            overflow-x: auto;
-        }
-        .table-wrap h3 {
-            font-size: 15px;
-            color: #1a3c5e;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-        }
-        th {
-            background: #f7f9fc;
-            color: #1a3c5e;
-            padding: 8px 8px;
-            text-align: left;
-            border-bottom: 2px solid #e0e4ea;
-            white-space: nowrap;
-            font-size: 11px;
-            text-transform: uppercase;
-        }
-        td {
-            padding: 8px 8px;
-            border-bottom: 1px solid #edf0f5;
-            vertical-align: middle;
-        }
-        tr:hover {
-            background: #f8faff;
-        }
-        .progress-bar {
-            width: 80px;
-            height: 7px;
-            background: #e9ecef;
-            border-radius: 4px;
-            overflow: hidden;
-            display: inline-block;
-            vertical-align: middle;
-        }
-        .progress-bar .fill {
-            height: 100%;
-            border-radius: 4px;
-            background: #2e7d32;
-            transition: width 0.4s;
-        }
-        .status-badge {
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 600;
-            display: inline-block;
-        }
+        .filters { display: flex; flex-wrap: wrap; gap: 10px; background: #fff; padding: 12px 16px; border-radius: 10px; margin-bottom: 20px; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+        .filters label { font-weight: 600; font-size: 13px; color: #333; }
+        .filters select, .filters input { padding: 6px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; background: #fafafa; }
+        .filters .btn { padding: 6px 18px; border: none; border-radius: 6px; background: #1a3c5e; color: #fff; font-weight: 600; cursor: pointer; font-size: 13px; transition: 0.2s; }
+        .filters .btn:hover { background: #0f2a42; }
+        .filters .btn-add { background: #2e7d32; margin-left: auto; }
+        .filters .btn-add:hover { background: #1f5a22; }
+        .filters .btn-report { background: #e65100; }
+        .filters .btn-report:hover { background: #bf360c; }
+        .admin-toggle { background: #fff; padding: 8px 16px; border-radius: 8px; margin-bottom: 16px; display: none; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+        .admin-toggle.show { display: block; }
+        .admin-toggle .btn-admin-action { padding: 6px 16px; border: none; border-radius: 6px; background: #6a1b9a; color: #fff; cursor: pointer; font-weight: 600; font-size: 13px; margin-right: 8px; }
+        .admin-toggle .btn-admin-action:hover { background: #4a148c; }
+        .admin-toggle .btn-danger { background: #d32f2f; }
+        .admin-toggle .btn-danger:hover { background: #b71c1c; }
+        .admin-toggle .btn-success { background: #2e7d32; }
+        .admin-toggle .btn-success:hover { background: #1f5a22; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+        .chart-box { background: #fff; padding: 14px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .chart-box h3 { font-size: 14px; color: #1a3c5e; margin-bottom: 8px; }
+        .chart-box canvas { max-height: 200px; max-width: 100%; }
+        .table-wrap { background: #fff; border-radius: 12px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow-x: auto; }
+        .table-wrap h3 { font-size: 15px; color: #1a3c5e; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { background: #f7f9fc; color: #1a3c5e; padding: 8px 8px; text-align: left; border-bottom: 2px solid #e0e4ea; white-space: nowrap; font-size: 11px; text-transform: uppercase; }
+        td { padding: 8px 8px; border-bottom: 1px solid #edf0f5; vertical-align: middle; }
+        tr:hover { background: #f8faff; }
+        .progress-bar { width: 80px; height: 7px; background: #e9ecef; border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; }
+        .progress-bar .fill { height: 100%; border-radius: 4px; background: #2e7d32; transition: width 0.4s; }
+        .status-badge { padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; display: inline-block; }
         .status-badge.active { background: #e8f5e9; color: #2e7d32; }
         .status-badge.pending { background: #fff3e0; color: #e65100; }
         .status-badge.completed { background: #e3f2fd; color: #0d47a1; }
-        .actions button {
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            font-size: 15px;
-            margin: 0 2px;
-            padding: 3px 5px;
-            border-radius: 4px;
-            transition: 0.2s;
-        }
+        .actions button { border: none; background: transparent; cursor: pointer; font-size: 15px; margin: 0 2px; padding: 3px 5px; border-radius: 4px; transition: 0.2s; }
         .actions .edit-btn:hover { background: #e3f2fd; color: #0d47a1; }
         .actions .del-btn:hover { background: #ffebee; color: #c62828; }
         .actions .expense-btn:hover { background: #e8f5e9; color: #2e7d32; }
         .actions .view-btn:hover { background: #e8f5e9; color: #0d47a1; }
         .actions .beneficiary-btn:hover { background: #e8f5e9; color: #6a1b9a; }
-        .person-info {
-            font-size: 11px;
-            line-height: 1.5;
-            color: #333;
-        }
-        .person-info .label {
-            color: #777;
-            font-size: 10px;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 999;
-            justify-content: center;
-            align-items: center;
-        }
+        .person-info { font-size: 11px; line-height: 1.5; color: #333; }
+        .person-info .label { color: #777; font-size: 10px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; justify-content: center; align-items: center; }
         .modal.show { display: flex; }
-        .modal-box {
-            background: #fff;
-            padding: 25px 30px;
-            border-radius: 16px;
-            max-width: 700px;
-            width: 94%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-        .modal-box h2 {
-            color: #1a3c5e;
-            margin-bottom: 16px;
-            font-size: 20px;
-        }
-        .modal-box label {
-            font-weight: 600;
-            font-size: 13px;
-            display: block;
-            margin: 8px 0 4px;
-            color: #333;
-        }
-        .modal-box input, .modal-box select, .modal-box textarea {
-            width: 100%;
-            padding: 7px 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 13px;
-        }
+        .modal-box { background: #fff; padding: 25px 30px; border-radius: 16px; max-width: 700px; width: 94%; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .modal-box h2 { color: #1a3c5e; margin-bottom: 16px; font-size: 20px; }
+        .modal-box label { font-weight: 600; font-size: 13px; display: block; margin: 8px 0 4px; color: #333; }
+        .modal-box input, .modal-box select, .modal-box textarea { width: 100%; padding: 7px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; }
         .modal-box textarea { resize: vertical; min-height: 40px; }
-        .modal-btns {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
-            justify-content: flex-end;
-            flex-wrap: wrap;
-        }
-        .modal-btns button {
-            padding: 7px 22px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 13px;
-        }
-        .modal-btns .save-btn {
-            background: #2e7d32;
-            color: #fff;
-        }
+        .modal-btns { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; flex-wrap: wrap; }
+        .modal-btns button { padding: 7px 22px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; }
+        .modal-btns .save-btn { background: #2e7d32; color: #fff; }
         .modal-btns .save-btn:hover { background: #1f5a22; }
-        .modal-btns .cancel-btn {
-            background: #e0e0e0;
-            color: #333;
-        }
+        .modal-btns .cancel-btn { background: #e0e0e0; color: #333; }
         .modal-btns .cancel-btn:hover { background: #ccc; }
-        .modal-btns .print-btn {
-            background: #1976d2;
-            color: #fff;
-        }
+        .modal-btns .print-btn { background: #1976d2; color: #fff; }
         .modal-btns .print-btn:hover { background: #0d47a1; }
-        .empty-msg {
-            text-align: center;
-            color: #999;
-            padding: 20px 0;
-            font-size: 13px;
-        }
-        .detail-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            background: #f8faff;
-            padding: 16px;
-            border-radius: 10px;
-            margin: 10px 0;
-        }
-        .detail-grid .item {
-            padding: 6px 0;
-            border-bottom: 1px solid #edf0f5;
-        }
-        .detail-grid .item .dlabel {
-            font-weight: 600;
-            color: #1a3c5e;
-            font-size: 12px;
-            display: block;
-        }
-        .detail-grid .item .dvalue {
-            font-size: 13px;
-            color: #333;
-        }
-        .detail-full {
-            grid-column: 1 / -1;
-        }
-        .detail-expense-list {
-            max-height: 120px;
-            overflow-y: auto;
-            background: #fff;
-            border-radius: 6px;
-            padding: 6px 10px;
-            border: 1px solid #e0e4ea;
-        }
-        .detail-expense-list .item {
-            display: flex;
-            justify-content: space-between;
-            padding: 3px 0;
-            border-bottom: 1px solid #f5f5f5;
-            font-size: 12px;
-        }
-        .detail-expense-list .item .amount {
-            font-weight: 600;
-            color: #d32f2f;
-        }
-        .login-modal .modal-box {
-            max-width: 400px;
-        }
-        .login-modal .modal-box h2 {
-            text-align: center;
-            color: #1a3c5e;
-        }
-        .login-modal .modal-box .logo {
-            text-align: center;
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-        .login-error {
-            color: #d32f2f;
-            font-size: 13px;
-            text-align: center;
-            margin-top: 8px;
-        }
-        .login-hint {
-            font-size: 12px;
-            color: #888;
-            text-align: center;
-            margin-top: 10px;
-            background: #f5f7fa;
-            padding: 8px;
-            border-radius: 6px;
-        }
-        .progress-large {
-            width: 100%;
-            height: 12px;
-            background: #e9ecef;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        .progress-large .fill {
-            height: 100%;
-            border-radius: 6px;
-            background: #2e7d32;
-            transition: width 0.4s;
-        }
-        .report-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        .report-header h2 {
-            color: #1a3c5e;
-            font-size: 22px;
-        }
-        .report-header h3 {
-            color: #2e7d32;
-            font-size: 18px;
-            margin-top: 4px;
-        }
-        .report-header p {
-            color: #555;
-            font-size: 14px;
-        }
-        .report-section {
-            background: #fff;
-            border-radius: 12px;
-            padding: 18px 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-        .report-section h4 {
-            color: #1a3c5e;
-            border-bottom: 2px solid #e0e4ea;
-            padding-bottom: 8px;
-            margin-bottom: 14px;
-            font-size: 16px;
-        }
-        .report-section .row-detail {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .report-section .row-detail .item {
-            padding: 4px 0;
-        }
-        .report-section .row-detail .item .label {
-            font-weight: 600;
-            color: #1a3c5e;
-            font-size: 12px;
-            display: block;
-        }
-        .report-section .row-detail .item .value {
-            font-size: 14px;
-            color: #333;
-        }
-        .report-section .report-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-            margin: 10px 0;
-        }
-        .report-section .report-table th {
-            background: #f0f4f8;
-            padding: 6px 10px;
-            border: 1px solid #ddd;
-            font-size: 12px;
-            text-align: left;
-        }
-        .report-section .report-table td {
-            padding: 6px 10px;
-            border: 1px solid #ddd;
-        }
-        .report-section .report-table tr:nth-child(even) {
-            background: #fafafa;
-        }
-        .report-sign {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-        }
-        .report-sign .sign-block {
-            text-align: center;
-            flex: 1;
-        }
-        .report-sign .sign-block .line {
-            margin-top: 30px;
-            border-top: 1px solid #333;
-            width: 180px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .report-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin: 20px 0 10px;
-            flex-wrap: wrap;
-        }
-        .report-actions button {
-            padding: 10px 30px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-        .report-actions .btn-print {
-            background: #1976d2;
-            color: #fff;
-        }
+        .empty-msg { text-align: center; color: #999; padding: 20px 0; font-size: 13px; }
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: #f8faff; padding: 16px; border-radius: 10px; margin: 10px 0; }
+        .detail-grid .item { padding: 6px 0; border-bottom: 1px solid #edf0f5; }
+        .detail-grid .item .dlabel { font-weight: 600; color: #1a3c5e; font-size: 12px; display: block; }
+        .detail-grid .item .dvalue { font-size: 13px; color: #333; }
+        .detail-full { grid-column: 1 / -1; }
+        .detail-expense-list { max-height: 120px; overflow-y: auto; background: #fff; border-radius: 6px; padding: 6px 10px; border: 1px solid #e0e4ea; }
+        .detail-expense-list .item { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid #f5f5f5; font-size: 12px; }
+        .detail-expense-list .item .amount { font-weight: 600; color: #d32f2f; }
+        .login-modal .modal-box { max-width: 400px; }
+        .login-modal .modal-box h2 { text-align: center; color: #1a3c5e; }
+        .login-modal .modal-box .logo { text-align: center; font-size: 48px; margin-bottom: 10px; }
+        .login-error { color: #d32f2f; font-size: 13px; text-align: center; margin-top: 8px; }
+        .login-hint { font-size: 12px; color: #888; text-align: center; margin-top: 10px; background: #f5f7fa; padding: 8px; border-radius: 6px; }
+        .progress-large { width: 100%; height: 12px; background: #e9ecef; border-radius: 6px; overflow: hidden; }
+        .progress-large .fill { height: 100%; border-radius: 6px; background: #2e7d32; transition: width 0.4s; }
+        .report-header { text-align: center; margin-bottom: 25px; }
+        .report-header h2 { color: #1a3c5e; font-size: 22px; }
+        .report-header h3 { color: #2e7d32; font-size: 18px; margin-top: 4px; }
+        .report-header p { color: #555; font-size: 14px; }
+        .report-section { background: #fff; border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .report-section h4 { color: #1a3c5e; border-bottom: 2px solid #e0e4ea; padding-bottom: 8px; margin-bottom: 14px; font-size: 16px; }
+        .report-section .row-detail { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .report-section .row-detail .item { padding: 4px 0; }
+        .report-section .row-detail .item .label { font-weight: 600; color: #1a3c5e; font-size: 12px; display: block; }
+        .report-section .row-detail .item .value { font-size: 14px; color: #333; }
+        .report-section .report-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0; }
+        .report-section .report-table th { background: #f0f4f8; padding: 6px 10px; border: 1px solid #ddd; font-size: 12px; text-align: left; }
+        .report-section .report-table td { padding: 6px 10px; border: 1px solid #ddd; }
+        .report-section .report-table tr:nth-child(even) { background: #fafafa; }
+        .report-sign { display: flex; justify-content: space-between; margin-top: 25px; padding-top: 20px; border-top: 1px solid #ddd; }
+        .report-sign .sign-block { text-align: center; flex: 1; }
+        .report-sign .sign-block .line { margin-top: 30px; border-top: 1px solid #333; width: 180px; margin-left: auto; margin-right: auto; }
+        .report-actions { display: flex; gap: 12px; justify-content: center; margin: 20px 0 10px; flex-wrap: wrap; }
+        .report-actions button { padding: 10px 30px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.2s; }
+        .report-actions .btn-print { background: #1976d2; color: #fff; }
         .report-actions .btn-print:hover { background: #0d47a1; }
-        .report-actions .btn-word {
-            background: #e65100;
-            color: #fff;
-        }
+        .report-actions .btn-word { background: #e65100; color: #fff; }
         .report-actions .btn-word:hover { background: #bf360c; }
-        .report-charts {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 16px;
-            margin: 12px 0;
-        }
-        .report-charts .chart-box {
-            padding: 12px;
-            background: #fafafa;
-            border-radius: 8px;
-            border: 1px solid #e0e4ea;
-        }
-        .report-charts .chart-box canvas {
-            max-height: 150px;
-            max-width: 100%;
-        }
-        .report-charts .chart-box h4 {
-            font-size: 12px;
-            color: #1a3c5e;
-            text-align: center;
-            margin-bottom: 6px;
-        }
-        .beneficiary-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            background: #f8faff;
-            padding: 12px;
-            border-radius: 8px;
-            margin: 8px 0;
-        }
-        .beneficiary-grid .b-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .beneficiary-grid .b-item label {
-            font-size: 12px;
-            margin: 0;
-            display: inline;
-            white-space: nowrap;
-        }
-        .beneficiary-grid .b-item input {
-            width: 70px;
-            padding: 4px 8px;
-            font-size: 12px;
-        }
-        .report-introduction {
-            font-size: 14px;
-            line-height: 1.8;
-            color: #333;
-            text-align: justify;
-            padding: 4px 0;
-        }
+        .report-charts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 12px 0; }
+        .report-charts .chart-box { padding: 12px; background: #fafafa; border-radius: 8px; border: 1px solid #e0e4ea; }
+        .report-charts .chart-box canvas { max-height: 150px; max-width: 100%; }
+        .report-charts .chart-box h4 { font-size: 12px; color: #1a3c5e; text-align: center; margin-bottom: 6px; }
+        .beneficiary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f8faff; padding: 12px; border-radius: 8px; margin: 8px 0; }
+        .beneficiary-grid .b-item { display: flex; align-items: center; gap: 6px; }
+        .beneficiary-grid .b-item label { font-size: 12px; margin: 0; display: inline; white-space: nowrap; }
+        .beneficiary-grid .b-item input { width: 70px; padding: 4px 8px; font-size: 12px; }
+        .report-introduction { font-size: 14px; line-height: 1.8; color: #333; text-align: justify; padding: 4px 0; }
         @media (max-width: 768px) {
             .row { grid-template-columns: 1fr; }
             .filters { flex-direction: column; align-items: stretch; }
@@ -794,18 +261,7 @@
             </h3>
             <table>
                 <thead>
-                    <tr>
-                        <th>क्र.स</th>
-                        <th>कार्यक्रमको नाम</th>
-                        <th>प्रकृति</th>
-                        <th>बजेट (रु.)</th>
-                        <th>खर्च (रु.)</th>
-                        <th>प्रगति</th>
-                        <th>समय</th>
-                        <th>जिम्मेवार व्यक्ति</th>
-                        <th>स्थिति</th>
-                        <th>कार्य</th>
-                    </tr>
+                    <tr><th>क्र.स</th><th>कार्यक्रमको नाम</th><th>प्रकृति</th><th>बजेट (रु.)</th><th>खर्च (रु.)</th><th>प्रगति</th><th>समय</th><th>जिम्मेवार व्यक्ति</th><th>स्थिति</th><th>कार्य</th></tr>
                 </thead>
                 <tbody id="projectTableBody">
                     <tr><td colspan="10" class="empty-msg">कृपया "नयाँ कार्यक्रम" थप्नुहोस् वा डाटा लोड हुँदै...</td></tr>
@@ -959,87 +415,73 @@
 // ============================================
 // SUPABASE CONFIGURATION
 // ============================================
-
 const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5';
-
-// Initialize Supabase client
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-
-console.log('✅ Supabase initialized');
-console.log('URL:', SUPABASE_URL);
 
 // ============================================
 // LOGIN STATE MANAGEMENT - Auto Login on Refresh
 // ============================================
-
 function saveLoginState(user) {
     try {
         localStorage.setItem('currentUser', JSON.stringify(user));
         localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('loginTime', new Date().toISOString());
         console.log('✅ Login state saved');
-    } catch(e) {
-        console.error('Error saving login state:', e);
-    }
+    } catch(e) { console.error('Error saving login state:', e); }
 }
 
 function clearLoginState() {
     try {
         localStorage.removeItem('currentUser');
         localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('loginTime');
         console.log('✅ Login state cleared');
-    } catch(e) {
-        console.error('Error clearing login state:', e);
-    }
+    } catch(e) { console.error('Error clearing login state:', e); }
 }
 
 function checkLoginState() {
     try {
         const isLoggedIn = localStorage.getItem('isLoggedIn');
         const userData = localStorage.getItem('currentUser');
-        
         if (isLoggedIn === 'true' && userData) {
-            const user = JSON.parse(userData);
-            currentUser = user;
-            console.log('✅ User restored from storage:', user.username);
+            currentUser = JSON.parse(userData);
+            console.log('✅ User restored from storage:', currentUser.username);
             return true;
         }
-    } catch(e) {
-        console.error('Error checking login state:', e);
-    }
+    } catch(e) { console.error('Error checking login state:', e); }
     return false;
 }
 
-function getStoredUser() {
-    try {
-        const userData = localStorage.getItem('currentUser');
-        if (userData) {
-            return JSON.parse(userData);
-        }
-    } catch(e) {
-        console.error('Error getting stored user:', e);
-    }
-    return null;
+// ============================================
+// MAIN APPLICATION
+// ============================================
+let currentUser = null;
+let projects = [];
+let editMode = false;
+let currentExpenseProjectId = null;
+let beneficiaryEditProjectId = null;
+
+// Helper functions
+function getDefaultBeneficiary() {
+    return { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0 };
+}
+
+function getTotalExpenses(project) {
+    return (project.expenses || []).reduce((sum, e) => sum + (e.amount || 0), 0);
+}
+
+function getTotalBeneficiaries(project) {
+    const b = project.beneficiary || getDefaultBeneficiary();
+    return (b.male || 0) + (b.female || 0) + (b.dalit || 0) + (b.janajati || 0) + 
+           (b.disabled || 0) + (b.returnee || 0) + (b.entrepreneur || 0);
+}
+
+function isAdmin() {
+    return currentUser && currentUser.role === 'admin';
 }
 
 // ============================================
-// DATABASE OPERATIONS
+// DATABASE FUNCTIONS
 // ============================================
-
-async function db_getUsers() {
-    const { data, error } = await supabaseClient
-        .from('users')
-        .select('*')
-        .order('id');
-    if (error) {
-        console.error('Error fetching users:', error);
-        return [];
-    }
-    return data;
-}
-
 async function db_authenticate(username, password) {
     const { data, error } = await supabaseClient
         .from('users')
@@ -1051,28 +493,6 @@ async function db_authenticate(username, password) {
     return data;
 }
 
-async function db_addUser(username, password, role) {
-    const { data, error } = await supabaseClient
-        .from('users')
-        .insert([{ username, password, role }])
-        .select()
-        .single();
-    if (error) {
-        console.error('Error adding user:', error);
-        return null;
-    }
-    return data;
-}
-
-async function db_deleteUser(id) {
-    const { error } = await supabaseClient
-        .from('users')
-        .delete()
-        .eq('id', id);
-    if (error) console.error('Error deleting user:', error);
-    return !error;
-}
-
 async function db_getProjects() {
     const { data, error } = await supabaseClient
         .from('projects')
@@ -1081,6 +501,32 @@ async function db_getProjects() {
     if (error) {
         console.error('Error fetching projects:', error);
         return [];
+    }
+    return data;
+}
+
+async function db_getExpenses(projectId) {
+    const { data, error } = await supabaseClient
+        .from('expenses')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('id');
+    if (error) {
+        console.error('Error fetching expenses:', error);
+        return [];
+    }
+    return data;
+}
+
+async function db_getBeneficiary(projectId) {
+    const { data, error } = await supabaseClient
+        .from('beneficiaries')
+        .select('*')
+        .eq('project_id', projectId)
+        .maybeSingle();
+    if (error) {
+        console.error('Error fetching beneficiary:', error);
+        return null;
     }
     return data;
 }
@@ -1106,10 +552,7 @@ async function db_saveProject(project) {
             .eq('id', project.id)
             .select()
             .single();
-        if (error) { 
-            console.error('Error updating project:', error); 
-            return null; 
-        }
+        if (error) { console.error('Error updating project:', error); return null; }
         return data;
     } else {
         const { data, error } = await supabaseClient
@@ -1129,10 +572,7 @@ async function db_saveProject(project) {
             }])
             .select()
             .single();
-        if (error) { 
-            console.error('Error adding project:', error); 
-            return null; 
-        }
+        if (error) { console.error('Error adding project:', error); return null; }
         return data;
     }
 }
@@ -1144,19 +584,6 @@ async function db_deleteProject(id) {
         .eq('id', id);
     if (error) console.error('Error deleting project:', error);
     return !error;
-}
-
-async function db_getBeneficiary(projectId) {
-    const { data, error } = await supabaseClient
-        .from('beneficiaries')
-        .select('*')
-        .eq('project_id', projectId)
-        .maybeSingle();
-    if (error) {
-        console.error('Error fetching beneficiary:', error);
-        return null;
-    }
-    return data;
 }
 
 async function db_saveBeneficiary(projectId, beneficiary) {
@@ -1178,19 +605,6 @@ async function db_saveBeneficiary(projectId, beneficiary) {
     if (error) {
         console.error('Error saving beneficiary:', error);
         return null;
-    }
-    return data;
-}
-
-async function db_getExpenses(projectId) {
-    const { data, error } = await supabaseClient
-        .from('expenses')
-        .select('*')
-        .eq('project_id', projectId)
-        .order('id');
-    if (error) {
-        console.error('Error fetching expenses:', error);
-        return [];
     }
     return data;
 }
@@ -1223,26 +637,52 @@ async function db_deleteAllExpenses(projectId) {
     return !error;
 }
 
-// ============================================
-// LOAD DATA FROM SUPABASE
-// ============================================
+async function db_getUsers() {
+    const { data, error } = await supabaseClient
+        .from('users')
+        .select('*')
+        .order('id');
+    if (error) {
+        console.error('Error fetching users:', error);
+        return [];
+    }
+    return data;
+}
 
+async function db_addUser(username, password, role) {
+    const { data, error } = await supabaseClient
+        .from('users')
+        .insert([{ username, password, role }])
+        .select()
+        .single();
+    if (error) {
+        console.error('Error adding user:', error);
+        return null;
+    }
+    return data;
+}
+
+async function db_deleteUser(id) {
+    const { error } = await supabaseClient
+        .from('users')
+        .delete()
+        .eq('id', id);
+    if (error) console.error('Error deleting user:', error);
+    return !error;
+}
+
+// ============================================
+// LOAD DATA
+// ============================================
 async function loadAllData() {
     try {
         console.log('📥 Loading data from Supabase...');
-        
         const projectsData = await db_getProjects();
-        projects = projectsData.map(p => ({
-            ...p,
-            budget: parseFloat(p.budget) || 0,
-        }));
+        projects = projectsData.map(p => ({ ...p, budget: parseFloat(p.budget) || 0 }));
 
         for (let p of projects) {
             const expenses = await db_getExpenses(p.id);
-            p.expenses = expenses.map(e => ({
-                ...e,
-                amount: parseFloat(e.amount) || 0
-            }));
+            p.expenses = expenses.map(e => ({ ...e, amount: parseFloat(e.amount) || 0 }));
 
             const beneficiary = await db_getBeneficiary(p.id);
             if (beneficiary) {
@@ -1256,14 +696,11 @@ async function loadAllData() {
                     entrepreneur: parseInt(beneficiary.entrepreneur) || 0
                 };
             } else {
-                p.beneficiary = { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0 };
+                p.beneficiary = getDefaultBeneficiary();
             }
         }
 
-        const usersData = await db_getUsers();
-        localStorage.setItem('appUsers', JSON.stringify(usersData));
         localStorage.setItem('projectDataV5', JSON.stringify(projects));
-
         console.log(`✅ Loaded ${projects.length} projects`);
         return true;
     } catch (error) {
@@ -1272,240 +709,9 @@ async function loadAllData() {
     }
 }
 
-async function syncProjectsToSupabase() {
-    for (let p of projects) {
-        const savedProject = await db_saveProject(p);
-        if (savedProject && savedProject.id !== p.id) {
-            p.id = savedProject.id;
-        }
-        
-        if (p.beneficiary) {
-            await db_saveBeneficiary(p.id, p.beneficiary);
-        }
-        
-        for (let e of (p.expenses || [])) {
-            if (!e.id) {
-                const savedExpense = await db_addExpense(p.id, e);
-                if (savedExpense) {
-                    e.id = savedExpense.id;
-                }
-            }
-        }
-    }
-    localStorage.setItem('projectDataV5', JSON.stringify(projects));
-}
-
-// ============================================
-// MAIN APPLICATION CODE
-// ============================================
-
-let currentUser = null;
-let projects = [];
-let editMode = false;
-let currentExpenseProjectId = null;
-let beneficiaryEditProjectId = null;
-
-function getDefaultBeneficiary() {
-    return { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0 };
-}
-
-function getTotalExpenses(project) {
-    return (project.expenses || []).reduce((sum, e) => sum + (e.amount || 0), 0);
-}
-
-function getTotalBeneficiaries(project) {
-    const b = project.beneficiary || getDefaultBeneficiary();
-    return (b.male || 0) + (b.female || 0) + (b.dalit || 0) + (b.janajati || 0) + 
-           (b.disabled || 0) + (b.returnee || 0) + (b.entrepreneur || 0);
-}
-
-function isAdmin() {
-    return currentUser && currentUser.role === 'admin';
-}
-
-// ============================================
-// OVERRIDE FUNCTIONS
-// ============================================
-
-window.getUsers = function() {
-    const stored = localStorage.getItem('appUsers');
-    if (stored) {
-        try { return JSON.parse(stored); } catch(e) { return []; }
-    }
-    return [];
-};
-
-window.authenticate = async function(username, password) {
-    const user = await db_authenticate(username, password);
-    if (user) {
-        const users = await db_getUsers();
-        localStorage.setItem('appUsers', JSON.stringify(users));
-        return user;
-    }
-    return null;
-};
-
-window.saveProjects = function() {
-    localStorage.setItem('projectDataV5', JSON.stringify(projects));
-    syncProjectsToSupabase().catch(err => console.error('Sync error:', err));
-};
-
-window.getProjects = function() {
-    if (projects && projects.length > 0) {
-        return projects;
-    }
-    const stored = localStorage.getItem('projectDataV5');
-    if (stored) {
-        try { 
-            const data = JSON.parse(stored);
-            data.forEach(p => {
-                if (!p.beneficiary) p.beneficiary = getDefaultBeneficiary();
-            });
-            return data;
-        } catch(e) { return []; }
-    }
-    return [];
-};
-
-window.deleteProject = async function(id) {
-    if (!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
-    if (!confirm('के तपाईँ यो कार्यक्रम मेट्न चाहनुहुन्छ?')) return;
-    
-    const success = await db_deleteProject(id);
-    if (success) {
-        projects = projects.filter(p => p.id !== id);
-        saveProjects();
-        renderAll();
-        applyFilters();
-        alert('✅ कार्यक्रम मेटियो!');
-    } else {
-        alert('❌ मेट्न सकिएन।');
-    }
-};
-
-window.addUser = async function() {
-    if (!isAdmin()) return;
-    const username = document.getElementById('newUsername').value.trim();
-    const password = document.getElementById('newPassword').value.trim();
-    const role = document.getElementById('newRole').value;
-    if (!username || !password) { alert('Username र Password भर्नुहोस्।'); return; }
-    
-    const users = await db_getUsers();
-    if (users.find(u => u.username === username)) { alert('यो username पहिले नै छ।'); return; }
-    
-    const newUser = await db_addUser(username, password, role);
-    if (newUser) {
-        document.getElementById('newUsername').value = '';
-        document.getElementById('newPassword').value = '';
-        renderUserList();
-        alert('✅ प्रयोगकर्ता थपियो!');
-    } else {
-        alert('❌ थप्न सकिएन।');
-    }
-};
-
-window.deleteUser = async function(id) {
-    if (!isAdmin()) return;
-    const users = await db_getUsers();
-    const user = users.find(u => u.id === id);
-    if (!user) return;
-    if (user.username === 'admin') { alert('मुख्य Admin मेट्न सकिँदैन।'); return; }
-    if (!confirm(`"${user.username}" मेट्ने?`)) return;
-    
-    const success = await db_deleteUser(id);
-    if (success) {
-        const updatedUsers = await db_getUsers();
-        localStorage.setItem('appUsers', JSON.stringify(updatedUsers));
-        renderUserList();
-        alert('🗑️ मेटियो।');
-    } else {
-        alert('❌ मेट्न सकिएन।');
-    }
-};
-
-window.saveExpense = async function() {
-    const projectId = parseInt(document.getElementById('expProjectId').value);
-    const p = projects.find(x => x.id === projectId);
-    if (!p) { alert('कार्यक्रम फेला परेन'); return; }
-    
-    const title = document.getElementById('expTitle').value.trim();
-    const amount = parseFloat(document.getElementById('expAmount').value);
-    const date = document.getElementById('expDate').value.trim();
-    const remark = document.getElementById('expRemark').value.trim();
-    if (!title || !amount || amount <= 0) { alert('शीर्षक र रकम भर्नुहोस्।'); return; }
-    
-    if (!p.expenses) p.expenses = [];
-    
-    const savedExpense = await db_addExpense(projectId, { title, amount, date, remark });
-    if (savedExpense) {
-        p.expenses.push({ ...savedExpense, amount: parseFloat(savedExpense.amount) || 0 });
-        
-        const totalExp = getTotalExpenses(p);
-        if (totalExp > 0 && p.status === 'सुरु हुन बाँकी') p.status = 'प्रगतिमा';
-        if (totalExp >= p.budget && p.budget > 0) p.status = 'सम्पन्न';
-        
-        saveProjects();
-        renderExpenseHistory(projectId);
-        renderAll();
-        applyFilters();
-        document.getElementById('expTitle').value = '';
-        document.getElementById('expAmount').value = '';
-        alert('✅ खर्च थपियो!');
-    } else {
-        alert('❌ खर्च थप्न सकिएन।');
-    }
-};
-
-window.deleteAllExpenses = async function() {
-    if (!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
-    const projectId = parseInt(document.getElementById('expProjectId').value);
-    const p = projects.find(x => x.id === projectId);
-    if (!p) return;
-    if (!confirm(`"${p.name}" को सबै खर्च मेट्ने?`)) return;
-    
-    const success = await db_deleteAllExpenses(projectId);
-    if (success) {
-        p.expenses = [];
-        saveProjects();
-        renderExpenseHistory(projectId);
-        renderAll();
-        applyFilters();
-        alert('🗑️ सबै खर्च मेटियो');
-    } else {
-        alert('❌ मेट्न सकिएन।');
-    }
-};
-
-window.saveBeneficiary = async function() {
-    const p = projects.find(x => x.id === beneficiaryEditProjectId);
-    if (!p) return;
-    
-    const beneficiary = {
-        male: parseInt(document.getElementById('beneficiaryMale').value) || 0,
-        female: parseInt(document.getElementById('beneficiaryFemale').value) || 0,
-        dalit: parseInt(document.getElementById('beneficiaryDalit').value) || 0,
-        janajati: parseInt(document.getElementById('beneficiaryJanajati').value) || 0,
-        disabled: parseInt(document.getElementById('beneficiaryDisabled').value) || 0,
-        returnee: parseInt(document.getElementById('beneficiaryReturnee').value) || 0,
-        entrepreneur: parseInt(document.getElementById('beneficiaryEntrepreneur').value) || 0
-    };
-    
-    const saved = await db_saveBeneficiary(p.id, beneficiary);
-    if (saved) {
-        p.beneficiary = beneficiary;
-        saveProjects();
-        closeBeneficiaryModal();
-        renderAll();
-        alert('✅ लाभग्राही विवरण सुरक्षित!');
-    } else {
-        alert('❌ सुरक्षित गर्न सकिएन।');
-    }
-};
-
 // ============================================
 // RENDER FUNCTIONS
 // ============================================
-
 function renderSummary() {
     const totalBudget = projects.reduce((s,p) => s + (p.budget || 0), 0);
     const totalExp = projects.reduce((s,p) => s + getTotalExpenses(p), 0);
@@ -1635,9 +841,155 @@ function applyFilters() {
 }
 
 // ============================================
+// CRUD OPERATIONS
+// ============================================
+window.saveProjects = function() {
+    localStorage.setItem('projectDataV5', JSON.stringify(projects));
+};
+
+window.getProjects = function() {
+    if (projects && projects.length > 0) return projects;
+    const stored = localStorage.getItem('projectDataV5');
+    if (stored) {
+        try { 
+            const data = JSON.parse(stored);
+            data.forEach(p => {
+                if (!p.beneficiary) p.beneficiary = getDefaultBeneficiary();
+            });
+            return data;
+        } catch(e) { return []; }
+    }
+    return [];
+};
+
+window.authenticate = async function(username, password) {
+    return await db_authenticate(username, password);
+};
+
+window.deleteProject = async function(id) {
+    if (!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
+    if (!confirm('के तपाईँ यो कार्यक्रम मेट्न चाहनुहुन्छ?')) return;
+    const success = await db_deleteProject(id);
+    if (success) {
+        projects = projects.filter(p => p.id !== id);
+        saveProjects();
+        renderAll();
+        applyFilters();
+        alert('✅ कार्यक्रम मेटियो!');
+    } else {
+        alert('❌ मेट्न सकिएन।');
+    }
+};
+
+window.addUser = async function() {
+    if (!isAdmin()) return;
+    const username = document.getElementById('newUsername').value.trim();
+    const password = document.getElementById('newPassword').value.trim();
+    const role = document.getElementById('newRole').value;
+    if (!username || !password) { alert('Username र Password भर्नुहोस्।'); return; }
+    const users = await db_getUsers();
+    if (users.find(u => u.username === username)) { alert('यो username पहिले नै छ।'); return; }
+    const newUser = await db_addUser(username, password, role);
+    if (newUser) {
+        document.getElementById('newUsername').value = '';
+        document.getElementById('newPassword').value = '';
+        renderUserList();
+        alert('✅ प्रयोगकर्ता थपियो!');
+    } else {
+        alert('❌ थप्न सकिएन।');
+    }
+};
+
+window.deleteUser = async function(id) {
+    if (!isAdmin()) return;
+    const users = await db_getUsers();
+    const user = users.find(u => u.id === id);
+    if (!user) return;
+    if (user.username === 'admin') { alert('मुख्य Admin मेट्न सकिँदैन।'); return; }
+    if (!confirm(`"${user.username}" मेट्ने?`)) return;
+    const success = await db_deleteUser(id);
+    if (success) {
+        renderUserList();
+        alert('🗑️ मेटियो।');
+    } else {
+        alert('❌ मेट्न सकिएन।');
+    }
+};
+
+window.saveExpense = async function() {
+    const projectId = parseInt(document.getElementById('expProjectId').value);
+    const p = projects.find(x => x.id === projectId);
+    if (!p) { alert('कार्यक्रम फेला परेन'); return; }
+    const title = document.getElementById('expTitle').value.trim();
+    const amount = parseFloat(document.getElementById('expAmount').value);
+    const date = document.getElementById('expDate').value.trim();
+    const remark = document.getElementById('expRemark').value.trim();
+    if (!title || !amount || amount <= 0) { alert('शीर्षक र रकम भर्नुहोस्।'); return; }
+    if (!p.expenses) p.expenses = [];
+    const savedExpense = await db_addExpense(projectId, { title, amount, date, remark });
+    if (savedExpense) {
+        p.expenses.push({ ...savedExpense, amount: parseFloat(savedExpense.amount) || 0 });
+        const totalExp = getTotalExpenses(p);
+        if (totalExp > 0 && p.status === 'सुरु हुन बाँकी') p.status = 'प्रगतिमा';
+        if (totalExp >= p.budget && p.budget > 0) p.status = 'सम्पन्न';
+        saveProjects();
+        renderExpenseHistory(projectId);
+        renderAll();
+        applyFilters();
+        document.getElementById('expTitle').value = '';
+        document.getElementById('expAmount').value = '';
+        alert('✅ खर्च थपियो!');
+    } else {
+        alert('❌ खर्च थप्न सकिएन।');
+    }
+};
+
+window.deleteAllExpenses = async function() {
+    if (!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
+    const projectId = parseInt(document.getElementById('expProjectId').value);
+    const p = projects.find(x => x.id === projectId);
+    if (!p) return;
+    if (!confirm(`"${p.name}" को सबै खर्च मेट्ने?`)) return;
+    const success = await db_deleteAllExpenses(projectId);
+    if (success) {
+        p.expenses = [];
+        saveProjects();
+        renderExpenseHistory(projectId);
+        renderAll();
+        applyFilters();
+        alert('🗑️ सबै खर्च मेटियो');
+    } else {
+        alert('❌ मेट्न सकिएन।');
+    }
+};
+
+window.saveBeneficiary = async function() {
+    const p = projects.find(x => x.id === beneficiaryEditProjectId);
+    if (!p) return;
+    const beneficiary = {
+        male: parseInt(document.getElementById('beneficiaryMale').value) || 0,
+        female: parseInt(document.getElementById('beneficiaryFemale').value) || 0,
+        dalit: parseInt(document.getElementById('beneficiaryDalit').value) || 0,
+        janajati: parseInt(document.getElementById('beneficiaryJanajati').value) || 0,
+        disabled: parseInt(document.getElementById('beneficiaryDisabled').value) || 0,
+        returnee: parseInt(document.getElementById('beneficiaryReturnee').value) || 0,
+        entrepreneur: parseInt(document.getElementById('beneficiaryEntrepreneur').value) || 0
+    };
+    const saved = await db_saveBeneficiary(p.id, beneficiary);
+    if (saved) {
+        p.beneficiary = beneficiary;
+        saveProjects();
+        closeBeneficiaryModal();
+        renderAll();
+        alert('✅ लाभग्राही विवरण सुरक्षित!');
+    } else {
+        alert('❌ सुरक्षित गर्न सकिएन।');
+    }
+};
+
+// ============================================
 // DETAIL VIEW
 // ============================================
-
 function openDetailView(id) {
     const p = projects.find(x => x.id === id);
     if(!p) { alert('कार्यक्रम फेला परेन'); return; }
@@ -1697,14 +1049,11 @@ function openDetailView(id) {
     document.getElementById('detailModal').classList.add('show');
 }
 
-function printDetail() {
-    window.print();
-}
+function printDetail() { window.print(); }
 
 // ============================================
 // PROJECT MODAL
 // ============================================
-
 function openAddModal() {
     if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
     editMode = false;
@@ -1744,9 +1093,7 @@ function openEditModal(id) {
     document.getElementById('projectModal').classList.add('show');
 }
 
-function closeModal(id) {
-    document.getElementById(id).classList.remove('show');
-}
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
 document.getElementById('projectForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -1791,7 +1138,6 @@ document.getElementById('projectForm').addEventListener('submit', function(e) {
 // ============================================
 // EXPENSE MODAL
 // ============================================
-
 function openExpenseModal(projectId) {
     if(!currentUser) { alert('लगइन गर्नुहोस्।'); return; }
     currentExpenseProjectId = projectId;
@@ -1830,7 +1176,6 @@ function renderExpenseHistory(projectId) {
 // ============================================
 // BENEFICIARY MODAL
 // ============================================
-
 function openBeneficiaryModal(projectId) {
     if(!currentUser) { alert('कृपया पहिले लगइन गर्नुहोस्।'); return; }
     const p = projects.find(x => x.id === projectId);
@@ -1886,7 +1231,6 @@ function closeBeneficiaryModal() {
 // ============================================
 // USER MANAGEMENT
 // ============================================
-
 function openUserManagement() {
     if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
     renderUserList();
@@ -1907,10 +1251,17 @@ function renderUserList() {
     container.innerHTML = html;
 }
 
+window.getUsers = function() {
+    const stored = localStorage.getItem('appUsers');
+    if (stored) {
+        try { return JSON.parse(stored); } catch(e) { return []; }
+    }
+    return [];
+};
+
 // ============================================
 // DATA EXPORT / IMPORT
 // ============================================
-
 window.exportData = function() {
     if (!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
     const data = { projects, users: getUsers(), exportedAt: new Date().toISOString() };
@@ -1935,10 +1286,21 @@ window.handleImport = function(event) {
             const data = JSON.parse(e.target.result);
             if(data.projects) {
                 projects = data.projects;
-                await syncProjectsToSupabase();
+                // Save to Supabase
+                for (let p of projects) {
+                    await db_saveProject(p);
+                    if (p.beneficiary) {
+                        await db_saveBeneficiary(p.id, p.beneficiary);
+                    }
+                    for (let exp of (p.expenses || [])) {
+                        if (!exp.id) {
+                            await db_addExpense(p.id, exp);
+                        }
+                    }
+                }
                 await loadAllData();
                 renderAll();
-                alert('✅ डाटा आयात र सिङ्क सफल!');
+                alert('✅ डाटा आयात सफल!');
             }
             if(data.users) {
                 for (let u of data.users) {
@@ -1954,7 +1316,6 @@ window.handleImport = function(event) {
 // ============================================
 // TABS
 // ============================================
-
 function switchTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tabs button').forEach(el => el.classList.remove('active'));
@@ -1970,9 +1331,8 @@ document.querySelectorAll('.tabs button').forEach(btn => {
 });
 
 // ============================================
-// REPORT GENERATOR (SIMPLIFIED)
+// REPORT GENERATOR
 // ============================================
-
 function generateReport() {
     const container = document.getElementById('reportContent');
     if(projects.length === 0) {
@@ -2063,13 +1423,108 @@ function generateReport() {
             </div>
         </div>
     `;
+
+    // Activities
+    let activitiesRows = '';
+    const allActivities = [];
+    projects.forEach(p => {
+        if(p.activities) {
+            const acts = p.activities.split(',').map(a => a.trim());
+            acts.forEach(a => { if(a) allActivities.push({ activity: a, project: p.name, status: p.status }); });
+        }
+    });
+    allActivities.slice(0, 10).forEach((a, idx) => {
+        activitiesRows += `<tr><td>${idx+1}</td><td>${a.activity}</td><td>${a.project}</td><td>${a.status}</td></tr>`;
+    });
+
+    // Expenses
+    let expenseRows = '', expCounter = 1;
+    projects.forEach(p => {
+        (p.expenses || []).forEach(e => {
+            expenseRows += `<tr><td>${expCounter++}</td><td>${e.date || '-'}</td><td>${e.title || 'खर्च'}</td><td>${p.name}</td><td>रु. ${(e.amount||0).toLocaleString()}</td><td>${e.remark || '-'}</td></tr>`;
+        });
+    });
+
+    // Persons
+    let personRows = '';
+    const uniquePersons = [...new Set(projects.filter(p => p.responsible).map(p => p.responsible))];
+    uniquePersons.slice(0, 10).forEach((person, idx) => {
+        const proj = projects.find(p => p.responsible === person);
+        personRows += `<tr><td>${idx+1}</td><td>${person}</td><td>${proj ? proj.authorized || 'प्रमुख' : 'प्रमुख'}</td><td>${proj ? proj.name : '-'}</td></tr>`;
+    });
+
+    // Achievements
+    let achievementList = '';
+    projects.forEach(p => { if(p.output) achievementList += `<li>${p.output}</li>`; });
+    if(!achievementList) achievementList = '<li>कुनै उपलब्धी रेकर्ड छैन।</li>';
+
+    // Remaining works
+    let remainingWorks = '';
+    const incomplete = projects.filter(p => p.status !== 'सम्पन्न');
+    incomplete.forEach(p => {
+        remainingWorks += `<li>${p.name} - ${p.status} (बजेट: रु. ${(p.budget||0).toLocaleString()}, खर्च: रु. ${getTotalExpenses(p).toLocaleString()})</li>`;
+    });
+    if(!remainingWorks) remainingWorks = '<li>सबै कार्यक्रम सम्पन्न।</li>';
+
+    // Challenges
+    let challenges = '';
+    if(pendingCount > 0) challenges += `<li>${pendingCount} वटा सुरु हुन बाँकी।</li>`;
+    if(activeCount > 0) challenges += `<li>${activeCount} वटा प्रगतिमा, समयमै सम्पन्न गर्न प्रयास आवश्यक।</li>`;
+    if(!challenges) challenges = '<li>कुनै समस्या छैन।</li>';
+
+    reportHTML += `
+        <div class="report-section">
+            <h4>५. गतिविधिहरू</h4>
+            <table class="report-table"><thead><tr><th>क्र.स</th><th>गतिविधि</th><th>कार्यक्रम</th><th>स्थिति</th></tr></thead><tbody>${activitiesRows || '<tr><td colspan="4" class="empty-msg">कुनै गतिविधि छैन</td></tr>'}</tbody></table>
+        </div>
+        <div class="report-section">
+            <h4>६. खर्च विवरण</h4>
+            <table class="report-table"><thead><tr><th>क्र.स</th><th>मिति</th><th>शीर्षक</th><th>कार्यक्रम</th><th>रकम</th><th>कैफियत</th></tr></thead><tbody>${expenseRows || '<tr><td colspan="6" class="empty-msg">कुनै खर्च छैन</td></tr>'}</tbody></table>
+        </div>
+        <div class="report-section">
+            <h4>७. उपलब्धी</h4>
+            <ul>${achievementList}</ul>
+        </div>
+        <div class="report-section">
+            <h4>८. संलग्न व्यक्तिहरू</h4>
+            <table class="report-table"><thead><tr><th>क्र.स</th><th>नाम</th><th>पद</th><th>कार्यक्रम</th></tr></thead><tbody>${personRows || '<tr><td colspan="4" class="empty-msg">कुनै व्यक्ति छैन</td></tr>'}</tbody></table>
+        </div>
+        <div class="report-section">
+            <h4>९. समस्या</h4>
+            <ul>${challenges}</ul>
+        </div>
+        <div class="report-section">
+            <h4>१०. बाँकी कार्य</h4>
+            <ul>${remainingWorks}</ul>
+        </div>
+        <div class="report-section">
+            <h4>११. आगामी योजना</h4>
+            <ol>
+                <li>नियमित अनुगमन बढाउने</li>
+                <li>बाँकी कार्यको प्राथमिकीकरण</li>
+                <li>लाभग्राहीको सन्तुष्टि मूल्याङ्कन</li>
+                <li>कार्यक्रमको प्रभाव मूल्याङ्कन</li>
+            </ol>
+        </div>
+        <div class="report-section">
+            <h4>१२. निष्कर्ष</h4>
+            <p>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रमको हालसम्मको वित्तीय तथा भौतिक प्रगति सन्तोषजनक रहेको देखिन्छ। कार्यक्रम अन्तर्गत स्वीकृत बजेटमध्ये रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ भने कार्यक्रमबाट ${totalBeneficiaries} जना प्रत्यक्ष लाभान्वित भएका छन्। बाँकी रहेका कार्यहरू तोकिएको समयसीमाभित्र सम्पन्न गरी निर्धारित लक्ष्य हासिल गरिने अपेक्षा गरिएको छ।</p>
+        </div>
+        <div class="report-section">
+            <div class="report-sign">
+                <div class="sign-block"><strong>प्रतिवेदन तयार गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
+                <div class="sign-block"><strong>प्रमाणित गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
+                <div class="sign-block"><strong>स्वीकृत गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
+            </div>
+        </div>
+    `;
+
     container.innerHTML = reportHTML;
 }
 
 // ============================================
 // EXPORT REPORT TO WORD
 // ============================================
-
 function exportReportWord() {
     const reportElement = document.getElementById('reportContent');
     let reportHTML = reportElement.innerHTML;
@@ -2105,9 +1560,8 @@ function exportReportWord() {
 }
 
 // ============================================
-// LOGIN / LOGOUT HANDLERS
+// LOGIN / LOGOUT
 // ============================================
-
 document.getElementById('loginForm').onsubmit = async function(e) {
     e.preventDefault();
     const username = document.getElementById('loginUsername').value.trim();
@@ -2116,18 +1570,11 @@ document.getElementById('loginForm').onsubmit = async function(e) {
     const user = await window.authenticate(username, password);
     if (user) {
         currentUser = user;
-        
-        // ✅ SAVE LOGIN STATE
         saveLoginState(user);
-        
         document.getElementById('loginError').textContent = '';
         document.getElementById('loginModal').classList.remove('show');
         document.getElementById('mainDashboard').style.display = 'block';
-        
-        const success = await loadAllData();
-        if (!success) {
-            projects = getProjects();
-        }
+        await loadAllData();
         renderAll();
     } else {
         document.getElementById('loginError').textContent = '❌ गलत प्रयोगकर्ता नाम वा पासवर्ड।';
@@ -2136,10 +1583,7 @@ document.getElementById('loginForm').onsubmit = async function(e) {
 
 function logout() {
     if(!confirm('बाहिरिने?')) return;
-    
-    // ✅ CLEAR LOGIN STATE
     clearLoginState();
-    
     currentUser = null;
     document.getElementById('mainDashboard').style.display = 'none';
     document.getElementById('loginModal').classList.add('show');
@@ -2151,7 +1595,6 @@ function logout() {
 // ============================================
 // ADD SYNC BUTTON
 // ============================================
-
 function addSyncButton() {
     const adminPanel = document.getElementById('adminPanel');
     if (adminPanel) {
@@ -2165,7 +1608,12 @@ function addSyncButton() {
                 const btn = this;
                 btn.textContent = '⏳ सिङ्क हुँदै...';
                 btn.disabled = true;
-                await syncProjectsToSupabase();
+                for (let p of projects) {
+                    await db_saveProject(p);
+                    if (p.beneficiary) {
+                        await db_saveBeneficiary(p.id, p.beneficiary);
+                    }
+                }
                 await loadAllData();
                 renderAll();
                 btn.textContent = '✅ सिङ्क पूरा!';
@@ -2180,34 +1628,23 @@ function addSyncButton() {
 }
 
 // ============================================
-// INITIALIZE - CHECK LOGIN STATE ON LOAD
+// INITIALIZE - CHECK LOGIN ON LOAD
 // ============================================
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Add sync button
     setTimeout(addSyncButton, 500);
     
-    // Check if user is already logged in
     if (checkLoginState()) {
-        // User is logged in, show dashboard
         document.getElementById('loginModal').classList.remove('show');
         document.getElementById('mainDashboard').style.display = 'block';
-        
-        // Load data
-        loadAllData().then(() => {
-            renderAll();
-        });
-        
+        loadAllData().then(() => renderAll());
         console.log('✅ Auto-login successful:', currentUser.username);
     } else {
-        // User is not logged in, show login
         document.getElementById('loginModal').classList.add('show');
         document.getElementById('mainDashboard').style.display = 'none';
     }
 });
 
 console.log('✅ Application loaded successfully!');
-console.log('🔗 Supabase URL:', SUPABASE_URL);
 </script>
 </body>
 </html>
