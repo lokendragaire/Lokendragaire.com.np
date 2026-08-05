@@ -217,7 +217,7 @@
             <div class="card info"><div class="label">कुल खर्च</div><div class="value" id="totalExp">०</div><div class="sub">रु.</div></div>
             <div class="card warning"><div class="label">बाँकी रकम</div><div class="value" id="totalBalance">०</div><div class="sub">रु.</div></div>
             <div class="card"><div class="label">कार्यक्रम संख्या</div><div class="value" id="totalProjects">०</div><div class="sub">वटा</div></div>
-            <div class="card danger"><div class="label">प्रगतिमा</div><div class="value" id="activeProjects">०</div><div class="sub">वटा</div></div>
+            <div class="card danger"><div class="label">सन्चालित</div><div class="value" id="activeProjects">०</div><div class="sub">वटा</div></div>
             <div class="card purple"><div class="label">कुल लाभग्राही</div><div class="value" id="totalBeneficiaries">०</div><div class="sub">जना</div></div>
         </div>
 
@@ -225,7 +225,7 @@
             <label>प्रकृति:</label>
             <select id="filterCategory"><option value="">सबै</option></select>
             <label>स्थिति:</label>
-            <select id="filterStatus"><option value="">सबै</option><option value="प्रगतिमा">प्रगतिमा</option><option value="सुरु हुन बाँकी">सुरु हुन बाँकी</option><option value="सम्पन्न">सम्पन्न</option></select>
+            <select id="filterStatus"><option value="">सबै</option><option value="सन्चालित">सन्चालित</option><option value="सुरु हुन बाँकी">सुरु हुन बाँकी</option><option value="सम्पन्न">सम्पन्न</option></select>
             <label>खोज:</label>
             <input type="text" id="filterSearch" placeholder="कार्यक्रमको नाम..." />
             <button class="btn" onclick="applyFilters()">🔍 फिल्टर</button>
@@ -309,7 +309,7 @@
             <label>स्थिति</label>
             <select id="fStatus">
                 <option value="सुरु हुन बाँकी">सुरु हुन बाँकी</option>
-                <option value="प्रगतिमा">प्रगतिमा</option>
+                <option value="सन्चालित">सन्चालित</option>
                 <option value="सम्पन्न">सम्पन्न</option>
             </select>
             <hr style="margin:12px 0;border-color:#eee;" />
@@ -744,7 +744,7 @@ function renderSummary() {
     const totalBudget = projects.reduce((s,p) => s + (p.budget || 0), 0);
     const totalExp = projects.reduce((s,p) => s + getTotalExpenses(p), 0);
     const balance = totalBudget - totalExp;
-    const active = projects.filter(p => p.status === 'प्रगतिमा').length;
+    const active = projects.filter(p => p.status === 'सन्चालित').length;
     const totalBeneficiaries = projects.reduce((s,p) => s + getTotalBeneficiaries(p), 0);
     
     document.getElementById('totalBudget').textContent = toNepaliWithComma(totalBudget);
@@ -766,7 +766,7 @@ function renderTable(filtered) {
     list.forEach((p, idx) => {
         const totalExp = getTotalExpenses(p);
         const progress = p.budget > 0 ? Math.min(100, Math.round((totalExp / p.budget) * 100)) : 0;
-        const statusClass = p.status === 'प्रगतिमा' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending');
+        const statusClass = p.status === 'सन्चालित' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending');
         let personHtml = '';
         if(p.responsible) personHtml += `<div><span class="label">जिम्मेवार:</span> ${p.responsible}</div>`;
         if(!personHtml) personHtml = '<span style="color:#999;">-</span>';
@@ -836,14 +836,14 @@ function renderCharts() {
         }
     });
 
-    const statusCount = { 'प्रगतिमा':0, 'सुरु हुन बाँकी':0, 'सम्पन्न':0 };
+    const statusCount = { 'सन्चालित':0, 'सुरु हुन बाँकी':0, 'सम्पन्न':0 };
     projects.forEach(p => { if(statusCount[p.status] !== undefined) statusCount[p.status]++; });
     window.statusChartInstance = new Chart(ctx2, {
         type: 'doughnut',
         data: {
-            labels: ['प्रगतिमा', 'सुरु हुन बाँकी', 'सम्पन्न'],
+            labels: ['सन्चालित', 'सुरु हुन बाँकी', 'सम्पन्न'],
             datasets: [{
-                data: [statusCount['प्रगतिमा'], statusCount['सुरु हुन बाँकी'], statusCount['सम्पन्न']],
+                data: [statusCount['सन्चालित'], statusCount['सुरु हुन बाँकी'], statusCount['सम्पन्न']],
                 backgroundColor: ['#2e7d32', '#f9a825', '#1976d2']
             }]
         },
@@ -928,7 +928,7 @@ function openDetailView(id) {
             <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
                 <span><strong>📌 प्रकृति:</strong> ${p.category || 'अन्य'}</span>
                 <span><strong>⏱️ समय:</strong> ${p.time || '-'}</span>
-                <span><strong>📊 स्थिति:</strong> <span class="status-badge ${p.status === 'प्रगतिमा' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending')}">${p.status}</span></span>
+                <span><strong>📊 स्थिति:</strong> <span class="status-badge ${p.status === 'सन्चालित' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending')}">${p.status}</span></span>
             </div>
         </div>
         <div class="detail-grid">
@@ -1266,7 +1266,7 @@ window.saveExpense = async function() {
     if (savedExpense) {
         p.expenses.push({ ...savedExpense, amount: parseFloat(savedExpense.amount) || 0 });
         const totalExp = getTotalExpenses(p);
-        if (totalExp > 0 && p.status === 'सुरु हुन बाँकी') p.status = 'प्रगतिमा';
+        if (totalExp > 0 && p.status === 'सुरु हुन बाँकी') p.status = 'सन्चालित';
         if (totalExp >= p.budget && p.budget > 0) p.status = 'सम्पन्न';
         saveProjects();
         renderExpenseHistory(projectId);
@@ -1404,7 +1404,7 @@ function generateReport() {
     const totalExp = projects.reduce((s,p) => s + getTotalExpenses(p), 0);
     const totalBalance = totalBudget - totalExp;
     const progressPercent = totalBudget > 0 ? Math.round((totalExp / totalBudget) * 100) : 0;
-    const activeCount = projects.filter(p => p.status === 'प्रगतिमा').length;
+    const activeCount = projects.filter(p => p.status === 'सन्चालित').length;
     const completedCount = projects.filter(p => p.status === 'सम्पन्न').length;
     const pendingCount = projects.filter(p => p.status === 'सुरु हुन बाँकी').length;
 
@@ -1430,9 +1430,10 @@ function generateReport() {
         <div class="report-section">
             <div class="report-header">
                 <h2>गलकोट नगरपालिका</h2>
-                <h3>रोजगार सेवा केन्द्र</h3>
-                <h4>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रम प्रगति प्रतिवेदन</h4>
-                <p><strong>आर्थिक वर्ष :</strong> २०८१/८२</p>
+                <h3>नगर कार्यपालिकाको कार्यालय</h3>
+                 <h3>रोजगार, सीप तथा उद्यमशील शाखा</h3>
+                <h4>प्रगति प्रतिवेदन</h4>
+                <p><strong>आर्थिक वर्ष :</strong> २०८३/८४</p>
                 <p><strong>प्रतिवेदन मिति :</strong> ${new Date().toLocaleDateString('ne-NP', {year:'numeric', month:'long', day:'numeric'})}</p>
             </div>
         </div>
@@ -1451,7 +1452,7 @@ function generateReport() {
                 <div class="item"><span class="label">हालसम्म खर्च</span><span class="value">रु. ${toNepaliWithComma(totalExp)}</span></div>
                 <div class="item"><span class="label">बाँकी बजेट</span><span class="value">रु. ${toNepaliWithComma(totalBalance)}</span></div>
                 <div class="item"><span class="label">खर्च प्रतिशत</span><span class="value">${toNepaliNumber(progressPercent)}%</span></div>
-                <div class="item"><span class="label">प्रगतिमा</span><span class="value">${toNepaliNumber(activeCount)} वटा</span></div>
+                <div class="item"><span class="label">सन्चालित</span><span class="value">${toNepaliNumber(activeCount)} वटा</span></div>
                 <div class="item"><span class="label">सम्पन्न</span><span class="value">${toNepaliNumber(completedCount)} वटा</span></div>
                 <div class="item"><span class="label">सुरु हुन बाँकी</span><span class="value">${toNepaliNumber(pendingCount)} वटा</span></div>
             </div>
@@ -1547,7 +1548,7 @@ function generateReport() {
     // Challenges
     let challenges = '';
     if(pendingCount > 0) challenges += `<li>${toNepaliNumber(pendingCount)} वटा सुरु हुन बाँकी।</li>`;
-    if(activeCount > 0) challenges += `<li>${toNepaliNumber(activeCount)} वटा प्रगतिमा, समयमै सम्पन्न गर्न प्रयास आवश्यक।</li>`;
+    if(activeCount > 0) challenges += `<li>${toNepaliNumber(activeCount)} वटा सन्चालित, समयमै सम्पन्न गर्न प्रयास आवश्यक।</li>`;
     if(!challenges) challenges = '<li>कुनै समस्या छैन।</li>';
 
     reportHTML += `
