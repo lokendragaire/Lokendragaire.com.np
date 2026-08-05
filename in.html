@@ -197,8 +197,8 @@
             <span class="role-badge" id="displayRole">Admin</span>
         </div>
         <div>
-            <span style="font-size:13px;color:#888;margin-right:12px;">📅 आर्थिक वर्ष २०८१/८२</span>
-            <button class="btn-logout" onclick="logout()">🚪 बाहिरिनुहोस्</button>
+            <span style="font-size:13px;color:#888;margin-right:12px;">📅 आर्थिक वर्ष २०८३/८४</span>
+            <button class="btn-logout" onclick="logout()">Logout</button>
         </div>
     </div>
 
@@ -209,8 +209,8 @@
 
     <!-- TAB 1: DASHBOARD -->
     <div class="tab-content active" id="tabDashboard">
-        <h1>📊 रोजगार तथा उद्यमशीलता कार्यक्रम ड्यासबोर्ड</h1>
-        <div class="subtitle">स्थानीय तह कार्यक्रम कार्यान्वयन समिति · Tracking & Monitoring</div>
+        <h1>📊 रोजगार,सिप तथा उद्यमशीलता कार्यक्रम ड</h1>
+        <div class="subtitle">कार्यक्रम कार्यान्वयन स्थिति · Programme Tracking & Monitoring</div>
 
         <div class="cards" id="summaryCards">
             <div class="card success"><div class="label">कुल बजेट</div><div class="value" id="totalBudget">०</div><div class="sub">रु.</div></div>
@@ -898,7 +898,7 @@ function applyFilters() {
     let filtered = projects.filter(p => {
         if(cat && p.category !== cat) return false;
         if(status && p.status !== status) return false;
-        if(search && !p.name.toLowerCase().includes(search) && !(p.activities||'').toLowerCase().includes(search)) return false;
+        if(search && ().includes(search) && !(p.activities||'').toLowerCase().includes(search)) return false;
         return true;
     });
     renderTable(filtered);
