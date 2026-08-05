@@ -8,7 +8,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* CSS - पहिले जस्तै */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Nirmala UI', sans-serif; }
         body { background: #f0f2f5; padding: 20px; }
         .container { max-width: 1500px; margin: 0 auto; }
@@ -141,6 +140,7 @@
         .beneficiary-grid .b-item label { font-size: 12px; margin: 0; display: inline; white-space: nowrap; }
         .beneficiary-grid .b-item input { width: 70px; padding: 4px 8px; font-size: 12px; }
         .report-introduction { font-size: 14px; line-height: 1.8; color: #333; text-align: justify; padding: 4px 0; }
+        .nepali-number { font-family: 'Nirmala UI', 'Segoe UI', sans-serif; }
         @media (max-width: 768px) {
             .row { grid-template-columns: 1fr; }
             .filters { flex-direction: column; align-items: stretch; }
@@ -413,6 +413,38 @@
 
 <script>
 // ============================================
+// NEPALI NUMBER CONVERTER
+// ============================================
+function toNepaliNumber(num) {
+    const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+    return String(num).replace(/\d/g, d => nepaliDigits[parseInt(d)]);
+}
+
+function toNepaliWithComma(num) {
+    const parts = String(num).split('.');
+    let intPart = parts[0];
+    const decPart = parts[1] || '';
+    
+    // Add commas
+    let result = '';
+    let count = 0;
+    for (let i = intPart.length - 1; i >= 0; i--) {
+        result = intPart[i] + result;
+        count++;
+        if (count % 3 === 0 && i > 0) {
+            result = ',' + result;
+        }
+    }
+    
+    // Convert to Nepali digits
+    result = toNepaliNumber(result);
+    if (decPart) {
+        result += '.' + toNepaliNumber(decPart);
+    }
+    return result;
+}
+
+// ============================================
 // SUPABASE CONFIGURATION
 // ============================================
 const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
@@ -420,13 +452,12 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 // ============================================
-// LOGIN STATE MANAGEMENT - Auto Login on Refresh
+// LOGIN STATE MANAGEMENT
 // ============================================
 function saveLoginState(user) {
     try {
         localStorage.setItem('currentUser', JSON.stringify(user));
         localStorage.setItem('isLoggedIn', 'true');
-        console.log('✅ Login state saved');
     } catch(e) { console.error('Error saving login state:', e); }
 }
 
@@ -434,7 +465,6 @@ function clearLoginState() {
     try {
         localStorage.removeItem('currentUser');
         localStorage.removeItem('isLoggedIn');
-        console.log('✅ Login state cleared');
     } catch(e) { console.error('Error clearing login state:', e); }
 }
 
@@ -444,7 +474,6 @@ function checkLoginState() {
         const userData = localStorage.getItem('currentUser');
         if (isLoggedIn === 'true' && userData) {
             currentUser = JSON.parse(userData);
-            console.log('✅ User restored from storage:', currentUser.username);
             return true;
         }
     } catch(e) { console.error('Error checking login state:', e); }
@@ -460,7 +489,6 @@ let editMode = false;
 let currentExpenseProjectId = null;
 let beneficiaryEditProjectId = null;
 
-// Helper functions
 function getDefaultBeneficiary() {
     return { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0 };
 }
@@ -710,7 +738,7 @@ async function loadAllData() {
 }
 
 // ============================================
-// RENDER FUNCTIONS
+// RENDER FUNCTIONS WITH NEPALI NUMBERS
 // ============================================
 function renderSummary() {
     const totalBudget = projects.reduce((s,p) => s + (p.budget || 0), 0);
@@ -718,12 +746,13 @@ function renderSummary() {
     const balance = totalBudget - totalExp;
     const active = projects.filter(p => p.status === 'प्रगतिमा').length;
     const totalBeneficiaries = projects.reduce((s,p) => s + getTotalBeneficiaries(p), 0);
-    document.getElementById('totalBudget').textContent = totalBudget.toLocaleString();
-    document.getElementById('totalExp').textContent = totalExp.toLocaleString();
-    document.getElementById('totalBalance').textContent = balance.toLocaleString();
-    document.getElementById('totalProjects').textContent = projects.length;
-    document.getElementById('activeProjects').textContent = active;
-    document.getElementById('totalBeneficiaries').textContent = totalBeneficiaries.toLocaleString();
+    
+    document.getElementById('totalBudget').textContent = toNepaliWithComma(totalBudget);
+    document.getElementById('totalExp').textContent = toNepaliWithComma(totalExp);
+    document.getElementById('totalBalance').textContent = toNepaliWithComma(balance);
+    document.getElementById('totalProjects').textContent = toNepaliNumber(projects.length);
+    document.getElementById('activeProjects').textContent = toNepaliNumber(active);
+    document.getElementById('totalBeneficiaries').textContent = toNepaliNumber(totalBeneficiaries);
 }
 
 function renderTable(filtered) {
@@ -750,12 +779,12 @@ function renderTable(filtered) {
             actionsHtml += `<button class="del-btn" onclick="deleteProject(${p.id})">🗑️</button>`;
         }
         html += `<tr>
-            <td>${idx+1}</td>
+            <td>${toNepaliNumber(idx+1)}</td>
             <td><strong>${p.name}</strong><br><span style="font-size:10px;color:#888;">${p.activities ? p.activities.slice(0,30)+'...' : ''}</span></td>
             <td>${p.category || 'अन्य'}</td>
-            <td>${(p.budget||0).toLocaleString()}</td>
-            <td>${totalExp.toLocaleString()}</td>
-            <td><div class="progress-bar"><div class="fill" style="width:${progress}%"></div></div> ${progress}%</td>
+            <td>${toNepaliWithComma(p.budget || 0)}</td>
+            <td>${toNepaliWithComma(totalExp)}</td>
+            <td><div class="progress-bar"><div class="fill" style="width:${progress}%"></div></div> ${toNepaliNumber(progress)}%</td>
             <td>${p.time || '-'}</td>
             <td class="person-info">${personHtml}</td>
             <td><span class="status-badge ${statusClass}">${p.status}</span></td>
@@ -783,7 +812,28 @@ function renderCharts() {
                 borderRadius: 4
             }]
         },
-        options: { responsive: true, plugins: { legend: { display: false } } }
+        options: { 
+            responsive: true, 
+            plugins: { 
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'रु. ' + toNepaliWithComma(context.raw);
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: {
+                        callback: function(value) {
+                            return toNepaliWithComma(value);
+                        }
+                    }
+                }
+            }
+        }
     });
 
     const statusCount = { 'प्रगतिमा':0, 'सुरु हुन बाँकी':0, 'सम्पन्न':0 };
@@ -797,7 +847,21 @@ function renderCharts() {
                 backgroundColor: ['#2e7d32', '#f9a825', '#1976d2']
             }]
         },
-        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        options: { 
+            responsive: true, 
+            plugins: { 
+                legend: { position: 'bottom' },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a,b) => a + b, 0);
+                            const percentage = total > 0 ? Math.round((context.raw / total) * 100) : 0;
+                            return context.label + ': ' + toNepaliNumber(context.raw) + ' (' + toNepaliNumber(percentage) + '%)';
+                        }
+                    }
+                }
+            }
+        }
     });
 }
 
@@ -841,7 +905,279 @@ function applyFilters() {
 }
 
 // ============================================
-// CRUD OPERATIONS
+// DETAIL VIEW
+// ============================================
+function openDetailView(id) {
+    const p = projects.find(x => x.id === id);
+    if(!p) { alert('कार्यक्रम फेला परेन'); return; }
+    const totalExp = getTotalExpenses(p);
+    const progress = p.budget > 0 ? Math.min(100, Math.round((totalExp / p.budget) * 100)) : 0;
+    const b = p.beneficiary || getDefaultBeneficiary();
+    const totalBen = getTotalBeneficiaries(p);
+    let expenseHtml = '';
+    if(p.expenses && p.expenses.length > 0) {
+        p.expenses.forEach(e => {
+            expenseHtml += `<div class="item"><span>${e.title || 'खर्च'} ${e.date ? ' - '+e.date : ''}</span><span class="amount">रु. ${toNepaliWithComma(e.amount || 0)}</span></div>`;
+        });
+    } else {
+        expenseHtml = '<div style="color:#999;padding:6px 0;">कुनै खर्च छैन</div>';
+    }
+    document.getElementById('detailTitle').textContent = `📄 ${p.name} - पूर्ण विवरण`;
+    document.getElementById('detailContent').innerHTML = `
+        <div style="background:#f0f4f8;padding:12px;border-radius:8px;margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                <span><strong>📌 प्रकृति:</strong> ${p.category || 'अन्य'}</span>
+                <span><strong>⏱️ समय:</strong> ${p.time || '-'}</span>
+                <span><strong>📊 स्थिति:</strong> <span class="status-badge ${p.status === 'प्रगतिमा' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending')}">${p.status}</span></span>
+            </div>
+        </div>
+        <div class="detail-grid">
+            <div class="item"><span class="dlabel">💰 कुल बजेट</span><span class="dvalue">रु. ${toNepaliWithComma(p.budget || 0)}</span></div>
+            <div class="item"><span class="dlabel">💸 हालसम्मको खर्च</span><span class="dvalue">रु. ${toNepaliWithComma(totalExp)}</span></div>
+            <div class="item"><span class="dlabel">📈 प्रगति</span><span class="dvalue">${toNepaliNumber(progress)}%</span></div>
+            <div class="item"><span class="dlabel">👥 कुल लाभग्राही</span><span class="dvalue">${toNepaliNumber(totalBen)} जना</span></div>
+        </div>
+        <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">👤 जिम्मेवार व्यक्तिहरू</h4>
+        <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
+            <div class="item"><span class="dlabel">जिम्मेवार</span><span class="dvalue">${p.responsible || '-'}</span></div>
+            <div class="item"><span class="dlabel">सहायक</span><span class="dvalue">${p.assistant || '-'}</span></div>
+            <div class="item detail-full"><span class="dlabel">अख्तियार</span><span class="dvalue">${p.authorized || '-'}</span></div>
+        </div>
+        <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">👥 लाभग्राही</h4>
+        <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
+            <div class="item"><span class="dlabel">👨 पुरुष</span><span class="dvalue">${toNepaliNumber(b.male || 0)}</span></div>
+            <div class="item"><span class="dlabel">👩 महिला</span><span class="dvalue">${toNepaliNumber(b.female || 0)}</span></div>
+            <div class="item"><span class="dlabel">🧑‍🦱 दलित</span><span class="dvalue">${toNepaliNumber(b.dalit || 0)}</span></div>
+            <div class="item"><span class="dlabel">🧑‍🦰 जनजाति</span><span class="dvalue">${toNepaliNumber(b.janajati || 0)}</span></div>
+            <div class="item"><span class="dlabel">♿ अपाङ्गता</span><span class="dvalue">${toNepaliNumber(b.disabled || 0)}</span></div>
+            <div class="item"><span class="dlabel">✈️ फर्केका</span><span class="dvalue">${toNepaliNumber(b.returnee || 0)}</span></div>
+            <div class="item"><span class="dlabel">🚀 नयाँ उद्यमी</span><span class="dvalue">${toNepaliNumber(b.entrepreneur || 0)}</span></div>
+        </div>
+        <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">📋 कार्य विवरण</h4>
+        <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
+            <div class="item detail-full"><span class="dlabel">📌 गर्नुपर्ने काम</span><span class="dvalue">${p.activities || '-'}</span></div>
+            <div class="item detail-full"><span class="dlabel">🔧 कसरी गर्ने?</span><span class="dvalue">${p.method || '-'}</span></div>
+            <div class="item detail-full"><span class="dlabel">🎯 उपलब्धी</span><span class="dvalue">${p.output || '-'}</span></div>
+        </div>
+        <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">💰 खर्च विवरण</h4>
+        <div class="detail-expense-list">${expenseHtml}</div>
+        <div style="text-align:right;font-weight:700;font-size:15px;margin-top:6px;">जम्मा खर्च: रु. ${toNepaliWithComma(totalExp)}</div>
+    `;
+    document.getElementById('detailModal').classList.add('show');
+}
+
+function printDetail() { window.print(); }
+
+// ============================================
+// PROJECT MODAL
+// ============================================
+function openAddModal() {
+    if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
+    editMode = false;
+    document.getElementById('modalTitle').textContent = '➕ नयाँ कार्यक्रम';
+    document.getElementById('editId').value = '';
+    document.getElementById('projectForm').reset();
+    document.querySelectorAll('.beneficiary-grid input').forEach(inp => inp.value = 0);
+    document.getElementById('projectModal').classList.add('show');
+}
+
+function openEditModal(id) {
+    if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
+    const p = projects.find(x => x.id === id);
+    if(!p) return;
+    editMode = true;
+    document.getElementById('modalTitle').textContent = '✏️ कार्यक्रम सम्पादन';
+    document.getElementById('editId').value = id;
+    document.getElementById('fName').value = p.name || '';
+    document.getElementById('fCategory').value = p.category || 'अन्य';
+    document.getElementById('fBudget').value = p.budget || 0;
+    document.getElementById('fTime').value = p.time || '';
+    document.getElementById('fStatus').value = p.status || 'सुरु हुन बाँकी';
+    document.getElementById('fResponsible').value = p.responsible || '';
+    document.getElementById('fAssistant').value = p.assistant || '';
+    document.getElementById('fAuthorized').value = p.authorized || '';
+    document.getElementById('fActivities').value = p.activities || '';
+    document.getElementById('fMethod').value = p.method || '';
+    document.getElementById('fOutput').value = p.output || '';
+    const b = p.beneficiary || getDefaultBeneficiary();
+    document.getElementById('fBeneficiaryMale').value = b.male || 0;
+    document.getElementById('fBeneficiaryFemale').value = b.female || 0;
+    document.getElementById('fBeneficiaryDalit').value = b.dalit || 0;
+    document.getElementById('fBeneficiaryJanajati').value = b.janajati || 0;
+    document.getElementById('fBeneficiaryDisabled').value = b.disabled || 0;
+    document.getElementById('fBeneficiaryReturnee').value = b.returnee || 0;
+    document.getElementById('fBeneficiaryEntrepreneur').value = b.entrepreneur || 0;
+    document.getElementById('projectModal').classList.add('show');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+document.getElementById('projectForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
+    const id = parseInt(document.getElementById('editId').value);
+    const name = document.getElementById('fName').value.trim();
+    const category = document.getElementById('fCategory').value;
+    const budget = parseFloat(document.getElementById('fBudget').value) || 0;
+    const time = document.getElementById('fTime').value.trim();
+    const status = document.getElementById('fStatus').value;
+    const responsible = document.getElementById('fResponsible').value.trim();
+    const assistant = document.getElementById('fAssistant').value.trim();
+    const authorized = document.getElementById('fAuthorized').value.trim();
+    const activities = document.getElementById('fActivities').value.trim();
+    const method = document.getElementById('fMethod').value.trim();
+    const output = document.getElementById('fOutput').value.trim();
+    const beneficiary = {
+        male: parseInt(document.getElementById('fBeneficiaryMale').value) || 0,
+        female: parseInt(document.getElementById('fBeneficiaryFemale').value) || 0,
+        dalit: parseInt(document.getElementById('fBeneficiaryDalit').value) || 0,
+        janajati: parseInt(document.getElementById('fBeneficiaryJanajati').value) || 0,
+        disabled: parseInt(document.getElementById('fBeneficiaryDisabled').value) || 0,
+        returnee: parseInt(document.getElementById('fBeneficiaryReturnee').value) || 0,
+        entrepreneur: parseInt(document.getElementById('fBeneficiaryEntrepreneur').value) || 0
+    };
+    if(!name || budget <= 0) { alert('नाम र बजेट भर्नुहोस्।'); return; }
+    if(editMode) {
+        const idx = projects.findIndex(p => p.id === id);
+        if(idx !== -1) {
+            projects[idx] = { ...projects[idx], name, category, budget, time, status, responsible, assistant, authorized, activities, method, output, beneficiary };
+        }
+    } else {
+        const newId = projects.length > 0 ? Math.max(...projects.map(p => p.id)) + 1 : 1;
+        projects.push({ id: newId, name, category, budget, time, status, responsible, assistant, authorized, activities, method, output, beneficiary, expenses: [] });
+    }
+    saveProjects();
+    closeModal('projectModal');
+    renderAll();
+    applyFilters();
+});
+
+// ============================================
+// EXPENSE MODAL
+// ============================================
+function openExpenseModal(projectId) {
+    if(!currentUser) { alert('लगइन गर्नुहोस्।'); return; }
+    currentExpenseProjectId = projectId;
+    const p = projects.find(x => x.id === projectId);
+    if(!p) return;
+    document.getElementById('expProjectDisplay').textContent = p.name;
+    document.getElementById('expProjectId').value = projectId;
+    document.getElementById('expTitle').value = '';
+    document.getElementById('expAmount').value = '';
+    document.getElementById('expDate').value = '';
+    document.getElementById('expRemark').value = '';
+    document.getElementById('expenseModalTitle').textContent = `💰 खर्च प्रविष्टि - ${p.name}`;
+    renderExpenseHistory(projectId);
+    document.getElementById('expenseModal').classList.add('show');
+}
+
+function renderExpenseHistory(projectId) {
+    const p = projects.find(x => x.id === projectId);
+    if(!p) return;
+    const list = document.getElementById('expenseHistoryList');
+    const totalDisplay = document.getElementById('expenseTotalDisplay');
+    if(!p.expenses || p.expenses.length === 0) {
+        list.innerHTML = '<div class="empty-msg">कुनै खर्च छैन</div>';
+        totalDisplay.textContent = 'जम्मा खर्च: रु. ०';
+        return;
+    }
+    let html = '', total = 0;
+    p.expenses.forEach(e => {
+        total += e.amount || 0;
+        html += `<div class="item"><span>${e.title || 'खर्च'} ${e.date ? ' - '+e.date : ''}</span><span class="amount">रु. ${toNepaliWithComma(e.amount || 0)}</span></div>`;
+    });
+    list.innerHTML = html;
+    totalDisplay.textContent = `जम्मा खर्च: रु. ${toNepaliWithComma(total)}`;
+}
+
+// ============================================
+// BENEFICIARY MODAL
+// ============================================
+function openBeneficiaryModal(projectId) {
+    if(!currentUser) { alert('कृपया पहिले लगइन गर्नुहोस्।'); return; }
+    const p = projects.find(x => x.id === projectId);
+    if(!p) return;
+    beneficiaryEditProjectId = projectId;
+    const b = p.beneficiary || getDefaultBeneficiary();
+    const modalHtml = `
+        <div class="modal-box">
+            <h2>👥 लाभग्राही विवरण - ${p.name}</h2>
+            <div class="beneficiary-grid">
+                <div class="b-item"><label>👨 पुरुष:</label><input type="number" id="beneficiaryMale" value="${b.male || 0}" min="0" /></div>
+                <div class="b-item"><label>👩 महिला:</label><input type="number" id="beneficiaryFemale" value="${b.female || 0}" min="0" /></div>
+                <div class="b-item"><label>🧑‍🦱 दलित:</label><input type="number" id="beneficiaryDalit" value="${b.dalit || 0}" min="0" /></div>
+                <div class="b-item"><label>🧑‍🦰 जनजाति:</label><input type="number" id="beneficiaryJanajati" value="${b.janajati || 0}" min="0" /></div>
+                <div class="b-item"><label>♿ अपाङ्गता:</label><input type="number" id="beneficiaryDisabled" value="${b.disabled || 0}" min="0" /></div>
+                <div class="b-item"><label>✈️ फर्केका:</label><input type="number" id="beneficiaryReturnee" value="${b.returnee || 0}" min="0" /></div>
+                <div class="b-item"><label>🚀 नयाँ उद्यमी:</label><input type="number" id="beneficiaryEntrepreneur" value="${b.entrepreneur || 0}" min="0" /></div>
+            </div>
+            <div style="margin-top:10px;padding:10px;background:#e8f5e9;border-radius:6px;">
+                <strong>📊 कुल: <span id="beneficiaryTotal">${toNepaliNumber(getTotalBeneficiaries(p))}</span> जना</strong>
+            </div>
+            <div class="modal-btns">
+                <button type="button" class="cancel-btn" onclick="closeBeneficiaryModal()">रद्द</button>
+                <button type="button" class="save-btn" onclick="saveBeneficiary()">💾 सुरक्षित</button>
+            </div>
+        </div>
+    `;
+    let modal = document.getElementById('beneficiaryModal');
+    if(!modal) {
+        modal = document.createElement('div');
+        modal.id = 'beneficiaryModal';
+        modal.className = 'modal';
+        document.body.appendChild(modal);
+    }
+    modal.innerHTML = modalHtml;
+    modal.classList.add('show');
+    document.querySelectorAll('#beneficiaryModal input[type="number"]').forEach(input => {
+        input.addEventListener('input', function() {
+            let total = 0;
+            document.querySelectorAll('#beneficiaryModal input[type="number"]').forEach(inp => {
+                total += parseInt(inp.value) || 0;
+            });
+            document.getElementById('beneficiaryTotal').textContent = toNepaliNumber(total);
+        });
+    });
+}
+
+function closeBeneficiaryModal() {
+    const modal = document.getElementById('beneficiaryModal');
+    if(modal) modal.classList.remove('show');
+}
+
+// ============================================
+// USER MANAGEMENT
+// ============================================
+function openUserManagement() {
+    if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
+    renderUserList();
+    document.getElementById('userModal').classList.add('show');
+}
+
+function renderUserList() {
+    const users = getUsers();
+    const container = document.getElementById('userList');
+    if(users.length === 0) { container.innerHTML = '<div class="empty-msg">कुनै प्रयोगकर्ता छैन</div>'; return; }
+    let html = '';
+    users.forEach(u => {
+        html += `<div style="display:flex;justify-content:space-between;padding:6px 4px;border-bottom:1px solid #eee;align-items:center;">
+            <span><strong>${u.username}</strong> <span style="font-size:11px;color:#888;">(${u.role})</span></span>
+            ${u.username !== 'admin' ? `<button onclick="deleteUser(${u.id})" style="border:none;background:#ffebee;color:#d32f2f;padding:2px 10px;border-radius:4px;cursor:pointer;">मेट्नुहोस्</button>` : '<span style="font-size:11px;color:#999;">(मुख्य Admin)</span>'}
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+
+window.getUsers = function() {
+    const stored = localStorage.getItem('appUsers');
+    if (stored) {
+        try { return JSON.parse(stored); } catch(e) { return []; }
+    }
+    return [];
+};
+
+// ============================================
+// DATA EXPORT / IMPORT
 // ============================================
 window.saveProjects = function() {
     localStorage.setItem('projectDataV5', JSON.stringify(projects));
@@ -987,281 +1323,6 @@ window.saveBeneficiary = async function() {
     }
 };
 
-// ============================================
-// DETAIL VIEW
-// ============================================
-function openDetailView(id) {
-    const p = projects.find(x => x.id === id);
-    if(!p) { alert('कार्यक्रम फेला परेन'); return; }
-    const totalExp = getTotalExpenses(p);
-    const progress = p.budget > 0 ? Math.min(100, Math.round((totalExp / p.budget) * 100)) : 0;
-    const b = p.beneficiary || getDefaultBeneficiary();
-    const totalBen = getTotalBeneficiaries(p);
-    let expenseHtml = '';
-    if(p.expenses && p.expenses.length > 0) {
-        p.expenses.forEach(e => {
-            expenseHtml += `<div class="item"><span>${e.title || 'खर्च'} ${e.date ? ' - '+e.date : ''}</span><span class="amount">रु. ${(e.amount||0).toLocaleString()}</span></div>`;
-        });
-    } else {
-        expenseHtml = '<div style="color:#999;padding:6px 0;">कुनै खर्च छैन</div>';
-    }
-    document.getElementById('detailTitle').textContent = `📄 ${p.name} - पूर्ण विवरण`;
-    document.getElementById('detailContent').innerHTML = `
-        <div style="background:#f0f4f8;padding:12px;border-radius:8px;margin-bottom:12px;">
-            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-                <span><strong>📌 प्रकृति:</strong> ${p.category || 'अन्य'}</span>
-                <span><strong>⏱️ समय:</strong> ${p.time || '-'}</span>
-                <span><strong>📊 स्थिति:</strong> <span class="status-badge ${p.status === 'प्रगतिमा' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending')}">${p.status}</span></span>
-            </div>
-        </div>
-        <div class="detail-grid">
-            <div class="item"><span class="dlabel">💰 कुल बजेट</span><span class="dvalue">रु. ${(p.budget||0).toLocaleString()}</span></div>
-            <div class="item"><span class="dlabel">💸 हालसम्मको खर्च</span><span class="dvalue">रु. ${totalExp.toLocaleString()}</span></div>
-            <div class="item"><span class="dlabel">📈 प्रगति</span><span class="dvalue">${progress}%</span></div>
-            <div class="item"><span class="dlabel">👥 कुल लाभग्राही</span><span class="dvalue">${totalBen} जना</span></div>
-        </div>
-        <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">👤 जिम्मेवार व्यक्तिहरू</h4>
-        <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
-            <div class="item"><span class="dlabel">जिम्मेवार</span><span class="dvalue">${p.responsible || '-'}</span></div>
-            <div class="item"><span class="dlabel">सहायक</span><span class="dvalue">${p.assistant || '-'}</span></div>
-            <div class="item detail-full"><span class="dlabel">अख्तियार</span><span class="dvalue">${p.authorized || '-'}</span></div>
-        </div>
-        <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">👥 लाभग्राही</h4>
-        <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
-            <div class="item"><span class="dlabel">👨 पुरुष</span><span class="dvalue">${b.male || 0}</span></div>
-            <div class="item"><span class="dlabel">👩 महिला</span><span class="dvalue">${b.female || 0}</span></div>
-            <div class="item"><span class="dlabel">🧑‍🦱 दलित</span><span class="dvalue">${b.dalit || 0}</span></div>
-            <div class="item"><span class="dlabel">🧑‍🦰 जनजाति</span><span class="dvalue">${b.janajati || 0}</span></div>
-            <div class="item"><span class="dlabel">♿ अपाङ्गता</span><span class="dvalue">${b.disabled || 0}</span></div>
-            <div class="item"><span class="dlabel">✈️ फर्केका</span><span class="dvalue">${b.returnee || 0}</span></div>
-            <div class="item"><span class="dlabel">🚀 नयाँ उद्यमी</span><span class="dvalue">${b.entrepreneur || 0}</span></div>
-        </div>
-        <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">📋 कार्य विवरण</h4>
-        <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
-            <div class="item detail-full"><span class="dlabel">📌 गर्नुपर्ने काम</span><span class="dvalue">${p.activities || '-'}</span></div>
-            <div class="item detail-full"><span class="dlabel">🔧 कसरी गर्ने?</span><span class="dvalue">${p.method || '-'}</span></div>
-            <div class="item detail-full"><span class="dlabel">🎯 उपलब्धी</span><span class="dvalue">${p.output || '-'}</span></div>
-        </div>
-        <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">💰 खर्च विवरण</h4>
-        <div class="detail-expense-list">${expenseHtml}</div>
-        <div style="text-align:right;font-weight:700;font-size:15px;margin-top:6px;">जम्मा खर्च: रु. ${totalExp.toLocaleString()}</div>
-    `;
-    document.getElementById('detailModal').classList.add('show');
-}
-
-function printDetail() { window.print(); }
-
-// ============================================
-// PROJECT MODAL
-// ============================================
-function openAddModal() {
-    if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
-    editMode = false;
-    document.getElementById('modalTitle').textContent = '➕ नयाँ कार्यक्रम';
-    document.getElementById('editId').value = '';
-    document.getElementById('projectForm').reset();
-    document.querySelectorAll('.beneficiary-grid input').forEach(inp => inp.value = 0);
-    document.getElementById('projectModal').classList.add('show');
-}
-
-function openEditModal(id) {
-    if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
-    const p = projects.find(x => x.id === id);
-    if(!p) return;
-    editMode = true;
-    document.getElementById('modalTitle').textContent = '✏️ कार्यक्रम सम्पादन';
-    document.getElementById('editId').value = id;
-    document.getElementById('fName').value = p.name || '';
-    document.getElementById('fCategory').value = p.category || 'अन्य';
-    document.getElementById('fBudget').value = p.budget || 0;
-    document.getElementById('fTime').value = p.time || '';
-    document.getElementById('fStatus').value = p.status || 'सुरु हुन बाँकी';
-    document.getElementById('fResponsible').value = p.responsible || '';
-    document.getElementById('fAssistant').value = p.assistant || '';
-    document.getElementById('fAuthorized').value = p.authorized || '';
-    document.getElementById('fActivities').value = p.activities || '';
-    document.getElementById('fMethod').value = p.method || '';
-    document.getElementById('fOutput').value = p.output || '';
-    const b = p.beneficiary || getDefaultBeneficiary();
-    document.getElementById('fBeneficiaryMale').value = b.male || 0;
-    document.getElementById('fBeneficiaryFemale').value = b.female || 0;
-    document.getElementById('fBeneficiaryDalit').value = b.dalit || 0;
-    document.getElementById('fBeneficiaryJanajati').value = b.janajati || 0;
-    document.getElementById('fBeneficiaryDisabled').value = b.disabled || 0;
-    document.getElementById('fBeneficiaryReturnee').value = b.returnee || 0;
-    document.getElementById('fBeneficiaryEntrepreneur').value = b.entrepreneur || 0;
-    document.getElementById('projectModal').classList.add('show');
-}
-
-function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-
-document.getElementById('projectForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
-    const id = parseInt(document.getElementById('editId').value);
-    const name = document.getElementById('fName').value.trim();
-    const category = document.getElementById('fCategory').value;
-    const budget = parseFloat(document.getElementById('fBudget').value) || 0;
-    const time = document.getElementById('fTime').value.trim();
-    const status = document.getElementById('fStatus').value;
-    const responsible = document.getElementById('fResponsible').value.trim();
-    const assistant = document.getElementById('fAssistant').value.trim();
-    const authorized = document.getElementById('fAuthorized').value.trim();
-    const activities = document.getElementById('fActivities').value.trim();
-    const method = document.getElementById('fMethod').value.trim();
-    const output = document.getElementById('fOutput').value.trim();
-    const beneficiary = {
-        male: parseInt(document.getElementById('fBeneficiaryMale').value) || 0,
-        female: parseInt(document.getElementById('fBeneficiaryFemale').value) || 0,
-        dalit: parseInt(document.getElementById('fBeneficiaryDalit').value) || 0,
-        janajati: parseInt(document.getElementById('fBeneficiaryJanajati').value) || 0,
-        disabled: parseInt(document.getElementById('fBeneficiaryDisabled').value) || 0,
-        returnee: parseInt(document.getElementById('fBeneficiaryReturnee').value) || 0,
-        entrepreneur: parseInt(document.getElementById('fBeneficiaryEntrepreneur').value) || 0
-    };
-    if(!name || budget <= 0) { alert('नाम र बजेट भर्नुहोस्।'); return; }
-    if(editMode) {
-        const idx = projects.findIndex(p => p.id === id);
-        if(idx !== -1) {
-            projects[idx] = { ...projects[idx], name, category, budget, time, status, responsible, assistant, authorized, activities, method, output, beneficiary };
-        }
-    } else {
-        const newId = projects.length > 0 ? Math.max(...projects.map(p => p.id)) + 1 : 1;
-        projects.push({ id: newId, name, category, budget, time, status, responsible, assistant, authorized, activities, method, output, beneficiary, expenses: [] });
-    }
-    saveProjects();
-    closeModal('projectModal');
-    renderAll();
-    applyFilters();
-});
-
-// ============================================
-// EXPENSE MODAL
-// ============================================
-function openExpenseModal(projectId) {
-    if(!currentUser) { alert('लगइन गर्नुहोस्।'); return; }
-    currentExpenseProjectId = projectId;
-    const p = projects.find(x => x.id === projectId);
-    if(!p) return;
-    document.getElementById('expProjectDisplay').textContent = p.name;
-    document.getElementById('expProjectId').value = projectId;
-    document.getElementById('expTitle').value = '';
-    document.getElementById('expAmount').value = '';
-    document.getElementById('expDate').value = '';
-    document.getElementById('expRemark').value = '';
-    document.getElementById('expenseModalTitle').textContent = `💰 खर्च प्रविष्टि - ${p.name}`;
-    renderExpenseHistory(projectId);
-    document.getElementById('expenseModal').classList.add('show');
-}
-
-function renderExpenseHistory(projectId) {
-    const p = projects.find(x => x.id === projectId);
-    if(!p) return;
-    const list = document.getElementById('expenseHistoryList');
-    const totalDisplay = document.getElementById('expenseTotalDisplay');
-    if(!p.expenses || p.expenses.length === 0) {
-        list.innerHTML = '<div class="empty-msg">कुनै खर्च छैन</div>';
-        totalDisplay.textContent = 'जम्मा खर्च: रु. ०';
-        return;
-    }
-    let html = '', total = 0;
-    p.expenses.forEach(e => {
-        total += e.amount || 0;
-        html += `<div class="item"><span>${e.title || 'खर्च'} ${e.date ? ' - '+e.date : ''}</span><span class="amount">रु. ${(e.amount||0).toLocaleString()}</span></div>`;
-    });
-    list.innerHTML = html;
-    totalDisplay.textContent = `जम्मा खर्च: रु. ${total.toLocaleString()}`;
-}
-
-// ============================================
-// BENEFICIARY MODAL
-// ============================================
-function openBeneficiaryModal(projectId) {
-    if(!currentUser) { alert('कृपया पहिले लगइन गर्नुहोस्।'); return; }
-    const p = projects.find(x => x.id === projectId);
-    if(!p) return;
-    beneficiaryEditProjectId = projectId;
-    const b = p.beneficiary || getDefaultBeneficiary();
-    const modalHtml = `
-        <div class="modal-box">
-            <h2>👥 लाभग्राही विवरण - ${p.name}</h2>
-            <div class="beneficiary-grid">
-                <div class="b-item"><label>👨 पुरुष:</label><input type="number" id="beneficiaryMale" value="${b.male || 0}" min="0" /></div>
-                <div class="b-item"><label>👩 महिला:</label><input type="number" id="beneficiaryFemale" value="${b.female || 0}" min="0" /></div>
-                <div class="b-item"><label>🧑‍🦱 दलित:</label><input type="number" id="beneficiaryDalit" value="${b.dalit || 0}" min="0" /></div>
-                <div class="b-item"><label>🧑‍🦰 जनजाति:</label><input type="number" id="beneficiaryJanajati" value="${b.janajati || 0}" min="0" /></div>
-                <div class="b-item"><label>♿ अपाङ्गता:</label><input type="number" id="beneficiaryDisabled" value="${b.disabled || 0}" min="0" /></div>
-                <div class="b-item"><label>✈️ फर्केका:</label><input type="number" id="beneficiaryReturnee" value="${b.returnee || 0}" min="0" /></div>
-                <div class="b-item"><label>🚀 नयाँ उद्यमी:</label><input type="number" id="beneficiaryEntrepreneur" value="${b.entrepreneur || 0}" min="0" /></div>
-            </div>
-            <div style="margin-top:10px;padding:10px;background:#e8f5e9;border-radius:6px;">
-                <strong>📊 कुल: <span id="beneficiaryTotal">${getTotalBeneficiaries(p)}</span> जना</strong>
-            </div>
-            <div class="modal-btns">
-                <button type="button" class="cancel-btn" onclick="closeBeneficiaryModal()">रद्द</button>
-                <button type="button" class="save-btn" onclick="saveBeneficiary()">💾 सुरक्षित</button>
-            </div>
-        </div>
-    `;
-    let modal = document.getElementById('beneficiaryModal');
-    if(!modal) {
-        modal = document.createElement('div');
-        modal.id = 'beneficiaryModal';
-        modal.className = 'modal';
-        document.body.appendChild(modal);
-    }
-    modal.innerHTML = modalHtml;
-    modal.classList.add('show');
-    document.querySelectorAll('#beneficiaryModal input[type="number"]').forEach(input => {
-        input.addEventListener('input', function() {
-            let total = 0;
-            document.querySelectorAll('#beneficiaryModal input[type="number"]').forEach(inp => {
-                total += parseInt(inp.value) || 0;
-            });
-            document.getElementById('beneficiaryTotal').textContent = total;
-        });
-    });
-}
-
-function closeBeneficiaryModal() {
-    const modal = document.getElementById('beneficiaryModal');
-    if(modal) modal.classList.remove('show');
-}
-
-// ============================================
-// USER MANAGEMENT
-// ============================================
-function openUserManagement() {
-    if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
-    renderUserList();
-    document.getElementById('userModal').classList.add('show');
-}
-
-function renderUserList() {
-    const users = getUsers();
-    const container = document.getElementById('userList');
-    if(users.length === 0) { container.innerHTML = '<div class="empty-msg">कुनै प्रयोगकर्ता छैन</div>'; return; }
-    let html = '';
-    users.forEach(u => {
-        html += `<div style="display:flex;justify-content:space-between;padding:6px 4px;border-bottom:1px solid #eee;align-items:center;">
-            <span><strong>${u.username}</strong> <span style="font-size:11px;color:#888;">(${u.role})</span></span>
-            ${u.username !== 'admin' ? `<button onclick="deleteUser(${u.id})" style="border:none;background:#ffebee;color:#d32f2f;padding:2px 10px;border-radius:4px;cursor:pointer;">मेट्नुहोस्</button>` : '<span style="font-size:11px;color:#999;">(मुख्य Admin)</span>'}
-        </div>`;
-    });
-    container.innerHTML = html;
-}
-
-window.getUsers = function() {
-    const stored = localStorage.getItem('appUsers');
-    if (stored) {
-        try { return JSON.parse(stored); } catch(e) { return []; }
-    }
-    return [];
-};
-
-// ============================================
-// DATA EXPORT / IMPORT
-// ============================================
 window.exportData = function() {
     if (!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
     const data = { projects, users: getUsers(), exportedAt: new Date().toISOString() };
@@ -1286,7 +1347,6 @@ window.handleImport = function(event) {
             const data = JSON.parse(e.target.result);
             if(data.projects) {
                 projects = data.projects;
-                // Save to Supabase
                 for (let p of projects) {
                     await db_saveProject(p);
                     if (p.beneficiary) {
@@ -1331,7 +1391,7 @@ document.querySelectorAll('.tabs button').forEach(btn => {
 });
 
 // ============================================
-// REPORT GENERATOR
+// REPORT GENERATOR WITH CHARTS AND NEPALI NUMBERS
 // ============================================
 function generateReport() {
     const container = document.getElementById('reportContent');
@@ -1380,46 +1440,64 @@ function generateReport() {
             <h4>परिचय</h4>
             <div class="report-introduction">
                 गलकोट नगरपालिका अन्तर्गत रोजगार सेवा केन्द्रमार्फत सञ्चालित रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रम आर्थिक वर्ष २०८१/८२ मा स्वीकृत वार्षिक कार्यक्रम तथा बजेट अनुसार सञ्चालन गरिएको हो। 
-                ${projects.length > 0 ? `यस अवधिमा कुल ${projects.length} वटा कार्यक्रमहरू सञ्चालन भएका छन् जसमा रु. ${totalBudget.toLocaleString()} बजेट विनियोजन गरिएको थियो। हालसम्म रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ।` : ''}
+                ${projects.length > 0 ? `यस अवधिमा कुल ${toNepaliNumber(projects.length)} वटा कार्यक्रमहरू सञ्चालन भएका छन् जसमा रु. ${toNepaliWithComma(totalBudget)} बजेट विनियोजन गरिएको थियो। हालसम्म रु. ${toNepaliWithComma(totalExp)} खर्च भई ${toNepaliNumber(progressPercent)}% वित्तीय प्रगति हासिल भएको छ।` : ''}
             </div>
         </div>
         <div class="report-section">
             <h4>१. कार्यक्रमको संक्षिप्त विवरण</h4>
             <div class="row-detail">
-                <div class="item"><span class="label">कुल कार्यक्रम</span><span class="value">${projects.length} वटा</span></div>
-                <div class="item"><span class="label">स्वीकृत बजेट</span><span class="value">रु. ${totalBudget.toLocaleString()}</span></div>
-                <div class="item"><span class="label">हालसम्म खर्च</span><span class="value">रु. ${totalExp.toLocaleString()}</span></div>
-                <div class="item"><span class="label">बाँकी बजेट</span><span class="value">रु. ${totalBalance.toLocaleString()}</span></div>
-                <div class="item"><span class="label">खर्च प्रतिशत</span><span class="value">${progressPercent}%</span></div>
-                <div class="item"><span class="label">प्रगतिमा</span><span class="value">${activeCount} वटा</span></div>
-                <div class="item"><span class="label">सम्पन्न</span><span class="value">${completedCount} वटा</span></div>
-                <div class="item"><span class="label">सुरु हुन बाँकी</span><span class="value">${pendingCount} वटा</span></div>
+                <div class="item"><span class="label">कुल कार्यक्रम</span><span class="value">${toNepaliNumber(projects.length)} वटा</span></div>
+                <div class="item"><span class="label">स्वीकृत बजेट</span><span class="value">रु. ${toNepaliWithComma(totalBudget)}</span></div>
+                <div class="item"><span class="label">हालसम्म खर्च</span><span class="value">रु. ${toNepaliWithComma(totalExp)}</span></div>
+                <div class="item"><span class="label">बाँकी बजेट</span><span class="value">रु. ${toNepaliWithComma(totalBalance)}</span></div>
+                <div class="item"><span class="label">खर्च प्रतिशत</span><span class="value">${toNepaliNumber(progressPercent)}%</span></div>
+                <div class="item"><span class="label">प्रगतिमा</span><span class="value">${toNepaliNumber(activeCount)} वटा</span></div>
+                <div class="item"><span class="label">सम्पन्न</span><span class="value">${toNepaliNumber(completedCount)} वटा</span></div>
+                <div class="item"><span class="label">सुरु हुन बाँकी</span><span class="value">${toNepaliNumber(pendingCount)} वटा</span></div>
             </div>
         </div>
         <div class="report-section">
             <h4>२. लाभग्राही विवरण</h4>
             <div class="row-detail">
-                <div class="item"><span class="label">👨 पुरुष</span><span class="value">${totalMale}</span></div>
-                <div class="item"><span class="label">👩 महिला</span><span class="value">${totalFemale}</span></div>
-                <div class="item"><span class="label">🧑‍🦱 दलित</span><span class="value">${totalDalit}</span></div>
-                <div class="item"><span class="label">🧑‍🦰 जनजाति</span><span class="value">${totalJanajati}</span></div>
-                <div class="item"><span class="label">♿ अपाङ्गता</span><span class="value">${totalDisabled}</span></div>
-                <div class="item"><span class="label">✈️ फर्केका</span><span class="value">${totalReturnee}</span></div>
-                <div class="item"><span class="label">🚀 नयाँ उद्यमी</span><span class="value">${totalEntrepreneur}</span></div>
-                <div class="item"><span class="label">📊 कुल लाभग्राही</span><span class="value"><strong>${totalBeneficiaries} जना</strong></span></div>
+                <div class="item"><span class="label">👨 पुरुष</span><span class="value">${toNepaliNumber(totalMale)}</span></div>
+                <div class="item"><span class="label">👩 महिला</span><span class="value">${toNepaliNumber(totalFemale)}</span></div>
+                <div class="item"><span class="label">🧑‍🦱 दलित</span><span class="value">${toNepaliNumber(totalDalit)}</span></div>
+                <div class="item"><span class="label">🧑‍🦰 जनजाति</span><span class="value">${toNepaliNumber(totalJanajati)}</span></div>
+                <div class="item"><span class="label">♿ अपाङ्गता</span><span class="value">${toNepaliNumber(totalDisabled)}</span></div>
+                <div class="item"><span class="label">✈️ फर्केका</span><span class="value">${toNepaliNumber(totalReturnee)}</span></div>
+                <div class="item"><span class="label">🚀 नयाँ उद्यमी</span><span class="value">${toNepaliNumber(totalEntrepreneur)}</span></div>
+                <div class="item"><span class="label">📊 कुल लाभग्राही</span><span class="value"><strong>${toNepaliNumber(totalBeneficiaries)} जना</strong></span></div>
             </div>
         </div>
         <div class="report-section">
             <h4>३. वित्तीय प्रगति</h4>
             <div class="row-detail">
-                <div class="item"><span class="label">कुल बजेट</span><span class="value">रु. ${totalBudget.toLocaleString()}</span></div>
-                <div class="item"><span class="label">हालसम्म खर्च</span><span class="value">रु. ${totalExp.toLocaleString()}</span></div>
-                <div class="item"><span class="label">बाँकी रकम</span><span class="value">रु. ${totalBalance.toLocaleString()}</span></div>
-                <div class="item"><span class="label">खर्च प्रतिशत</span><span class="value">${progressPercent}%</span></div>
+                <div class="item"><span class="label">कुल बजेट</span><span class="value">रु. ${toNepaliWithComma(totalBudget)}</span></div>
+                <div class="item"><span class="label">हालसम्म खर्च</span><span class="value">रु. ${toNepaliWithComma(totalExp)}</span></div>
+                <div class="item"><span class="label">बाँकी रकम</span><span class="value">रु. ${toNepaliWithComma(totalBalance)}</span></div>
+                <div class="item"><span class="label">खर्च प्रतिशत</span><span class="value">${toNepaliNumber(progressPercent)}%</span></div>
             </div>
             <div style="margin-top:10px;">
                 <div class="progress-large"><div class="fill" style="width:${progressPercent}%"></div></div>
-                <div style="text-align:center;font-size:13px;margin-top:4px;">वित्तीय प्रगति: ${progressPercent}%</div>
+                <div style="text-align:center;font-size:13px;margin-top:4px;">वित्तीय प्रगति: ${toNepaliNumber(progressPercent)}%</div>
+            </div>
+        </div>
+        <!-- CHART SECTION -->
+        <div class="report-section">
+            <h4>४. चार्ट विश्लेषण</h4>
+            <div class="report-charts" id="reportChartContainer">
+                <div class="chart-box">
+                    <h4>📊 प्रकृति अनुसार बजेट</h4>
+                    <canvas id="reportPieChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h4>📊 बजेट र खर्च तुलना</h4>
+                    <canvas id="reportBarChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h4>📈 कार्यक्रम प्रगति</h4>
+                    <canvas id="reportLineChart"></canvas>
+                </div>
             </div>
         </div>
     `;
@@ -1434,14 +1512,14 @@ function generateReport() {
         }
     });
     allActivities.slice(0, 10).forEach((a, idx) => {
-        activitiesRows += `<tr><td>${idx+1}</td><td>${a.activity}</td><td>${a.project}</td><td>${a.status}</td></tr>`;
+        activitiesRows += `<tr><td>${toNepaliNumber(idx+1)}</td><td>${a.activity}</td><td>${a.project}</td><td>${a.status}</td></tr>`;
     });
 
     // Expenses
     let expenseRows = '', expCounter = 1;
     projects.forEach(p => {
         (p.expenses || []).forEach(e => {
-            expenseRows += `<tr><td>${expCounter++}</td><td>${e.date || '-'}</td><td>${e.title || 'खर्च'}</td><td>${p.name}</td><td>रु. ${(e.amount||0).toLocaleString()}</td><td>${e.remark || '-'}</td></tr>`;
+            expenseRows += `<tr><td>${toNepaliNumber(expCounter++)}</td><td>${e.date || '-'}</td><td>${e.title || 'खर्च'}</td><td>${p.name}</td><td>रु. ${toNepaliWithComma(e.amount || 0)}</td><td>${e.remark || '-'}</td></tr>`;
         });
     });
 
@@ -1450,7 +1528,7 @@ function generateReport() {
     const uniquePersons = [...new Set(projects.filter(p => p.responsible).map(p => p.responsible))];
     uniquePersons.slice(0, 10).forEach((person, idx) => {
         const proj = projects.find(p => p.responsible === person);
-        personRows += `<tr><td>${idx+1}</td><td>${person}</td><td>${proj ? proj.authorized || 'प्रमुख' : 'प्रमुख'}</td><td>${proj ? proj.name : '-'}</td></tr>`;
+        personRows += `<tr><td>${toNepaliNumber(idx+1)}</td><td>${person}</td><td>${proj ? proj.authorized || 'प्रमुख' : 'प्रमुख'}</td><td>${proj ? proj.name : '-'}</td></tr>`;
     });
 
     // Achievements
@@ -1462,14 +1540,14 @@ function generateReport() {
     let remainingWorks = '';
     const incomplete = projects.filter(p => p.status !== 'सम्पन्न');
     incomplete.forEach(p => {
-        remainingWorks += `<li>${p.name} - ${p.status} (बजेट: रु. ${(p.budget||0).toLocaleString()}, खर्च: रु. ${getTotalExpenses(p).toLocaleString()})</li>`;
+        remainingWorks += `<li>${p.name} - ${p.status} (बजेट: रु. ${toNepaliWithComma(p.budget || 0)}, खर्च: रु. ${toNepaliWithComma(getTotalExpenses(p))})</li>`;
     });
     if(!remainingWorks) remainingWorks = '<li>सबै कार्यक्रम सम्पन्न।</li>';
 
     // Challenges
     let challenges = '';
-    if(pendingCount > 0) challenges += `<li>${pendingCount} वटा सुरु हुन बाँकी।</li>`;
-    if(activeCount > 0) challenges += `<li>${activeCount} वटा प्रगतिमा, समयमै सम्पन्न गर्न प्रयास आवश्यक।</li>`;
+    if(pendingCount > 0) challenges += `<li>${toNepaliNumber(pendingCount)} वटा सुरु हुन बाँकी।</li>`;
+    if(activeCount > 0) challenges += `<li>${toNepaliNumber(activeCount)} वटा प्रगतिमा, समयमै सम्पन्न गर्न प्रयास आवश्यक।</li>`;
     if(!challenges) challenges = '<li>कुनै समस्या छैन।</li>';
 
     reportHTML += `
@@ -1508,7 +1586,7 @@ function generateReport() {
         </div>
         <div class="report-section">
             <h4>१२. निष्कर्ष</h4>
-            <p>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रमको हालसम्मको वित्तीय तथा भौतिक प्रगति सन्तोषजनक रहेको देखिन्छ। कार्यक्रम अन्तर्गत स्वीकृत बजेटमध्ये रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ भने कार्यक्रमबाट ${totalBeneficiaries} जना प्रत्यक्ष लाभान्वित भएका छन्। बाँकी रहेका कार्यहरू तोकिएको समयसीमाभित्र सम्पन्न गरी निर्धारित लक्ष्य हासिल गरिने अपेक्षा गरिएको छ।</p>
+            <p>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रमको हालसम्मको वित्तीय तथा भौतिक प्रगति सन्तोषजनक रहेको देखिन्छ। कार्यक्रम अन्तर्गत स्वीकृत बजेटमध्ये रु. ${toNepaliWithComma(totalExp)} खर्च भई ${toNepaliNumber(progressPercent)}% वित्तीय प्रगति हासिल भएको छ भने कार्यक्रमबाट ${toNepaliNumber(totalBeneficiaries)} जना प्रत्यक्ष लाभान्वित भएका छन्। बाँकी रहेका कार्यहरू तोकिएको समयसीमाभित्र सम्पन्न गरी निर्धारित लक्ष्य हासिल गरिने अपेक्षा गरिएको छ।</p>
         </div>
         <div class="report-section">
             <div class="report-sign">
@@ -1520,6 +1598,138 @@ function generateReport() {
     `;
 
     container.innerHTML = reportHTML;
+
+    // Render report charts after DOM update
+    setTimeout(() => {
+        renderReportCharts(categories);
+    }, 300);
+}
+
+// ============================================
+// REPORT CHARTS WITH NEPALI NUMBERS
+// ============================================
+function renderReportCharts(categories) {
+    const ctxPie = document.getElementById('reportPieChart');
+    const ctxBar = document.getElementById('reportBarChart');
+    const ctxLine = document.getElementById('reportLineChart');
+
+    if(ctxPie) {
+        const labels = Object.keys(categories);
+        const data = labels.map(k => categories[k].budget);
+        const colors = ['#2e7d32','#1976d2','#f9a825','#d32f2f','#6a1b9a','#00838f','#e65100','#4a148c'];
+        new Chart(ctxPie, {
+            type: 'pie',
+            data: { 
+                labels, 
+                datasets: [{ 
+                    data, 
+                    backgroundColor: colors.slice(0, data.length) 
+                }] 
+            },
+            options: { 
+                responsive: true, 
+                plugins: { 
+                    legend: { position: 'bottom', labels: { font: { size: 10 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a,b) => a + b, 0);
+                                const percentage = total > 0 ? Math.round((context.raw / total) * 100) : 0;
+                                return context.label + ': रु. ' + toNepaliWithComma(context.raw) + ' (' + toNepaliNumber(percentage) + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    if(ctxBar) {
+        const labels = Object.keys(categories);
+        const budgetData = labels.map(k => categories[k].budget);
+        const expenseData = labels.map(k => categories[k].expense);
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    { label: 'बजेट', data: budgetData, backgroundColor: '#1976d2' },
+                    { label: 'खर्च', data: expenseData, backgroundColor: '#d32f2f' }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: { 
+                    legend: { position: 'bottom', labels: { font: { size: 10 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': रु. ' + toNepaliWithComma(context.raw);
+                            }
+                        }
+                    }
+                },
+                scales: { 
+                    y: { 
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return toNepaliWithComma(value);
+                            }
+                        }
+                    } 
+                }
+            }
+        });
+    }
+
+    if(ctxLine) {
+        const sortedProjects = [...projects].sort((a,b) => (a.budget||0) - (b.budget||0));
+        const labels = sortedProjects.map(p => p.name.length > 10 ? p.name.slice(0,8)+'..' : p.name);
+        const progressData = sortedProjects.map(p => {
+            const exp = getTotalExpenses(p);
+            return p.budget > 0 ? Math.round((exp / p.budget) * 100) : 0;
+        });
+        new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'प्रगति (%)',
+                    data: progressData,
+                    borderColor: '#2e7d32',
+                    backgroundColor: 'rgba(46,125,50,0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: '#2e7d32'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { 
+                    legend: { position: 'bottom', labels: { font: { size: 10 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'प्रगति: ' + toNepaliNumber(context.raw) + '%';
+                            }
+                        }
+                    }
+                },
+                scales: { 
+                    y: { 
+                        beginAtZero: true, 
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return toNepaliNumber(value) + '%';
+                            }
+                        }
+                    } 
+                }
+            }
+        });
+    }
 }
 
 // ============================================
@@ -1529,23 +1739,49 @@ function exportReportWord() {
     const reportElement = document.getElementById('reportContent');
     let reportHTML = reportElement.innerHTML;
 
+    // Replace canvas with images for Word
+    const chartIds = ['reportPieChart', 'reportBarChart', 'reportLineChart'];
+    chartIds.forEach(id => {
+        const canvas = document.getElementById(id);
+        if(canvas) {
+            const imgData = canvas.toDataURL('image/png');
+            const imgTag = `<img src="${imgData}" style="max-width:100%;max-height:180px;border:1px solid #ddd;border-radius:4px;" />`;
+            const canvasTagRegex = new RegExp(`<canvas[^>]*id="${id}"[^>]*></canvas>`, 'g');
+            reportHTML = reportHTML.replace(canvasTagRegex, imgTag);
+        }
+    });
+
     const fullDoc = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
         <head><meta charset="UTF-8"><title>प्रगति प्रतिवेदन</title>
         <style>
-            body { font-family: 'Nirmala UI', sans-serif; padding: 40px; }
+            body { font-family: 'Nirmala UI', 'Segoe UI', sans-serif; padding: 40px; }
             .report-header { text-align: center; margin-bottom: 25px; }
             .report-header h2 { color: #1a3c5e; font-size: 22px; }
             .report-header h3 { color: #2e7d32; font-size: 18px; }
+            .report-header h4 { font-size: 16px; margin: 4px 0; }
             .report-section { margin-bottom: 20px; padding: 10px 0; border-bottom: 1px solid #ddd; }
-            .report-section h4 { color: #1a3c5e; border-bottom: 2px solid #e0e4ea; padding-bottom: 6px; }
-            .row-detail { display: flex; flex-wrap: wrap; gap: 10px; }
-            .row-detail .item { flex: 1 1 200px; }
+            .report-section h4 { color: #1a3c5e; border-bottom: 2px solid #e0e4ea; padding-bottom: 6px; margin-bottom: 10px; font-size: 16px; }
+            .report-introduction { font-size: 14px; line-height: 1.8; text-align: justify; }
+            .report-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0; }
+            .report-table th { background: #f0f4f8; padding: 5px 8px; border: 1px solid #ddd; text-align: left; }
+            .report-table td { padding: 5px 8px; border: 1px solid #ddd; }
+            .row-detail { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+            .row-detail .item { flex: 1 1 200px; padding: 4px 0; }
             .row-detail .item .label { font-weight: 600; color: #1a3c5e; font-size: 12px; display: block; }
             .row-detail .item .value { font-size: 14px; color: #333; }
             .progress-large { width: 100%; height: 16px; background: #e9ecef; border-radius: 6px; overflow: hidden; }
             .progress-large .fill { height: 100%; border-radius: 6px; background: #2e7d32; }
-            .report-introduction { font-size: 14px; line-height: 1.8; text-align: justify; }
+            .report-sign { display: flex; justify-content: space-between; margin-top: 25px; padding-top: 20px; border-top: 1px solid #ddd; }
+            .report-sign .sign-block { text-align: center; flex: 1; }
+            .report-sign .sign-block .line { margin-top: 30px; border-top: 1px solid #333; width: 180px; margin-left: auto; margin-right: auto; }
+            .report-charts { display: flex; flex-wrap: wrap; gap: 16px; margin: 12px 0; justify-content: center; }
+            .report-charts .chart-box { padding: 12px; background: #fafafa; border-radius: 8px; border: 1px solid #e0e4ea; min-width: 250px; flex: 1; text-align: center; }
+            .report-charts .chart-box h4 { font-size: 12px; color: #1a3c5e; margin-bottom: 6px; }
+            .report-charts .chart-box img { max-width: 100%; max-height: 180px; border: 1px solid #ddd; border-radius: 4px; }
+            .empty-msg { color: #999; padding: 10px 0; text-align: center; }
+            ul, ol { padding-left: 20px; margin: 8px 0; }
+            li { margin: 3px 0; }
         </style>
         </head>
         <body>${reportHTML}</body>
@@ -1628,7 +1864,7 @@ function addSyncButton() {
 }
 
 // ============================================
-// INITIALIZE - CHECK LOGIN ON LOAD
+// INITIALIZE
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(addSyncButton, 500);
