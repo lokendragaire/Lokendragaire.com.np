@@ -1,726 +1,1129 @@
+
 <!DOCTYPE html>
 <html lang="ne">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>गलकोट नगरपालिका - प्रगति प्रतिवेदन</title>
+    <title>रोजगार तथा उद्यमशीलता ड्यासबोर्ड</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Nirmala UI', 'Preeti', sans-serif; }
-        body { background: #f0f2f5; padding: 15px; }
-        .container { max-width: 1500px; margin: 0 auto; }
-
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Nirmala UI', sans-serif;
+        }
+        body {
+            background: #f0f2f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #1a3c5e;
+            border-left: 5px solid #2e7d32;
+            padding-left: 15px;
+            margin-bottom: 10px;
+            font-size: 26px;
+        }
+        .subtitle {
+            color: #555;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
         .login-header {
-            background: #fff; padding: 10px 18px; border-radius: 10px; margin-bottom: 15px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06); flex-wrap: wrap; gap: 8px;
+            background: #fff;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            flex-wrap: wrap;
+            gap: 10px;
         }
-        .login-header .user-info { font-weight: 600; color: #1a3c5e; }
-        .login-header .user-info span { color: #2e7d32; }
-        .login-header .btn-logout { padding: 5px 16px; background: #d32f2f; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; }
-        .login-header .btn-logout:hover { background: #b71c1c; }
-        .login-header .role-badge { background: #e8f5e9; color: #2e7d32; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .login-header .role-badge.admin { background: #e3f2fd; color: #0d47a1; }
-
-        .cover-page {
-            background: linear-gradient(135deg, #0d2b3e, #1a5e2a); color: #fff; padding: 35px 25px;
-            border-radius: 14px; margin-bottom: 18px; text-align: center; position: relative;
+        .login-header .user-info {
+            font-weight: 600;
+            color: #1a3c5e;
         }
-        .cover-page .logo-area { display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; }
-        .cover-page .logo-placeholder { width: 75px; height: 75px; background: rgba(255,255,255,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 38px; border: 3px solid rgba(255,255,255,0.25); }
-        .cover-page h1 { font-size: 26px; margin: 4px 0; border: none; padding: 0; color: #fff; letter-spacing: 1px; }
-        .cover-page h2 { font-size: 18px; font-weight: 400; opacity: 0.95; }
-        .cover-page h3 { font-size: 15px; font-weight: 300; opacity: 0.85; }
-        .cover-page .meta { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 10px; font-size: 13px; opacity: 0.9; }
-        .cover-page .meta span { background: rgba(255,255,255,0.12); padding: 4px 16px; border-radius: 25px; }
-        .cover-page .qr-area { position: absolute; bottom: 15px; right: 20px; background: #fff; padding: 6px; border-radius: 8px; width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; font-size: 30px; color: #1a3c5e; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-
-        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; margin-bottom: 12px; }
-        .card { background: #fff; padding: 8px 10px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); border-left: 4px solid #2e7d32; }
-        .card .label { font-size: 9px; color: #777; text-transform: uppercase; }
-        .card .value { font-size: 17px; font-weight: 700; color: #1a3c5e; margin-top: 1px; }
-        .card .sub { font-size: 9px; color: #888; }
+        .login-header .user-info span {
+            color: #2e7d32;
+        }
+        .login-header .btn-logout {
+            padding: 6px 18px;
+            background: #d32f2f;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .login-header .btn-logout:hover {
+            background: #b71c1c;
+        }
+        .login-header .role-badge {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .login-header .role-badge.admin {
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            background: #fff;
+            padding: 6px 12px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .tabs button {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            color: #555;
+            transition: 0.2s;
+        }
+        .tabs button:hover {
+            background: #e8f0fe;
+        }
+        .tabs button.active {
+            background: #1a3c5e;
+            color: #fff;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: #fff;
+            padding: 16px 18px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 5px solid #2e7d32;
+        }
+        .card .label {
+            font-size: 12px;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .card .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a3c5e;
+            margin-top: 4px;
+        }
+        .card .sub {
+            font-size: 12px;
+            color: #888;
+            margin-top: 2px;
+        }
         .card.warning { border-left-color: #f9a825; }
         .card.danger { border-left-color: #d32f2f; }
         .card.info { border-left-color: #1976d2; }
         .card.success { border-left-color: #2e7d32; }
         .card.purple { border-left-color: #6a1b9a; }
-        .card.orange { border-left-color: #e65100; }
-        .card.teal { border-left-color: #00838f; }
-
-        .chart-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-        .chart-box { background: #fff; padding: 10px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
-        .chart-box h3 { font-size: 12px; color: #1a3c5e; margin-bottom: 4px; }
-        .chart-box canvas { max-height: 140px; max-width: 100%; }
-
-        .table-wrap { background: #fff; border-radius: 8px; padding: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); overflow-x: auto; margin-bottom: 14px; }
-        .table-wrap h3 { font-size: 13px; color: #1a3c5e; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-        table { width: 100%; border-collapse: collapse; font-size: 10px; }
-        th { background: #f7f9fc; color: #1a3c5e; padding: 5px 5px; text-align: left; border-bottom: 2px solid #e0e4ea; white-space: nowrap; font-size: 9px; text-transform: uppercase; }
-        td { padding: 5px 5px; border-bottom: 1px solid #edf0f5; vertical-align: middle; }
-        tr:hover { background: #f8faff; }
-        .progress-bar { width: 50px; height: 5px; background: #e9ecef; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle; }
-        .progress-bar .fill { height: 100%; border-radius: 3px; background: #2e7d32; transition: width 0.4s; }
-        .status-badge { padding: 2px 6px; border-radius: 12px; font-size: 8px; font-weight: 600; display: inline-block; }
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: #fff;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .filters label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #333;
+        }
+        .filters select, .filters input {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 13px;
+            background: #fafafa;
+        }
+        .filters .btn {
+            padding: 6px 18px;
+            border: none;
+            border-radius: 6px;
+            background: #1a3c5e;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+        .filters .btn:hover {
+            background: #0f2a42;
+        }
+        .filters .btn-add {
+            background: #2e7d32;
+            margin-left: auto;
+        }
+        .filters .btn-add:hover {
+            background: #1f5a22;
+        }
+        .filters .btn-report {
+            background: #e65100;
+        }
+        .filters .btn-report:hover {
+            background: #bf360c;
+        }
+        .admin-toggle {
+            background: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .admin-toggle.show {
+            display: block;
+        }
+        .admin-toggle .btn-admin-action {
+            padding: 6px 16px;
+            border: none;
+            border-radius: 6px;
+            background: #6a1b9a;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            margin-right: 8px;
+        }
+        .admin-toggle .btn-admin-action:hover {
+            background: #4a148c;
+        }
+        .admin-toggle .btn-danger {
+            background: #d32f2f;
+        }
+        .admin-toggle .btn-danger:hover {
+            background: #b71c1c;
+        }
+        .admin-toggle .btn-success {
+            background: #2e7d32;
+        }
+        .admin-toggle .btn-success:hover {
+            background: #1f5a22;
+        }
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        .chart-box {
+            background: #fff;
+            padding: 14px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .chart-box h3 {
+            font-size: 14px;
+            color: #1a3c5e;
+            margin-bottom: 8px;
+        }
+        .chart-box canvas {
+            max-height: 200px;
+            max-width: 100%;
+        }
+        .table-wrap {
+            background: #fff;
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            overflow-x: auto;
+        }
+        .table-wrap h3 {
+            font-size: 15px;
+            color: #1a3c5e;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        th {
+            background: #f7f9fc;
+            color: #1a3c5e;
+            padding: 8px 8px;
+            text-align: left;
+            border-bottom: 2px solid #e0e4ea;
+            white-space: nowrap;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+        td {
+            padding: 8px 8px;
+            border-bottom: 1px solid #edf0f5;
+            vertical-align: middle;
+        }
+        tr:hover {
+            background: #f8faff;
+        }
+        .progress-bar {
+            width: 80px;
+            height: 7px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .progress-bar .fill {
+            height: 100%;
+            border-radius: 4px;
+            background: #2e7d32;
+            transition: width 0.4s;
+        }
+        .status-badge {
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            display: inline-block;
+        }
         .status-badge.active { background: #e8f5e9; color: #2e7d32; }
         .status-badge.pending { background: #fff3e0; color: #e65100; }
         .status-badge.completed { background: #e3f2fd; color: #0d47a1; }
-
-        .actions button { border: none; background: transparent; cursor: pointer; font-size: 13px; margin: 0 1px; padding: 2px 3px; border-radius: 3px; }
+        .actions button {
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 15px;
+            margin: 0 2px;
+            padding: 3px 5px;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
         .actions .edit-btn:hover { background: #e3f2fd; color: #0d47a1; }
         .actions .del-btn:hover { background: #ffebee; color: #c62828; }
         .actions .expense-btn:hover { background: #e8f5e9; color: #2e7d32; }
         .actions .view-btn:hover { background: #e8f5e9; color: #0d47a1; }
-
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; justify-content: center; align-items: center; }
+        .actions .beneficiary-btn:hover { background: #e8f5e9; color: #6a1b9a; }
+        .person-info {
+            font-size: 11px;
+            line-height: 1.5;
+            color: #333;
+        }
+        .person-info .label {
+            color: #777;
+            font-size: 10px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
         .modal.show { display: flex; }
-        .modal-box { background: #fff; padding: 18px 22px; border-radius: 12px; max-width: 780px; width: 94%; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
-        .modal-box h2 { color: #1a3c5e; margin-bottom: 10px; font-size: 17px; }
-        .modal-box label { font-weight: 600; font-size: 11px; display: block; margin: 5px 0 2px; color: #333; }
-        .modal-box input, .modal-box select, .modal-box textarea { width: 100%; padding: 5px 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 11px; }
-        .modal-box textarea { resize: vertical; min-height: 30px; }
-        .modal-btns { display: flex; gap: 6px; margin-top: 10px; justify-content: flex-end; flex-wrap: wrap; }
-        .modal-btns button { padding: 5px 16px; border: none; border-radius: 5px; font-weight: 600; cursor: pointer; font-size: 11px; }
-        .modal-btns .save-btn { background: #2e7d32; color: #fff; }
+        .modal-box {
+            background: #fff;
+            padding: 25px 30px;
+            border-radius: 16px;
+            max-width: 700px;
+            width: 94%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .modal-box h2 {
+            color: #1a3c5e;
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+        .modal-box label {
+            font-weight: 600;
+            font-size: 13px;
+            display: block;
+            margin: 8px 0 4px;
+            color: #333;
+        }
+        .modal-box input, .modal-box select, .modal-box textarea {
+            width: 100%;
+            padding: 7px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .modal-box textarea { resize: vertical; min-height: 40px; }
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+        .modal-btns button {
+            padding: 7px 22px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .modal-btns .save-btn {
+            background: #2e7d32;
+            color: #fff;
+        }
         .modal-btns .save-btn:hover { background: #1f5a22; }
-        .modal-btns .cancel-btn { background: #e0e0e0; color: #333; }
+        .modal-btns .cancel-btn {
+            background: #e0e0e0;
+            color: #333;
+        }
         .modal-btns .cancel-btn:hover { background: #ccc; }
-        .modal-btns .print-btn { background: #1976d2; color: #fff; }
+        .modal-btns .print-btn {
+            background: #1976d2;
+            color: #fff;
+        }
         .modal-btns .print-btn:hover { background: #0d47a1; }
-
-        .empty-msg { text-align: center; color: #999; padding: 12px 0; font-size: 11px; }
-
-        .login-modal .modal-box { max-width: 400px; }
-        .login-modal .modal-box h2 { text-align: center; }
-        .login-modal .modal-box .logo { text-align: center; font-size: 40px; margin-bottom: 6px; }
-        .login-error { color: #d32f2f; font-size: 12px; text-align: center; margin-top: 4px; }
-        .login-success { color: #2e7d32; font-size: 12px; text-align: center; margin-top: 4px; }
-        .login-hint { font-size: 11px; color: #888; text-align: center; margin-top: 6px; background: #f5f7fa; padding: 5px; border-radius: 5px; }
-        .login-hint strong { color: #1a3c5e; }
-
-        .tab-nav { display: flex; gap: 4px; background: #fff; padding: 8px 12px; border-radius: 10px 10px 0 0; box-shadow: 0 -2px 6px rgba(0,0,0,0.04); margin-bottom: 0; flex-wrap: wrap; }
-        .tab-nav .tab-btn { padding: 8px 20px; border: none; border-radius: 8px 8px 0 0; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.3s; background: #e8ecf1; color: #555; }
-        .tab-nav .tab-btn:hover { background: #d5dce6; }
-        .tab-nav .tab-btn.active { background: #1a3c5e; color: #fff; }
-        .tab-content { display: none; background: #fff; padding: 18px; border-radius: 0 10px 10px 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
-        .tab-content.active { display: block; }
-
-        .filters { display: flex; flex-wrap: wrap; gap: 6px; background: #fff; padding: 8px 12px; border-radius: 8px; margin-bottom: 14px; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
-        .filters label { font-weight: 600; font-size: 11px; color: #333; }
-        .filters select, .filters input { padding: 4px 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 11px; background: #fafafa; }
-        .filters .btn { padding: 4px 14px; border: none; border-radius: 5px; background: #1a3c5e; color: #fff; font-weight: 600; cursor: pointer; font-size: 11px; }
-        .filters .btn-add { background: #2e7d32; margin-left: auto; }
-        .filters .btn-add:hover { background: #1f5a22; }
-
-        .admin-toggle { background: #fff; padding: 6px 12px; border-radius: 8px; margin-bottom: 12px; display: none; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
-        .admin-toggle.show { display: block; }
-        .admin-toggle .btn-admin-action { padding: 4px 12px; border: none; border-radius: 5px; background: #6a1b9a; color: #fff; cursor: pointer; font-weight: 600; font-size: 11px; margin-right: 5px; }
-        .admin-toggle .btn-admin-action:hover { background: #4a148c; }
-
-        .report-section { margin-bottom: 20px; }
-        .report-section h3 { background: #1a3c5e; color: #fff; padding: 5px 12px; border-radius: 4px; font-size: 14px; margin-bottom: 8px; }
-        .report-section table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 5px 0; }
-        .report-section th { background: #f0f4f8; border: 1px solid #ddd; padding: 5px 6px; text-align: left; }
-        .report-section td { border: 1px solid #ddd; padding: 4px 6px; }
-        .report-summary-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin: 6px 0; }
-        .report-summary-item { background: #f5f7fa; padding: 6px 10px; border-radius: 4px; border-left: 3px solid #2e7d32; }
-        .report-summary-item .label { font-size: 9px; color: #888; text-transform: uppercase; }
-        .report-summary-item .value { font-size: 16px; font-weight: 700; color: #1a3c5e; }
-        .report-ben-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 4px; }
-        .report-ben-item { background: #f5f7fa; padding: 3px 6px; border-radius: 3px; font-size: 11px; }
-
+        .empty-msg {
+            text-align: center;
+            color: #999;
+            padding: 20px 0;
+            font-size: 13px;
+        }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            background: #f8faff;
+            padding: 16px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .detail-grid .item {
+            padding: 6px 0;
+            border-bottom: 1px solid #edf0f5;
+        }
+        .detail-grid .item .dlabel {
+            font-weight: 600;
+            color: #1a3c5e;
+            font-size: 12px;
+            display: block;
+        }
+        .detail-grid .item .dvalue {
+            font-size: 13px;
+            color: #333;
+        }
+        .detail-full {
+            grid-column: 1 / -1;
+        }
+        .detail-expense-list {
+            max-height: 120px;
+            overflow-y: auto;
+            background: #fff;
+            border-radius: 6px;
+            padding: 6px 10px;
+            border: 1px solid #e0e4ea;
+        }
+        .detail-expense-list .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 12px;
+        }
+        .detail-expense-list .item .amount {
+            font-weight: 600;
+            color: #d32f2f;
+        }
+        .login-modal .modal-box {
+            max-width: 400px;
+        }
+        .login-modal .modal-box h2 {
+            text-align: center;
+            color: #1a3c5e;
+        }
+        .login-modal .modal-box .logo {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .login-error {
+            color: #d32f2f;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 8px;
+        }
+        .login-hint {
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+            margin-top: 10px;
+            background: #f5f7fa;
+            padding: 8px;
+            border-radius: 6px;
+        }
+        .progress-large {
+            width: 100%;
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .progress-large .fill {
+            height: 100%;
+            border-radius: 6px;
+            background: #2e7d32;
+            transition: width 0.4s;
+        }
+        .report-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .report-header h2 {
+            color: #1a3c5e;
+            font-size: 22px;
+        }
+        .report-header h3 {
+            color: #2e7d32;
+            font-size: 18px;
+            margin-top: 4px;
+        }
+        .report-header p {
+            color: #555;
+            font-size: 14px;
+        }
+        .report-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .report-section h4 {
+            color: #1a3c5e;
+            border-bottom: 2px solid #e0e4ea;
+            padding-bottom: 8px;
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+        .report-section .row-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .report-section .row-detail .item {
+            padding: 4px 0;
+        }
+        .report-section .row-detail .item .label {
+            font-weight: 600;
+            color: #1a3c5e;
+            font-size: 12px;
+            display: block;
+        }
+        .report-section .row-detail .item .value {
+            font-size: 14px;
+            color: #333;
+        }
+        .report-section .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+        .report-section .report-table th {
+            background: #f0f4f8;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            font-size: 12px;
+            text-align: left;
+        }
+        .report-section .report-table td {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+        }
+        .report-section .report-table tr:nth-child(even) {
+            background: #fafafa;
+        }
+        .report-sign {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        .report-sign .sign-block {
+            text-align: center;
+            flex: 1;
+        }
+        .report-sign .sign-block .line {
+            margin-top: 30px;
+            border-top: 1px solid #333;
+            width: 180px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .report-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 20px 0 10px;
+            flex-wrap: wrap;
+        }
+        .report-actions button {
+            padding: 10px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .report-actions .btn-print {
+            background: #1976d2;
+            color: #fff;
+        }
+        .report-actions .btn-print:hover { background: #0d47a1; }
+        .report-actions .btn-word {
+            background: #e65100;
+            color: #fff;
+        }
+        .report-actions .btn-word:hover { background: #bf360c; }
+        .report-charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin: 12px 0;
+        }
+        .report-charts .chart-box {
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 8px;
+            border: 1px solid #e0e4ea;
+        }
+        .report-charts .chart-box canvas {
+            max-height: 150px;
+            max-width: 100%;
+        }
+        .report-charts .chart-box h4 {
+            font-size: 12px;
+            color: #1a3c5e;
+            text-align: center;
+            margin-bottom: 6px;
+        }
+        .beneficiary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            background: #f8faff;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+        }
+        .beneficiary-grid .b-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .beneficiary-grid .b-item label {
+            font-size: 12px;
+            margin: 0;
+            display: inline;
+            white-space: nowrap;
+        }
+        .beneficiary-grid .b-item input {
+            width: 70px;
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+        /* Report Introduction Style */
+        .report-introduction {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #333;
+            text-align: justify;
+            padding: 4px 0;
+        }
         @media (max-width: 768px) {
-            .chart-row { grid-template-columns: 1fr; }
-            .cover-page h1 { font-size: 20px; }
-            .cover-page .qr-area { position: static; margin: 8px auto; }
-            .report-summary-grid { grid-template-columns: 1fr 1fr; }
+            .row { grid-template-columns: 1fr; }
+            .filters { flex-direction: column; align-items: stretch; }
+            .filters .btn-add { margin-left: 0; }
+            .login-header { flex-direction: column; align-items: stretch; text-align: center; }
+            .detail-grid { grid-template-columns: 1fr; }
+            .report-section .row-detail { grid-template-columns: 1fr; }
+            .report-sign { flex-direction: column; gap: 20px; }
+            .report-sign .sign-block .line { width: 100%; }
+            .report-charts { grid-template-columns: 1fr; }
+            .beneficiary-grid { grid-template-columns: 1fr; }
         }
         @media print {
-            .login-header, .tab-nav, .filters, .admin-toggle, .actions, .no-print { display: none !important; }
-            .tab-content { display: block !important; border-radius: 0; padding: 10px; }
-            body { background: #fff; padding: 10px; }
-            .cover-page { background: #0d2b3e !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            body { background: white; padding: 0; }
+            .tabs, .filters, .login-header, .admin-toggle, .report-actions, .btn, .actions { display: none !important; }
+            .tab-content { display: block !important; }
+            .tab-content:not(.active) { display: none !important; }
+            .report-section { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+            .modal { display: none !important; }
+            .container { max-width: 100%; }
+            .report-charts .chart-box canvas { max-height: 120px; }
         }
     </style>
 </head>
 <body>
 
-<!-- ==================== LOGIN MODAL ==================== -->
+<!-- LOGIN MODAL -->
 <div class="modal login-modal show" id="loginModal">
     <div class="modal-box">
-        <div class="logo">🏛️</div>
-        <h2>गलकोट नगरपालिका</h2>
-        <p style="text-align:center;color:#777;font-size:13px;margin-bottom:10px;">प्रगति प्रतिवेदन प्रणाली</p>
+        <div class="logo">🔐</div>
+        <h2>प्रणाली प्रवेश</h2>
+        <p style="text-align:center;color:#777;font-size:14px;margin-bottom:16px;">रोजगार तथा उद्यमशीलता ड्यासबोर्ड</p>
         <form id="loginForm">
-            <label>इमेल</label>
-            <input type="email" id="loginEmail" placeholder="admin@example.com" value="admin@example.com" required />
-            <label>पासवर्ड</label>
-            <input type="password" id="loginPassword" placeholder="पासवर्ड" value="Admin@123" required />
+            <label>प्रयोगकर्ता नाम (Username)</label>
+            <input type="text" id="loginUsername" placeholder="admin वा user" required />
+            <label>पासवर्ड (Password)</label>
+            <input type="password" id="loginPassword" placeholder="पासवर्ड" required />
             <div class="login-error" id="loginError"></div>
-            <div class="login-success" id="loginSuccess"></div>
-            <div class="modal-btns" style="justify-content:center;margin-top:10px;flex-wrap:wrap;">
-                <button type="submit" class="save-btn" style="padding:6px 30px;">🚪 प्रवेश</button>
+            <div class="modal-btns" style="justify-content:center;margin-top:16px;">
+                <button type="submit" class="save-btn" style="padding:10px 40px;">🚪 प्रवेश गर्नुहोस्</button>
             </div>
             <div class="login-hint">
-                <strong>Admin:</strong> admin@example.com / Admin@123 &nbsp;|&nbsp; <strong>User:</strong> user@example.com / User@123
+                <strong>Admin:</strong> admin / admin123 &nbsp;|&nbsp; <strong>User:</strong> user / user123
             </div>
         </form>
     </div>
 </div>
 
-<!-- ==================== MAIN DASHBOARD ==================== -->
+<!-- MAIN DASHBOARD -->
 <div class="container" id="mainDashboard" style="display:none;">
-
-    <div class="login-header no-print">
-        <div class="user-info">👤 <span id="displayUsername">Admin</span> <span class="role-badge" id="displayRole">Admin</span></div>
+    <div class="login-header">
+        <div class="user-info">
+            👤 <span id="displayUsername">Admin</span> 
+            <span class="role-badge" id="displayRole">Admin</span>
+        </div>
         <div>
-            <span style="font-size:11px;color:#888;margin-right:8px;">📅 आ.व. २०८१/८२</span>
+            <span style="font-size:13px;color:#888;margin-right:12px;">📅 आर्थिक वर्ष २०८१/८२</span>
             <button class="btn-logout" onclick="logout()">🚪 बाहिरिनुहोस्</button>
         </div>
     </div>
 
-    <div class="cover-page" id="coverPage">
-        <div class="qr-area">📱</div>
-        <div class="logo-area">
-            <div class="logo-placeholder">🏛️</div>
-            <div>
-                <h1>गलकोट नगरपालिका</h1>
-                <h2>रोजगार सेवा केन्द्र</h2>
-                <h3>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम</h3>
-            </div>
-        </div>
-        <div style="font-size:22px;font-weight:300;letter-spacing:2px;margin:6px 0;">प्रगति प्रतिवेदन</div>
-        <div class="meta">
-            <span>📆 आर्थिक वर्ष: २०८१/८२</span>
-            <span>📅 अवधि: असार २०८१ - असोज २०८१</span>
-            <span>📋 मिति: <span id="reportDate">२०८१/०७/२५</span></span>
-        </div>
+    <div class="tabs">
+        <button class="active" data-tab="tabDashboard">📊 ड्यासबोर्ड</button>
+        <button data-tab="tabReport">📄 प्रतिवेदन (Report)</button>
     </div>
 
-    <div class="tab-nav no-print">
-        <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
-        <button class="tab-btn" onclick="switchTab('report')">📄 प्रतिवेदन</button>
-        <button class="tab-btn" onclick="switchTab('dataentry')">✏️ डाटा प्रविष्टि</button>
-    </div>
+    <!-- TAB 1: DASHBOARD -->
+    <div class="tab-content active" id="tabDashboard">
+        <h1>📊 रोजगार तथा उद्यमशीलता कार्यक्रम ड्यासबोर्ड</h1>
+        <div class="subtitle">स्थानीय तह कार्यक्रम कार्यान्वयन समिति · Tracking & Monitoring</div>
 
-    <!-- ==================== TAB: DASHBOARD ==================== -->
-    <div class="tab-content active" id="tab-dashboard">
-        <div style="background:#fff;padding:12px 14px;border-radius:8px;margin-bottom:14px;box-shadow:0 2px 6px rgba(0,0,0,0.06);">
-            <h3 style="color:#1a3c5e;font-size:14px;margin-bottom:8px;">📊 कार्यकारी सारांश</h3>
-            <div class="cards" style="margin-bottom:0;" id="summaryCards">
-                <div class="card"><div class="label">कुल कार्यक्रम</div><div class="value" id="totalProjects">०</div></div>
-                <div class="card success"><div class="label">सञ्चालित</div><div class="value" id="runningProjects">०</div></div>
-                <div class="card info"><div class="label">सम्पन्न</div><div class="value" id="completedProjects">०</div></div>
-                <div class="card warning"><div class="label">बाँकी</div><div class="value" id="pendingProjects">०</div></div>
-                <div class="card purple"><div class="label">कुल बजेट</div><div class="value" id="execTotalBudget">०</div></div>
-                <div class="card danger"><div class="label">खर्च</div><div class="value" id="execTotalExp">०</div></div>
-                <div class="card teal"><div class="label">बाँकी</div><div class="value" id="execBalance">०</div></div>
-                <div class="card orange"><div class="label">खर्च %</div><div class="value" id="execExpPercent">०%</div></div>
-            </div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:4px;background:#f5f7fa;padding:8px;border-radius:6px;margin-top:6px;" id="beneficiarySummary">
-                <div><span style="font-weight:600;font-size:10px;">👥 लाभग्राही:</span> <span id="benTotal">०</span></div>
-                <div><span style="color:#1976d2;font-size:10px;">👨 पुरुष:</span> <span id="benMale">०</span></div>
-                <div><span style="color:#d32f2f;font-size:10px;">👩 महिला:</span> <span id="benFemale">०</span></div>
-                <div><span style="color:#6a1b9a;font-size:10px;">🟣 दलित:</span> <span id="benDalit">०</span></div>
-                <div><span style="color:#00838f;font-size:10px;">🟢 जनजाति:</span> <span id="benJanajati">०</span></div>
-                <div><span style="color:#e65100;font-size:10px;">♿ अपांग:</span> <span id="benDisabled">०</span></div>
-                <div><span style="color:#2e7d32;font-size:10px;">✈️ वैदेशिक फर्केका:</span> <span id="benReturnee">०</span></div>
-                <div><span style="color:#f9a825;font-size:10px;">🚀 नयाँ उद्यमी:</span> <span id="benEntrepreneur">०</span></div>
-            </div>
+        <div class="cards" id="summaryCards">
+            <div class="card success"><div class="label">कुल बजेट</div><div class="value" id="totalBudget">०</div><div class="sub">रु.</div></div>
+            <div class="card info"><div class="label">कुल खर्च</div><div class="value" id="totalExp">०</div><div class="sub">रु.</div></div>
+            <div class="card warning"><div class="label">बाँकी रकम</div><div class="value" id="totalBalance">०</div><div class="sub">रु.</div></div>
+            <div class="card"><div class="label">कार्यक्रम संख्या</div><div class="value" id="totalProjects">०</div><div class="sub">वटा</div></div>
+            <div class="card danger"><div class="label">प्रगतिमा</div><div class="value" id="activeProjects">०</div><div class="sub">वटा</div></div>
+            <div class="card purple"><div class="label">कुल लाभग्राही</div><div class="value" id="totalBeneficiaries">०</div><div class="sub">जना</div></div>
         </div>
 
-        <div class="chart-row">
-            <div class="chart-box"><h3>💰 Budget vs Expense</h3><canvas id="chartBudgetExpense"></canvas></div>
-            <div class="chart-box"><h3>📊 खर्च वितरण</h3><canvas id="chartExpensePie"></canvas></div>
-            <div class="chart-box"><h3>👥 लाभग्राही</h3><canvas id="chartBeneficiary"></canvas></div>
-        </div>
-        <div class="chart-row">
-            <div class="chart-box"><h3>📈 कार्यक्रम प्रगति</h3><canvas id="chartProgramProgress"></canvas></div>
-            <div class="chart-box"><h3>📊 कार्यक्रम स्थिति</h3><canvas id="chartProgramStatus"></canvas></div>
-            <div class="chart-box"><h3>📉 वडागत प्रगति</h3><canvas id="chartWardProgress"></canvas></div>
-        </div>
-
-        <div class="filters no-print">
+        <div class="filters">
             <label>प्रकृति:</label>
             <select id="filterCategory"><option value="">सबै</option></select>
             <label>स्थिति:</label>
             <select id="filterStatus"><option value="">सबै</option><option value="प्रगतिमा">प्रगतिमा</option><option value="सुरु हुन बाँकी">सुरु हुन बाँकी</option><option value="सम्पन्न">सम्पन्न</option></select>
+            <label>खोज:</label>
+            <input type="text" id="filterSearch" placeholder="कार्यक्रमको नाम..." />
             <button class="btn" onclick="applyFilters()">🔍 फिल्टर</button>
-            <button class="btn btn-add" id="btnAddProject" onclick="openAddModal()">➕ नयाँ</button>
+            <button class="btn btn-add" id="btnAddProject" onclick="openAddModal()">➕ नयाँ कार्यक्रम</button>
+            <button class="btn btn-report" onclick="switchTab('tabReport')">📄 प्रतिवेदन हेर्नुहोस्</button>
         </div>
 
-        <div class="admin-toggle no-print" id="adminPanel">
-            <h4 style="color:#6a1b9a;font-size:12px;margin-bottom:4px;">🔧 Admin Panel</h4>
-            <div style="display:flex;flex-wrap:wrap;gap:4px;">
-                <button class="btn-admin-action" onclick="syncData()">🔄 डाटा सिङ्क</button>
-                <button class="btn-admin-action" onclick="exportData()">📥 Export JSON</button>
-                <button class="btn-admin-action" onclick="document.getElementById('importFileInput').click()">📤 Import JSON</button>
+        <div class="admin-toggle" id="adminPanel">
+            <h4 style="color:#6a1b9a;margin-bottom:10px;">🔧 Admin Control Panel</h4>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                <button class="btn-admin-action" onclick="openUserManagement()">👥 प्रयोगकर्ता व्यवस्थापन</button>
+                <button class="btn-admin-action btn-success" onclick="exportData()">📥 डाटा निर्यात (JSON)</button>
+                <button class="btn-admin-action" onclick="importData()">📤 डाटा आयात (JSON)</button>
                 <input type="file" id="importFileInput" style="display:none;" accept=".json" onchange="handleImport(event)" />
             </div>
         </div>
 
-        <div class="table-wrap">
-            <h3><span>📋 कार्यक्रमगत विवरण</span></h3>
-            <table>
-                <thead><tr><th>क्र.स</th><th>कार्यक्रम</th><th>प्रकृति</th><th>वडा</th><th>बजेट</th><th>खर्च</th><th>प्रगति</th><th>जिम्मेवार</th><th>स्थिति</th><th>कार्य</th></tr></thead>
-                <tbody id="projectTableBody"><tr><td colspan="10" class="empty-msg">डाटा लोड हुँदै...</td></tr></tbody>
-            </table>
+        <div class="row">
+            <div class="chart-box">
+                <h3>📈 बजेट विनियोजन (शीर्ष ८)</h3>
+                <canvas id="budgetChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>📊 खर्चको अवस्था</h3>
+                <canvas id="statusChart"></canvas>
+            </div>
         </div>
 
         <div class="table-wrap">
-            <h3><span>📊 वडागत लाभग्राही विवरण</span></h3>
+            <h3>
+                <span>📋 कार्यक्रमहरूको सूची</span>
+                <span style="font-size:12px;font-weight:400;color:#777;">जिम्मेवार व्यक्ति सहित</span>
+            </h3>
             <table>
-                <thead><tr><th>वडा</th><th>पुरुष</th><th>महिला</th><th>दलित</th><th>जनजाति</th><th>अपांग</th><th>वैदेशिक फर्केका</th><th>नयाँ उद्यमी</th><th>जम्मा</th></tr></thead>
-                <tbody id="wardTableBody"><tr><td colspan="9" class="empty-msg">डाटा लोड हुँदै...</td></tr></tbody>
+                <thead>
+                    <tr>
+                        <th>क्र.स</th>
+                        <th>कार्यक्रमको नाम</th>
+                        <th>प्रकृति</th>
+                        <th>बजेट (रु.)</th>
+                        <th>खर्च (रु.)</th>
+                        <th>प्रगति</th>
+                        <th>समय</th>
+                        <th>जिम्मेवार व्यक्ति</th>
+                        <th>स्थिति</th>
+                        <th>कार्य</th>
+                    </tr>
+                </thead>
+                <tbody id="projectTableBody">
+                    <tr><td colspan="10" class="empty-msg">कृपया "नयाँ कार्यक्रम" थप्नुहोस् वा डाटा लोड हुँदै...</td></tr>
+                </tbody>
             </table>
         </div>
     </div>
 
-    <!-- ==================== TAB: REPORT ==================== -->
-    <div class="tab-content" id="tab-report">
-        <div id="reportContent"><div class="empty-msg">प्रतिवेदन तयार हुँदै...</div></div>
-        <div class="modal-btns no-print" style="margin-top:15px;">
-            <button class="print-btn" onclick="window.print()">🖨️ प्रिन्ट</button>
-            <button class="save-btn" onclick="generateWordReport()">📄 Word डाउनलोड</button>
+    <!-- TAB 2: REPORT -->
+    <div class="tab-content" id="tabReport">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
+            <h1>📄 रोजगार सेवा केन्द्र - कार्यक्रम प्रगति प्रतिवेदन</h1>
+            <div class="report-actions" style="margin:0;">
+                <button class="btn-print" onclick="window.print()">🖨️ प्रिन्ट गर्नुहोस्</button>
+                <button class="btn-word" onclick="exportReportWord()">📄 Word (DOCX) मा निर्यात गर्नुहोस्</button>
+            </div>
         </div>
-    </div>
-
-    <!-- ==================== TAB: DATA ENTRY ==================== -->
-    <div class="tab-content" id="tab-dataentry">
-        <h3 style="color:#1a3c5e;margin-bottom:10px;">✏️ नयाँ कार्यक्रम थप्नुहोस्</h3>
-        <form id="dataEntryForm" style="background:#f8faff;padding:16px;border-radius:8px;border:1px solid #e0e4ea;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <div><label>कार्यक्रमको नाम *</label><input type="text" id="deName" required placeholder="जस्तै: आन्तरिक रोजगार" /></div>
-                <div><label>प्रकृति</label><select id="deCategory"><option value="रोजगारी">रोजगारी</option><option value="सीप विकास">सीप विकास</option><option value="उद्यमशीलता">उद्यमशीलता</option><option value="लघुउद्यम">लघुउद्यम</option><option value="अन्य">अन्य</option></select></div>
-                <div><label>वडा</label><select id="deWard"><option value="">छान्नुहोस्</option><option value="1">वडा १</option><option value="2">वडा २</option><option value="3">वडा ३</option><option value="4">वडा ४</option><option value="5">वडा ५</option><option value="6">वडा ६</option><option value="7">वडा ७</option><option value="8">वडा ८</option><option value="9">वडा ९</option><option value="10">वडा १०</option><option value="11">वडा ११</option><option value="12">वडा १२</option></select></div>
-                <div><label>बजेट (रु.) *</label><input type="number" id="deBudget" required placeholder="1100000" /></div>
-                <div><label>कार्यान्वयन अवधि</label><input type="text" id="deTime" placeholder="असार-असोज" /></div>
-                <div><label>स्थिति</label><select id="deStatus"><option value="सुरु हुन बाँकी">सुरु हुन बाँकी</option><option value="प्रगतिमा">प्रगतिमा</option><option value="सम्पन्न">सम्पन्न</option></select></div>
-                <div><label>स्थान</label><input type="text" id="deLocation" placeholder="स्थानको नाम" /></div>
-                <div><label>जिम्मेवार व्यक्ति</label><input type="text" id="deResponsible" placeholder="नाम, पद" /></div>
-                <div><label>सहायक व्यक्ति</label><input type="text" id="deAssistant" placeholder="नाम, पद" /></div>
-                <div><label>अख्तियार प्राप्त व्यक्ति</label><input type="text" id="deAuthorized" placeholder="नाम, पद" /></div>
-            </div>
-            <div style="margin-top:8px;">
-                <label>उद्देश्य</label><textarea id="deObjective" rows="2" placeholder="कार्यक्रमको मुख्य उद्देश्य"></textarea>
-                <label>कार्य रणनिति</label><textarea id="deMethod" rows="2" placeholder="अपनाइएका रणनितिहरू"></textarea>
-                <label>गर्नुपर्ने काम</label><textarea id="deActivities" rows="2" placeholder="गर्नुपर्ने मुख्य कार्यहरू"></textarea>
-                <label>उपलब्धी</label><textarea id="deOutput" rows="2" placeholder="हालसम्मको उपलब्धी"></textarea>
-            </div>
-            <div class="modal-btns" style="margin-top:12px;">
-                <button type="button" class="cancel-btn" onclick="clearDataEntry()">🗑️ सफा</button>
-                <button type="submit" class="save-btn">💾 कार्यक्रम थप्नुहोस्</button>
-            </div>
-        </form>
-
-        <hr style="margin:15px 0;" />
-        <h4 style="color:#1a3c5e;margin-bottom:8px;">💰 खर्च प्रविष्टि</h4>
-        <form id="expenseEntryForm" style="background:#f5f7fa;padding:16px;border-radius:8px;border:1px solid #e0e4ea;">
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-                <div><label>कार्यक्रम *</label><select id="eeProject" required><option value="">छान्नुहोस्</option></select></div>
-                <div><label>खर्च शीर्षक *</label><input type="text" id="eeTitle" placeholder="निर्माण सामग्री" required /></div>
-                <div><label>रकम (रु.) *</label><input type="number" id="eeAmount" placeholder="50000" required /></div>
-                <div><label>मिति</label><input type="text" id="eeDate" placeholder="२०८१/०४/१५" /></div>
-                <div><label>वडा</label><select id="eeWard"><option value="">छान्नुहोस्</option><option value="1">वडा १</option><option value="2">वडा २</option><option value="3">वडा ३</option><option value="4">वडा ४</option><option value="5">वडा ५</option><option value="6">वडा ६</option><option value="7">वडा ७</option><option value="8">वडा ८</option><option value="9">वडा ९</option><option value="10">वडा १०</option><option value="11">वडा ११</option><option value="12">वडा १२</option></select></div>
-                <div><label>स्थान</label><input type="text" id="eeLocation" placeholder="स्थान" /></div>
-            </div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(55px,1fr));gap:4px;margin-top:6px;">
-                <div><label style="font-size:9px;">जम्मा</label><input type="number" id="eeBenTotal" value="0" style="padding:2px 4px;font-size:9px;" /></div>
-                <div><label style="font-size:9px;color:#1976d2;">पुरुष</label><input type="number" id="eeMale" value="0" style="padding:2px 4px;font-size:9px;" /></div>
-                <div><label style="font-size:9px;color:#d32f2f;">महिला</label><input type="number" id="eeFemale" value="0" style="padding:2px 4px;font-size:9px;" /></div>
-                <div><label style="font-size:9px;color:#6a1b9a;">दलित</label><input type="number" id="eeDalit" value="0" style="padding:2px 4px;font-size:9px;" /></div>
-                <div><label style="font-size:9px;color:#00838f;">जनजाति</label><input type="number" id="eeJanajati" value="0" style="padding:2px 4px;font-size:9px;" /></div>
-                <div><label style="font-size:9px;color:#e65100;">अपांग</label><input type="number" id="eeDisabled" value="0" style="padding:2px 4px;font-size:9px;" /></div>
-                <div><label style="font-size:9px;color:#2e7d32;">वैदेशिक फर्केका</label><input type="number" id="eeReturnee" value="0" style="padding:2px 4px;font-size:9px;" /></div>
-                <div><label style="font-size:9px;color:#f9a825;">नयाँ उद्यमी</label><input type="number" id="eeEntrepreneur" value="0" style="padding:2px 4px;font-size:9px;" /></div>
-            </div>
-            <div style="margin-top:6px;"><label>कैफियत</label><input type="text" id="eeRemark" placeholder="बिल विवरण..." /></div>
-            <div class="modal-btns" style="margin-top:8px;">
-                <button type="button" class="cancel-btn" onclick="clearExpenseEntry()">🗑️ सफा</button>
-                <button type="submit" class="save-btn">💰 + खर्च थप्नुहोस्</button>
-            </div>
-        </form>
+        <div id="reportContent">
+            <div class="empty-msg">कृपया ड्यासबोर्डमा कार्यक्रमहरू थप्नुहोस्।</div>
+        </div>
     </div>
 </div>
 
-<!-- ==================== PROJECT MODAL ==================== -->
+<!-- PROJECT MODAL -->
 <div class="modal" id="projectModal">
     <div class="modal-box">
-        <h2 id="modalTitle">➕ नयाँ कार्यक्रम</h2>
+        <h2 id="modalTitle">नयाँ कार्यक्रम थप्नुहोस्</h2>
         <form id="projectForm">
             <input type="hidden" id="editId" value="">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                <div><label>कार्यक्रमको नाम *</label><input type="text" id="fName" required placeholder="जस्तै: आन्तरिक रोजगार" /></div>
-                <div><label>प्रकृति</label><select id="fCategory"><option value="रोजगारी">रोजगारी</option><option value="सीप विकास">सीप विकास</option><option value="उद्यमशीलता">उद्यमशीलता</option><option value="लघुउद्यम">लघुउद्यम</option><option value="अन्य">अन्य</option></select></div>
+            <label>कार्यक्रमको नाम *</label>
+            <input type="text" id="fName" required placeholder="जस्तै: आन्तरिक रोजगार सिर्जना" />
+            <label>प्रकृति</label>
+            <select id="fCategory">
+                <option value="रोजगारी">रोजगारी</option>
+                <option value="तालिम">तालिम</option>
+                <option value="अनुसन्धान">अनुसन्धान</option>
+                <option value="प्रवर्द्धन">प्रवर्द्धन</option>
+                <option value="उद्यमशीलता">उद्यमशीलता</option>
+                <option value="अन्य">अन्य</option>
+            </select>
+            <label>कुल बजेट (रु.) *</label>
+            <input type="number" id="fBudget" required placeholder="जस्तै: 1100000" />
+            <label>कार्यान्वयन समय</label>
+            <input type="text" id="fTime" placeholder="जस्तै: Q2-Q4" />
+            <label>स्थिति</label>
+            <select id="fStatus">
+                <option value="सुरु हुन बाँकी">सुरु हुन बाँकी</option>
+                <option value="प्रगतिमा">प्रगतिमा</option>
+                <option value="सम्पन्न">सम्पन्न</option>
+            </select>
+            <hr style="margin:12px 0;border-color:#eee;" />
+            <h4 style="color:#1a3c5e;font-size:14px;">👤 जिम्मेवार व्यक्तिहरू</h4>
+            <label>जिम्मेवार व्यक्ति</label>
+            <input type="text" id="fResponsible" placeholder="नाम, पद" />
+            <label>सहायक व्यक्ति</label>
+            <input type="text" id="fAssistant" placeholder="नाम, पद" />
+            <label>अख्तियार प्राप्त व्यक्ति</label>
+            <input type="text" id="fAuthorized" placeholder="नाम, पद" />
+            <hr style="margin:12px 0;border-color:#eee;" />
+            <h4 style="color:#1a3c5e;font-size:14px;">📋 कार्य विवरण</h4>
+            <label>गर्नुपर्ने काम</label>
+            <textarea id="fActivities" rows="2"></textarea>
+            <label>कसरी गर्ने?</label>
+            <textarea id="fMethod" rows="2"></textarea>
+            <label>उपलब्धी</label>
+            <textarea id="fOutput" rows="2"></textarea>
+            <hr style="margin:12px 0;border-color:#eee;" />
+            <h4 style="color:#1a3c5e;font-size:14px;">👥 लाभग्राही विवरण</h4>
+            <div class="beneficiary-grid">
+                <div class="b-item"><label>👨 पुरुष:</label><input type="number" id="fBeneficiaryMale" value="0" min="0" /></div>
+                <div class="b-item"><label>👩 महिला:</label><input type="number" id="fBeneficiaryFemale" value="0" min="0" /></div>
+                <div class="b-item"><label>🧑‍🦱 दलित:</label><input type="number" id="fBeneficiaryDalit" value="0" min="0" /></div>
+                <div class="b-item"><label>🧑‍🦰 जनजाति:</label><input type="number" id="fBeneficiaryJanajati" value="0" min="0" /></div>
+                <div class="b-item"><label>♿ अपाङ्गता भएका:</label><input type="number" id="fBeneficiaryDisabled" value="0" min="0" /></div>
+                <div class="b-item"><label>✈️ वैदेशिक रोजगारबाट फर्केका:</label><input type="number" id="fBeneficiaryReturnee" value="0" min="0" /></div>
+                <div class="b-item"><label>🚀 नयाँ उद्यमी:</label><input type="number" id="fBeneficiaryEntrepreneur" value="0" min="0" /></div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-                <div><label>वडा</label><select id="fWard"><option value="">छान्नुहोस्</option><option value="1">वडा १</option><option value="2">वडा २</option><option value="3">वडा ३</option><option value="4">वडा ४</option><option value="5">वडा ५</option><option value="6">वडा ६</option><option value="7">वडा ७</option><option value="8">वडा ८</option><option value="9">वडा ९</option><option value="10">वडा १०</option><option value="11">वडा ११</option><option value="12">वडा १२</option></select></div>
-                <div><label>बजेट (रु.) *</label><input type="number" id="fBudget" required placeholder="1100000" /></div>
-                <div><label>कार्यान्वयन अवधि</label><input type="text" id="fTime" placeholder="असार-असोज" /></div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                <div><label>स्थिति</label><select id="fStatus"><option value="सुरु हुन बाँकी">सुरु हुन बाँकी</option><option value="प्रगतिमा">प्रगतिमा</option><option value="सम्पन्न">सम्पन्न</option></select></div>
-                <div><label>स्थान</label><input type="text" id="fLocation" placeholder="स्थानको नाम" /></div>
-            </div>
-            <hr style="margin:6px 0;" />
-            <h4 style="font-size:12px;color:#1a3c5e;">👤 जिम्मेवार व्यक्तिहरू</h4>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
-                <div><label>जिम्मेवार</label><input type="text" id="fResponsible" placeholder="नाम, पद" /></div>
-                <div><label>सहायक</label><input type="text" id="fAssistant" placeholder="नाम, पद" /></div>
-                <div><label>अख्तियार</label><input type="text" id="fAuthorized" placeholder="नाम, पद" /></div>
-            </div>
-            <hr style="margin:6px 0;" />
-            <h4 style="font-size:12px;color:#1a3c5e;">📋 कार्य विवरण</h4>
-            <label>उद्देश्य</label><textarea id="fObjective" rows="1" placeholder="कार्यक्रमको मुख्य उद्देश्य"></textarea>
-            <label>कार्य रणनिति</label><textarea id="fMethod" rows="1" placeholder="अपनाइएका रणनितिहरू"></textarea>
-            <label>गर्नुपर्ने काम</label><textarea id="fActivities" rows="1" placeholder="गर्नुपर्ने मुख्य कार्यहरू"></textarea>
-            <label>उपलब्धी</label><textarea id="fOutput" rows="1" placeholder="हालसम्मको उपलब्धी"></textarea>
             <div class="modal-btns">
                 <button type="button" class="cancel-btn" onclick="closeModal('projectModal')">रद्द</button>
-                <button type="submit" class="save-btn">💾 सुरक्षित</button>
+                <button type="submit" class="save-btn">💾 सुरक्षित गर्नुहोस्</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- ==================== EXPENSE MODAL ==================== -->
+<!-- DETAIL MODAL -->
+<div class="modal" id="detailModal">
+    <div class="modal-box">
+        <h2 id="detailTitle">📄 कार्यक्रमको पूर्ण विवरण</h2>
+        <div id="detailContent"></div>
+        <div class="modal-btns">
+            <button class="print-btn" onclick="printDetail()">🖨️ प्रिन्ट गर्नुहोस्</button>
+            <button class="cancel-btn" onclick="closeModal('detailModal')">बन्द गर्नुहोस्</button>
+        </div>
+    </div>
+</div>
+
+<!-- EXPENSE MODAL -->
 <div class="modal" id="expenseModal">
     <div class="modal-box">
         <h2 id="expenseModalTitle">💰 खर्च प्रविष्टि</h2>
-        <div style="background:#f5f7fa;padding:6px 10px;border-radius:5px;margin-bottom:8px;">
-            <strong style="font-size:12px;">कार्यक्रम:</strong> <span style="color:#1a3c5e;font-size:12px;" id="expProjectDisplay">-</span>
+        <div style="background:#f5f7fa;padding:10px;border-radius:6px;margin-bottom:12px;">
+            <strong>कार्यक्रम:</strong> <span style="color:#1a3c5e;" id="expProjectDisplay">-</span>
         </div>
         <input type="hidden" id="expProjectId" value="">
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-            <div><label>खर्च शीर्षक *</label><input type="text" id="expTitle" placeholder="निर्माण सामग्री" /></div>
-            <div><label>रकम (रु.) *</label><input type="number" id="expAmount" placeholder="50000" /></div>
-            <div><label>मिति</label><input type="text" id="expDate" placeholder="२०८१/०४/१५" /></div>
-            <div><label>वडा</label><select id="expWard"><option value="">छान्नुहोस्</option><option value="1">वडा १</option><option value="2">वडा २</option><option value="3">वडा ३</option><option value="4">वडा ४</option><option value="5">वडा ५</option><option value="6">वडा ६</option><option value="7">वडा ७</option><option value="8">वडा ८</option><option value="9">वडा ९</option><option value="10">वडा १०</option><option value="11">वडा ११</option><option value="12">वडा १२</option></select></div>
-            <div><label>स्थान</label><input type="text" id="expLocation" placeholder="स्थान" /></div>
+        <label>खर्चको शीर्षक *</label>
+        <input type="text" id="expTitle" placeholder="जस्तै: निर्माण सामग्री" required />
+        <label>रकम (रु.) *</label>
+        <input type="number" id="expAmount" placeholder="जस्तै: 50000" required />
+        <label>मिति</label>
+        <input type="text" id="expDate" placeholder="जस्तै: २०८१/०४/१५" />
+        <label>कैफियत</label>
+        <input type="text" id="expRemark" placeholder="बिल नम्बर" />
+        <div style="margin:12px 0;">
+            <h4 style="font-size:14px;color:#1a3c5e;">📜 खर्च इतिहास</h4>
+            <div id="expenseHistoryList"><div class="empty-msg" style="padding:10px;">कुनै खर्च छैन</div></div>
+            <div id="expenseTotalDisplay">जम्मा खर्च: रु. ०</div>
         </div>
-
-        <div style="margin:5px 0;">
-            <label style="font-size:11px;">👥 लाभग्राही विवरण</label>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(50px,1fr));gap:3px;">
-                <div><label style="font-size:8px;">जम्मा</label><input type="number" id="expBenTotal" value="0" style="padding:2px 4px;font-size:9px;" /></div>
-                <div><label style="font-size:8px;color:#1976d2;">पुरुष</label><input type="number" id="expMale" value="0" style="padding:2px 4px;font-size:9px;" /></div>
-                <div><label style="font-size:8px;color:#d32f2f;">महिला</label><input type="number" id="expFemale" value="0" style="padding:2px 4px;font-size:9px;" /></div>
-                <div><label style="font-size:8px;color:#6a1b9a;">दलित</label><input type="number" id="expDalit" value="0" style="padding:2px 4px;font-size:9px;" /></div>
-                <div><label style="font-size:8px;color:#00838f;">जनजाति</label><input type="number" id="expJanajati" value="0" style="padding:2px 4px;font-size:9px;" /></div>
-                <div><label style="font-size:8px;color:#e65100;">अपांग</label><input type="number" id="expDisabled" value="0" style="padding:2px 4px;font-size:9px;" /></div>
-                <div><label style="font-size:8px;color:#2e7d32;">वैदेशिक फर्केका</label><input type="number" id="expReturnee" value="0" style="padding:2px 4px;font-size:9px;" /></div>
-                <div><label style="font-size:8px;color:#f9a825;">नयाँ उद्यमी</label><input type="number" id="expEntrepreneur" value="0" style="padding:2px 4px;font-size:9px;" /></div>
-            </div>
-        </div>
-
-        <div><label>कैफियत</label><input type="text" id="expRemark" placeholder="बिल विवरण..." /></div>
-
-        <div style="margin:6px 0;">
-            <h4 style="font-size:12px;color:#1a3c5e;">📜 खर्च इतिहास</h4>
-            <div class="expense-list" id="expenseHistoryList"><div class="empty-msg">कुनै खर्च छैन</div></div>
-            <div class="expense-total" id="expenseTotalDisplay">जम्मा: रु. ०</div>
-        </div>
-
         <div class="modal-btns">
-            <button type="button" class="cancel-btn" style="background:#d32f2f;color:#fff;" onclick="deleteAllExpenses()">🗑️ सबै मेट्नुहोस्</button>
+            <button type="button" class="cancel-btn" style="background:#d32f2f;color:#fff;" onclick="deleteAllExpenses()">🗑️ सबै खर्च मेट्नुहोस्</button>
             <button type="button" class="cancel-btn" onclick="closeModal('expenseModal')">बन्द</button>
-            <button type="button" class="save-btn" onclick="saveExpense()">💰 + खर्च थप्नुहोस्</button>
+            <button type="button" class="save-btn" onclick="saveExpense()">💰 खर्च थप्नुहोस्</button>
         </div>
     </div>
 </div>
 
-<!-- ==================== DETAIL VIEW MODAL ==================== -->
-<div class="modal" id="detailModal">
-    <div class="modal-box" style="max-width:850px;">
-        <h2 id="detailTitle">📄 कार्यक्रम विवरण</h2>
-        <div id="detailContent"></div>
+<!-- USER MODAL -->
+<div class="modal" id="userModal">
+    <div class="modal-box">
+        <h2>👥 प्रयोगकर्ता व्यवस्थापन</h2>
+        <div style="margin-bottom:12px;">
+            <label>नयाँ प्रयोगकर्ता</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <input type="text" id="newUsername" placeholder="Username" style="flex:1;min-width:120px;" />
+                <input type="password" id="newPassword" placeholder="Password" style="flex:1;min-width:120px;" />
+                <select id="newRole" style="flex:0.5;min-width:80px;">
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <button class="btn" style="background:#2e7d32;color:#fff;padding:6px 16px;" onclick="addUser()">➕ थप्नुहोस्</button>
+            </div>
+        </div>
+        <div id="userList"></div>
         <div class="modal-btns">
-            <button class="print-btn" onclick="window.print()">🖨️ प्रिन्ट</button>
-            <button class="cancel-btn" onclick="closeModal('detailModal')">बन्द</button>
+            <button class="cancel-btn" onclick="closeModal('userModal')">बन्द</button>
         </div>
     </div>
 </div>
 
 <script>
     // ========================================================================
-    // SUPABASE CONFIG - तपाईंको Details यहाँ राख्नुहोस्
-    // ========================================================================
-    const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';  // ⚠️ तपाईंको URL
-    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';  // ⚠️ तपाईंको Anon Key
-    
-    const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    
-    // ========================================================================
-    // GLOBAL VARIABLES
+    // 1. USER MANAGEMENT
     // ========================================================================
     let currentUser = null;
+
+    function getUsers() {
+        const stored = localStorage.getItem('appUsers');
+        if (stored) {
+            try { return JSON.parse(stored); } catch(e) { return []; }
+        }
+        const defaultUsers = [
+            { id: 1, username: 'admin', password: 'admin123', role: 'admin' },
+            { id: 2, username: 'user', password: 'user123', role: 'user' }
+        ];
+        localStorage.setItem('appUsers', JSON.stringify(defaultUsers));
+        return defaultUsers;
+    }
+
+    function saveUsers(users) {
+        localStorage.setItem('appUsers', JSON.stringify(users));
+    }
+
+    function authenticate(username, password) {
+        const users = getUsers();
+        return users.find(u => u.username === username && u.password === password) || null;
+    }
+
+    // ========================================================================
+    // 2. PROJECT DATA
+    // ========================================================================
     let projects = [];
-    let userRole = 'user';
-    let chartInstances = {};
+    let editMode = false;
 
-    // ========================================================================
-    // AUTH: LOGIN / LOGOUT
-    // ========================================================================
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const email = document.getElementById('loginEmail').value.trim();
-        const password = document.getElementById('loginPassword').value.trim();
-        const errorDiv = document.getElementById('loginError');
-        const successDiv = document.getElementById('loginSuccess');
-        errorDiv.textContent = '';
-        successDiv.textContent = '';
-        
-        try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
-            
-            if (error) throw error;
-            
-            currentUser = data.user;
-            errorDiv.textContent = '✅ लगइन सफल!';
-            errorDiv.style.color = '#2e7d32';
-            
-            setTimeout(async () => {
-                document.getElementById('loginModal').classList.remove('show');
-                document.getElementById('mainDashboard').style.display = 'block';
-                await getUserProfile();
-                await loadData();
-            }, 500);
-            
-        } catch (error) {
-            errorDiv.textContent = '❌ ' + error.message;
-            errorDiv.style.color = '#d32f2f';
-        }
-    });
-
-    async function getUserProfile() {
-        if (!currentUser) return;
-        try {
-            const { data, error } = await supabase
-                .from('user_profiles')
-                .select('*')
-                .eq('id', currentUser.id)
-                .single();
-            
-            if (data) {
-                userRole = data.role || 'user';
-                document.getElementById('displayUsername').textContent = data.username || 'User';
-                document.getElementById('displayRole').textContent = data.role || 'User';
-                document.getElementById('displayRole').className = 'role-badge' + (data.role === 'admin' ? ' admin' : '');
-                document.getElementById('adminPanel').style.display = data.role === 'admin' ? 'block' : 'none';
-                document.getElementById('btnAddProject').style.display = data.role === 'admin' ? 'inline-block' : 'none';
-            }
-        } catch (e) {
-            console.log('Profile fetch error:', e);
-        }
+    function getDefaultBeneficiary() {
+        return { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0 };
     }
 
-    function logout() {
-        if (!confirm('बाहिरिने?')) return;
-        supabase.auth.signOut();
-        currentUser = null;
-        projects = [];
-        document.getElementById('mainDashboard').style.display = 'none';
-        document.getElementById('loginModal').classList.add('show');
-        document.getElementById('loginError').textContent = '';
+    function getProjects() {
+        const stored = localStorage.getItem('projectDataV5');
+        if (stored) {
+            try { 
+                const data = JSON.parse(stored);
+                data.forEach(p => {
+                    if (!p.beneficiary) p.beneficiary = getDefaultBeneficiary();
+                });
+                return data;
+            } catch(e) { return []; }
+        }
+        const defaultProjects = [
+            { id: 1, name: 'आन्तरिक रोजगार सिर्जना', category: 'रोजगारी', budget: 1100000, time: 'Q2-Q4', status: 'प्रगतिमा', 
+              responsible: 'राम प्रसाद शर्मा', assistant: 'शान्ति थापा', authorized: 'महेश अधिकारी',
+              activities: 'युवा सूचीकरण, निर्माण कार्य', 
+              method: 'स्थानीय तहको सहयोगमा युवा परिचालन',
+              output: '५० जना युवालाई रोजगारी',
+              expenses: [{ title: 'निर्माण सामग्री', amount: 200000, date: '२०८१/०४/१५', remark: 'बिल नं. १२' }],
+              beneficiary: { male: 30, female: 20, dalit: 10, janajati: 15, disabled: 2, returnee: 5, entrepreneur: 3 } },
+            { id: 2, name: 'रोजगारदाता सर्वेक्षण', category: 'अनुसन्धान', budget: 200000, time: 'भदौ-असोज', status: 'सुरु हुन बाँकी',
+              responsible: 'सीता पौडेल', assistant: 'हरि गिरी', authorized: 'महेश अधिकारी',
+              activities: 'स्थानीय उद्योगको तथ्याङ्क सङ्कलन',
+              method: 'क्षेत्रगत भ्रमण, अन्तर्वार्ता',
+              output: 'श्रम बजारको वास्तविक माग र आपूर्तिको तथ्याङ्क',
+              expenses: [],
+              beneficiary: { male: 10, female: 5, dalit: 2, janajati: 3, disabled: 0, returnee: 1, entrepreneur: 0 } },
+            { id: 3, name: 'सामाजिक सुरक्षा कोष आबद्धता', category: 'अन्य', budget: 999400, time: 'all quarter', status: 'प्रगतिमा',
+              responsible: 'कृष्ण प्रसाद अधिकारी', assistant: 'गीता श्रेष्ठ', authorized: 'महेश अधिकारी',
+              activities: 'करार कर्मचारीलाई सामाजिक सुरक्षाकोषमा आबद्ध',
+              method: 'कोषमा दर्ता, मासिक योगदान',
+              output: 'सबै करार कर्मचारीको सामाजिक सुरक्षा',
+              expenses: [{ title: 'कोष दर्ता शुल्क', amount: 300000, date: '२०८१/०३/२०', remark: 'प्राविधिक सहायता' }],
+              beneficiary: { male: 25, female: 10, dalit: 5, janajati: 8, disabled: 1, returnee: 2, entrepreneur: 0 } },
+            { id: 4, name: 'वित्तीय साक्षरता पुस्तक छपाई', category: 'प्रवर्द्धन', budget: 100000, time: 'Q1-Q2', status: 'प्रगतिमा',
+              responsible: 'सुनिता अर्याल', assistant: 'रमेश भण्डारी', authorized: 'महेश अधिकारी',
+              activities: 'हातेपुस्तिका तयार, छपाई, प्रसारण',
+              method: 'विज्ञ टोलीद्वारा सामग्री तयार',
+              output: 'बचत, ऋण र वित्तीय व्यवस्थापनमा चेतना',
+              expenses: [{ title: 'छपाई खर्च', amount: 25000, date: '२०८१/०२/०५', remark: 'ब्रोसर' }],
+              beneficiary: { male: 15, female: 20, dalit: 8, janajati: 10, disabled: 1, returnee: 3, entrepreneur: 2 } },
+            { id: 5, name: 'सीप रोजगार बैठक र अनुगमन', category: 'अन्य', budget: 150000, time: 'Q1-Q4', status: 'प्रगतिमा',
+              responsible: 'डिल्ली राम खतिवडा', assistant: 'निर्मला न्यौपाने', authorized: 'महेश अधिकारी',
+              activities: 'कार्यान्वयन समितिको बैठक, स्थलगत अनुगमन',
+              method: 'मासिक बैठक, अनुगमन टोली परिचालन',
+              output: 'कार्यक्रमको प्रभावकारी कार्यान्वयन',
+              expenses: [{ title: 'बैठक खर्च', amount: 40000, date: '२०८१/०१/२५', remark: '३ वटा बैठक' }],
+              beneficiary: { male: 8, female: 5, dalit: 2, janajati: 3, disabled: 0, returnee: 1, entrepreneur: 0 } },
+            { id: 6, name: 'मागमा आधारित सीप विकास', category: 'तालिम', budget: 70000, time: 'कार्तिक-फाल्गुण', status: 'सुरु हुन बाँकी',
+              responsible: 'विद्या देवी भण्डारी', assistant: 'राजन काफ्ले', authorized: 'महेश अधिकारी',
+              activities: 'सिलाई-कटाई, प्लम्बिङ, मोबाइल मर्मत तालिम',
+              method: 'बजारको माग अनुसार तालिम',
+              output: 'दक्ष जनशक्ति, ३० जनालाई रोजगारी',
+              expenses: [],
+              beneficiary: { male: 10, female: 20, dalit: 5, janajati: 8, disabled: 1, returnee: 2, entrepreneur: 2 } },
+            { id: 7, name: 'पुनः एकीकरण अनुभव आदानप्रदान', category: 'उद्यमशीलता', budget: 500000, time: 'माघ', status: 'सुरु हुन बाँकी',
+              responsible: 'पे्रम शर्मा', assistant: 'सरस्वती नेपाल', authorized: 'महेश अधिकारी',
+              activities: 'सफल उद्यमीहरूको भेला, कार्यशाला',
+              method: 'कार्यशाला, प्यानल छलफल',
+              output: 'नयाँ युवाहरू उद्यमशीलतामा प्रेरित',
+              expenses: [],
+              beneficiary: { male: 15, female: 10, dalit: 3, janajati: 5, disabled: 0, returnee: 3, entrepreneur: 5 } },
+            { id: 8, name: 'लेबलिङ र प्याकेजिङ तालिम', category: 'तालिम', budget: 20000, time: 'Q3-Q4', status: 'प्रगतिमा',
+              responsible: 'विद्या देवी भण्डारी', assistant: 'सन्तोष ढकाल', authorized: 'महेश अधिकारी',
+              activities: 'गुणस्तर परिक्षण, लेबलिङ तालिम',
+              method: 'प्रयोगात्मक तालिम',
+              output: 'स्थानीय उत्पादनको गुणस्तर वृद्धि',
+              expenses: [{ title: 'तालिम सामग्री', amount: 5000, date: '२०८१/०६/१०', remark: '' }],
+              beneficiary: { male: 8, female: 12, dalit: 3, janajati: 5, disabled: 0, returnee: 1, entrepreneur: 1 } },
+            { id: 9, name: 'Digital Platform & Startup', category: 'प्रवर्द्धन', budget: 500000, time: 'Q2-Q4', status: 'प्रगतिमा',
+              responsible: 'सुनिता अर्याल', assistant: 'अजय श्रेष्ठ', authorized: 'महेश अधिकारी',
+              activities: 'प्रदशनी मेला, मार्केटिङ, प्लेटफर्म विकास',
+              method: 'प्रदशनी आयोजना, अनलाइन मार्केटिङ',
+              output: 'स्थानीय उत्पादनको बजारीकरण',
+              expenses: [{ title: 'वेबसाइट डिजाइन', amount: 75000, date: '२०८१/०५/२०', remark: '' }],
+              beneficiary: { male: 20, female: 15, dalit: 5, janajati: 8, disabled: 1, returnee: 4, entrepreneur: 6 } },
+            { id: 10, name: 'उद्यमशीलता प्रवर्द्धन तालिम', category: 'तालिम', budget: 447000, time: 'भदौ-फाल्गुण', status: 'प्रगतिमा',
+              responsible: 'पे्रम शर्मा', assistant: 'लक्ष्मी अधिकारी', authorized: 'महेश अधिकारी',
+              activities: 'उद्यमशीलता तालिम, व्यवसाय योजना निर्माण',
+              method: 'तालिम, व्यवसाय परामर्श',
+              output: 'नयाँ उद्यमी सिर्जना',
+              expenses: [{ title: 'तालिम सञ्चालन', amount: 90000, date: '२०८१/०६/०५', remark: '' }],
+              beneficiary: { male: 18, female: 12, dalit: 4, janajati: 6, disabled: 0, returnee: 3, entrepreneur: 4 } }
+        ];
+        localStorage.setItem('projectDataV5', JSON.stringify(defaultProjects));
+        return defaultProjects;
     }
 
-    // ========================================================================
-    // LOAD DATA FROM SUPABASE
-    // ========================================================================
-    async function loadData() {
-        if (!currentUser) return;
-        
-        try {
-            let query = supabase
-                .from('projects')
-                .select('*')
-                .order('created_at', { ascending: false });
-            
-            // User ले आफ्नो मात्र देख्ने, Admin ले सबै
-            if (userRole !== 'admin') {
-                query = query.eq('user_id', currentUser.id);
-            }
-            
-            const { data, error } = await query;
-            
-            if (error) throw error;
-            
-            projects = data || [];
-            renderAll();
-            
-        } catch (error) {
-            console.error('Error loading data:', error);
-            document.getElementById('projectTableBody').innerHTML = 
-                `<tr><td colspan="10" class="empty-msg">❌ डाटा लोड गर्दा त्रुटि: ${error.message}</td></tr>`;
-        }
+    function saveProjects() {
+        localStorage.setItem('projectDataV5', JSON.stringify(projects));
     }
 
     // ========================================================================
-    // SAVE PROJECT TO SUPABASE
-    // ========================================================================
-    async function saveProjectToDB(projectData) {
-        if (!currentUser) return null;
-        
-        try {
-            const { data, error } = await supabase
-                .from('projects')
-                .insert([{
-                    ...projectData,
-                    user_id: currentUser.id
-                }])
-                .select();
-            
-            if (error) throw error;
-            return data ? data[0] : null;
-        } catch (error) {
-            console.error('Error saving project:', error);
-            alert('❌ डाटा सेभ गर्दा त्रुटि: ' + error.message);
-            return null;
-        }
-    }
-
-    // ========================================================================
-    // UPDATE PROJECT IN SUPABASE
-    // ========================================================================
-    async function updateProjectInDB(id, projectData) {
-        try {
-            const { data, error } = await supabase
-                .from('projects')
-                .update(projectData)
-                .eq('id', id)
-                .select();
-            
-            if (error) throw error;
-            return data ? data[0] : null;
-        } catch (error) {
-            console.error('Error updating project:', error);
-            alert('❌ अपडेट गर्दा त्रुटि: ' + error.message);
-            return null;
-        }
-    }
-
-    // ========================================================================
-    // DELETE PROJECT FROM SUPABASE
-    // ========================================================================
-    async function deleteProjectFromDB(id) {
-        try {
-            const { error } = await supabase
-                .from('projects')
-                .delete()
-                .eq('id', id);
-            
-            if (error) throw error;
-            return true;
-        } catch (error) {
-            console.error('Error deleting project:', error);
-            alert('❌ मेट्न गर्दा त्रुटि: ' + error.message);
-            return false;
-        }
-    }
-
-    // ========================================================================
-    // RENDER FUNCTIONS
+    // 3. HELPERS
     // ========================================================================
     function getTotalExpenses(project) {
-        if (!project.expenses) return 0;
-        return project.expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+        return (project.expenses || []).reduce((sum, e) => sum + (e.amount || 0), 0);
     }
 
-    function getBeneficiaries(project) {
-        const b = { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0, total: 0 };
-        if (!project.expenses) return b;
-        project.expenses.forEach(e => {
-            b.male += Number(e.male) || 0;
-            b.female += Number(e.female) || 0;
-            b.dalit += Number(e.dalit) || 0;
-            b.janajati += Number(e.janajati) || 0;
-            b.disabled += Number(e.disabled) || 0;
-            b.returnee += Number(e.returnee) || 0;
-            b.entrepreneur += Number(e.entrepreneur) || 0;
-            b.total += Number(e.benTotal) || 0;
-        });
-        return b;
+    function getTotalBeneficiaries(project) {
+        const b = project.beneficiary || getDefaultBeneficiary();
+        return (b.male || 0) + (b.female || 0) + (b.dalit || 0) + (b.janajati || 0) + 
+               (b.disabled || 0) + (b.returnee || 0) + (b.entrepreneur || 0);
     }
 
-    function getAllBeneficiaries() {
-        const b = { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0, total: 0 };
-        projects.forEach(p => {
-            const pb = getBeneficiaries(p);
-            b.male += pb.male;
-            b.female += pb.female;
-            b.dalit += pb.dalit;
-            b.janajati += pb.janajati;
-            b.disabled += pb.disabled;
-            b.returnee += pb.returnee;
-            b.entrepreneur += pb.entrepreneur;
-            b.total += pb.total;
-        });
-        return b;
+    function isAdmin() {
+        return currentUser && currentUser.role === 'admin';
     }
 
-    function getWardBeneficiaries() {
-        const wardData = {};
-        for (let i = 1; i <= 12; i++) {
-            wardData[i] = { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0, total: 0 };
-        }
-        projects.forEach(p => {
-            if (!p.expenses) return;
-            p.expenses.forEach(e => {
-                const w = parseInt(e.ward) || 0;
-                if (w >= 1 && w <= 12) {
-                    wardData[w].male += Number(e.male) || 0;
-                    wardData[w].female += Number(e.female) || 0;
-                    wardData[w].dalit += Number(e.dalit) || 0;
-                    wardData[w].janajati += Number(e.janajati) || 0;
-                    wardData[w].disabled += Number(e.disabled) || 0;
-                    wardData[w].returnee += Number(e.returnee) || 0;
-                    wardData[w].entrepreneur += Number(e.entrepreneur) || 0;
-                    wardData[w].total += Number(e.benTotal) || 0;
-                }
-            });
-        });
-        return wardData;
-    }
-
+    // ========================================================================
+    // 4. RENDER FUNCTIONS
+    // ========================================================================
     function renderSummary() {
-        const totalBudget = projects.reduce((s, p) => s + (p.budget || 0), 0);
-        const totalExp = projects.reduce((s, p) => s + getTotalExpenses(p), 0);
+        const totalBudget = projects.reduce((s,p) => s + (p.budget || 0), 0);
+        const totalExp = projects.reduce((s,p) => s + getTotalExpenses(p), 0);
         const balance = totalBudget - totalExp;
-        const running = projects.filter(p => p.status === 'प्रगतिमा').length;
-        const completed = projects.filter(p => p.status === 'सम्पन्न').length;
-        const pending = projects.filter(p => p.status === 'सुरु हुन बाँकी').length;
-        const progress = totalBudget > 0 ? Math.round((totalExp / totalBudget) * 100) : 0;
-        const ben = getAllBeneficiaries();
-
+        const active = projects.filter(p => p.status === 'प्रगतिमा').length;
+        const totalBeneficiaries = projects.reduce((s,p) => s + getTotalBeneficiaries(p), 0);
+        document.getElementById('totalBudget').textContent = totalBudget.toLocaleString();
+        document.getElementById('totalExp').textContent = totalExp.toLocaleString();
+        document.getElementById('totalBalance').textContent = balance.toLocaleString();
         document.getElementById('totalProjects').textContent = projects.length;
-        document.getElementById('runningProjects').textContent = running;
-        document.getElementById('completedProjects').textContent = completed;
-        document.getElementById('pendingProjects').textContent = pending;
-        document.getElementById('execTotalBudget').textContent = 'रु. ' + totalBudget.toLocaleString();
-        document.getElementById('execTotalExp').textContent = 'रु. ' + totalExp.toLocaleString();
-        document.getElementById('execBalance').textContent = 'रु. ' + balance.toLocaleString();
-        document.getElementById('execExpPercent').textContent = progress + '%';
-
-        document.getElementById('benTotal').textContent = ben.total;
-        document.getElementById('benMale').textContent = ben.male;
-        document.getElementById('benFemale').textContent = ben.female;
-        document.getElementById('benDalit').textContent = ben.dalit;
-        document.getElementById('benJanajati').textContent = ben.janajati;
-        document.getElementById('benDisabled').textContent = ben.disabled;
-        document.getElementById('benReturnee').textContent = ben.returnee;
-        document.getElementById('benEntrepreneur').textContent = ben.entrepreneur;
+        document.getElementById('activeProjects').textContent = active;
+        document.getElementById('totalBeneficiaries').textContent = totalBeneficiaries.toLocaleString();
     }
 
     function renderTable(filtered) {
         const tbody = document.getElementById('projectTableBody');
         const list = filtered || projects;
-        if (!list || list.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="10" class="empty-msg">कुनै कार्यक्रम छैन</td></tr>`;
+        if(list.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="10" class="empty-msg">कुनै कार्यक्रम फेला परेन</td></tr>`;
             return;
         }
         let html = '';
@@ -728,155 +1131,80 @@
             const totalExp = getTotalExpenses(p);
             const progress = p.budget > 0 ? Math.min(100, Math.round((totalExp / p.budget) * 100)) : 0;
             const statusClass = p.status === 'प्रगतिमा' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending');
-            let actions = `<button class="view-btn" onclick="openDetailView(${p.id})">📄</button>`;
-            actions += `<button class="expense-btn" onclick="openExpenseModal(${p.id})">💰</button>`;
-            if (userRole === 'admin') {
-                actions += `<button class="edit-btn" onclick="openEditModal(${p.id})">✏️</button>`;
-                actions += `<button class="del-btn" onclick="deleteProject(${p.id})">🗑️</button>`;
+            let personHtml = '';
+            if(p.responsible) personHtml += `<div><span class="label">जिम्मेवार:</span> ${p.responsible}</div>`;
+            if(!personHtml) personHtml = '<span style="color:#999;">-</span>';
+            let actionsHtml = '';
+            actionsHtml += `<button class="view-btn" onclick="openDetailView(${p.id})">📄</button>`;
+            actionsHtml += `<button class="expense-btn" onclick="openExpenseModal(${p.id})">💰</button>`;
+            actionsHtml += `<button class="beneficiary-btn" onclick="openBeneficiaryModal(${p.id})">👥</button>`;
+            if(isAdmin()) {
+                actionsHtml += `<button class="edit-btn" onclick="openEditModal(${p.id})">✏️</button>`;
+                actionsHtml += `<button class="del-btn" onclick="deleteProject(${p.id})">🗑️</button>`;
             }
             html += `<tr>
                 <td>${idx+1}</td>
-                <td><strong>${p.name}</strong><br><span style="font-size:8px;color:#888;">${(p.activities||'').slice(0,20)}</span></td>
+                <td><strong>${p.name}</strong><br><span style="font-size:10px;color:#888;">${p.activities ? p.activities.slice(0,30)+'...' : ''}</span></td>
                 <td>${p.category || 'अन्य'}</td>
-                <td>${p.ward ? 'वडा '+p.ward : '-'}</td>
                 <td>${(p.budget||0).toLocaleString()}</td>
                 <td>${totalExp.toLocaleString()}</td>
                 <td><div class="progress-bar"><div class="fill" style="width:${progress}%"></div></div> ${progress}%</td>
-                <td style="font-size:9px;">${p.responsible || '-'}</td>
+                <td>${p.time || '-'}</td>
+                <td class="person-info">${personHtml}</td>
                 <td><span class="status-badge ${statusClass}">${p.status}</span></td>
-                <td class="actions">${actions}</td>
+                <td class="actions">${actionsHtml}</td>
             </tr>`;
         });
-        tbody.innerHTML = html;
-    }
-
-    function renderWardTable() {
-        const tbody = document.getElementById('wardTableBody');
-        const wardData = getWardBeneficiaries();
-        let html = '';
-        let total = { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0, total: 0 };
-        for (let i = 1; i <= 12; i++) {
-            const w = wardData[i] || { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0, total: 0 };
-            total.male += w.male;
-            total.female += w.female;
-            total.dalit += w.dalit;
-            total.janajati += w.janajati;
-            total.disabled += w.disabled;
-            total.returnee += w.returnee;
-            total.entrepreneur += w.entrepreneur;
-            total.total += w.total;
-            html += `<tr>
-                <td>वडा ${i}</td>
-                <td>${w.male}</td>
-                <td>${w.female}</td>
-                <td>${w.dalit}</td>
-                <td>${w.janajati}</td>
-                <td>${w.disabled}</td>
-                <td>${w.returnee}</td>
-                <td>${w.entrepreneur}</td>
-                <td>${w.total}</td>
-            </tr>`;
-        }
-        html += `<tr style="font-weight:700;background:#f0f4f8;">
-            <td><strong>जम्मा</strong></td>
-            <td>${total.male}</td>
-            <td>${total.female}</td>
-            <td>${total.dalit}</td>
-            <td>${total.janajati}</td>
-            <td>${total.disabled}</td>
-            <td>${total.returnee}</td>
-            <td>${total.entrepreneur}</td>
-            <td>${total.total}</td>
-        </tr>`;
         tbody.innerHTML = html;
     }
 
     function renderCharts() {
-        const totalBudget = projects.reduce((s, p) => s + (p.budget || 0), 0);
-        const totalExp = projects.reduce((s, p) => s + getTotalExpenses(p), 0);
-        const balance = totalBudget - totalExp;
-        const ben = getAllBeneficiaries();
+        const ctx1 = document.getElementById('budgetChart').getContext('2d');
+        const ctx2 = document.getElementById('statusChart').getContext('2d');
+        if(window.budgetChartInstance) window.budgetChartInstance.destroy();
+        if(window.statusChartInstance) window.statusChartInstance.destroy();
 
-        // Budget vs Expense
-        const ctx1 = document.getElementById('chartBudgetExpense').getContext('2d');
-        if (chartInstances.budget) chartInstances.budget.destroy();
-        chartInstances.budget = new Chart(ctx1, {
+        const sorted = [...projects].sort((a,b) => (b.budget||0) - (a.budget||0)).slice(0,8);
+        window.budgetChartInstance = new Chart(ctx1, {
             type: 'bar',
-            data: { labels: ['बजेट', 'खर्च', 'बाँकी'], datasets: [{ data: [totalBudget, totalExp, balance], backgroundColor: ['#2e7d32', '#d32f2f', '#1976d2'], borderRadius: 3 }] },
-            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            data: {
+                labels: sorted.map(p => p.name.length > 15 ? p.name.slice(0,12)+'..' : p.name),
+                datasets: [{
+                    label: 'बजेट (रु.)',
+                    data: sorted.map(p => p.budget),
+                    backgroundColor: ['#2e7d32','#1976d2','#f9a825','#d32f2f','#6a1b9a','#00838f','#e65100','#4a148c'],
+                    borderRadius: 4
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
         });
 
-        // Expense Pie
-        const ctx2 = document.getElementById('chartExpensePie').getContext('2d');
-        if (chartInstances.expensePie) chartInstances.expensePie.destroy();
-        const catExp = {};
-        projects.forEach(p => { const e = getTotalExpenses(p); const c = p.category || 'अन्य'; catExp[c] = (catExp[c] || 0) + e; });
-        chartInstances.expensePie = new Chart(ctx2, {
+        const statusCount = { 'प्रगतिमा':0, 'सुरु हुन बाँकी':0, 'सम्पन्न':0 };
+        projects.forEach(p => { if(statusCount[p.status] !== undefined) statusCount[p.status]++; });
+        window.statusChartInstance = new Chart(ctx2, {
             type: 'doughnut',
-            data: { labels: Object.keys(catExp), datasets: [{ data: Object.values(catExp), backgroundColor: ['#2e7d32','#1976d2','#f9a825','#d32f2f','#6a1b9a'] }] },
-            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 8 } } } } }
-        });
-
-        // Beneficiary
-        const ctx3 = document.getElementById('chartBeneficiary').getContext('2d');
-        if (chartInstances.beneficiary) chartInstances.beneficiary.destroy();
-        chartInstances.beneficiary = new Chart(ctx3, {
-            type: 'pie',
-            data: { labels: ['पुरुष', 'महिला', 'दलित', 'जनजाति', 'अपांग'], datasets: [{ data: [ben.male, ben.female, ben.dalit, ben.janajati, ben.disabled], backgroundColor: ['#1976d2','#d32f2f','#6a1b9a','#00838f','#e65100'] }] },
-            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 8 } } } } }
-        });
-
-        // Program Progress
-        const ctx4 = document.getElementById('chartProgramProgress').getContext('2d');
-        if (chartInstances.progress) chartInstances.progress.destroy();
-        const progLabels = projects.slice(0, 6).map(p => p.name.length > 12 ? p.name.slice(0, 10) + '..' : p.name);
-        const progData = projects.slice(0, 6).map(p => p.budget > 0 ? Math.round((getTotalExpenses(p) / p.budget) * 100) : 0);
-        chartInstances.progress = new Chart(ctx4, {
-            type: 'horizontalBar',
-            data: { labels: progLabels, datasets: [{ data: progData, backgroundColor: '#2e7d32', borderRadius: 3 }] },
-            options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { max: 100 } } }
-        });
-
-        // Program Status
-        const ctx5 = document.getElementById('chartProgramStatus').getContext('2d');
-        if (chartInstances.status) chartInstances.status.destroy();
-        const statusCount = { 'प्रगतिमा': 0, 'सुरु हुन बाँकी': 0, 'सम्पन्न': 0 };
-        projects.forEach(p => { if (statusCount[p.status] !== undefined) statusCount[p.status]++; });
-        chartInstances.status = new Chart(ctx5, {
-            type: 'doughnut',
-            data: { labels: ['प्रगतिमा', 'सुरु हुन बाँकी', 'सम्पन्न'], datasets: [{ data: [statusCount['प्रगतिमा'], statusCount['सुरु हुन बाँकी'], statusCount['सम्पन्न']], backgroundColor: ['#2e7d32', '#f9a825', '#1976d2'] }] },
-            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 8 } } } } }
-        });
-
-        // Ward Progress
-        const ctx6 = document.getElementById('chartWardProgress').getContext('2d');
-        if (chartInstances.ward) chartInstances.ward.destroy();
-        const wardLabels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-        const wardProgress = wardLabels.map(w => {
-            const total = projects.filter(p => parseInt(p.ward) === w).length;
-            const completed = projects.filter(p => parseInt(p.ward) === w && p.status === 'सम्पन्न').length;
-            return total > 0 ? Math.round((completed / total) * 100) : 0;
-        });
-        chartInstances.ward = new Chart(ctx6, {
-            type: 'bar',
-            data: { labels: wardLabels.map(w => 'वडा '+w), datasets: [{ data: wardProgress, backgroundColor: '#1976d2', borderRadius: 3 }] },
-            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { max: 100 } } }
+            data: {
+                labels: ['प्रगतिमा', 'सुरु हुन बाँकी', 'सम्पन्न'],
+                datasets: [{
+                    data: [statusCount['प्रगतिमा'], statusCount['सुरु हुन बाँकी'], statusCount['सम्पन्न']],
+                    backgroundColor: ['#2e7d32', '#f9a825', '#1976d2']
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
         });
     }
 
     function renderAll() {
         renderSummary();
         renderTable();
-        renderWardTable();
         renderCharts();
         populateCategoryFilter();
-        populateExpenseProjectSelect();
-        document.getElementById('reportDate').textContent = new Date().toLocaleDateString('ne-NP', { year: 'numeric', month: 'long', day: 'numeric' });
+        updateUIByRole();
         generateReport();
     }
 
     // ========================================================================
-    // FILTERS
+    // 5. FILTERS
     // ========================================================================
     function populateCategoryFilter() {
         const sel = document.getElementById('filterCategory');
@@ -886,71 +1214,211 @@
         sel.value = current;
     }
 
-    function populateExpenseProjectSelect() {
-        const sel = document.getElementById('eeProject');
-        const current = sel.value;
-        sel.innerHTML = '<option value="">छान्नुहोस्</option>' + projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-        sel.value = current;
-    }
-
     function applyFilters() {
         const cat = document.getElementById('filterCategory').value;
         const status = document.getElementById('filterStatus').value;
+        const search = document.getElementById('filterSearch').value.toLowerCase();
         let filtered = projects.filter(p => {
-            if (cat && p.category !== cat) return false;
-            if (status && p.status !== status) return false;
+            if(cat && p.category !== cat) return false;
+            if(status && p.status !== status) return false;
+            if(search && !p.name.toLowerCase().includes(search) && !(p.activities||'').toLowerCase().includes(search)) return false;
             return true;
         });
         renderTable(filtered);
     }
 
     // ========================================================================
-    // TAB SWITCHING
+    // 6. UI BY ROLE
     // ========================================================================
-    function switchTab(tabName) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById('tab-' + tabName).classList.add('active');
-        document.querySelector(`.tab-btn[onclick="switchTab('${tabName}')"]`).classList.add('active');
-        if (tabName === 'report') generateReport();
-        if (tabName === 'dataentry') populateExpenseProjectSelect();
+    function updateUIByRole() {
+        const isAdminUser = isAdmin();
+        document.getElementById('adminPanel').classList.toggle('show', isAdminUser);
+        document.getElementById('btnAddProject').style.display = isAdminUser ? 'inline-block' : 'none';
+        document.getElementById('displayRole').textContent = isAdminUser ? 'Admin' : 'User';
+        document.getElementById('displayRole').className = 'role-badge' + (isAdminUser ? ' admin' : '');
+        document.getElementById('displayUsername').textContent = currentUser ? currentUser.username : '';
     }
 
     // ========================================================================
-    // PROJECT CRUD
+    // 7. DETAIL VIEW
+    // ========================================================================
+    function openDetailView(id) {
+        const p = projects.find(x => x.id === id);
+        if(!p) { alert('कार्यक्रम फेला परेन'); return; }
+        const totalExp = getTotalExpenses(p);
+        const progress = p.budget > 0 ? Math.min(100, Math.round((totalExp / p.budget) * 100)) : 0;
+        const b = p.beneficiary || getDefaultBeneficiary();
+        const totalBen = getTotalBeneficiaries(p);
+        let expenseHtml = '';
+        if(p.expenses && p.expenses.length > 0) {
+            p.expenses.forEach(e => {
+                expenseHtml += `<div class="item"><span>${e.title || 'खर्च'} ${e.date ? ' - '+e.date : ''}</span><span class="amount">रु. ${(e.amount||0).toLocaleString()}</span></div>`;
+            });
+        } else {
+            expenseHtml = '<div style="color:#999;padding:6px 0;">कुनै खर्च छैन</div>';
+        }
+        document.getElementById('detailTitle').textContent = `📄 ${p.name} - पूर्ण विवरण`;
+        document.getElementById('detailContent').innerHTML = `
+            <div style="background:#f0f4f8;padding:12px;border-radius:8px;margin-bottom:12px;">
+                <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                    <span><strong>📌 प्रकृति:</strong> ${p.category || 'अन्य'}</span>
+                    <span><strong>⏱️ समय:</strong> ${p.time || '-'}</span>
+                    <span><strong>📊 स्थिति:</strong> <span class="status-badge ${p.status === 'प्रगतिमा' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending')}">${p.status}</span></span>
+                </div>
+            </div>
+            <div class="detail-grid">
+                <div class="item"><span class="dlabel">💰 कुल बजेट</span><span class="dvalue">रु. ${(p.budget||0).toLocaleString()}</span></div>
+                <div class="item"><span class="dlabel">💸 हालसम्मको खर्च</span><span class="dvalue">रु. ${totalExp.toLocaleString()}</span></div>
+                <div class="item"><span class="dlabel">📈 प्रगति</span><span class="dvalue">${progress}%</span></div>
+                <div class="item"><span class="dlabel">👥 कुल लाभग्राही</span><span class="dvalue">${totalBen} जना</span></div>
+            </div>
+            <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">👤 जिम्मेवार व्यक्तिहरू</h4>
+            <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
+                <div class="item"><span class="dlabel">जिम्मेवार</span><span class="dvalue">${p.responsible || '-'}</span></div>
+                <div class="item"><span class="dlabel">सहायक</span><span class="dvalue">${p.assistant || '-'}</span></div>
+                <div class="item detail-full"><span class="dlabel">अख्तियार</span><span class="dvalue">${p.authorized || '-'}</span></div>
+            </div>
+            <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">👥 लाभग्राही</h4>
+            <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
+                <div class="item"><span class="dlabel">👨 पुरुष</span><span class="dvalue">${b.male || 0}</span></div>
+                <div class="item"><span class="dlabel">👩 महिला</span><span class="dvalue">${b.female || 0}</span></div>
+                <div class="item"><span class="dlabel">🧑‍🦱 दलित</span><span class="dvalue">${b.dalit || 0}</span></div>
+                <div class="item"><span class="dlabel">🧑‍🦰 जनजाति</span><span class="dvalue">${b.janajati || 0}</span></div>
+                <div class="item"><span class="dlabel">♿ अपाङ्गता</span><span class="dvalue">${b.disabled || 0}</span></div>
+                <div class="item"><span class="dlabel">✈️ फर्केका</span><span class="dvalue">${b.returnee || 0}</span></div>
+                <div class="item"><span class="dlabel">🚀 नयाँ उद्यमी</span><span class="dvalue">${b.entrepreneur || 0}</span></div>
+            </div>
+            <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">📋 कार्य विवरण</h4>
+            <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
+                <div class="item detail-full"><span class="dlabel">📌 गर्नुपर्ने काम</span><span class="dvalue">${p.activities || '-'}</span></div>
+                <div class="item detail-full"><span class="dlabel">🔧 कसरी गर्ने?</span><span class="dvalue">${p.method || '-'}</span></div>
+                <div class="item detail-full"><span class="dlabel">🎯 उपलब्धी</span><span class="dvalue">${p.output || '-'}</span></div>
+            </div>
+            <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">💰 खर्च विवरण</h4>
+            <div class="detail-expense-list">${expenseHtml}</div>
+            <div style="text-align:right;font-weight:700;font-size:15px;margin-top:6px;">जम्मा खर्च: रु. ${totalExp.toLocaleString()}</div>
+        `;
+        document.getElementById('detailModal').classList.add('show');
+    }
+
+    function printDetail() {
+        window.print();
+    }
+
+    // ========================================================================
+    // 8. BENEFICIARY MODAL
+    // ========================================================================
+    let beneficiaryEditProjectId = null;
+
+    function openBeneficiaryModal(projectId) {
+        if(!currentUser) { alert('कृपया पहिले लगइन गर्नुहोस्।'); return; }
+        const p = projects.find(x => x.id === projectId);
+        if(!p) return;
+        beneficiaryEditProjectId = projectId;
+        const b = p.beneficiary || getDefaultBeneficiary();
+        const modalHtml = `
+            <div class="modal-box">
+                <h2>👥 लाभग्राही विवरण - ${p.name}</h2>
+                <div class="beneficiary-grid">
+                    <div class="b-item"><label>👨 पुरुष:</label><input type="number" id="beneficiaryMale" value="${b.male || 0}" min="0" /></div>
+                    <div class="b-item"><label>👩 महिला:</label><input type="number" id="beneficiaryFemale" value="${b.female || 0}" min="0" /></div>
+                    <div class="b-item"><label>🧑‍🦱 दलित:</label><input type="number" id="beneficiaryDalit" value="${b.dalit || 0}" min="0" /></div>
+                    <div class="b-item"><label>🧑‍🦰 जनजाति:</label><input type="number" id="beneficiaryJanajati" value="${b.janajati || 0}" min="0" /></div>
+                    <div class="b-item"><label>♿ अपाङ्गता:</label><input type="number" id="beneficiaryDisabled" value="${b.disabled || 0}" min="0" /></div>
+                    <div class="b-item"><label>✈️ फर्केका:</label><input type="number" id="beneficiaryReturnee" value="${b.returnee || 0}" min="0" /></div>
+                    <div class="b-item"><label>🚀 नयाँ उद्यमी:</label><input type="number" id="beneficiaryEntrepreneur" value="${b.entrepreneur || 0}" min="0" /></div>
+                </div>
+                <div style="margin-top:10px;padding:10px;background:#e8f5e9;border-radius:6px;">
+                    <strong>📊 कुल: <span id="beneficiaryTotal">${getTotalBeneficiaries(p)}</span> जना</strong>
+                </div>
+                <div class="modal-btns">
+                    <button type="button" class="cancel-btn" onclick="closeBeneficiaryModal()">रद्द</button>
+                    <button type="button" class="save-btn" onclick="saveBeneficiary()">💾 सुरक्षित</button>
+                </div>
+            </div>
+        `;
+        let modal = document.getElementById('beneficiaryModal');
+        if(!modal) {
+            modal = document.createElement('div');
+            modal.id = 'beneficiaryModal';
+            modal.className = 'modal';
+            document.body.appendChild(modal);
+        }
+        modal.innerHTML = modalHtml;
+        modal.classList.add('show');
+        document.querySelectorAll('#beneficiaryModal input[type="number"]').forEach(input => {
+            input.addEventListener('input', function() {
+                let total = 0;
+                document.querySelectorAll('#beneficiaryModal input[type="number"]').forEach(inp => {
+                    total += parseInt(inp.value) || 0;
+                });
+                document.getElementById('beneficiaryTotal').textContent = total;
+            });
+        });
+    }
+
+    function closeBeneficiaryModal() {
+        const modal = document.getElementById('beneficiaryModal');
+        if(modal) modal.classList.remove('show');
+    }
+
+    function saveBeneficiary() {
+        const p = projects.find(x => x.id === beneficiaryEditProjectId);
+        if(!p) return;
+        p.beneficiary = {
+            male: parseInt(document.getElementById('beneficiaryMale').value) || 0,
+            female: parseInt(document.getElementById('beneficiaryFemale').value) || 0,
+            dalit: parseInt(document.getElementById('beneficiaryDalit').value) || 0,
+            janajati: parseInt(document.getElementById('beneficiaryJanajati').value) || 0,
+            disabled: parseInt(document.getElementById('beneficiaryDisabled').value) || 0,
+            returnee: parseInt(document.getElementById('beneficiaryReturnee').value) || 0,
+            entrepreneur: parseInt(document.getElementById('beneficiaryEntrepreneur').value) || 0
+        };
+        saveProjects();
+        closeBeneficiaryModal();
+        renderAll();
+        alert('✅ लाभग्राही विवरण सुरक्षित!');
+    }
+
+    // ========================================================================
+    // 9. PROJECT MODAL
     // ========================================================================
     function openAddModal() {
-        if (userRole !== 'admin') { alert('Admin ले मात्र गर्न सक्छ।'); return; }
+        if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
         editMode = false;
         document.getElementById('modalTitle').textContent = '➕ नयाँ कार्यक्रम';
         document.getElementById('editId').value = '';
         document.getElementById('projectForm').reset();
+        document.querySelectorAll('.beneficiary-grid input').forEach(inp => inp.value = 0);
         document.getElementById('projectModal').classList.add('show');
     }
 
-    let editMode = false;
-
     function openEditModal(id) {
-        if (userRole !== 'admin') { alert('Admin ले मात्र गर्न सक्छ।'); return; }
+        if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
         const p = projects.find(x => x.id === id);
-        if (!p) return;
+        if(!p) return;
         editMode = true;
-        document.getElementById('modalTitle').textContent = '✏️ सम्पादन';
+        document.getElementById('modalTitle').textContent = '✏️ कार्यक्रम सम्पादन';
         document.getElementById('editId').value = id;
         document.getElementById('fName').value = p.name || '';
         document.getElementById('fCategory').value = p.category || 'अन्य';
-        document.getElementById('fWard').value = p.ward || '';
         document.getElementById('fBudget').value = p.budget || 0;
         document.getElementById('fTime').value = p.time || '';
         document.getElementById('fStatus').value = p.status || 'सुरु हुन बाँकी';
-        document.getElementById('fLocation').value = p.location || '';
         document.getElementById('fResponsible').value = p.responsible || '';
         document.getElementById('fAssistant').value = p.assistant || '';
         document.getElementById('fAuthorized').value = p.authorized || '';
-        document.getElementById('fObjective').value = p.objective || '';
-        document.getElementById('fMethod').value = p.method || '';
         document.getElementById('fActivities').value = p.activities || '';
+        document.getElementById('fMethod').value = p.method || '';
         document.getElementById('fOutput').value = p.output || '';
+        const b = p.beneficiary || getDefaultBeneficiary();
+        document.getElementById('fBeneficiaryMale').value = b.male || 0;
+        document.getElementById('fBeneficiaryFemale').value = b.female || 0;
+        document.getElementById('fBeneficiaryDalit').value = b.dalit || 0;
+        document.getElementById('fBeneficiaryJanajati').value = b.janajati || 0;
+        document.getElementById('fBeneficiaryDisabled').value = b.disabled || 0;
+        document.getElementById('fBeneficiaryReturnee').value = b.returnee || 0;
+        document.getElementById('fBeneficiaryEntrepreneur').value = b.entrepreneur || 0;
         document.getElementById('projectModal').classList.add('show');
     }
 
@@ -958,211 +1426,70 @@
         document.getElementById(id).classList.remove('show');
     }
 
-    document.getElementById('projectForm').addEventListener('submit', async function(e) {
+    document.getElementById('projectForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        if (userRole !== 'admin') return;
-        
+        if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
         const id = parseInt(document.getElementById('editId').value);
         const name = document.getElementById('fName').value.trim();
+        const category = document.getElementById('fCategory').value;
         const budget = parseFloat(document.getElementById('fBudget').value) || 0;
-        if (!name || budget <= 0) { alert('नाम र बजेट आवश्यक छ।'); return; }
-        
-        const data = {
-            name,
-            category: document.getElementById('fCategory').value,
-            ward: document.getElementById('fWard').value,
-            budget,
-            time: document.getElementById('fTime').value.trim(),
-            status: document.getElementById('fStatus').value,
-            location: document.getElementById('fLocation').value.trim(),
-            responsible: document.getElementById('fResponsible').value.trim(),
-            assistant: document.getElementById('fAssistant').value.trim(),
-            authorized: document.getElementById('fAuthorized').value.trim(),
-            objective: document.getElementById('fObjective').value.trim(),
-            method: document.getElementById('fMethod').value.trim(),
-            activities: document.getElementById('fActivities').value.trim(),
-            output: document.getElementById('fOutput').value.trim()
+        const time = document.getElementById('fTime').value.trim();
+        const status = document.getElementById('fStatus').value;
+        const responsible = document.getElementById('fResponsible').value.trim();
+        const assistant = document.getElementById('fAssistant').value.trim();
+        const authorized = document.getElementById('fAuthorized').value.trim();
+        const activities = document.getElementById('fActivities').value.trim();
+        const method = document.getElementById('fMethod').value.trim();
+        const output = document.getElementById('fOutput').value.trim();
+        const beneficiary = {
+            male: parseInt(document.getElementById('fBeneficiaryMale').value) || 0,
+            female: parseInt(document.getElementById('fBeneficiaryFemale').value) || 0,
+            dalit: parseInt(document.getElementById('fBeneficiaryDalit').value) || 0,
+            janajati: parseInt(document.getElementById('fBeneficiaryJanajati').value) || 0,
+            disabled: parseInt(document.getElementById('fBeneficiaryDisabled').value) || 0,
+            returnee: parseInt(document.getElementById('fBeneficiaryReturnee').value) || 0,
+            entrepreneur: parseInt(document.getElementById('fBeneficiaryEntrepreneur').value) || 0
         };
-        
-        if (editMode) {
-            // Update existing
-            const result = await updateProjectInDB(id, data);
-            if (result) {
-                const idx = projects.findIndex(p => p.id === id);
-                if (idx !== -1) projects[idx] = { ...projects[idx], ...data };
+        if(!name || budget <= 0) { alert('नाम र बजेट भर्नुहोस्।'); return; }
+        if(editMode) {
+            const idx = projects.findIndex(p => p.id === id);
+            if(idx !== -1) {
+                projects[idx] = { ...projects[idx], name, category, budget, time, status, responsible, assistant, authorized, activities, method, output, beneficiary };
             }
         } else {
-            // Insert new
-            const result = await saveProjectToDB(data);
-            if (result) {
-                projects.unshift(result);
-            }
+            const newId = projects.length > 0 ? Math.max(...projects.map(p => p.id)) + 1 : 1;
+            projects.push({ id: newId, name, category, budget, time, status, responsible, assistant, authorized, activities, method, output, beneficiary, expenses: [] });
         }
-        
+        saveProjects();
         closeModal('projectModal');
         renderAll();
         applyFilters();
     });
 
-    async function deleteProject(id) {
-        if (userRole !== 'admin') return;
-        if (!confirm('यो कार्यक्रम मेट्ने?')) return;
-        const success = await deleteProjectFromDB(id);
-        if (success) {
-            projects = projects.filter(p => p.id !== id);
-            renderAll();
-            applyFilters();
-        }
+    function deleteProject(id) {
+        if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
+        if(!confirm('के तपाईँ यो कार्यक्रम मेट्न चाहनुहुन्छ?')) return;
+        projects = projects.filter(p => p.id !== id);
+        saveProjects();
+        renderAll();
+        applyFilters();
     }
 
     // ========================================================================
-    // DATA ENTRY - PROJECT
-    // ========================================================================
-    document.getElementById('dataEntryForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        if (userRole !== 'admin') { alert('Admin ले मात्र गर्न सक्छ।'); return; }
-        
-        const name = document.getElementById('deName').value.trim();
-        const budget = parseFloat(document.getElementById('deBudget').value) || 0;
-        if (!name || budget <= 0) { alert('नाम र बजेट आवश्यक छ।'); return; }
-        
-        const data = {
-            name,
-            category: document.getElementById('deCategory').value,
-            ward: document.getElementById('deWard').value,
-            budget,
-            time: document.getElementById('deTime').value.trim(),
-            status: document.getElementById('deStatus').value,
-            location: document.getElementById('deLocation').value.trim(),
-            responsible: document.getElementById('deResponsible').value.trim(),
-            assistant: document.getElementById('deAssistant').value.trim(),
-            authorized: document.getElementById('deAuthorized').value.trim(),
-            objective: document.getElementById('deObjective').value.trim(),
-            method: document.getElementById('deMethod').value.trim(),
-            activities: document.getElementById('deActivities').value.trim(),
-            output: document.getElementById('deOutput').value.trim()
-        };
-        
-        const result = await saveProjectToDB(data);
-        if (result) {
-            projects.unshift(result);
-            clearDataEntry();
-            renderAll();
-            applyFilters();
-            alert('✅ कार्यक्रम थपियो!');
-        }
-    });
-
-    function clearDataEntry() {
-        document.getElementById('deName').value = '';
-        document.getElementById('deBudget').value = '';
-        document.getElementById('deTime').value = '';
-        document.getElementById('deLocation').value = '';
-        document.getElementById('deResponsible').value = '';
-        document.getElementById('deAssistant').value = '';
-        document.getElementById('deAuthorized').value = '';
-        document.getElementById('deObjective').value = '';
-        document.getElementById('deMethod').value = '';
-        document.getElementById('deActivities').value = '';
-        document.getElementById('deOutput').value = '';
-    }
-
-    // ========================================================================
-    // EXPENSE ENTRY - DATA ENTRY TAB
-    // ========================================================================
-    document.getElementById('expenseEntryForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        if (!currentUser) { alert('लगइन गर्नुहोस्।'); return; }
-        
-        const projectId = parseInt(document.getElementById('eeProject').value);
-        const p = projects.find(x => x.id === projectId);
-        if (!p) { alert('कार्यक्रम चयन गर्नुहोस्।'); return; }
-
-        const title = document.getElementById('eeTitle').value.trim();
-        const amount = parseFloat(document.getElementById('eeAmount').value);
-        if (!title || !amount || amount <= 0) { alert('शीर्षक र सही रकम भर्नुहोस्।'); return; }
-
-        const newExpense = {
-            title,
-            amount,
-            date: document.getElementById('eeDate').value.trim(),
-            ward: document.getElementById('eeWard').value,
-            location: document.getElementById('eeLocation').value.trim(),
-            benTotal: parseInt(document.getElementById('eeBenTotal').value) || 0,
-            male: parseInt(document.getElementById('eeMale').value) || 0,
-            female: parseInt(document.getElementById('eeFemale').value) || 0,
-            dalit: parseInt(document.getElementById('eeDalit').value) || 0,
-            janajati: parseInt(document.getElementById('eeJanajati').value) || 0,
-            disabled: parseInt(document.getElementById('eeDisabled').value) || 0,
-            returnee: parseInt(document.getElementById('eeReturnee').value) || 0,
-            entrepreneur: parseInt(document.getElementById('eeEntrepreneur').value) || 0,
-            remark: document.getElementById('eeRemark').value.trim()
-        };
-
-        // Update project expenses
-        const expenses = p.expenses || [];
-        expenses.push(newExpense);
-        
-        // Update status
-        const totalExp = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
-        let status = p.status;
-        if (totalExp > 0 && p.status === 'सुरु हुन बाँकी') status = 'प्रगतिमा';
-        if (totalExp >= p.budget && p.budget > 0) status = 'सम्पन्न';
-        
-        const result = await updateProjectInDB(p.id, { expenses, status });
-        if (result) {
-            p.expenses = expenses;
-            p.status = status;
-            clearExpenseEntry();
-            renderAll();
-            applyFilters();
-            alert('✅ खर्च थपियो!');
-        }
-    });
-
-    function clearExpenseEntry() {
-        document.getElementById('eeTitle').value = '';
-        document.getElementById('eeAmount').value = '';
-        document.getElementById('eeDate').value = '';
-        document.getElementById('eeWard').value = '';
-        document.getElementById('eeLocation').value = '';
-        document.getElementById('eeBenTotal').value = 0;
-        document.getElementById('eeMale').value = 0;
-        document.getElementById('eeFemale').value = 0;
-        document.getElementById('eeDalit').value = 0;
-        document.getElementById('eeJanajati').value = 0;
-        document.getElementById('eeDisabled').value = 0;
-        document.getElementById('eeReturnee').value = 0;
-        document.getElementById('eeEntrepreneur').value = 0;
-        document.getElementById('eeRemark').value = '';
-    }
-
-    // ========================================================================
-    // EXPENSE MODAL
+    // 10. EXPENSE MODAL
     // ========================================================================
     let currentExpenseProjectId = null;
 
     function openExpenseModal(projectId) {
-        if (!currentUser) { alert('लगइन गर्नुहोस्।'); return; }
+        if(!currentUser) { alert('लगइन गर्नुहोस्।'); return; }
         currentExpenseProjectId = projectId;
         const p = projects.find(x => x.id === projectId);
-        if (!p) return;
-        
+        if(!p) return;
         document.getElementById('expProjectDisplay').textContent = p.name;
         document.getElementById('expProjectId').value = projectId;
         document.getElementById('expTitle').value = '';
         document.getElementById('expAmount').value = '';
         document.getElementById('expDate').value = '';
-        document.getElementById('expWard').value = p.ward || '';
-        document.getElementById('expLocation').value = p.location || '';
-        document.getElementById('expBenTotal').value = 0;
-        document.getElementById('expMale').value = 0;
-        document.getElementById('expFemale').value = 0;
-        document.getElementById('expDalit').value = 0;
-        document.getElementById('expJanajati').value = 0;
-        document.getElementById('expDisabled').value = 0;
-        document.getElementById('expReturnee').value = 0;
-        document.getElementById('expEntrepreneur').value = 0;
         document.getElementById('expRemark').value = '';
         document.getElementById('expenseModalTitle').textContent = `💰 खर्च प्रविष्टि - ${p.name}`;
         renderExpenseHistory(projectId);
@@ -1171,409 +1498,566 @@
 
     function renderExpenseHistory(projectId) {
         const p = projects.find(x => x.id === projectId);
-        if (!p) return;
+        if(!p) return;
         const list = document.getElementById('expenseHistoryList');
         const totalDisplay = document.getElementById('expenseTotalDisplay');
-        if (!p.expenses || p.expenses.length === 0) {
+        if(!p.expenses || p.expenses.length === 0) {
             list.innerHTML = '<div class="empty-msg">कुनै खर्च छैन</div>';
-            totalDisplay.textContent = 'जम्मा: रु. ०';
+            totalDisplay.textContent = 'जम्मा खर्च: रु. ०';
             return;
         }
-        let html = '';
-        let total = 0;
+        let html = '', total = 0;
         p.expenses.forEach(e => {
             total += e.amount || 0;
-            html += `<div class="item">
-                <span>${e.title || 'खर्च'} ${e.date ? ' - ' + e.date : ''} ${e.ward ? ' [वडा '+e.ward+']' : ''}</span>
-                <span class="amount">रु. ${(e.amount || 0).toLocaleString()}</span>
-            </div>`;
+            html += `<div class="item"><span>${e.title || 'खर्च'} ${e.date ? ' - '+e.date : ''}</span><span class="amount">रु. ${(e.amount||0).toLocaleString()}</span></div>`;
         });
         list.innerHTML = html;
-        totalDisplay.textContent = `जम्मा: रु. ${total.toLocaleString()}`;
+        totalDisplay.textContent = `जम्मा खर्च: रु. ${total.toLocaleString()}`;
     }
 
-    async function saveExpense() {
+    function saveExpense() {
         const projectId = parseInt(document.getElementById('expProjectId').value);
         const p = projects.find(x => x.id === projectId);
-        if (!p) { alert('कार्यक्रम फेला परेन'); return; }
-
+        if(!p) { alert('कार्यक्रम फेला परेन'); return; }
         const title = document.getElementById('expTitle').value.trim();
         const amount = parseFloat(document.getElementById('expAmount').value);
-        if (!title || !amount || amount <= 0) { alert('शीर्षक र सही रकम भर्नुहोस्।'); return; }
-
-        const newExpense = {
-            title,
-            amount,
-            date: document.getElementById('expDate').value.trim(),
-            ward: document.getElementById('expWard').value,
-            location: document.getElementById('expLocation').value.trim(),
-            benTotal: parseInt(document.getElementById('expBenTotal').value) || 0,
-            male: parseInt(document.getElementById('expMale').value) || 0,
-            female: parseInt(document.getElementById('expFemale').value) || 0,
-            dalit: parseInt(document.getElementById('expDalit').value) || 0,
-            janajati: parseInt(document.getElementById('expJanajati').value) || 0,
-            disabled: parseInt(document.getElementById('expDisabled').value) || 0,
-            returnee: parseInt(document.getElementById('expReturnee').value) || 0,
-            entrepreneur: parseInt(document.getElementById('expEntrepreneur').value) || 0,
-            remark: document.getElementById('expRemark').value.trim()
-        };
-
-        const expenses = p.expenses || [];
-        expenses.push(newExpense);
-        
-        const totalExp = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
-        let status = p.status;
-        if (totalExp > 0 && p.status === 'सुरु हुन बाँकी') status = 'प्रगतिमा';
-        if (totalExp >= p.budget && p.budget > 0) status = 'सम्पन्न';
-        
-        const result = await updateProjectInDB(p.id, { expenses, status });
-        if (result) {
-            p.expenses = expenses;
-            p.status = status;
-            renderExpenseHistory(projectId);
-            renderAll();
-            applyFilters();
-            document.getElementById('expTitle').value = '';
-            document.getElementById('expAmount').value = '';
-            alert('✅ खर्च थपियो!');
-        }
+        const date = document.getElementById('expDate').value.trim();
+        const remark = document.getElementById('expRemark').value.trim();
+        if(!title || !amount || amount <= 0) { alert('शीर्षक र रकम भर्नुहोस्।'); return; }
+        if(!p.expenses) p.expenses = [];
+        p.expenses.push({ title, amount, date, remark });
+        const totalExp = getTotalExpenses(p);
+        if(totalExp > 0 && p.status === 'सुरु हुन बाँकी') p.status = 'प्रगतिमा';
+        if(totalExp >= p.budget && p.budget > 0) p.status = 'सम्पन्न';
+        saveProjects();
+        renderExpenseHistory(projectId);
+        renderAll();
+        applyFilters();
+        document.getElementById('expTitle').value = '';
+        document.getElementById('expAmount').value = '';
+        alert('✅ खर्च थपियो!');
     }
 
-    async function deleteAllExpenses() {
-        if (userRole !== 'admin') { alert('Admin ले मात्र गर्न सक्छ।'); return; }
+    function deleteAllExpenses() {
+        if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
         const projectId = parseInt(document.getElementById('expProjectId').value);
         const p = projects.find(x => x.id === projectId);
-        if (!p) return;
-        if (!confirm(`"${p.name}" को सबै खर्च मेट्ने?`)) return;
-        
-        const result = await updateProjectInDB(p.id, { expenses: [] });
-        if (result) {
-            p.expenses = [];
-            renderExpenseHistory(projectId);
-            renderAll();
-            applyFilters();
-            alert('🗑️ सबै खर्च मेटियो');
-        }
+        if(!p) return;
+        if(!confirm(`"${p.name}" को सबै खर्च मेट्ने?`)) return;
+        p.expenses = [];
+        saveProjects();
+        renderExpenseHistory(projectId);
+        renderAll();
+        applyFilters();
+        alert('🗑️ सबै खर्च मेटियो');
     }
 
     // ========================================================================
-    // DETAIL VIEW
+    // 11. USER MANAGEMENT
     // ========================================================================
-    function openDetailView(id) {
-        const p = projects.find(x => x.id === id);
-        if (!p) { alert('फेला परेन'); return; }
-        const totalExp = getTotalExpenses(p);
-        const progress = p.budget > 0 ? Math.min(100, Math.round((totalExp / p.budget) * 100)) : 0;
-        const ben = getBeneficiaries(p);
-
-        let expHtml = '';
-        if (p.expenses && p.expenses.length > 0) {
-            p.expenses.forEach(e => {
-                expHtml += `<div class="item"><span>${e.title} ${e.date ? ' - ' + e.date : ''} ${e.ward ? ' [वडा '+e.ward+']' : ''}</span><span class="amount">रु. ${(e.amount || 0).toLocaleString()}</span></div>`;
-            });
-        } else { expHtml = '<div style="color:#999;padding:4px 0;">कुनै खर्च छैन</div>'; }
-
-        document.getElementById('detailTitle').textContent = `📄 ${p.name}`;
-        document.getElementById('detailContent').innerHTML = `
-            <div style="background:#f0f4f8;padding:8px;border-radius:5px;margin-bottom:8px;">
-                <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;font-size:11px;">
-                    <span><strong>प्रकृति:</strong> ${p.category || 'अन्य'}</span>
-                    <span><strong>वडा:</strong> ${p.ward ? 'वडा '+p.ward : '-'}</span>
-                    <span><strong>अवधि:</strong> ${p.time || '-'}</span>
-                    <span><strong>स्थिति:</strong> <span class="status-badge ${p.status === 'प्रगतिमा' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending')}">${p.status}</span></span>
-                </div>
-            </div>
-            <div class="detail-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#f8faff;padding:10px;border-radius:6px;margin:6px 0;">
-                <div class="item"><span class="dlabel">💰 बजेट</span><span class="dvalue">रु. ${(p.budget||0).toLocaleString()}</span></div>
-                <div class="item"><span class="dlabel">💸 खर्च</span><span class="dvalue">रु. ${totalExp.toLocaleString()}</span></div>
-                <div class="item"><span class="dlabel">📈 प्रगति</span><span class="dvalue">${progress}%</span></div>
-                <div class="item"><span class="dlabel">📉 बाँकी</span><span class="dvalue">रु. ${(p.budget - totalExp).toLocaleString()}</span></div>
-                <div class="item detail-full" style="grid-column:1/-1;"><span class="dlabel">📊 प्रगति</span><div style="width:100%;height:6px;background:#e9ecef;border-radius:3px;"><div style="width:${progress}%;height:100%;border-radius:3px;background:#2e7d32;"></div></div></div>
-            </div>
-            <h4 style="font-size:11px;color:#1a3c5e;margin:6px 0 3px;">👤 जिम्मेवार</h4>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;background:#fff;padding:6px;border-radius:5px;border:1px solid #e0e4ea;font-size:10px;">
-                <div><strong>जिम्मेवार:</strong> ${p.responsible || '-'}</div>
-                <div><strong>सहायक:</strong> ${p.assistant || '-'}</div>
-                <div><strong>अख्तियार:</strong> ${p.authorized || '-'}</div>
-            </div>
-            <h4 style="font-size:11px;color:#1a3c5e;margin:6px 0 3px;">📋 कार्य विवरण</h4>
-            <div style="background:#fff;padding:6px;border-radius:5px;border:1px solid #e0e4ea;font-size:10px;">
-                <div><strong>उद्देश्य:</strong> ${p.objective || '-'}</div>
-                <div><strong>रणनिति:</strong> ${p.method || '-'}</div>
-                <div><strong>गर्नुपर्ने काम:</strong> ${p.activities || '-'}</div>
-                <div><strong>उपलब्धी:</strong> ${p.output || '-'}</div>
-            </div>
-            <h4 style="font-size:11px;color:#1a3c5e;margin:6px 0 3px;">👥 लाभग्राही</h4>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:3px;background:#f5f7fa;padding:6px;border-radius:5px;font-size:10px;">
-                <div><strong>जम्मा:</strong> ${ben.total}</div>
-                <div><span style="color:#1976d2;">पुरुष:</span> ${ben.male}</div>
-                <div><span style="color:#d32f2f;">महिला:</span> ${ben.female}</div>
-                <div><span style="color:#6a1b9a;">दलित:</span> ${ben.dalit}</div>
-                <div><span style="color:#00838f;">जनजाति:</span> ${ben.janajati}</div>
-                <div><span style="color:#e65100;">अपांग:</span> ${ben.disabled}</div>
-                <div><span style="color:#2e7d32;">वैदेशिक फर्केका:</span> ${ben.returnee}</div>
-                <div><span style="color:#f9a825;">नयाँ उद्यमी:</span> ${ben.entrepreneur}</div>
-            </div>
-            <h4 style="font-size:11px;color:#1a3c5e;margin:6px 0 3px;">💰 खर्च विवरण</h4>
-            <div class="expense-list">${expHtml}</div>
-            <div style="text-align:right;font-weight:700;margin-top:3px;color:#1a3c5e;font-size:12px;">जम्मा: रु. ${totalExp.toLocaleString()}</div>
-        `;
-        document.getElementById('detailModal').classList.add('show');
+    function openUserManagement() {
+        if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
+        renderUserList();
+        document.getElementById('userModal').classList.add('show');
     }
 
-    // ========================================================================
-    // REPORT GENERATION
-    // ========================================================================
-    function generateReport() {
-        const container = document.getElementById('reportContent');
-        const allBen = getAllBeneficiaries();
-        const totalBudget = projects.reduce((s, p) => s + (p.budget || 0), 0);
-        const totalExp = projects.reduce((s, p) => s + getTotalExpenses(p), 0);
-        const balance = totalBudget - totalExp;
-        const progress = totalBudget > 0 ? Math.round((totalExp / totalBudget) * 100) : 0;
-        const wardData = getWardBeneficiaries();
-
-        let html = `
-            <div class="cover-page" style="margin-bottom:20px;">
-                <div class="logo-area">
-                    <div class="logo-placeholder">🏛️</div>
-                    <div>
-                        <h1 style="font-size:24px;">गलकोट नगरपालिका</h1>
-                        <h2 style="font-size:18px;">रोजगार सेवा केन्द्र</h2>
-                        <h3 style="font-size:14px;">रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम</h3>
-                    </div>
-                </div>
-                <div style="font-size:20px;font-weight:300;letter-spacing:2px;margin:6px 0;">प्रगति प्रतिवेदन</div>
-                <div class="meta">
-                    <span>📆 आर्थिक वर्ष: २०८१/८२</span>
-                    <span>📅 अवधि: असार २०८१ - असोज २०८१</span>
-                    <span>📋 मिति: ${new Date().toLocaleDateString('ne-NP', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                </div>
-            </div>
-        `;
-
-        // Executive Summary
-        html += `
-            <div class="report-section">
-                <h3>📊 कार्यकारी सारांश</h3>
-                <div class="report-summary-grid">
-                    <div class="report-summary-item"><div class="label">कुल कार्यक्रम</div><div class="value">${projects.length}</div></div>
-                    <div class="report-summary-item" style="border-left-color:#2e7d32;"><div class="label">सञ्चालित</div><div class="value">${projects.filter(p => p.status === 'प्रगतिमा').length}</div></div>
-                    <div class="report-summary-item" style="border-left-color:#1976d2;"><div class="label">सम्पन्न</div><div class="value">${projects.filter(p => p.status === 'सम्पन्न').length}</div></div>
-                    <div class="report-summary-item" style="border-left-color:#f9a825;"><div class="label">बाँकी</div><div class="value">${projects.filter(p => p.status === 'सुरु हुन बाँकी').length}</div></div>
-                    <div class="report-summary-item" style="border-left-color:#6a1b9a;"><div class="label">कुल बजेट</div><div class="value">रु. ${totalBudget.toLocaleString()}</div></div>
-                    <div class="report-summary-item" style="border-left-color:#d32f2f;"><div class="label">खर्च</div><div class="value">रु. ${totalExp.toLocaleString()}</div></div>
-                    <div class="report-summary-item" style="border-left-color:#00838f;"><div class="label">बाँकी</div><div class="value">रु. ${balance.toLocaleString()}</div></div>
-                    <div class="report-summary-item" style="border-left-color:#e65100;"><div class="label">खर्च %</div><div class="value">${progress}%</div></div>
-                </div>
-                <div style="margin-top:8px;">
-                    <div style="font-weight:600;font-size:12px;">👥 लाभग्राही विवरण</div>
-                    <div class="report-ben-grid">
-                        <div class="report-ben-item"><strong>जम्मा:</strong> ${allBen.total}</div>
-                        <div class="report-ben-item" style="color:#1976d2;"><strong>पुरुष:</strong> ${allBen.male}</div>
-                        <div class="report-ben-item" style="color:#d32f2f;"><strong>महिला:</strong> ${allBen.female}</div>
-                        <div class="report-ben-item" style="color:#6a1b9a;"><strong>दलित:</strong> ${allBen.dalit}</div>
-                        <div class="report-ben-item" style="color:#00838f;"><strong>जनजाति:</strong> ${allBen.janajati}</div>
-                        <div class="report-ben-item" style="color:#e65100;"><strong>अपांग:</strong> ${allBen.disabled}</div>
-                        <div class="report-ben-item" style="color:#2e7d32;"><strong>वैदेशिक फर्केका:</strong> ${allBen.returnee}</div>
-                        <div class="report-ben-item" style="color:#f9a825;"><strong>नयाँ उद्यमी:</strong> ${allBen.entrepreneur}</div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // Financial Summary
-        html += `
-            <div class="report-section">
-                <h3>💰 वित्तीय सारांश</h3>
-                <table>
-                    <tr><th style="width:60%;">विवरण</th><th style="width:40%;">रकम</th></tr>
-                    <tr><td>कुल बजेट</td><td>रु. ${totalBudget.toLocaleString()}</td></tr>
-                    <tr><td>हालसम्म खर्च</td><td>रु. ${totalExp.toLocaleString()}</td></tr>
-                    <tr><td>बाँकी बजेट</td><td>रु. ${balance.toLocaleString()}</td></tr>
-                    <tr><td>खर्च प्रतिशत</td><td>${progress}%</td></tr>
-                </table>
-            </div>
-        `;
-
-        // Program Details
-        html += `<div class="report-section"><h3>📋 कार्यक्रमगत विवरण</h3>`;
-        if (projects.length === 0) {
-            html += `<p style="color:#999;text-align:center;padding:10px;">कुनै कार्यक्रम छैन</p>`;
-        } else {
-            projects.forEach((p, idx) => {
-                const totalExp = getTotalExpenses(p);
-                const prog = p.budget > 0 ? Math.round((totalExp / p.budget) * 100) : 0;
-                const ben = getBeneficiaries(p);
-                html += `
-                    <div style="background:#f8faff;padding:10px;border-radius:5px;margin-bottom:10px;border:1px solid #e0e4ea;">
-                        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;">
-                            <div style="font-size:13px;"><strong>${idx+1}. ${p.name}</strong></div>
-                            <div><span class="status-badge" style="background:${p.status === 'सम्पन्न' ? '#e3f2fd' : p.status === 'प्रगतिमा' ? '#e8f5e9' : '#fff3e0'};padding:2px 10px;border-radius:10px;font-size:10px;font-weight:600;color:${p.status === 'सम्पन्न' ? '#0d47a1' : p.status === 'प्रगतिमा' ? '#2e7d32' : '#e65100'};">${p.status}</span></div>
-                        </div>
-                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:4px;font-size:11px;margin:4px 0;">
-                            <div><strong>वडा:</strong> ${p.ward ? 'वडा '+p.ward : '-'}</div>
-                            <div><strong>बजेट:</strong> रु. ${(p.budget||0).toLocaleString()}</div>
-                            <div><strong>खर्च:</strong> रु. ${totalExp.toLocaleString()}</div>
-                            <div><strong>बाँकी:</strong> रु. ${(p.budget - totalExp).toLocaleString()}</div>
-                            <div><strong>प्रगति:</strong> ${prog}%</div>
-                        </div>
-                        <div style="width:100%;height:5px;background:#e9ecef;border-radius:3px;margin:3px 0;"><div style="width:${prog}%;height:100%;border-radius:3px;background:#2e7d32;"></div></div>
-                        <div style="font-size:10px;margin-top:3px;">
-                            <div><strong>उद्देश्य:</strong> ${p.objective || '-'}</div>
-                            <div><strong>रणनिति:</strong> ${p.method || '-'}</div>
-                            <div><strong>गर्नुपर्ने काम:</strong> ${p.activities || '-'}</div>
-                            <div><strong>उपलब्धी:</strong> ${p.output || '-'}</div>
-                            <div><strong>लाभग्राही:</strong> ${ben.total} (पुरुष: ${ben.male}, महिला: ${ben.female}, दलित: ${ben.dalit}, जनजाति: ${ben.janajati}, अपांग: ${ben.disabled})</div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-        html += `</div>`;
-
-        // Expense Details
-        html += `<div class="report-section"><h3>💰 खर्च विवरण</h3><table><tr><th>कार्यक्रम</th><th>मिति</th><th>शीर्षक</th><th>वडा</th><th>स्थान</th><th>रकम</th></tr>`;
-        let hasExpenses = false;
-        projects.forEach(p => {
-            (p.expenses || []).forEach(e => {
-                hasExpenses = true;
-                html += `<tr><td>${p.name}</td><td>${e.date || '-'}</td><td>${e.title || '-'}</td><td>${e.ward ? 'वडा '+e.ward : '-'}</td><td>${e.location || '-'}</td><td>रु. ${(e.amount||0).toLocaleString()}</td></tr>`;
-            });
+    function renderUserList() {
+        const users = getUsers();
+        const container = document.getElementById('userList');
+        if(users.length === 0) { container.innerHTML = '<div class="empty-msg">कुनै प्रयोगकर्ता छैन</div>'; return; }
+        let html = '';
+        users.forEach(u => {
+            html += `<div style="display:flex;justify-content:space-between;padding:6px 4px;border-bottom:1px solid #eee;align-items:center;">
+                <span><strong>${u.username}</strong> <span style="font-size:11px;color:#888;">(${u.role})</span></span>
+                ${u.username !== 'admin' ? `<button onclick="deleteUser(${u.id})" style="border:none;background:#ffebee;color:#d32f2f;padding:2px 10px;border-radius:4px;cursor:pointer;">मेट्नुहोस्</button>` : '<span style="font-size:11px;color:#999;">(मुख्य Admin)</span>'}
+            </div>`;
         });
-        if (!hasExpenses) html += `<tr><td colspan="6" style="text-align:center;color:#888;">कुनै खर्च रेकर्ड छैन</td></tr>`;
-        html += `</table><div style="text-align:right;font-weight:700;margin-top:4px;">कुल खर्च: रु. ${totalExp.toLocaleString()}</div></div>`;
-
-        // Ward Wise Beneficiary
-        html += `<div class="report-section"><h3>📊 वडागत लाभग्राही विवरण</h3><table><tr><th>वडा</th><th>पुरुष</th><th>महिला</th><th>दलित</th><th>जनजाति</th><th>अपांग</th><th>वैदेशिक फर्केका</th><th>नयाँ उद्यमी</th><th>जम्मा</th></tr>`;
-        let totalWard = { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0, total: 0 };
-        for (let i = 1; i <= 12; i++) {
-            const w = wardData[i] || { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0, total: 0 };
-            totalWard.male += w.male; totalWard.female += w.female; totalWard.dalit += w.dalit;
-            totalWard.janajati += w.janajati; totalWard.disabled += w.disabled;
-            totalWard.returnee += w.returnee; totalWard.entrepreneur += w.entrepreneur; totalWard.total += w.total;
-            html += `<tr><td>वडा ${i}</td><td>${w.male}</td><td>${w.female}</td><td>${w.dalit}</td><td>${w.janajati}</td><td>${w.disabled}</td><td>${w.returnee}</td><td>${w.entrepreneur}</td><td>${w.total}</td></tr>`;
-        }
-        html += `<tr style="font-weight:700;background:#f0f4f8;"><td><strong>जम्मा</strong></td><td>${totalWard.male}</td><td>${totalWard.female}</td><td>${totalWard.dalit}</td><td>${totalWard.janajati}</td><td>${totalWard.disabled}</td><td>${totalWard.returnee}</td><td>${totalWard.entrepreneur}</td><td>${totalWard.total}</td></tr>`;
-        html += `</table></div>`;
-
-        // Staff
-        html += `
-            <div class="report-section">
-                <h3>👤 संलग्न कर्मचारी</h3>
-                <table>
-                    <tr><th>नाम</th><th>पद</th><th>भूमिका</th></tr>
-                    <tr><td>महेश अधिकारी</td><td>प्रमुख</td><td>कार्यक्रम संयोजक</td></tr>
-                    <tr><td>राम शर्मा</td><td>युवा शाखा</td><td>कार्यान्वयन</td></tr>
-                    <tr><td>सीता पौडेल</td><td>योजना शाखा</td><td>अनुगमन</td></tr>
-                </table>
-            </div>
-        `;
-
-        // Problems, Solutions, Remaining Work
-        const problems = ['बजेट अभावका कारण केही गतिविधि पूर्ण गर्न नसकिएको', 'लक्षित समूहमा पुग्न केही कठिनाई', 'अनुगमनको लागि पर्याप्त जनशक्ति नभएको'];
-        const solutions = ['वैकल्पिक स्रोतको खोजी गर्ने', 'वडा स्तरीय समन्वय बढाउने', 'अनुगमन टोली गठन गर्ने'];
-
-        html += `
-            <div class="report-section"><h3>⚠️ देखिएका समस्या</h3><ul>${problems.map(p => `<li>${p}</li>`).join('')}</ul></div>
-            <div class="report-section"><h3>💡 समाधानका उपाय</h3><ul>${solutions.map(p => `<li>${p}</li>`).join('')}</ul></div>
-            <div class="report-section"><h3>📌 गर्न बाँकी काम</h3><ul><li>□ अन्तिम मूल्यांकन गर्ने</li><li>□ उपकरण वितरण पूर्ण गर्ने</li><li>□ प्रतिवेदन अन्तिम रूप दिने</li><li>□ लाभग्राही अनुगमन गर्ने</li></ul></div>
-            <div class="report-section"><h3>📝 निष्कर्ष</h3><p>उपरोक्त विवरणका आधारमा गलकोट नगरपालिका रोजगार सेवा केन्द्रमार्फत सञ्चालित रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रमको हालसम्मको वित्तीय तथा भौतिक प्रगति सन्तोषजनक अवस्थामा रहेको देखिन्छ। कार्यक्रम अन्तर्गत स्वीकृत बजेटमध्ये रु. ${totalExp.toLocaleString()} खर्च भई ${progress}% वित्तीय प्रगति हासिल भएको छ भने कार्यक्रमबाट ${allBen.total} जना प्रत्यक्ष लाभान्वित भएका छन्।</p></div>
-        `;
-
-        // Footer
-        html += `
-            <div style="margin-top:30px;border-top:2px solid #eee;padding-top:15px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;">
-                <div style="text-align:center;"><div><strong>प्रतिवेदन तयार गर्ने</strong></div><div style="border-top:1px solid #333;width:150px;margin:12px auto 4px;"></div><div>नाम : ........................</div><div>पद : ........................</div></div>
-                <div style="text-align:center;"><div><strong>पेश गर्ने</strong></div><div style="border-top:1px solid #333;width:150px;margin:12px auto 4px;"></div><div>नाम : ........................</div><div>पद : ........................</div></div>
-                <div style="text-align:center;"><div><strong>स्वीकृत गर्ने</strong></div><div style="border-top:1px solid #333;width:150px;margin:12px auto 4px;"></div><div>नाम : ........................</div><div>पद : ........................</div></div>
-            </div>
-            <div style="text-align:center;font-size:10px;color:#888;margin-top:15px;border-top:1px solid #ddd;padding-top:8px;">गलकोट नगरपालिका · रोजगार सेवा केन्द्र · 📱</div>
-        `;
-
         container.innerHTML = html;
     }
 
-    function generateWordReport() {
-        const content = document.getElementById('reportContent').innerHTML;
-        const blob = new Blob([`
-            <html><head><meta charset="UTF-8"><title>प्रगति प्रतिवेदन</title>
-            <style>body{font-family:"Nirmala UI","Preeti",sans-serif;padding:20px;max-width:1000px;margin:auto;}</style>
-            </head><body>${content}</body></html>
-        `], { type: 'application/msword' });
-        const link = document.createElement('a');
-        link.download = `प्रगति_प्रतिवेदन_${new Date().toISOString().slice(0,10)}.doc`;
-        link.href = URL.createObjectURL(blob);
-        link.click();
+    function addUser() {
+        if(!isAdmin()) return;
+        const username = document.getElementById('newUsername').value.trim();
+        const password = document.getElementById('newPassword').value.trim();
+        const role = document.getElementById('newRole').value;
+        if(!username || !password) { alert('Username र Password भर्नुहोस्।'); return; }
+        const users = getUsers();
+        if(users.find(u => u.username === username)) { alert('यो username पहिले नै छ।'); return; }
+        const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+        users.push({ id: newId, username, password, role });
+        saveUsers(users);
+        document.getElementById('newUsername').value = '';
+        document.getElementById('newPassword').value = '';
+        renderUserList();
+        alert('✅ प्रयोगकर्ता थपियो!');
+    }
+
+    function deleteUser(id) {
+        if(!isAdmin()) return;
+        const users = getUsers();
+        const user = users.find(u => u.id === id);
+        if(!user) return;
+        if(user.username === 'admin') { alert('मुख्य Admin मेट्न सकिँदैन।'); return; }
+        if(!confirm(`"${user.username}" मेट्ने?`)) return;
+        saveUsers(users.filter(u => u.id !== id));
+        renderUserList();
+        alert('🗑️ मेटियो।');
     }
 
     // ========================================================================
-    // ADMIN - SYNC DATA
-    // ========================================================================
-    async function syncData() {
-        await loadData();
-        alert('✅ डाटा सिङ्क भयो!');
-    }
-
-    // ========================================================================
-    // ADMIN - EXPORT DATA
+    // 12. DATA EXPORT / IMPORT
     // ========================================================================
     function exportData() {
-        const data = { projects, exportedAt: new Date().toISOString() };
+        if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
+        const data = { projects, users: getUsers(), exportedAt: new Date().toISOString() };
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const link = document.createElement('a');
-        link.download = `galgot_data_${new Date().toISOString().slice(0,10)}.json`;
+        link.download = `dashboard_data_${new Date().toISOString().slice(0,10)}.json`;
         link.href = URL.createObjectURL(blob);
         link.click();
     }
 
-    async function handleImport(event) {
+    function importData() {
+        if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
+        document.getElementById('importFileInput').click();
+    }
+
+    function handleImport(event) {
         const file = event.target.files[0];
-        if (!file) return;
+        if(!file) return;
         const reader = new FileReader();
-        reader.onload = async function(e) {
+        reader.onload = function(e) {
             try {
                 const data = JSON.parse(e.target.result);
-                if (data.projects && data.projects.length > 0) {
-                    for (const p of data.projects) {
-                        // Remove id to let DB generate
-                        const { id, ...projectData } = p;
-                        await saveProjectToDB(projectData);
-                    }
-                    await loadData();
-                    alert('✅ आयात सफल!');
-                }
-            } catch (err) { alert('❌ त्रुटि: ' + err.message); }
+                if(data.projects) { projects = data.projects; saveProjects(); }
+                if(data.users) { saveUsers(data.users); }
+                renderAll();
+                alert('✅ डाटा आयात सफल!');
+            } catch(err) { alert('❌ त्रुटि: ' + err.message); }
         };
         reader.readAsText(file);
         event.target.value = '';
     }
 
     // ========================================================================
-    // INIT - Check Session
+    // 13. TABS
     // ========================================================================
-    async function init() {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-            currentUser = session.user;
-            document.getElementById('loginModal').classList.remove('show');
-            document.getElementById('mainDashboard').style.display = 'block';
-            await getUserProfile();
-            await loadData();
-        } else {
-            document.getElementById('loginModal').classList.add('show');
-        }
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tabs button').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        document.querySelector(`.tabs button[data-tab="${tabId}"]`).classList.add('active');
+        if(tabId === 'tabReport') generateReport();
     }
 
-    // Close modals on outside click
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.addEventListener('click', function(e) {
-            if (e.target === this) this.classList.remove('show');
+    document.querySelectorAll('.tabs button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            switchTab(this.dataset.tab);
         });
     });
 
-    // Start
-    init();
+    // ========================================================================
+    // 14. REPORT GENERATOR (with Introduction)
+    // ========================================================================
+    function generateReport() {
+        const container = document.getElementById('reportContent');
+        if(projects.length === 0) {
+            container.innerHTML = '<div class="empty-msg">कृपया कार्यक्रमहरू थप्नुहोस्।</div>';
+            return;
+        }
+
+        // Calculate data
+        const totalBudget = projects.reduce((s,p) => s + (p.budget || 0), 0);
+        const totalExp = projects.reduce((s,p) => s + getTotalExpenses(p), 0);
+        const totalBalance = totalBudget - totalExp;
+        const progressPercent = totalBudget > 0 ? Math.round((totalExp / totalBudget) * 100) : 0;
+        const activeCount = projects.filter(p => p.status === 'प्रगतिमा').length;
+        const completedCount = projects.filter(p => p.status === 'सम्पन्न').length;
+        const pendingCount = projects.filter(p => p.status === 'सुरु हुन बाँकी').length;
+
+        let totalMale = 0, totalFemale = 0, totalDalit = 0, totalJanajati = 0;
+        let totalDisabled = 0, totalReturnee = 0, totalEntrepreneur = 0;
+        projects.forEach(p => {
+            const b = p.beneficiary || getDefaultBeneficiary();
+            totalMale += b.male || 0; totalFemale += b.female || 0; totalDalit += b.dalit || 0;
+            totalJanajati += b.janajati || 0; totalDisabled += b.disabled || 0;
+            totalReturnee += b.returnee || 0; totalEntrepreneur += b.entrepreneur || 0;
+        });
+        const totalBeneficiaries = totalMale + totalFemale + totalDalit + totalJanajati + totalDisabled + totalReturnee + totalEntrepreneur;
+
+        const categories = {};
+        projects.forEach(p => {
+            if(!categories[p.category]) categories[p.category] = { budget: 0, expense: 0, count: 0 };
+            categories[p.category].budget += p.budget || 0;
+            categories[p.category].expense += getTotalExpenses(p);
+            categories[p.category].count += 1;
+        });
+
+        // Build Report HTML with Introduction first
+        let reportHTML = `
+            <div class="report-section">
+                <div class="report-header">
+                    <h2>गलकोट नगरपालिका</h2>
+                    <h3>रोजगार सेवा केन्द्र</h3>
+                    <h4>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रम प्रगति प्रतिवेदन</h4>
+                    <p><strong>आर्थिक वर्ष :</strong> २०८१/८२</p>
+                    <p><strong>प्रतिवेदन मिति :</strong> ${new Date().toLocaleDateString('ne-NP', {year:'numeric', month:'long', day:'numeric'})}</p>
+                </div>
+            </div>
+
+            <!-- परिचय - Introduction -->
+            <div class="report-section">
+                <h4>परिचय</h4>
+                <div class="report-introduction">
+                    गलकोट नगरपालिका अन्तर्गत रोजगार सेवा केन्द्रमार्फत सञ्चालित रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रम आर्थिक वर्ष २०८१/८२ मा स्वीकृत वार्षिक कार्यक्रम तथा बजेट अनुसार सञ्चालन गरिएको हो। यस कार्यक्रमको मुख्य उद्देश्य स्थानीय युवाहरूलाई रोजगारीमा जोड्नु, सीप विकास गर्नु, उद्यमशीलतालाई प्रवर्द्धन गर्नु र लघुउद्यमहरूलाई सहयोग गर्नु रहेको छ। 
+                    ${projects.length > 0 ? `यस अवधिमा कुल ${projects.length} वटा कार्यक्रमहरू सञ्चालन भएका छन् जसमा रु. ${totalBudget.toLocaleString()} बजेट विनियोजन गरिएको थियो। हालसम्म रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ।` : ''}
+                </div>
+            </div>
+
+            <!-- कार्यक्रमको संक्षिप्त विवरण -->
+            <div class="report-section">
+                <h4>१. कार्यक्रमको संक्षिप्त विवरण</h4>
+                <div class="row-detail">
+                    <div class="item"><span class="label">कुल कार्यक्रम</span><span class="value">${projects.length} वटा</span></div>
+                    <div class="item"><span class="label">स्वीकृत बजेट</span><span class="value">रु. ${totalBudget.toLocaleString()}</span></div>
+                    <div class="item"><span class="label">हालसम्म खर्च</span><span class="value">रु. ${totalExp.toLocaleString()}</span></div>
+                    <div class="item"><span class="label">बाँकी बजेट</span><span class="value">रु. ${totalBalance.toLocaleString()}</span></div>
+                    <div class="item"><span class="label">खर्च प्रतिशत</span><span class="value">${progressPercent}%</span></div>
+                    <div class="item"><span class="label">प्रगतिमा</span><span class="value">${activeCount} वटा</span></div>
+                    <div class="item"><span class="label">सम्पन्न</span><span class="value">${completedCount} वटा</span></div>
+                    <div class="item"><span class="label">सुरु हुन बाँकी</span><span class="value">${pendingCount} वटा</span></div>
+                </div>
+            </div>
+
+            <div class="report-section">
+                <h4>२. लाभग्राही विवरण</h4>
+                <div class="row-detail">
+                    <div class="item"><span class="label">👨 पुरुष</span><span class="value">${totalMale}</span></div>
+                    <div class="item"><span class="label">👩 महिला</span><span class="value">${totalFemale}</span></div>
+                    <div class="item"><span class="label">🧑‍🦱 दलित</span><span class="value">${totalDalit}</span></div>
+                    <div class="item"><span class="label">🧑‍🦰 जनजाति</span><span class="value">${totalJanajati}</span></div>
+                    <div class="item"><span class="label">♿ अपाङ्गता</span><span class="value">${totalDisabled}</span></div>
+                    <div class="item"><span class="label">✈️ फर्केका</span><span class="value">${totalReturnee}</span></div>
+                    <div class="item"><span class="label">🚀 नयाँ उद्यमी</span><span class="value">${totalEntrepreneur}</span></div>
+                    <div class="item"><span class="label">📊 कुल लाभग्राही</span><span class="value"><strong>${totalBeneficiaries} जना</strong></span></div>
+                </div>
+            </div>
+
+            <div class="report-section">
+                <h4>३. वित्तीय प्रगति</h4>
+                <div class="row-detail">
+                    <div class="item"><span class="label">कुल बजेट</span><span class="value">रु. ${totalBudget.toLocaleString()}</span></div>
+                    <div class="item"><span class="label">हालसम्म खर्च</span><span class="value">रु. ${totalExp.toLocaleString()}</span></div>
+                    <div class="item"><span class="label">बाँकी रकम</span><span class="value">रु. ${totalBalance.toLocaleString()}</span></div>
+                    <div class="item"><span class="label">खर्च प्रतिशत</span><span class="value">${progressPercent}%</span></div>
+                </div>
+                <div style="margin-top:10px;">
+                    <div class="progress-large"><div class="fill" style="width:${progressPercent}%"></div></div>
+                    <div style="text-align:center;font-size:13px;margin-top:4px;">वित्तीय प्रगति: ${progressPercent}%</div>
+                </div>
+            </div>
+
+            <div class="report-section">
+                <h4>४. चार्ट विश्लेषण</h4>
+                <div class="report-charts" id="reportChartContainer">
+                    <div class="chart-box">
+                        <h4>📊 प्रकृति अनुसार बजेट (Pie)</h4>
+                        <canvas id="reportPieChart"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <h4>📊 बजेट र खर्च तुलना (Bar)</h4>
+                        <canvas id="reportBarChart"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <h4>📈 कार्यक्रम प्रगति (Line)</h4>
+                        <canvas id="reportLineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Activities
+        let activitiesRows = '';
+        const allActivities = [];
+        projects.forEach(p => {
+            if(p.activities) {
+                const acts = p.activities.split(',').map(a => a.trim());
+                acts.forEach(a => { if(a) allActivities.push({ activity: a, project: p.name, status: p.status }); });
+            }
+        });
+        allActivities.slice(0, 10).forEach((a, idx) => {
+            activitiesRows += `<tr><td>${idx+1}</td><td>${a.activity}</td><td>${a.project}</td><td>${a.status}</td></tr>`;
+        });
+
+        // Expenses
+        let expenseRows = '', expCounter = 1;
+        projects.forEach(p => {
+            (p.expenses || []).forEach(e => {
+                expenseRows += `<tr><td>${expCounter++}</td><td>${e.date || '-'}</td><td>${e.title || 'खर्च'}</td><td>${p.name}</td><td>रु. ${(e.amount||0).toLocaleString()}</td><td>${e.remark || '-'}</td></tr>`;
+            });
+        });
+
+        // Persons
+        let personRows = '';
+        const uniquePersons = [...new Set(projects.filter(p => p.responsible).map(p => p.responsible))];
+        uniquePersons.slice(0, 10).forEach((person, idx) => {
+            const proj = projects.find(p => p.responsible === person);
+            personRows += `<tr><td>${idx+1}</td><td>${person}</td><td>${proj ? proj.authorized || 'प्रमुख' : 'प्रमुख'}</td><td>${proj ? proj.name : '-'}</td></tr>`;
+        });
+
+        // Achievements
+        let achievementList = '';
+        projects.forEach(p => { if(p.output) achievementList += `<li>${p.output}</li>`; });
+        if(!achievementList) achievementList = '<li>कुनै उपलब्धी रेकर्ड छैन।</li>';
+
+        // Remaining works
+        let remainingWorks = '';
+        const incomplete = projects.filter(p => p.status !== 'सम्पन्न');
+        incomplete.forEach(p => {
+            remainingWorks += `<li>${p.name} - ${p.status} (बजेट: रु. ${(p.budget||0).toLocaleString()}, खर्च: रु. ${getTotalExpenses(p).toLocaleString()})</li>`;
+        });
+        if(!remainingWorks) remainingWorks = '<li>सबै कार्यक्रम सम्पन्न।</li>';
+
+        // Challenges
+        let challenges = '';
+        if(pendingCount > 0) challenges += `<li>${pendingCount} वटा सुरु हुन बाँकी।</li>`;
+        if(activeCount > 0) challenges += `<li>${activeCount} वटा प्रगतिमा, समयमै सम्पन्न गर्न प्रयास आवश्यक।</li>`;
+        if(!challenges) challenges = '<li>कुनै समस्या छैन।</li>';
+
+        reportHTML += `
+            <div class="report-section">
+                <h4>५. गतिविधिहरू</h4>
+                <table class="report-table"><thead><tr><th>क्र.स</th><th>गतिविधि</th><th>कार्यक्रम</th><th>स्थिति</th></tr></thead><tbody>${activitiesRows || '<tr><td colspan="4" class="empty-msg">कुनै गतिविधि छैन</td></tr>'}</tbody></table>
+            </div>
+            <div class="report-section">
+                <h4>६. खर्च विवरण</h4>
+                <table class="report-table"><thead><tr><th>क्र.स</th><th>मिति</th><th>शीर्षक</th><th>कार्यक्रम</th><th>रकम</th><th>कैफियत</th></tr></thead><tbody>${expenseRows || '<tr><td colspan="6" class="empty-msg">कुनै खर्च छैन</td></tr>'}</tbody></table>
+            </div>
+            <div class="report-section">
+                <h4>७. उपलब्धी</h4>
+                <ul>${achievementList}</ul>
+            </div>
+            <div class="report-section">
+                <h4>८. संलग्न व्यक्तिहरू</h4>
+                <table class="report-table"><thead><tr><th>क्र.स</th><th>नाम</th><th>पद</th><th>कार्यक्रम</th></tr></thead><tbody>${personRows || '<tr><td colspan="4" class="empty-msg">कुनै व्यक्ति छैन</td></tr>'}</tbody></table>
+            </div>
+            <div class="report-section">
+                <h4>९. समस्या</h4>
+                <ul>${challenges}</ul>
+            </div>
+            <div class="report-section">
+                <h4>१०. बाँकी कार्य</h4>
+                <ul>${remainingWorks}</ul>
+            </div>
+            <div class="report-section">
+                <h4>११. आगामी योजना</h4>
+                <ol>
+                    <li>नियमित अनुगमन बढाउने</li>
+                    <li>बाँकी कार्यको प्राथमिकीकरण</li>
+                    <li>लाभग्राहीको सन्तुष्टि मूल्याङ्कन</li>
+                    <li>कार्यक्रमको प्रभाव मूल्याङ्कन</li>
+                </ol>
+            </div>
+            <div class="report-section">
+                <h4>१२. निष्कर्ष</h4>
+                <p>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रमको हालसम्मको वित्तीय तथा भौतिक प्रगति सन्तोषजनक रहेको देखिन्छ। कार्यक्रम अन्तर्गत स्वीकृत बजेटमध्ये रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ भने कार्यक्रमबाट ${totalBeneficiaries} जना प्रत्यक्ष लाभान्वित भएका छन्। बाँकी रहेका कार्यहरू तोकिएको समयसीमाभित्र सम्पन्न गरी निर्धारित लक्ष्य हासिल गरिने अपेक्षा गरिएको छ।</p>
+            </div>
+            <div class="report-section">
+                <div class="report-sign">
+                    <div class="sign-block"><strong>प्रतिवेदन तयार गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
+                    <div class="sign-block"><strong>प्रमाणित गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
+                    <div class="sign-block"><strong>स्वीकृत गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = reportHTML;
+
+        setTimeout(() => {
+            renderReportCharts(categories);
+        }, 100);
+    }
+
+    // ========================================================================
+    // 15. REPORT CHARTS
+    // ========================================================================
+    function renderReportCharts(categories) {
+        const ctxPie = document.getElementById('reportPieChart');
+        const ctxBar = document.getElementById('reportBarChart');
+        const ctxLine = document.getElementById('reportLineChart');
+
+        if(ctxPie) {
+            const labels = Object.keys(categories);
+            const data = labels.map(k => categories[k].budget);
+            const colors = ['#2e7d32','#1976d2','#f9a825','#d32f2f','#6a1b9a','#00838f','#e65100','#4a148c'];
+            new Chart(ctxPie, {
+                type: 'pie',
+                data: { labels, datasets: [{ data, backgroundColor: colors.slice(0, data.length) }] },
+                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } } }
+            });
+        }
+
+        if(ctxBar) {
+            const labels = Object.keys(categories);
+            const budgetData = labels.map(k => categories[k].budget);
+            const expenseData = labels.map(k => categories[k].expense);
+            new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [
+                        { label: 'बजेट', data: budgetData, backgroundColor: '#1976d2' },
+                        { label: 'खर्च', data: expenseData, backgroundColor: '#d32f2f' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        if(ctxLine) {
+            const sortedProjects = [...projects].sort((a,b) => (a.budget||0) - (b.budget||0));
+            const labels = sortedProjects.map(p => p.name.length > 10 ? p.name.slice(0,8)+'..' : p.name);
+            const progressData = sortedProjects.map(p => {
+                const exp = getTotalExpenses(p);
+                return p.budget > 0 ? Math.round((exp / p.budget) * 100) : 0;
+            });
+            new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'प्रगति (%)',
+                        data: progressData,
+                        borderColor: '#2e7d32',
+                        backgroundColor: 'rgba(46,125,50,0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#2e7d32'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+                    scales: { y: { beginAtZero: true, max: 100 } }
+                }
+            });
+        }
+    }
+
+    // ========================================================================
+    // 16. EXPORT REPORT TO WORD
+    // ========================================================================
+    function exportReportWord() {
+        const reportElement = document.getElementById('reportContent');
+        let reportHTML = reportElement.innerHTML;
+
+        // Replace canvas with images for Word
+        const chartIds = ['reportPieChart', 'reportBarChart', 'reportLineChart'];
+        chartIds.forEach(id => {
+            const canvas = document.getElementById(id);
+            if(canvas) {
+                const imgData = canvas.toDataURL('image/png');
+                const imgTag = `<img src="${imgData}" style="max-width:100%;max-height:180px;border:1px solid #ddd;border-radius:4px;" />`;
+                const canvasTagRegex = new RegExp(`<canvas[^>]*id="${id}"[^>]*></canvas>`, 'g');
+                reportHTML = reportHTML.replace(canvasTagRegex, imgTag);
+            }
+        });
+
+        const fullDoc = `
+            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+            <head>
+                <meta charset="UTF-8">
+                <title>प्रगति प्रतिवेदन</title>
+                <style>
+                    body { font-family: 'Nirmala UI', 'Segoe UI', sans-serif; padding: 40px; background: white; }
+                    .report-header { text-align: center; margin-bottom: 25px; }
+                    .report-header h2 { color: #1a3c5e; font-size: 22px; margin: 0; }
+                    .report-header h3 { color: #2e7d32; font-size: 18px; margin: 4px 0; }
+                    .report-header h4 { font-size: 16px; margin: 4px 0; }
+                    .report-header p { color: #555; font-size: 14px; margin: 2px 0; }
+                    .report-section { margin-bottom: 20px; padding: 10px 0; border-bottom: 1px solid #ddd; }
+                    .report-section h4 { color: #1a3c5e; border-bottom: 2px solid #e0e4ea; padding-bottom: 6px; margin-bottom: 10px; font-size: 16px; }
+                    .report-introduction { font-size: 14px; line-height: 1.8; color: #333; text-align: justify; padding: 4px 0; }
+                    .report-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0; }
+                    .report-table th { background: #f0f4f8; padding: 5px 8px; border: 1px solid #ddd; text-align: left; }
+                    .report-table td { padding: 5px 8px; border: 1px solid #ddd; }
+                    .row-detail { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+                    .row-detail .item { flex: 1 1 200px; padding: 4px 0; }
+                    .row-detail .item .label { font-weight: 600; color: #1a3c5e; font-size: 12px; display: block; }
+                    .row-detail .item .value { font-size: 14px; color: #333; }
+                    .progress-large { width: 100%; height: 16px; background: #e9ecef; border-radius: 6px; overflow: hidden; }
+                    .progress-large .fill { height: 100%; border-radius: 6px; background: #2e7d32; }
+                    .report-sign { display: flex; justify-content: space-between; margin-top: 25px; padding-top: 20px; border-top: 1px solid #ddd; }
+                    .report-sign .sign-block { text-align: center; flex: 1; }
+                    .report-sign .sign-block .line { margin-top: 30px; border-top: 1px solid #333; width: 180px; margin-left: auto; margin-right: auto; }
+                    .empty-msg { color: #999; padding: 10px 0; text-align: center; }
+                    ul, ol { padding-left: 20px; margin: 8px 0; }
+                    li { margin: 3px 0; }
+                    .report-charts { display: flex; flex-wrap: wrap; gap: 16px; margin: 12px 0; justify-content: center; }
+                    .report-charts .chart-box { padding: 12px; background: #fafafa; border-radius: 8px; border: 1px solid #e0e4ea; min-width: 250px; flex: 1; text-align: center; }
+                    .report-charts .chart-box h4 { font-size: 12px; color: #1a3c5e; margin-bottom: 6px; }
+                    .report-charts .chart-box img { max-width: 100%; max-height: 180px; border: 1px solid #ddd; border-radius: 4px; }
+                </style>
+            </head>
+            <body>
+                ${reportHTML}
+                <p style="text-align:center;color:#999;font-size:11px;margin-top:20px;">प्रतिवेदन स्वतः उत्पन्न - ${new Date().toLocaleString()}</p>
+            </body>
+            </html>
+        `;
+
+        const blob = new Blob([fullDoc], { type: 'application/msword;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `प्रगति_प्रतिवेदन_${new Date().toISOString().slice(0,10)}.doc`;
+        link.click();
+    }
+
+    // ========================================================================
+    // 17. LOGIN / LOGOUT
+    // ========================================================================
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        const user = authenticate(username, password);
+        if(user) {
+            currentUser = user;
+            document.getElementById('loginError').textContent = '';
+            document.getElementById('loginModal').classList.remove('show');
+            document.getElementById('mainDashboard').style.display = 'block';
+            projects = getProjects();
+            renderAll();
+        } else {
+            document.getElementById('loginError').textContent = '❌ गलत प्रयोगकर्ता नाम वा पासवर्ड।';
+        }
+    });
+
+    function logout() {
+        if(!confirm('बाहिरिने?')) return;
+        currentUser = null;
+        document.getElementById('mainDashboard').style.display = 'none';
+        document.getElementById('loginModal').classList.add('show');
+        document.getElementById('loginUsername').value = '';
+        document.getElementById('loginPassword').value = '';
+        document.getElementById('loginError').textContent = '';
+    }
+
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if(e.target === this) this.classList.remove('show');
+        });
+    });
+
+    // ========================================================================
+    // 18. INIT
+    // ========================================================================
+    document.getElementById('mainDashboard').style.display = 'none';
+    document.getElementById('loginModal').classList.add('show');
 </script>
 </body>
 </html>
