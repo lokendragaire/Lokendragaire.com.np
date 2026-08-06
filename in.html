@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="ne">
 <head>
@@ -7,7 +8,9 @@
     <title>रोजगार तथा उद्यमशीलता ड्यासबोर्ड</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* ====== ALL STYLES ====== */
         * {
             margin: 0;
             padding: 0;
@@ -467,7 +470,7 @@
             color: #d32f2f;
         }
         .login-modal .modal-box {
-            max-width: 400px;
+            max-width: 450px;
         }
         .login-modal .modal-box h2 {
             text-align: center;
@@ -492,6 +495,14 @@
             background: #f5f7fa;
             padding: 8px;
             border-radius: 6px;
+        }
+        .login-hint a {
+            color: #1976d2;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .login-hint a:hover {
+            color: #0d47a1;
         }
         .progress-large {
             width: 100%;
@@ -667,7 +678,6 @@
             padding: 4px 8px;
             font-size: 12px;
         }
-        /* Report Introduction Style */
         .report-introduction {
             font-size: 14px;
             line-height: 1.8;
@@ -675,6 +685,25 @@
             text-align: justify;
             padding: 4px 0;
         }
+        .supabase-status {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .supabase-status.connected {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .supabase-status.disconnected {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .supabase-status.connecting {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
         @media (max-width: 768px) {
             .row { grid-template-columns: 1fr; }
             .filters { flex-direction: column; align-items: stretch; }
@@ -701,34 +730,59 @@
 </head>
 <body>
 
-<!-- LOGIN MODAL -->
+<!-- ==================== LOGIN MODAL ==================== -->
 <div class="modal login-modal show" id="loginModal">
     <div class="modal-box">
         <div class="logo">🔐</div>
         <h2>प्रणाली प्रवेश</h2>
         <p style="text-align:center;color:#777;font-size:14px;margin-bottom:16px;">रोजगार तथा उद्यमशीलता ड्यासबोर्ड</p>
+        
+        <!-- Supabase Connection Status -->
+        <div style="background:#f5f7fa;padding:10px 14px;border-radius:8px;margin-bottom:12px;border:1px solid #e0e4ea;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
+            <span style="font-size:13px;font-weight:600;color:#1a3c5e;">☁️ Supabase</span>
+            <span id="supabaseStatus" class="supabase-status connecting">⏳ Connecting...</span>
+        </div>
+
         <form id="loginForm">
-            <label>प्रयोगकर्ता नाम (Username)</label>
-            <input type="text" id="loginUsername" placeholder="admin वा user" required />
-            <label>पासवर्ड (Password)</label>
+            <label>📧 इमेल (Email)</label>
+            <input type="email" id="loginEmail" placeholder="admin@example.com" required />
+            <label>🔑 पासवर्ड (Password)</label>
             <input type="password" id="loginPassword" placeholder="पासवर्ड" required />
             <div class="login-error" id="loginError"></div>
             <div class="modal-btns" style="justify-content:center;margin-top:16px;">
                 <button type="submit" class="save-btn" style="padding:10px 40px;">🚪 प्रवेश गर्नुहोस्</button>
             </div>
             <div class="login-hint">
-                <strong>Admin:</strong> admin / admin123 &nbsp;|&nbsp; <strong>User:</strong> user / user123
+                📌 नयाँ खाता बनाउन <a onclick="showSignup()">साइन अप</a> गर्नुहोस्।
+            </div>
+        </form>
+
+        <!-- Signup Form -->
+        <form id="signupForm" style="display:none;margin-top:12px;border-top:1px solid #eee;padding-top:12px;">
+            <h4 style="color:#1a3c5e;font-size:15px;text-align:center;">📝 नयाँ खाता बनाउनुहोस्</h4>
+            <label>📧 इमेल</label>
+            <input type="email" id="signupEmail" placeholder="email@example.com" required />
+            <label>🔑 पासवर्ड (कम्तिमा ६ अक्षर)</label>
+            <input type="password" id="signupPassword" placeholder="पासवर्ड" required minlength="6" />
+            <label>👤 प्रयोगकर्ता नाम</label>
+            <input type="text" id="signupUsername" placeholder="तपाईंको नाम" />
+            <div class="login-error" id="signupError"></div>
+            <div class="modal-btns" style="justify-content:center;margin-top:10px;">
+                <button type="button" class="cancel-btn" onclick="showLogin()" style="padding:6px 20px;">← फिर्ता</button>
+                <button type="submit" class="save-btn" style="padding:6px 30px;">✅ खाता बनाउनुहोस्</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- MAIN DASHBOARD -->
+<!-- ==================== MAIN DASHBOARD ==================== -->
 <div class="container" id="mainDashboard" style="display:none;">
+    <!-- Login Header -->
     <div class="login-header">
         <div class="user-info">
-            👤 <span id="displayUsername">Admin</span> 
-            <span class="role-badge" id="displayRole">Admin</span>
+            👤 <span id="displayUsername">User</span> 
+            <span class="role-badge" id="displayRole">User</span>
+            <span id="supabaseConnStatus" style="font-size:11px;color:#2e7d32;margin-left:10px;">☁️ Supabase ✓</span>
         </div>
         <div>
             <span style="font-size:13px;color:#888;margin-right:12px;">📅 आर्थिक वर्ष २०८१/८२</span>
@@ -736,6 +790,7 @@
         </div>
     </div>
 
+    <!-- Tabs -->
     <div class="tabs">
         <button class="active" data-tab="tabDashboard">📊 ड्यासबोर्ड</button>
         <button data-tab="tabReport">📄 प्रतिवेदन (Report)</button>
@@ -774,6 +829,7 @@
                 <button class="btn-admin-action btn-success" onclick="exportData()">📥 डाटा निर्यात (JSON)</button>
                 <button class="btn-admin-action" onclick="importData()">📤 डाटा आयात (JSON)</button>
                 <input type="file" id="importFileInput" style="display:none;" accept=".json" onchange="handleImport(event)" />
+                <button class="btn-admin-action btn-danger" onclick="syncToSupabase()">☁️ Supabase मा Sync</button>
             </div>
         </div>
 
@@ -829,6 +885,8 @@
         </div>
     </div>
 </div>
+
+<!-- ===== ALL MODALS ===== -->
 
 <!-- PROJECT MODAL -->
 <div class="modal" id="projectModal">
@@ -937,18 +995,7 @@
 <div class="modal" id="userModal">
     <div class="modal-box">
         <h2>👥 प्रयोगकर्ता व्यवस्थापन</h2>
-        <div style="margin-bottom:12px;">
-            <label>नयाँ प्रयोगकर्ता</label>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <input type="text" id="newUsername" placeholder="Username" style="flex:1;min-width:120px;" />
-                <input type="password" id="newPassword" placeholder="Password" style="flex:1;min-width:120px;" />
-                <select id="newRole" style="flex:0.5;min-width:80px;">
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                </select>
-                <button class="btn" style="background:#2e7d32;color:#fff;padding:6px 16px;" onclick="addUser()">➕ थप्नुहोस्</button>
-            </div>
-        </div>
+        <p style="color:#777;font-size:13px;margin-bottom:12px;">Supabase Users (Admin ले मात्र हेर्न सक्छ)</p>
         <div id="userList"></div>
         <div class="modal-btns">
             <button class="cancel-btn" onclick="closeModal('userModal')">बन्द</button>
@@ -956,39 +1003,278 @@
     </div>
 </div>
 
+<!-- BENEFICIARY MODAL (dynamic) -->
+<div class="modal" id="beneficiaryModal"></div>
+
 <script>
     // ========================================================================
-    // 1. USER MANAGEMENT
+    // 1. SUPABASE CONFIGURATION (Pre-configured)
     // ========================================================================
+    const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5';
+
+    let supabaseClient = null;
+    let supabaseConnected = false;
     let currentUser = null;
-
-    function getUsers() {
-        const stored = localStorage.getItem('appUsers');
-        if (stored) {
-            try { return JSON.parse(stored); } catch(e) { return []; }
-        }
-        const defaultUsers = [
-            { id: 1, username: 'admin', password: 'admin123', role: 'admin' },
-            { id: 2, username: 'user', password: 'user123', role: 'user' }
-        ];
-        localStorage.setItem('appUsers', JSON.stringify(defaultUsers));
-        return defaultUsers;
-    }
-
-    function saveUsers(users) {
-        localStorage.setItem('appUsers', JSON.stringify(users));
-    }
-
-    function authenticate(username, password) {
-        const users = getUsers();
-        return users.find(u => u.username === username && u.password === password) || null;
-    }
-
-    // ========================================================================
-    // 2. PROJECT DATA
-    // ========================================================================
     let projects = [];
     let editMode = false;
+
+    // ========================================================================
+    // 2. INITIALIZE SUPABASE
+    // ========================================================================
+    function initSupabase() {
+        try {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            supabaseConnected = true;
+            document.getElementById('supabaseStatus').textContent = '✅ Connected';
+            document.getElementById('supabaseStatus').className = 'supabase-status connected';
+            console.log('✅ Supabase connected successfully');
+            
+            // Check for existing session
+            checkSession();
+        } catch(e) {
+            console.error('Supabase connection error:', e);
+            document.getElementById('supabaseStatus').textContent = '❌ Connection Failed';
+            document.getElementById('supabaseStatus').className = 'supabase-status disconnected';
+            supabaseConnected = false;
+        }
+    }
+
+    // ========================================================================
+    // 3. AUTHENTICATION
+    // ========================================================================
+    
+    // Login
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (!supabaseConnected || !supabaseClient) {
+            document.getElementById('loginError').textContent = '❌ Supabase Connect भएन। पृष्ठ Refresh गर्नुहोस्।';
+            return;
+        }
+
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        
+        if (!email || !password) {
+            document.getElementById('loginError').textContent = '❌ इमेल र पासवर्ड भर्नुहोस्।';
+            return;
+        }
+
+        document.getElementById('loginError').textContent = '⏳ लगइन हुँदै...';
+
+        try {
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
+
+            if (error) {
+                document.getElementById('loginError').textContent = '❌ ' + error.message;
+                return;
+            }
+
+            if (data && data.user) {
+                const userRole = data.user.user_metadata?.role || 'user';
+                const username = data.user.user_metadata?.username || data.user.email.split('@')[0];
+                
+                currentUser = {
+                    id: data.user.id,
+                    email: data.user.email,
+                    username: username,
+                    role: userRole
+                };
+                
+                document.getElementById('loginError').textContent = '';
+                document.getElementById('loginModal').classList.remove('show');
+                document.getElementById('mainDashboard').style.display = 'block';
+                
+                await loadProjectsFromSupabase();
+                renderAll();
+            }
+        } catch(err) {
+            document.getElementById('loginError').textContent = '❌ ' + err.message;
+        }
+    });
+
+    // Signup
+    document.getElementById('signupForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (!supabaseConnected || !supabaseClient) {
+            document.getElementById('signupError').textContent = '❌ Supabase Connect भएन।';
+            return;
+        }
+
+        const email = document.getElementById('signupEmail').value.trim();
+        const password = document.getElementById('signupPassword').value.trim();
+        const username = document.getElementById('signupUsername').value.trim() || email.split('@')[0];
+
+        if (!email || !password || password.length < 6) {
+            document.getElementById('signupError').textContent = '❌ इमेल र ६ अक्षरभन्दा बढी पासवर्ड भर्नुहोस्।';
+            return;
+        }
+
+        document.getElementById('signupError').textContent = '⏳ खाता बनाउँदै...';
+
+        try {
+            const { data, error } = await supabaseClient.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: {
+                        username: username,
+                        role: 'user'
+                    }
+                }
+            });
+
+            if (error) {
+                document.getElementById('signupError').textContent = '❌ ' + error.message;
+                return;
+            }
+
+            if (data && data.user) {
+                document.getElementById('signupError').textContent = '✅ खाता सफलतापूर्वक बनियो! अब लगइन गर्नुहोस्।';
+                document.getElementById('signupError').style.color = '#2e7d32';
+                showLogin();
+                document.getElementById('loginEmail').value = email;
+                document.getElementById('loginPassword').value = password;
+            }
+        } catch(err) {
+            document.getElementById('signupError').textContent = '❌ ' + err.message;
+        }
+    });
+
+    function showSignup() {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('signupForm').style.display = 'block';
+        document.getElementById('loginError').textContent = '';
+        document.getElementById('signupError').textContent = '';
+    }
+
+    function showLogin() {
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('signupForm').style.display = 'none';
+        document.getElementById('loginError').textContent = '';
+        document.getElementById('signupError').textContent = '';
+    }
+
+    // ========================================================================
+    // 4. SUPABASE DATA OPERATIONS
+    // ========================================================================
+
+    const TABLE_NAME = 'projects';
+
+    async function loadProjectsFromSupabase() {
+        if (!supabaseConnected || !supabaseClient || !currentUser) {
+            projects = getProjects();
+            return;
+        }
+
+        try {
+            const { data, error } = await supabaseClient
+                .from(TABLE_NAME)
+                .select('*')
+                .order('id', { ascending: true });
+
+            if (error) {
+                console.warn('Error loading from Supabase:', error);
+                projects = getProjects();
+                return;
+            }
+
+            if (data && data.length > 0) {
+                projects = data;
+                saveProjects();
+                console.log('✅ Loaded ' + projects.length + ' projects from Supabase');
+            } else {
+                projects = getProjects();
+                await syncToSupabase();
+            }
+        } catch(err) {
+            console.warn('Supabase load error:', err);
+            projects = getProjects();
+        }
+    }
+
+    async function syncToSupabase() {
+        if (!supabaseConnected || !supabaseClient) {
+            alert('❌ Supabase Connected छैन।');
+            return;
+        }
+
+        if (!currentUser) {
+            alert('❌ कृपया पहिले लगइन गर्नुहोस्।');
+            return;
+        }
+
+        try {
+            const { error: deleteError } = await supabaseClient
+                .from(TABLE_NAME)
+                .delete()
+                .neq('id', 0);
+
+            if (deleteError) {
+                console.warn('Delete error:', deleteError);
+            }
+
+            const projectsToSync = projects.map(p => ({
+                ...p,
+                user_id: currentUser.id
+            }));
+
+            const { data, error } = await supabaseClient
+                .from(TABLE_NAME)
+                .insert(projectsToSync);
+
+            if (error) {
+                alert('❌ Sync गर्दा त्रुटि: ' + error.message);
+                return;
+            }
+
+            alert('✅ ' + projects.length + ' वटा कार्यक्रम Supabase मा Sync गरियो!');
+        } catch(err) {
+            alert('❌ Sync त्रुटि: ' + err.message);
+        }
+    }
+
+    async function saveProjectToSupabase(project) {
+        if (!supabaseConnected || !supabaseClient || !currentUser) return;
+
+        try {
+            const { error } = await supabaseClient
+                .from(TABLE_NAME)
+                .upsert({ ...project, user_id: currentUser.id });
+
+            if (error) {
+                console.warn('Error saving to Supabase:', error);
+            }
+        } catch(err) {
+            console.warn('Supabase save error:', err);
+        }
+    }
+
+    async function deleteProjectFromSupabase(projectId) {
+        if (!supabaseConnected || !supabaseClient || !currentUser) return;
+
+        try {
+            const { error } = await supabaseClient
+                .from(TABLE_NAME)
+                .delete()
+                .eq('id', projectId);
+
+            if (error) {
+                console.warn('Error deleting from Supabase:', error);
+            }
+        } catch(err) {
+            console.warn('Supabase delete error:', err);
+        }
+    }
+
+    // ========================================================================
+    // 5. PROJECT DATA (Local)
+    // ========================================================================
 
     function getDefaultBeneficiary() {
         return { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0 };
@@ -1026,56 +1312,7 @@
               method: 'कोषमा दर्ता, मासिक योगदान',
               output: 'सबै करार कर्मचारीको सामाजिक सुरक्षा',
               expenses: [{ title: 'कोष दर्ता शुल्क', amount: 300000, date: '२०८१/०३/२०', remark: 'प्राविधिक सहायता' }],
-              beneficiary: { male: 25, female: 10, dalit: 5, janajati: 8, disabled: 1, returnee: 2, entrepreneur: 0 } },
-            { id: 4, name: 'वित्तीय साक्षरता पुस्तक छपाई', category: 'प्रवर्द्धन', budget: 100000, time: 'Q1-Q2', status: 'प्रगतिमा',
-              responsible: 'सुनिता अर्याल', assistant: 'रमेश भण्डारी', authorized: 'महेश अधिकारी',
-              activities: 'हातेपुस्तिका तयार, छपाई, प्रसारण',
-              method: 'विज्ञ टोलीद्वारा सामग्री तयार',
-              output: 'बचत, ऋण र वित्तीय व्यवस्थापनमा चेतना',
-              expenses: [{ title: 'छपाई खर्च', amount: 25000, date: '२०८१/०२/०५', remark: 'ब्रोसर' }],
-              beneficiary: { male: 15, female: 20, dalit: 8, janajati: 10, disabled: 1, returnee: 3, entrepreneur: 2 } },
-            { id: 5, name: 'सीप रोजगार बैठक र अनुगमन', category: 'अन्य', budget: 150000, time: 'Q1-Q4', status: 'प्रगतिमा',
-              responsible: 'डिल्ली राम खतिवडा', assistant: 'निर्मला न्यौपाने', authorized: 'महेश अधिकारी',
-              activities: 'कार्यान्वयन समितिको बैठक, स्थलगत अनुगमन',
-              method: 'मासिक बैठक, अनुगमन टोली परिचालन',
-              output: 'कार्यक्रमको प्रभावकारी कार्यान्वयन',
-              expenses: [{ title: 'बैठक खर्च', amount: 40000, date: '२०८१/०१/२५', remark: '३ वटा बैठक' }],
-              beneficiary: { male: 8, female: 5, dalit: 2, janajati: 3, disabled: 0, returnee: 1, entrepreneur: 0 } },
-            { id: 6, name: 'मागमा आधारित सीप विकास', category: 'तालिम', budget: 70000, time: 'कार्तिक-फाल्गुण', status: 'सुरु हुन बाँकी',
-              responsible: 'विद्या देवी भण्डारी', assistant: 'राजन काफ्ले', authorized: 'महेश अधिकारी',
-              activities: 'सिलाई-कटाई, प्लम्बिङ, मोबाइल मर्मत तालिम',
-              method: 'बजारको माग अनुसार तालिम',
-              output: 'दक्ष जनशक्ति, ३० जनालाई रोजगारी',
-              expenses: [],
-              beneficiary: { male: 10, female: 20, dalit: 5, janajati: 8, disabled: 1, returnee: 2, entrepreneur: 2 } },
-            { id: 7, name: 'पुनः एकीकरण अनुभव आदानप्रदान', category: 'उद्यमशीलता', budget: 500000, time: 'माघ', status: 'सुरु हुन बाँकी',
-              responsible: 'पे्रम शर्मा', assistant: 'सरस्वती नेपाल', authorized: 'महेश अधिकारी',
-              activities: 'सफल उद्यमीहरूको भेला, कार्यशाला',
-              method: 'कार्यशाला, प्यानल छलफल',
-              output: 'नयाँ युवाहरू उद्यमशीलतामा प्रेरित',
-              expenses: [],
-              beneficiary: { male: 15, female: 10, dalit: 3, janajati: 5, disabled: 0, returnee: 3, entrepreneur: 5 } },
-            { id: 8, name: 'लेबलिङ र प्याकेजिङ तालिम', category: 'तालिम', budget: 20000, time: 'Q3-Q4', status: 'प्रगतिमा',
-              responsible: 'विद्या देवी भण्डारी', assistant: 'सन्तोष ढकाल', authorized: 'महेश अधिकारी',
-              activities: 'गुणस्तर परिक्षण, लेबलिङ तालिम',
-              method: 'प्रयोगात्मक तालिम',
-              output: 'स्थानीय उत्पादनको गुणस्तर वृद्धि',
-              expenses: [{ title: 'तालिम सामग्री', amount: 5000, date: '२०८१/०६/१०', remark: '' }],
-              beneficiary: { male: 8, female: 12, dalit: 3, janajati: 5, disabled: 0, returnee: 1, entrepreneur: 1 } },
-            { id: 9, name: 'Digital Platform & Startup', category: 'प्रवर्द्धन', budget: 500000, time: 'Q2-Q4', status: 'प्रगतिमा',
-              responsible: 'सुनिता अर्याल', assistant: 'अजय श्रेष्ठ', authorized: 'महेश अधिकारी',
-              activities: 'प्रदशनी मेला, मार्केटिङ, प्लेटफर्म विकास',
-              method: 'प्रदशनी आयोजना, अनलाइन मार्केटिङ',
-              output: 'स्थानीय उत्पादनको बजारीकरण',
-              expenses: [{ title: 'वेबसाइट डिजाइन', amount: 75000, date: '२०८१/०५/२०', remark: '' }],
-              beneficiary: { male: 20, female: 15, dalit: 5, janajati: 8, disabled: 1, returnee: 4, entrepreneur: 6 } },
-            { id: 10, name: 'उद्यमशीलता प्रवर्द्धन तालिम', category: 'तालिम', budget: 447000, time: 'भदौ-फाल्गुण', status: 'प्रगतिमा',
-              responsible: 'पे्रम शर्मा', assistant: 'लक्ष्मी अधिकारी', authorized: 'महेश अधिकारी',
-              activities: 'उद्यमशीलता तालिम, व्यवसाय योजना निर्माण',
-              method: 'तालिम, व्यवसाय परामर्श',
-              output: 'नयाँ उद्यमी सिर्जना',
-              expenses: [{ title: 'तालिम सञ्चालन', amount: 90000, date: '२०८१/०६/०५', remark: '' }],
-              beneficiary: { male: 18, female: 12, dalit: 4, janajati: 6, disabled: 0, returnee: 3, entrepreneur: 4 } }
+              beneficiary: { male: 25, female: 10, dalit: 5, janajati: 8, disabled: 1, returnee: 2, entrepreneur: 0 } }
         ];
         localStorage.setItem('projectDataV5', JSON.stringify(defaultProjects));
         return defaultProjects;
@@ -1083,10 +1320,13 @@
 
     function saveProjects() {
         localStorage.setItem('projectDataV5', JSON.stringify(projects));
+        if (supabaseConnected && supabaseClient && currentUser) {
+            setTimeout(() => { syncToSupabase(); }, 500);
+        }
     }
 
     // ========================================================================
-    // 3. HELPERS
+    // 6. HELPERS
     // ========================================================================
     function getTotalExpenses(project) {
         return (project.expenses || []).reduce((sum, e) => sum + (e.amount || 0), 0);
@@ -1103,7 +1343,7 @@
     }
 
     // ========================================================================
-    // 4. RENDER FUNCTIONS
+    // 7. RENDER FUNCTIONS
     // ========================================================================
     function renderSummary() {
         const totalBudget = projects.reduce((s,p) => s + (p.budget || 0), 0);
@@ -1194,18 +1434,6 @@
         });
     }
 
-    function renderAll() {
-        renderSummary();
-        renderTable();
-        renderCharts();
-        populateCategoryFilter();
-        updateUIByRole();
-        generateReport();
-    }
-
-    // ========================================================================
-    // 5. FILTERS
-    // ========================================================================
     function populateCategoryFilter() {
         const sel = document.getElementById('filterCategory');
         const cats = [...new Set(projects.map(p => p.category).filter(Boolean))];
@@ -1227,9 +1455,15 @@
         renderTable(filtered);
     }
 
-    // ========================================================================
-    // 6. UI BY ROLE
-    // ========================================================================
+    function renderAll() {
+        renderSummary();
+        renderTable();
+        renderCharts();
+        populateCategoryFilter();
+        updateUIByRole();
+        generateReport();
+    }
+
     function updateUIByRole() {
         const isAdminUser = isAdmin();
         document.getElementById('adminPanel').classList.toggle('show', isAdminUser);
@@ -1240,7 +1474,7 @@
     }
 
     // ========================================================================
-    // 7. DETAIL VIEW
+    // 8. DETAIL VIEW
     // ========================================================================
     function openDetailView(id) {
         const p = projects.find(x => x.id === id);
@@ -1305,83 +1539,12 @@
         window.print();
     }
 
-    // ========================================================================
-    // 8. BENEFICIARY MODAL
-    // ========================================================================
-    let beneficiaryEditProjectId = null;
-
-    function openBeneficiaryModal(projectId) {
-        if(!currentUser) { alert('कृपया पहिले लगइन गर्नुहोस्।'); return; }
-        const p = projects.find(x => x.id === projectId);
-        if(!p) return;
-        beneficiaryEditProjectId = projectId;
-        const b = p.beneficiary || getDefaultBeneficiary();
-        const modalHtml = `
-            <div class="modal-box">
-                <h2>👥 लाभग्राही विवरण - ${p.name}</h2>
-                <div class="beneficiary-grid">
-                    <div class="b-item"><label>👨 पुरुष:</label><input type="number" id="beneficiaryMale" value="${b.male || 0}" min="0" /></div>
-                    <div class="b-item"><label>👩 महिला:</label><input type="number" id="beneficiaryFemale" value="${b.female || 0}" min="0" /></div>
-                    <div class="b-item"><label>🧑‍🦱 दलित:</label><input type="number" id="beneficiaryDalit" value="${b.dalit || 0}" min="0" /></div>
-                    <div class="b-item"><label>🧑‍🦰 जनजाति:</label><input type="number" id="beneficiaryJanajati" value="${b.janajati || 0}" min="0" /></div>
-                    <div class="b-item"><label>♿ अपाङ्गता:</label><input type="number" id="beneficiaryDisabled" value="${b.disabled || 0}" min="0" /></div>
-                    <div class="b-item"><label>✈️ फर्केका:</label><input type="number" id="beneficiaryReturnee" value="${b.returnee || 0}" min="0" /></div>
-                    <div class="b-item"><label>🚀 नयाँ उद्यमी:</label><input type="number" id="beneficiaryEntrepreneur" value="${b.entrepreneur || 0}" min="0" /></div>
-                </div>
-                <div style="margin-top:10px;padding:10px;background:#e8f5e9;border-radius:6px;">
-                    <strong>📊 कुल: <span id="beneficiaryTotal">${getTotalBeneficiaries(p)}</span> जना</strong>
-                </div>
-                <div class="modal-btns">
-                    <button type="button" class="cancel-btn" onclick="closeBeneficiaryModal()">रद्द</button>
-                    <button type="button" class="save-btn" onclick="saveBeneficiary()">💾 सुरक्षित</button>
-                </div>
-            </div>
-        `;
-        let modal = document.getElementById('beneficiaryModal');
-        if(!modal) {
-            modal = document.createElement('div');
-            modal.id = 'beneficiaryModal';
-            modal.className = 'modal';
-            document.body.appendChild(modal);
-        }
-        modal.innerHTML = modalHtml;
-        modal.classList.add('show');
-        document.querySelectorAll('#beneficiaryModal input[type="number"]').forEach(input => {
-            input.addEventListener('input', function() {
-                let total = 0;
-                document.querySelectorAll('#beneficiaryModal input[type="number"]').forEach(inp => {
-                    total += parseInt(inp.value) || 0;
-                });
-                document.getElementById('beneficiaryTotal').textContent = total;
-            });
-        });
-    }
-
-    function closeBeneficiaryModal() {
-        const modal = document.getElementById('beneficiaryModal');
-        if(modal) modal.classList.remove('show');
-    }
-
-    function saveBeneficiary() {
-        const p = projects.find(x => x.id === beneficiaryEditProjectId);
-        if(!p) return;
-        p.beneficiary = {
-            male: parseInt(document.getElementById('beneficiaryMale').value) || 0,
-            female: parseInt(document.getElementById('beneficiaryFemale').value) || 0,
-            dalit: parseInt(document.getElementById('beneficiaryDalit').value) || 0,
-            janajati: parseInt(document.getElementById('beneficiaryJanajati').value) || 0,
-            disabled: parseInt(document.getElementById('beneficiaryDisabled').value) || 0,
-            returnee: parseInt(document.getElementById('beneficiaryReturnee').value) || 0,
-            entrepreneur: parseInt(document.getElementById('beneficiaryEntrepreneur').value) || 0
-        };
-        saveProjects();
-        closeBeneficiaryModal();
-        renderAll();
-        alert('✅ लाभग्राही विवरण सुरक्षित!');
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('show');
     }
 
     // ========================================================================
-    // 9. PROJECT MODAL
+    // 9. PROJECT CRUD OPERATIONS
     // ========================================================================
     function openAddModal() {
         if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
@@ -1420,10 +1583,6 @@
         document.getElementById('fBeneficiaryReturnee').value = b.returnee || 0;
         document.getElementById('fBeneficiaryEntrepreneur').value = b.entrepreneur || 0;
         document.getElementById('projectModal').classList.add('show');
-    }
-
-    function closeModal(id) {
-        document.getElementById(id).classList.remove('show');
     }
 
     document.getElementById('projectForm').addEventListener('submit', function(e) {
@@ -1466,11 +1625,12 @@
         applyFilters();
     });
 
-    function deleteProject(id) {
+    async function deleteProject(id) {
         if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
         if(!confirm('के तपाईँ यो कार्यक्रम मेट्न चाहनुहुन्छ?')) return;
         projects = projects.filter(p => p.id !== id);
         saveProjects();
+        await deleteProjectFromSupabase(id);
         renderAll();
         applyFilters();
     }
@@ -1553,7 +1713,82 @@
     }
 
     // ========================================================================
-    // 11. USER MANAGEMENT
+    // 11. BENEFICIARY MODAL
+    // ========================================================================
+    let beneficiaryEditProjectId = null;
+
+    function openBeneficiaryModal(projectId) {
+        if(!currentUser) { alert('कृपया पहिले लगइन गर्नुहोस्।'); return; }
+        const p = projects.find(x => x.id === projectId);
+        if(!p) return;
+        beneficiaryEditProjectId = projectId;
+        const b = p.beneficiary || getDefaultBeneficiary();
+        const modalHtml = `
+            <div class="modal-box">
+                <h2>👥 लाभग्राही विवरण - ${p.name}</h2>
+                <div class="beneficiary-grid">
+                    <div class="b-item"><label>👨 पुरुष:</label><input type="number" id="beneficiaryMale" value="${b.male || 0}" min="0" /></div>
+                    <div class="b-item"><label>👩 महिला:</label><input type="number" id="beneficiaryFemale" value="${b.female || 0}" min="0" /></div>
+                    <div class="b-item"><label>🧑‍🦱 दलित:</label><input type="number" id="beneficiaryDalit" value="${b.dalit || 0}" min="0" /></div>
+                    <div class="b-item"><label>🧑‍🦰 जनजाति:</label><input type="number" id="beneficiaryJanajati" value="${b.janajati || 0}" min="0" /></div>
+                    <div class="b-item"><label>♿ अपाङ्गता:</label><input type="number" id="beneficiaryDisabled" value="${b.disabled || 0}" min="0" /></div>
+                    <div class="b-item"><label>✈️ फर्केका:</label><input type="number" id="beneficiaryReturnee" value="${b.returnee || 0}" min="0" /></div>
+                    <div class="b-item"><label>🚀 नयाँ उद्यमी:</label><input type="number" id="beneficiaryEntrepreneur" value="${b.entrepreneur || 0}" min="0" /></div>
+                </div>
+                <div style="margin-top:10px;padding:10px;background:#e8f5e9;border-radius:6px;">
+                    <strong>📊 कुल: <span id="beneficiaryTotal">${getTotalBeneficiaries(p)}</span> जना</strong>
+                </div>
+                <div class="modal-btns">
+                    <button type="button" class="cancel-btn" onclick="closeBeneficiaryModal()">रद्द</button>
+                    <button type="button" class="save-btn" onclick="saveBeneficiary()">💾 सुरक्षित</button>
+                </div>
+            </div>
+        `;
+        let modal = document.getElementById('beneficiaryModal');
+        if(!modal) {
+            modal = document.createElement('div');
+            modal.id = 'beneficiaryModal';
+            modal.className = 'modal';
+            document.body.appendChild(modal);
+        }
+        modal.innerHTML = modalHtml;
+        modal.classList.add('show');
+        document.querySelectorAll('#beneficiaryModal input[type="number"]').forEach(input => {
+            input.addEventListener('input', function() {
+                let total = 0;
+                document.querySelectorAll('#beneficiaryModal input[type="number"]').forEach(inp => {
+                    total += parseInt(inp.value) || 0;
+                });
+                document.getElementById('beneficiaryTotal').textContent = total;
+            });
+        });
+    }
+
+    function closeBeneficiaryModal() {
+        const modal = document.getElementById('beneficiaryModal');
+        if(modal) modal.classList.remove('show');
+    }
+
+    function saveBeneficiary() {
+        const p = projects.find(x => x.id === beneficiaryEditProjectId);
+        if(!p) return;
+        p.beneficiary = {
+            male: parseInt(document.getElementById('beneficiaryMale').value) || 0,
+            female: parseInt(document.getElementById('beneficiaryFemale').value) || 0,
+            dalit: parseInt(document.getElementById('beneficiaryDalit').value) || 0,
+            janajati: parseInt(document.getElementById('beneficiaryJanajati').value) || 0,
+            disabled: parseInt(document.getElementById('beneficiaryDisabled').value) || 0,
+            returnee: parseInt(document.getElementById('beneficiaryReturnee').value) || 0,
+            entrepreneur: parseInt(document.getElementById('beneficiaryEntrepreneur').value) || 0
+        };
+        saveProjects();
+        closeBeneficiaryModal();
+        renderAll();
+        alert('✅ लाभग्राही विवरण सुरक्षित!');
+    }
+
+    // ========================================================================
+    // 12. USER MANAGEMENT
     // ========================================================================
     function openUserManagement() {
         if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
@@ -1561,55 +1796,45 @@
         document.getElementById('userModal').classList.add('show');
     }
 
-    function renderUserList() {
-        const users = getUsers();
+    async function renderUserList() {
         const container = document.getElementById('userList');
-        if(users.length === 0) { container.innerHTML = '<div class="empty-msg">कुनै प्रयोगकर्ता छैन</div>'; return; }
-        let html = '';
-        users.forEach(u => {
-            html += `<div style="display:flex;justify-content:space-between;padding:6px 4px;border-bottom:1px solid #eee;align-items:center;">
-                <span><strong>${u.username}</strong> <span style="font-size:11px;color:#888;">(${u.role})</span></span>
-                ${u.username !== 'admin' ? `<button onclick="deleteUser(${u.id})" style="border:none;background:#ffebee;color:#d32f2f;padding:2px 10px;border-radius:4px;cursor:pointer;">मेट्नुहोस्</button>` : '<span style="font-size:11px;color:#999;">(मुख्य Admin)</span>'}
-            </div>`;
-        });
-        container.innerHTML = html;
-    }
+        if (!supabaseConnected || !supabaseClient) {
+            container.innerHTML = '<div class="empty-msg">Supabase Connected छैन</div>';
+            return;
+        }
 
-    function addUser() {
-        if(!isAdmin()) return;
-        const username = document.getElementById('newUsername').value.trim();
-        const password = document.getElementById('newPassword').value.trim();
-        const role = document.getElementById('newRole').value;
-        if(!username || !password) { alert('Username र Password भर्नुहोस्।'); return; }
-        const users = getUsers();
-        if(users.find(u => u.username === username)) { alert('यो username पहिले नै छ।'); return; }
-        const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
-        users.push({ id: newId, username, password, role });
-        saveUsers(users);
-        document.getElementById('newUsername').value = '';
-        document.getElementById('newPassword').value = '';
-        renderUserList();
-        alert('✅ प्रयोगकर्ता थपियो!');
-    }
-
-    function deleteUser(id) {
-        if(!isAdmin()) return;
-        const users = getUsers();
-        const user = users.find(u => u.id === id);
-        if(!user) return;
-        if(user.username === 'admin') { alert('मुख्य Admin मेट्न सकिँदैन।'); return; }
-        if(!confirm(`"${user.username}" मेट्ने?`)) return;
-        saveUsers(users.filter(u => u.id !== id));
-        renderUserList();
-        alert('🗑️ मेटियो।');
+        try {
+            const { data, error } = await supabaseClient.auth.admin.listUsers();
+            if (error) {
+                container.innerHTML = '<div class="empty-msg">Error: ' + error.message + '</div>';
+                return;
+            }
+            if (data && data.users) {
+                let html = '<div style="max-height:300px;overflow-y:auto;">';
+                data.users.forEach(u => {
+                    const username = u.user_metadata?.username || u.email.split('@')[0];
+                    const role = u.user_metadata?.role || 'user';
+                    html += `<div style="display:flex;justify-content:space-between;padding:6px 4px;border-bottom:1px solid #eee;align-items:center;">
+                        <span><strong>${username}</strong> <span style="font-size:11px;color:#888;">(${u.email})</span></span>
+                        <span style="font-size:11px;color:#888;">${role}</span>
+                    </div>`;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<div class="empty-msg">कुनै प्रयोगकर्ता छैन</div>';
+            }
+        } catch(err) {
+            container.innerHTML = '<div class="empty-msg">Error: ' + err.message + '</div>';
+        }
     }
 
     // ========================================================================
-    // 12. DATA EXPORT / IMPORT
+    // 13. DATA EXPORT / IMPORT
     // ========================================================================
     function exportData() {
         if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
-        const data = { projects, users: getUsers(), exportedAt: new Date().toISOString() };
+        const data = { projects, users: [], exportedAt: new Date().toISOString() };
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const link = document.createElement('a');
         link.download = `dashboard_data_${new Date().toISOString().slice(0,10)}.json`;
@@ -1629,10 +1854,12 @@
         reader.onload = function(e) {
             try {
                 const data = JSON.parse(e.target.result);
-                if(data.projects) { projects = data.projects; saveProjects(); }
-                if(data.users) { saveUsers(data.users); }
-                renderAll();
-                alert('✅ डाटा आयात सफल!');
+                if(data.projects) {
+                    projects = data.projects;
+                    saveProjects();
+                    renderAll();
+                    alert('✅ डाटा आयात सफल!');
+                }
             } catch(err) { alert('❌ त्रुटि: ' + err.message); }
         };
         reader.readAsText(file);
@@ -1640,7 +1867,7 @@
     }
 
     // ========================================================================
-    // 13. TABS
+    // 14. TABS
     // ========================================================================
     function switchTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -1657,7 +1884,7 @@
     });
 
     // ========================================================================
-    // 14. REPORT GENERATOR (with Introduction)
+    // 15. REPORT GENERATOR
     // ========================================================================
     function generateReport() {
         const container = document.getElementById('reportContent');
@@ -1666,7 +1893,6 @@
             return;
         }
 
-        // Calculate data
         const totalBudget = projects.reduce((s,p) => s + (p.budget || 0), 0);
         const totalExp = projects.reduce((s,p) => s + getTotalExpenses(p), 0);
         const totalBalance = totalBudget - totalExp;
@@ -1693,7 +1919,6 @@
             categories[p.category].count += 1;
         });
 
-        // Build Report HTML with Introduction first
         let reportHTML = `
             <div class="report-section">
                 <div class="report-header">
@@ -1704,8 +1929,6 @@
                     <p><strong>प्रतिवेदन मिति :</strong> ${new Date().toLocaleDateString('ne-NP', {year:'numeric', month:'long', day:'numeric'})}</p>
                 </div>
             </div>
-
-            <!-- परिचय - Introduction -->
             <div class="report-section">
                 <h4>परिचय</h4>
                 <div class="report-introduction">
@@ -1713,8 +1936,6 @@
                     ${projects.length > 0 ? `यस अवधिमा कुल ${projects.length} वटा कार्यक्रमहरू सञ्चालन भएका छन् जसमा रु. ${totalBudget.toLocaleString()} बजेट विनियोजन गरिएको थियो। हालसम्म रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ।` : ''}
                 </div>
             </div>
-
-            <!-- कार्यक्रमको संक्षिप्त विवरण -->
             <div class="report-section">
                 <h4>१. कार्यक्रमको संक्षिप्त विवरण</h4>
                 <div class="row-detail">
@@ -1728,7 +1949,6 @@
                     <div class="item"><span class="label">सुरु हुन बाँकी</span><span class="value">${pendingCount} वटा</span></div>
                 </div>
             </div>
-
             <div class="report-section">
                 <h4>२. लाभग्राही विवरण</h4>
                 <div class="row-detail">
@@ -1742,7 +1962,6 @@
                     <div class="item"><span class="label">📊 कुल लाभग्राही</span><span class="value"><strong>${totalBeneficiaries} जना</strong></span></div>
                 </div>
             </div>
-
             <div class="report-section">
                 <h4>३. वित्तीय प्रगति</h4>
                 <div class="row-detail">
@@ -1756,111 +1975,17 @@
                     <div style="text-align:center;font-size:13px;margin-top:4px;">वित्तीय प्रगति: ${progressPercent}%</div>
                 </div>
             </div>
-
             <div class="report-section">
                 <h4>४. चार्ट विश्लेषण</h4>
                 <div class="report-charts" id="reportChartContainer">
-                    <div class="chart-box">
-                        <h4>📊 प्रकृति अनुसार बजेट (Pie)</h4>
-                        <canvas id="reportPieChart"></canvas>
-                    </div>
-                    <div class="chart-box">
-                        <h4>📊 बजेट र खर्च तुलना (Bar)</h4>
-                        <canvas id="reportBarChart"></canvas>
-                    </div>
-                    <div class="chart-box">
-                        <h4>📈 कार्यक्रम प्रगति (Line)</h4>
-                        <canvas id="reportLineChart"></canvas>
-                    </div>
+                    <div class="chart-box"><h4>📊 प्रकृति अनुसार बजेट (Pie)</h4><canvas id="reportPieChart"></canvas></div>
+                    <div class="chart-box"><h4>📊 बजेट र खर्च तुलना (Bar)</h4><canvas id="reportBarChart"></canvas></div>
+                    <div class="chart-box"><h4>📈 कार्यक्रम प्रगति (Line)</h4><canvas id="reportLineChart"></canvas></div>
                 </div>
             </div>
-        `;
-
-        // Activities
-        let activitiesRows = '';
-        const allActivities = [];
-        projects.forEach(p => {
-            if(p.activities) {
-                const acts = p.activities.split(',').map(a => a.trim());
-                acts.forEach(a => { if(a) allActivities.push({ activity: a, project: p.name, status: p.status }); });
-            }
-        });
-        allActivities.slice(0, 10).forEach((a, idx) => {
-            activitiesRows += `<tr><td>${idx+1}</td><td>${a.activity}</td><td>${a.project}</td><td>${a.status}</td></tr>`;
-        });
-
-        // Expenses
-        let expenseRows = '', expCounter = 1;
-        projects.forEach(p => {
-            (p.expenses || []).forEach(e => {
-                expenseRows += `<tr><td>${expCounter++}</td><td>${e.date || '-'}</td><td>${e.title || 'खर्च'}</td><td>${p.name}</td><td>रु. ${(e.amount||0).toLocaleString()}</td><td>${e.remark || '-'}</td></tr>`;
-            });
-        });
-
-        // Persons
-        let personRows = '';
-        const uniquePersons = [...new Set(projects.filter(p => p.responsible).map(p => p.responsible))];
-        uniquePersons.slice(0, 10).forEach((person, idx) => {
-            const proj = projects.find(p => p.responsible === person);
-            personRows += `<tr><td>${idx+1}</td><td>${person}</td><td>${proj ? proj.authorized || 'प्रमुख' : 'प्रमुख'}</td><td>${proj ? proj.name : '-'}</td></tr>`;
-        });
-
-        // Achievements
-        let achievementList = '';
-        projects.forEach(p => { if(p.output) achievementList += `<li>${p.output}</li>`; });
-        if(!achievementList) achievementList = '<li>कुनै उपलब्धी रेकर्ड छैन।</li>';
-
-        // Remaining works
-        let remainingWorks = '';
-        const incomplete = projects.filter(p => p.status !== 'सम्पन्न');
-        incomplete.forEach(p => {
-            remainingWorks += `<li>${p.name} - ${p.status} (बजेट: रु. ${(p.budget||0).toLocaleString()}, खर्च: रु. ${getTotalExpenses(p).toLocaleString()})</li>`;
-        });
-        if(!remainingWorks) remainingWorks = '<li>सबै कार्यक्रम सम्पन्न।</li>';
-
-        // Challenges
-        let challenges = '';
-        if(pendingCount > 0) challenges += `<li>${pendingCount} वटा सुरु हुन बाँकी।</li>`;
-        if(activeCount > 0) challenges += `<li>${activeCount} वटा प्रगतिमा, समयमै सम्पन्न गर्न प्रयास आवश्यक।</li>`;
-        if(!challenges) challenges = '<li>कुनै समस्या छैन।</li>';
-
-        reportHTML += `
             <div class="report-section">
-                <h4>५. गतिविधिहरू</h4>
-                <table class="report-table"><thead><tr><th>क्र.स</th><th>गतिविधि</th><th>कार्यक्रम</th><th>स्थिति</th></tr></thead><tbody>${activitiesRows || '<tr><td colspan="4" class="empty-msg">कुनै गतिविधि छैन</td></tr>'}</tbody></table>
-            </div>
-            <div class="report-section">
-                <h4>६. खर्च विवरण</h4>
-                <table class="report-table"><thead><tr><th>क्र.स</th><th>मिति</th><th>शीर्षक</th><th>कार्यक्रम</th><th>रकम</th><th>कैफियत</th></tr></thead><tbody>${expenseRows || '<tr><td colspan="6" class="empty-msg">कुनै खर्च छैन</td></tr>'}</tbody></table>
-            </div>
-            <div class="report-section">
-                <h4>७. उपलब्धी</h4>
-                <ul>${achievementList}</ul>
-            </div>
-            <div class="report-section">
-                <h4>८. संलग्न व्यक्तिहरू</h4>
-                <table class="report-table"><thead><tr><th>क्र.स</th><th>नाम</th><th>पद</th><th>कार्यक्रम</th></tr></thead><tbody>${personRows || '<tr><td colspan="4" class="empty-msg">कुनै व्यक्ति छैन</td></tr>'}</tbody></table>
-            </div>
-            <div class="report-section">
-                <h4>९. समस्या</h4>
-                <ul>${challenges}</ul>
-            </div>
-            <div class="report-section">
-                <h4>१०. बाँकी कार्य</h4>
-                <ul>${remainingWorks}</ul>
-            </div>
-            <div class="report-section">
-                <h4>११. आगामी योजना</h4>
-                <ol>
-                    <li>नियमित अनुगमन बढाउने</li>
-                    <li>बाँकी कार्यको प्राथमिकीकरण</li>
-                    <li>लाभग्राहीको सन्तुष्टि मूल्याङ्कन</li>
-                    <li>कार्यक्रमको प्रभाव मूल्याङ्कन</li>
-                </ol>
-            </div>
-            <div class="report-section">
-                <h4>१२. निष्कर्ष</h4>
-                <p>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रमको हालसम्मको वित्तीय तथा भौतिक प्रगति सन्तोषजनक रहेको देखिन्छ। कार्यक्रम अन्तर्गत स्वीकृत बजेटमध्ये रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ भने कार्यक्रमबाट ${totalBeneficiaries} जना प्रत्यक्ष लाभान्वित भएका छन्। बाँकी रहेका कार्यहरू तोकिएको समयसीमाभित्र सम्पन्न गरी निर्धारित लक्ष्य हासिल गरिने अपेक्षा गरिएको छ।</p>
+                <h4>५. निष्कर्ष</h4>
+                <p>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रमको हालसम्मको वित्तीय तथा भौतिक प्रगति सन्तोषजनक रहेको देखिन्छ। कार्यक्रम अन्तर्गत स्वीकृत बजेटमध्ये रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ भने कार्यक्रमबाट ${totalBeneficiaries} जना प्रत्यक्ष लाभान्वित भएका छन्।</p>
             </div>
             <div class="report-section">
                 <div class="report-sign">
@@ -1870,17 +1995,12 @@
                 </div>
             </div>
         `;
-
         container.innerHTML = reportHTML;
-
         setTimeout(() => {
             renderReportCharts(categories);
         }, 100);
     }
 
-    // ========================================================================
-    // 15. REPORT CHARTS
-    // ========================================================================
     function renderReportCharts(categories) {
         const ctxPie = document.getElementById('reportPieChart');
         const ctxBar = document.getElementById('reportBarChart');
@@ -1896,28 +2016,19 @@
                 options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } } }
             });
         }
-
         if(ctxBar) {
             const labels = Object.keys(categories);
             const budgetData = labels.map(k => categories[k].budget);
             const expenseData = labels.map(k => categories[k].expense);
             new Chart(ctxBar, {
                 type: 'bar',
-                data: {
-                    labels,
-                    datasets: [
-                        { label: 'बजेट', data: budgetData, backgroundColor: '#1976d2' },
-                        { label: 'खर्च', data: expenseData, backgroundColor: '#d32f2f' }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
-                    scales: { y: { beginAtZero: true } }
-                }
+                data: { labels, datasets: [
+                    { label: 'बजेट', data: budgetData, backgroundColor: '#1976d2' },
+                    { label: 'खर्च', data: expenseData, backgroundColor: '#d32f2f' }
+                ]},
+                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } }, scales: { y: { beginAtZero: true } } }
             });
         }
-
         if(ctxLine) {
             const sortedProjects = [...projects].sort((a,b) => (a.budget||0) - (b.budget||0));
             const labels = sortedProjects.map(p => p.name.length > 10 ? p.name.slice(0,8)+'..' : p.name);
@@ -1939,11 +2050,7 @@
                         pointBackgroundColor: '#2e7d32'
                     }]
                 },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
-                    scales: { y: { beginAtZero: true, max: 100 } }
-                }
+                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } }, scales: { y: { beginAtZero: true, max: 100 } } }
             });
         }
     }
@@ -1954,8 +2061,6 @@
     function exportReportWord() {
         const reportElement = document.getElementById('reportContent');
         let reportHTML = reportElement.innerHTML;
-
-        // Replace canvas with images for Word
         const chartIds = ['reportPieChart', 'reportBarChart', 'reportLineChart'];
         chartIds.forEach(id => {
             const canvas = document.getElementById(id);
@@ -1966,7 +2071,6 @@
                 reportHTML = reportHTML.replace(canvasTagRegex, imgTag);
             }
         });
-
         const fullDoc = `
             <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
             <head>
@@ -2009,7 +2113,6 @@
             </body>
             </html>
         `;
-
         const blob = new Blob([fullDoc], { type: 'application/msword;charset=utf-8' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
@@ -2018,46 +2121,67 @@
     }
 
     // ========================================================================
-    // 17. LOGIN / LOGOUT
+    // 17. LOGOUT
     // ========================================================================
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const username = document.getElementById('loginUsername').value.trim();
-        const password = document.getElementById('loginPassword').value.trim();
-        const user = authenticate(username, password);
-        if(user) {
-            currentUser = user;
-            document.getElementById('loginError').textContent = '';
-            document.getElementById('loginModal').classList.remove('show');
-            document.getElementById('mainDashboard').style.display = 'block';
-            projects = getProjects();
-            renderAll();
-        } else {
-            document.getElementById('loginError').textContent = '❌ गलत प्रयोगकर्ता नाम वा पासवर्ड।';
-        }
-    });
-
-    function logout() {
+    async function logout() {
         if(!confirm('बाहिरिने?')) return;
+        if (supabaseClient) {
+            await supabaseClient.auth.signOut();
+        }
         currentUser = null;
         document.getElementById('mainDashboard').style.display = 'none';
         document.getElementById('loginModal').classList.add('show');
-        document.getElementById('loginUsername').value = '';
+        document.getElementById('loginEmail').value = '';
         document.getElementById('loginPassword').value = '';
         document.getElementById('loginError').textContent = '';
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('signupForm').style.display = 'none';
+        projects = [];
+        renderAll();
     }
 
+    // ========================================================================
+    // 18. CHECK EXISTING SESSION
+    // ========================================================================
+    async function checkSession() {
+        if (!supabaseConnected || !supabaseClient) return;
+        try {
+            const { data, error } = await supabaseClient.auth.getSession();
+            if (error) {
+                console.warn('Session error:', error);
+                return;
+            }
+            if (data && data.session) {
+                const user = data.session.user;
+                currentUser = {
+                    id: user.id,
+                    email: user.email,
+                    username: user.user_metadata?.username || user.email.split('@')[0],
+                    role: user.user_metadata?.role || 'user'
+                };
+                document.getElementById('loginModal').classList.remove('show');
+                document.getElementById('mainDashboard').style.display = 'block';
+                await loadProjectsFromSupabase();
+                renderAll();
+                console.log('✅ Session restored for:', currentUser.username);
+            }
+        } catch(err) {
+            console.warn('Session check error:', err);
+        }
+    }
+
+    // ========================================================================
+    // 19. INIT
+    // ========================================================================
     document.querySelectorAll('.modal').forEach(modal => {
         modal.addEventListener('click', function(e) {
             if(e.target === this) this.classList.remove('show');
         });
     });
 
-    // ========================================================================
-    // 18. INIT
-    // ========================================================================
-    document.getElementById('mainDashboard').style.display = 'none';
-    document.getElementById('loginModal').classList.add('show');
+    // Initialize Supabase
+    initSupabase();
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"cf5153463d15490bb52e4fdbdb29adaf","r":1}' crossorigin="anonymous"></script>
 </body>
 </html>
