@@ -433,24 +433,6 @@ function isAdmin() {
     return currentUser && currentUser.role === 'admin';
 }
 
-function toNepaliNumber(num) {
-    const digits = ['०','१','२','३','४','५','६','७','८','९'];
-    return String(num).replace(/\d/g, d => digits[parseInt(d)]);
-}
-
-function toNepaliWithComma(num) {
-    let parts = String(num).split('.');
-    let intPart = parts[0];
-    let result = '';
-    let count = 0;
-    for (let i = intPart.length - 1; i >= 0; i--) {
-        result = intPart[i] + result;
-        count++;
-        if (count % 3 === 0 && i > 0) result = ',' + result;
-    }
-    return toNepaliNumber(result);
-}
-
 // ============================================
 // DATABASE FUNCTIONS
 // ============================================
@@ -619,12 +601,12 @@ function renderSummary() {
     const active = projects.filter(p => p.status === 'सन्चालित').length;
     const totalBeneficiaries = projects.reduce((s,p) => s + getTotalBeneficiaries(p), 0);
     
-    document.getElementById('totalBudget').textContent = toNepaliWithComma(totalBudget);
-    document.getElementById('totalExp').textContent = toNepaliWithComma(totalExp);
-    document.getElementById('totalBalance').textContent = toNepaliWithComma(balance);
-    document.getElementById('totalProjects').textContent = toNepaliNumber(projects.length);
-    document.getElementById('activeProjects').textContent = toNepaliNumber(active);
-    document.getElementById('totalBeneficiaries').textContent = toNepaliNumber(totalBeneficiaries);
+    document.getElementById('totalBudget').textContent = totalBudget.toLocaleString();
+    document.getElementById('totalExp').textContent = totalExp.toLocaleString();
+    document.getElementById('totalBalance').textContent = balance.toLocaleString();
+    document.getElementById('totalProjects').textContent = projects.length;
+    document.getElementById('activeProjects').textContent = active;
+    document.getElementById('totalBeneficiaries').textContent = totalBeneficiaries;
 }
 
 function renderTable(filtered) {
@@ -651,12 +633,12 @@ function renderTable(filtered) {
             actionsHtml += `<button class="del-btn" onclick="deleteProject(${p.id})">🗑️</button>`;
         }
         html += `<tr>
-            <td>${toNepaliNumber(idx+1)}</td>
+            <td>${idx+1}</td>
             <td><strong>${p.name}</strong><br><span style="font-size:10px;color:#888;">${p.activities ? p.activities.slice(0,30)+'...' : ''}</span></td>
             <td>${p.category || 'अन्य'}</td>
-            <td>${toNepaliWithComma(p.budget || 0)}</td>
-            <td>${toNepaliWithComma(totalExp)}</td>
-            <td><div class="progress-bar"><div class="fill" style="width:${progress}%"></div></div> ${toNepaliNumber(progress)}%</td>
+            <td>${(p.budget||0).toLocaleString()}</td>
+            <td>${totalExp.toLocaleString()}</td>
+            <td><div class="progress-bar"><div class="fill" style="width:${progress}%"></div></div> ${progress}%</td>
             <td>${p.time || '-'}</td>
             <td class="person-info">${personHtml}</td>
             <td><span class="status-badge ${statusClass}">${p.status}</span></td>
@@ -687,7 +669,7 @@ function renderCharts() {
         options: { 
             responsive: true, 
             plugins: { legend: { display: false } },
-            scales: { y: { ticks: { callback: v => toNepaliWithComma(v) } } }
+            scales: { y: { beginAtZero: true } }
         }
     });
 
@@ -705,16 +687,7 @@ function renderCharts() {
         options: { 
             responsive: true, 
             plugins: { 
-                legend: { position: 'bottom' },
-                tooltip: {
-                    callbacks: {
-                        label: function(ctx) {
-                            const total = ctx.dataset.data.reduce((a,b) => a + b, 0);
-                            const pct = total > 0 ? Math.round((ctx.raw / total) * 100) : 0;
-                            return ctx.label + ': ' + toNepaliNumber(ctx.raw) + ' (' + toNepaliNumber(pct) + '%)';
-                        }
-                    }
-                }
+                legend: { position: 'bottom' }
             }
         }
     });
@@ -772,7 +745,7 @@ function openDetailView(id) {
     let expenseHtml = '';
     if(p.expenses && p.expenses.length > 0) {
         p.expenses.forEach(e => {
-            expenseHtml += `<div class="item"><span>${e.title || 'खर्च'} ${e.date ? ' - '+e.date : ''}</span><span class="amount">रु. ${toNepaliWithComma(e.amount || 0)}</span></div>`;
+            expenseHtml += `<div class="item"><span>${e.title || 'खर्च'} ${e.date ? ' - '+e.date : ''}</span><span class="amount">रु. ${(e.amount||0).toLocaleString()}</span></div>`;
         });
     } else {
         expenseHtml = '<div style="color:#999;padding:6px 0;">कुनै खर्च छैन</div>';
@@ -787,10 +760,10 @@ function openDetailView(id) {
             </div>
         </div>
         <div class="detail-grid">
-            <div class="item"><span class="dlabel">💰 कुल बजेट</span><span class="dvalue">रु. ${toNepaliWithComma(p.budget || 0)}</span></div>
-            <div class="item"><span class="dlabel">💸 हालसम्मको खर्च</span><span class="dvalue">रु. ${toNepaliWithComma(totalExp)}</span></div>
-            <div class="item"><span class="dlabel">📈 प्रगति</span><span class="dvalue">${toNepaliNumber(progress)}%</span></div>
-            <div class="item"><span class="dlabel">👥 कुल लाभग्राही</span><span class="dvalue">${toNepaliNumber(totalBen)} जना</span></div>
+            <div class="item"><span class="dlabel">💰 कुल बजेट</span><span class="dvalue">रु. ${(p.budget||0).toLocaleString()}</span></div>
+            <div class="item"><span class="dlabel">💸 हालसम्मको खर्च</span><span class="dvalue">रु. ${totalExp.toLocaleString()}</span></div>
+            <div class="item"><span class="dlabel">📈 प्रगति</span><span class="dvalue">${progress}%</span></div>
+            <div class="item"><span class="dlabel">👥 कुल लाभग्राही</span><span class="dvalue">${totalBen} जना</span></div>
         </div>
         <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">👤 जिम्मेवार व्यक्तिहरू</h4>
         <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
@@ -800,13 +773,13 @@ function openDetailView(id) {
         </div>
         <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">👥 लाभग्राही</h4>
         <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
-            <div class="item"><span class="dlabel">👨 पुरुष</span><span class="dvalue">${toNepaliNumber(b.male || 0)}</span></div>
-            <div class="item"><span class="dlabel">👩 महिला</span><span class="dvalue">${toNepaliNumber(b.female || 0)}</span></div>
-            <div class="item"><span class="dlabel">🧑‍🦱 दलित</span><span class="dvalue">${toNepaliNumber(b.dalit || 0)}</span></div>
-            <div class="item"><span class="dlabel">🧑‍🦰 जनजाति</span><span class="dvalue">${toNepaliNumber(b.janajati || 0)}</span></div>
-            <div class="item"><span class="dlabel">♿ अपाङ्गता</span><span class="dvalue">${toNepaliNumber(b.disabled || 0)}</span></div>
-            <div class="item"><span class="dlabel">✈️ फर्केका</span><span class="dvalue">${toNepaliNumber(b.returnee || 0)}</span></div>
-            <div class="item"><span class="dlabel">🚀 नयाँ उद्यमी</span><span class="dvalue">${toNepaliNumber(b.entrepreneur || 0)}</span></div>
+            <div class="item"><span class="dlabel">👨 पुरुष</span><span class="dvalue">${b.male || 0}</span></div>
+            <div class="item"><span class="dlabel">👩 महिला</span><span class="dvalue">${b.female || 0}</span></div>
+            <div class="item"><span class="dlabel">🧑‍🦱 दलित</span><span class="dvalue">${b.dalit || 0}</span></div>
+            <div class="item"><span class="dlabel">🧑‍🦰 जनजाति</span><span class="dvalue">${b.janajati || 0}</span></div>
+            <div class="item"><span class="dlabel">♿ अपाङ्गता</span><span class="dvalue">${b.disabled || 0}</span></div>
+            <div class="item"><span class="dlabel">✈️ फर्केका</span><span class="dvalue">${b.returnee || 0}</span></div>
+            <div class="item"><span class="dlabel">🚀 नयाँ उद्यमी</span><span class="dvalue">${b.entrepreneur || 0}</span></div>
         </div>
         <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">📋 कार्य विवरण</h4>
         <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
@@ -816,7 +789,7 @@ function openDetailView(id) {
         </div>
         <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">💰 खर्च विवरण</h4>
         <div class="detail-expense-list">${expenseHtml}</div>
-        <div style="text-align:right;font-weight:700;font-size:15px;margin-top:6px;">जम्मा खर्च: रु. ${toNepaliWithComma(totalExp)}</div>
+        <div style="text-align:right;font-weight:700;font-size:15px;margin-top:6px;">जम्मा खर्च: रु. ${totalExp.toLocaleString()}</div>
     `;
     document.getElementById('detailModal').classList.add('show');
 }
@@ -951,10 +924,10 @@ function renderExpenseHistory(projectId) {
     let html = '', total = 0;
     p.expenses.forEach(e => {
         total += e.amount || 0;
-        html += `<div class="item"><span>${e.title || 'खर्च'} ${e.date ? ' - '+e.date : ''}</span><span class="amount">रु. ${toNepaliWithComma(e.amount || 0)}</span></div>`;
+        html += `<div class="item"><span>${e.title || 'खर्च'} ${e.date ? ' - '+e.date : ''}</span><span class="amount">रु. ${(e.amount||0).toLocaleString()}</span></div>`;
     });
     list.innerHTML = html;
-    totalDisplay.textContent = `जम्मा खर्च: रु. ${toNepaliWithComma(total)}`;
+    totalDisplay.textContent = `जम्मा खर्च: रु. ${total.toLocaleString()}`;
 }
 
 async function saveExpense() {
@@ -1026,7 +999,7 @@ function openBeneficiaryModal(projectId) {
                 <div class="b-item"><label>🚀 नयाँ उद्यमी:</label><input type="number" id="beneficiaryEntrepreneur" value="${b.entrepreneur || 0}" min="0" /></div>
             </div>
             <div style="margin-top:10px;padding:10px;background:#e8f5e9;border-radius:6px;">
-                <strong>📊 कुल: <span id="beneficiaryTotal">${toNepaliNumber(getTotalBeneficiaries(p))}</span> जना</strong>
+                <strong>📊 कुल: <span id="beneficiaryTotal">${getTotalBeneficiaries(p)}</span> जना</strong>
             </div>
             <div class="modal-btns">
                 <button type="button" class="cancel-btn" onclick="closeBeneficiaryModal()">रद्द</button>
@@ -1049,7 +1022,7 @@ function openBeneficiaryModal(projectId) {
             document.querySelectorAll('#beneficiaryModal input[type="number"]').forEach(inp => {
                 total += parseInt(inp.value) || 0;
             });
-            document.getElementById('beneficiaryTotal').textContent = toNepaliNumber(total);
+            document.getElementById('beneficiaryTotal').textContent = total;
         });
     });
 }
@@ -1251,46 +1224,46 @@ function generateReport() {
             <h4>परिचय</h4>
             <div class="report-introduction">
                 गलकोट नगरपालिका अन्तर्गत रोजगार सेवा केन्द्रमार्फत सञ्चालित रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रम आर्थिक वर्ष २०८१/८२ मा स्वीकृत वार्षिक कार्यक्रम तथा बजेट अनुसार सञ्चालन गरिएको हो। 
-                ${projects.length > 0 ? `यस अवधिमा कुल ${toNepaliNumber(projects.length)} वटा कार्यक्रमहरू सञ्चालन भएका छन् जसमा रु. ${toNepaliWithComma(totalBudget)} बजेट विनियोजन गरिएको थियो। हालसम्म रु. ${toNepaliWithComma(totalExp)} खर्च भई ${toNepaliNumber(progressPercent)}% वित्तीय प्रगति हासिल भएको छ।` : ''}
+                ${projects.length > 0 ? `यस अवधिमा कुल ${projects.length} वटा कार्यक्रमहरू सञ्चालन भएका छन् जसमा रु. ${totalBudget.toLocaleString()} बजेट विनियोजन गरिएको थियो। हालसम्म रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ।` : ''}
             </div>
         </div>
         <div class="report-section">
             <h4>१. कार्यक्रमको संक्षिप्त विवरण</h4>
             <div class="row-detail">
-                <div class="item"><span class="label">कुल कार्यक्रम</span><span class="value">${toNepaliNumber(projects.length)} वटा</span></div>
-                <div class="item"><span class="label">स्वीकृत बजेट</span><span class="value">रु. ${toNepaliWithComma(totalBudget)}</span></div>
-                <div class="item"><span class="label">हालसम्म खर्च</span><span class="value">रु. ${toNepaliWithComma(totalExp)}</span></div>
-                <div class="item"><span class="label">बाँकी बजेट</span><span class="value">रु. ${toNepaliWithComma(totalBalance)}</span></div>
-                <div class="item"><span class="label">खर्च प्रतिशत</span><span class="value">${toNepaliNumber(progressPercent)}%</span></div>
-                <div class="item"><span class="label">सन्चालित</span><span class="value">${toNepaliNumber(activeCount)} वटा</span></div>
-                <div class="item"><span class="label">सम्पन्न</span><span class="value">${toNepaliNumber(completedCount)} वटा</span></div>
-                <div class="item"><span class="label">सुरु हुन बाँकी</span><span class="value">${toNepaliNumber(pendingCount)} वटा</span></div>
+                <div class="item"><span class="label">कुल कार्यक्रम</span><span class="value">${projects.length} वटा</span></div>
+                <div class="item"><span class="label">स्वीकृत बजेट</span><span class="value">रु. ${totalBudget.toLocaleString()}</span></div>
+                <div class="item"><span class="label">हालसम्म खर्च</span><span class="value">रु. ${totalExp.toLocaleString()}</span></div>
+                <div class="item"><span class="label">बाँकी बजेट</span><span class="value">रु. ${totalBalance.toLocaleString()}</span></div>
+                <div class="item"><span class="label">खर्च प्रतिशत</span><span class="value">${progressPercent}%</span></div>
+                <div class="item"><span class="label">सन्चालित</span><span class="value">${activeCount} वटा</span></div>
+                <div class="item"><span class="label">सम्पन्न</span><span class="value">${completedCount} वटा</span></div>
+                <div class="item"><span class="label">सुरु हुन बाँकी</span><span class="value">${pendingCount} वटा</span></div>
             </div>
         </div>
         <div class="report-section">
             <h4>२. लाभग्राही विवरण</h4>
             <div class="row-detail">
-                <div class="item"><span class="label">👨 पुरुष</span><span class="value">${toNepaliNumber(totalMale)}</span></div>
-                <div class="item"><span class="label">👩 महिला</span><span class="value">${toNepaliNumber(totalFemale)}</span></div>
-                <div class="item"><span class="label">🧑‍🦱 दलित</span><span class="value">${toNepaliNumber(totalDalit)}</span></div>
-                <div class="item"><span class="label">🧑‍🦰 जनजाति</span><span class="value">${toNepaliNumber(totalJanajati)}</span></div>
-                <div class="item"><span class="label">♿ अपाङ्गता</span><span class="value">${toNepaliNumber(totalDisabled)}</span></div>
-                <div class="item"><span class="label">✈️ फर्केका</span><span class="value">${toNepaliNumber(totalReturnee)}</span></div>
-                <div class="item"><span class="label">🚀 नयाँ उद्यमी</span><span class="value">${toNepaliNumber(totalEntrepreneur)}</span></div>
-                <div class="item"><span class="label">📊 कुल लाभग्राही</span><span class="value"><strong>${toNepaliNumber(totalBeneficiaries)} जना</strong></span></div>
+                <div class="item"><span class="label">👨 पुरुष</span><span class="value">${totalMale}</span></div>
+                <div class="item"><span class="label">👩 महिला</span><span class="value">${totalFemale}</span></div>
+                <div class="item"><span class="label">🧑‍🦱 दलित</span><span class="value">${totalDalit}</span></div>
+                <div class="item"><span class="label">🧑‍🦰 जनजाति</span><span class="value">${totalJanajati}</span></div>
+                <div class="item"><span class="label">♿ अपाङ्गता</span><span class="value">${totalDisabled}</span></div>
+                <div class="item"><span class="label">✈️ फर्केका</span><span class="value">${totalReturnee}</span></div>
+                <div class="item"><span class="label">🚀 नयाँ उद्यमी</span><span class="value">${totalEntrepreneur}</span></div>
+                <div class="item"><span class="label">📊 कुल लाभग्राही</span><span class="value"><strong>${totalBeneficiaries} जना</strong></span></div>
             </div>
         </div>
         <div class="report-section">
             <h4>३. वित्तीय प्रगति</h4>
             <div class="row-detail">
-                <div class="item"><span class="label">कुल बजेट</span><span class="value">रु. ${toNepaliWithComma(totalBudget)}</span></div>
-                <div class="item"><span class="label">हालसम्म खर्च</span><span class="value">रु. ${toNepaliWithComma(totalExp)}</span></div>
-                <div class="item"><span class="label">बाँकी रकम</span><span class="value">रु. ${toNepaliWithComma(totalBalance)}</span></div>
-                <div class="item"><span class="label">खर्च प्रतिशत</span><span class="value">${toNepaliNumber(progressPercent)}%</span></div>
+                <div class="item"><span class="label">कुल बजेट</span><span class="value">रु. ${totalBudget.toLocaleString()}</span></div>
+                <div class="item"><span class="label">हालसम्म खर्च</span><span class="value">रु. ${totalExp.toLocaleString()}</span></div>
+                <div class="item"><span class="label">बाँकी रकम</span><span class="value">रु. ${totalBalance.toLocaleString()}</span></div>
+                <div class="item"><span class="label">खर्च प्रतिशत</span><span class="value">${progressPercent}%</span></div>
             </div>
             <div style="margin-top:10px;">
                 <div class="progress-large"><div class="fill" style="width:${progressPercent}%"></div></div>
-                <div style="text-align:center;font-size:13px;margin-top:4px;">वित्तीय प्रगति: ${toNepaliNumber(progressPercent)}%</div>
+                <div style="text-align:center;font-size:13px;margin-top:4px;">वित्तीय प्रगति: ${progressPercent}%</div>
             </div>
         </div>
         <div class="report-section">
@@ -1313,14 +1286,14 @@ function generateReport() {
         }
     });
     allActivities.slice(0, 10).forEach((a, idx) => {
-        activitiesRows += `<tr><td>${toNepaliNumber(idx+1)}</td><td>${a.activity}</td><td>${a.project}</td><td>${a.status}</td></tr>`;
+        activitiesRows += `<tr><td>${idx+1}</td><td>${a.activity}</td><td>${a.project}</td><td>${a.status}</td></tr>`;
     });
 
     // Expenses
     let expenseRows = '', expCounter = 1;
     projects.forEach(p => {
         (p.expenses || []).forEach(e => {
-            expenseRows += `<tr><td>${toNepaliNumber(expCounter++)}</td><td>${e.date || '-'}</td><td>${e.title || 'खर्च'}</td><td>${p.name}</td><td>रु. ${toNepaliWithComma(e.amount || 0)}</td><td>${e.remark || '-'}</td></tr>`;
+            expenseRows += `<tr><td>${expCounter++}</td><td>${e.date || '-'}</td><td>${e.title || 'खर्च'}</td><td>${p.name}</td><td>रु. ${(e.amount||0).toLocaleString()}</td><td>${e.remark || '-'}</td></tr>`;
         });
     });
 
@@ -1329,7 +1302,7 @@ function generateReport() {
     const uniquePersons = [...new Set(projects.filter(p => p.responsible).map(p => p.responsible))];
     uniquePersons.slice(0, 10).forEach((person, idx) => {
         const proj = projects.find(p => p.responsible === person);
-        personRows += `<tr><td>${toNepaliNumber(idx+1)}</td><td>${person}</td><td>${proj ? proj.authorized || 'प्रमुख' : 'प्रमुख'}</td><td>${proj ? proj.name : '-'}</td></tr>`;
+        personRows += `<tr><td>${idx+1}</td><td>${person}</td><td>${proj ? proj.authorized || 'प्रमुख' : 'प्रमुख'}</td><td>${proj ? proj.name : '-'}</td></tr>`;
     });
 
     // Achievements
@@ -1341,14 +1314,14 @@ function generateReport() {
     let remainingWorks = '';
     const incomplete = projects.filter(p => p.status !== 'सम्पन्न');
     incomplete.forEach(p => {
-        remainingWorks += `<li>${p.name} - ${p.status} (बजेट: रु. ${toNepaliWithComma(p.budget || 0)}, खर्च: रु. ${toNepaliWithComma(getTotalExpenses(p))})</li>`;
+        remainingWorks += `<li>${p.name} - ${p.status} (बजेट: रु. ${(p.budget||0).toLocaleString()}, खर्च: रु. ${getTotalExpenses(p).toLocaleString()})</li>`;
     });
     if(!remainingWorks) remainingWorks = '<li>सबै कार्यक्रम सम्पन्न।</li>';
 
     // Challenges
     let challenges = '';
-    if(pendingCount > 0) challenges += `<li>${toNepaliNumber(pendingCount)} वटा सुरु हुन बाँकी।</li>`;
-    if(activeCount > 0) challenges += `<li>${toNepaliNumber(activeCount)} वटा सन्चालित, समयमै सम्पन्न गर्न प्रयास आवश्यक।</li>`;
+    if(pendingCount > 0) challenges += `<li>${pendingCount} वटा सुरु हुन बाँकी।</li>`;
+    if(activeCount > 0) challenges += `<li>${activeCount} वटा सन्चालित, समयमै सम्पन्न गर्न प्रयास आवश्यक।</li>`;
     if(!challenges) challenges = '<li>कुनै समस्या छैन।</li>';
 
     reportHTML += `
@@ -1387,7 +1360,7 @@ function generateReport() {
         </div>
         <div class="report-section">
             <h4>१२. निष्कर्ष</h4>
-            <p>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रमको हालसम्मको वित्तीय तथा भौतिक प्रगति सन्तोषजनक रहेको देखिन्छ। कार्यक्रम अन्तर्गत स्वीकृत बजेटमध्ये रु. ${toNepaliWithComma(totalExp)} खर्च भई ${toNepaliNumber(progressPercent)}% वित्तीय प्रगति हासिल भएको छ भने कार्यक्रमबाट ${toNepaliNumber(totalBeneficiaries)} जना प्रत्यक्ष लाभान्वित भएका छन्।</p>
+            <p>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रमको हालसम्मको वित्तीय तथा भौतिक प्रगति सन्तोषजनक रहेको देखिन्छ। कार्यक्रम अन्तर्गत स्वीकृत बजेटमध्ये रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ भने कार्यक्रमबाट ${totalBeneficiaries} जना प्रत्यक्ष लाभान्वित भएका छन्।</p>
         </div>
         <div class="report-section">
             <div class="report-sign">
@@ -1529,6 +1502,8 @@ document.getElementById('loginForm').onsubmit = async function(e) {
     const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
     
+    console.log('🔍 Trying to login:', username);
+    
     const user = await db_authenticate(username, password);
     if (user) {
         currentUser = user;
@@ -1540,6 +1515,7 @@ document.getElementById('loginForm').onsubmit = async function(e) {
         console.log('✅ Login successful:', currentUser.username);
     } else {
         document.getElementById('loginError').textContent = '❌ गलत प्रयोगकर्ता नाम वा पासवर्ड।';
+        console.log('❌ Login failed for:', username);
     }
 };
 
@@ -1564,6 +1540,7 @@ document.querySelectorAll('.modal').forEach(modal => {
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Application loaded successfully!');
+    console.log('🔑 Supabase URL:', SUPABASE_URL);
 });
 </script>
 </body>
