@@ -140,7 +140,6 @@
         .beneficiary-grid .b-item label { font-size: 12px; margin: 0; display: inline; white-space: nowrap; }
         .beneficiary-grid .b-item input { width: 70px; padding: 4px 8px; font-size: 12px; }
         .report-introduction { font-size: 14px; line-height: 1.8; color: #333; text-align: justify; padding: 4px 0; }
-        .nepali-number { font-family: 'Nirmala UI', 'Segoe UI', sans-serif; }
         @media (max-width: 768px) {
             .row { grid-template-columns: 1fr; }
             .filters { flex-direction: column; align-items: stretch; }
@@ -180,7 +179,7 @@
             <input type="password" id="loginPassword" placeholder="पासवर्ड" required />
             <div class="login-error" id="loginError"></div>
             <div class="modal-btns" style="justify-content:center;margin-top:16px;">
-                <button type="submit" class="save-btn" style="padding:10px 40px;">लग-इन (Login)</button>
+                <button type="submit" class="save-btn" style="padding:10px 40px;">🚪 प्रवेश गर्नुहोस्</button>
             </div>
             <div class="login-hint">
                 <strong>Admin:</strong> admin / admin123 &nbsp;|&nbsp; <strong>User:</strong> user / user123
@@ -198,7 +197,7 @@
         </div>
         <div>
             <span style="font-size:13px;color:#888;margin-right:12px;">📅 आर्थिक वर्ष २०८३/८४</span>
-            <button class="btn-logout" onclick="logout()">Logout</button>
+            <button class="btn-logout" onclick="logout()">🚪 बाहिरिनुहोस्</button>
         </div>
     </div>
 
@@ -240,33 +239,19 @@
                 <button class="btn-admin-action btn-success" onclick="exportData()">📥 डाटा निर्यात (JSON)</button>
                 <button class="btn-admin-action" onclick="importData()">📤 डाटा आयात (JSON)</button>
                 <input type="file" id="importFileInput" style="display:none;" accept=".json" onchange="handleImport(event)" />
-                <button class="btn-admin-action" style="background:#e65100;" onclick="syncToSupabase()">🔄 सिङ्क गर्नुहोस्</button>
             </div>
         </div>
 
         <div class="row">
-            <div class="chart-box">
-                <h3>📈 बजेट विनियोजन (शीर्ष ८)</h3>
-                <canvas id="budgetChart"></canvas>
-            </div>
-            <div class="chart-box">
-                <h3>📊 खर्चको अवस्था</h3>
-                <canvas id="statusChart"></canvas>
-            </div>
+            <div class="chart-box"><h3>📈 बजेट विनियोजन (शीर्ष ८)</h3><canvas id="budgetChart"></canvas></div>
+            <div class="chart-box"><h3>📊 खर्चको अवस्था</h3><canvas id="statusChart"></canvas></div>
         </div>
 
         <div class="table-wrap">
-            <h3>
-                <span>📋 कार्यक्रमहरूको सूची</span>
-                <span style="font-size:12px;font-weight:400;color:#777;">जिम्मेवार व्यक्ति सहित</span>
-            </h3>
+            <h3><span>📋 कार्यक्रमहरूको सूची</span><span style="font-size:12px;font-weight:400;color:#777;">जिम्मेवार व्यक्ति सहित</span></h3>
             <table>
-                <thead>
-                    <tr><th>क्र.स</th><th>कार्यक्रमको नाम</th><th>प्रकृति</th><th>बजेट (रु.)</th><th>खर्च (रु.)</th><th>प्रगति</th><th>समय</th><th>जिम्मेवार व्यक्ति</th><th>स्थिति</th><th>कार्य</th></tr>
-                </thead>
-                <tbody id="projectTableBody">
-                    <tr><td colspan="10" class="empty-msg">कृपया "नयाँ कार्यक्रम" थप्नुहोस् वा डाटा लोड हुँदै...</td></tr>
-                </tbody>
+                <thead><tr><th>क्र.स</th><th>कार्यक्रमको नाम</th><th>प्रकृति</th><th>बजेट (रु.)</th><th>खर्च (रु.)</th><th>प्रगति</th><th>समय</th><th>जिम्मेवार व्यक्ति</th><th>स्थिति</th><th>कार्य</th></tr></thead>
+                <tbody id="projectTableBody"><tr><td colspan="10" class="empty-msg">कृपया "नयाँ कार्यक्रम" थप्नुहोस् वा डाटा लोड हुँदै...</td></tr></tbody>
             </table>
         </div>
     </div>
@@ -280,9 +265,7 @@
                 <button class="btn-word" onclick="exportReportWord()">📄 Word (DOCX) मा निर्यात गर्नुहोस्</button>
             </div>
         </div>
-        <div id="reportContent">
-            <div class="empty-msg">कृपया ड्यासबोर्डमा कार्यक्रमहरू थप्नुहोस्।</div>
-        </div>
+        <div id="reportContent"><div class="empty-msg">कृपया ड्यासबोर्डमा कार्यक्रमहरू थप्नुहोस्।</div></div>
     </div>
 </div>
 
@@ -296,12 +279,9 @@
             <input type="text" id="fName" required placeholder="जस्तै: आन्तरिक रोजगार सिर्जना" />
             <label>प्रकृति</label>
             <select id="fCategory">
-                <option value="रोजगारी">रोजगारी</option>
-                <option value="तालिम">तालिम</option>
-                <option value="अनुसन्धान">अनुसन्धान</option>
-                <option value="प्रवर्द्धन">प्रवर्द्धन</option>
-                <option value="उद्यमशीलता">उद्यमशीलता</option>
-                <option value="अन्य">अन्य</option>
+                <option value="रोजगारी">रोजगारी</option><option value="तालिम">तालिम</option>
+                <option value="अनुसन्धान">अनुसन्धान</option><option value="प्रवर्द्धन">प्रवर्द्धन</option>
+                <option value="उद्यमशीलता">उद्यमशीलता</option><option value="अन्य">अन्य</option>
             </select>
             <label>कुल बजेट (रु.) *</label>
             <input type="number" id="fBudget" required placeholder="जस्तै: 1100000" />
@@ -412,49 +392,19 @@
     </div>
 </div>
 
-<!-- BENEFICIARY MODAL (dynamic) -->
+<!-- BENEFICIARY MODAL -->
 <div class="modal" id="beneficiaryModal"></div>
 
 <script>
 // ============================================
-// NEPALI NUMBER CONVERTER
-// ============================================
-function toNepaliNumber(num) {
-    const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
-    return String(num).replace(/\d/g, d => nepaliDigits[parseInt(d)]);
-}
-
-function toNepaliWithComma(num) {
-    const parts = String(num).split('.');
-    let intPart = parts[0];
-    const decPart = parts[1] || '';
-    
-    let result = '';
-    let count = 0;
-    for (let i = intPart.length - 1; i >= 0; i--) {
-        result = intPart[i] + result;
-        count++;
-        if (count % 3 === 0 && i > 0) {
-            result = ',' + result;
-        }
-    }
-    
-    result = toNepaliNumber(result);
-    if (decPart) {
-        result += '.' + toNepaliNumber(decPart);
-    }
-    return result;
-}
-
-// ============================================
-// SUPABASE CONFIGURATION
+// SUPABASE CONFIG
 // ============================================
 const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ============================================
-// MAIN APPLICATION
+// APP STATE
 // ============================================
 let currentUser = null;
 let projects = [];
@@ -462,6 +412,9 @@ let editMode = false;
 let currentExpenseProjectId = null;
 let beneficiaryEditProjectId = null;
 
+// ============================================
+// HELPERS
+// ============================================
 function getDefaultBeneficiary() {
     return { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0 };
 }
@@ -480,8 +433,26 @@ function isAdmin() {
     return currentUser && currentUser.role === 'admin';
 }
 
+function toNepaliNumber(num) {
+    const digits = ['०','१','२','३','४','५','६','७','८','९'];
+    return String(num).replace(/\d/g, d => digits[parseInt(d)]);
+}
+
+function toNepaliWithComma(num) {
+    let parts = String(num).split('.');
+    let intPart = parts[0];
+    let result = '';
+    let count = 0;
+    for (let i = intPart.length - 1; i >= 0; i--) {
+        result = intPart[i] + result;
+        count++;
+        if (count % 3 === 0 && i > 0) result = ',' + result;
+    }
+    return toNepaliNumber(result);
+}
+
 // ============================================
-// DATABASE FUNCTIONS (Supabase)
+// DATABASE FUNCTIONS
 // ============================================
 async function db_authenticate(username, password) {
     const { data, error } = await supabaseClient
@@ -495,40 +466,20 @@ async function db_authenticate(username, password) {
 }
 
 async function db_getProjects() {
-    const { data, error } = await supabaseClient
-        .from('projects')
-        .select('*')
-        .order('id');
-    if (error) {
-        console.error('Error fetching projects:', error);
-        return [];
-    }
+    const { data, error } = await supabaseClient.from('projects').select('*').order('id');
+    if (error) return [];
     return data;
 }
 
 async function db_getExpenses(projectId) {
-    const { data, error } = await supabaseClient
-        .from('expenses')
-        .select('*')
-        .eq('project_id', projectId)
-        .order('id');
-    if (error) {
-        console.error('Error fetching expenses:', error);
-        return [];
-    }
+    const { data, error } = await supabaseClient.from('expenses').select('*').eq('project_id', projectId).order('id');
+    if (error) return [];
     return data;
 }
 
 async function db_getBeneficiary(projectId) {
-    const { data, error } = await supabaseClient
-        .from('beneficiaries')
-        .select('*')
-        .eq('project_id', projectId)
-        .maybeSingle();
-    if (error) {
-        console.error('Error fetching beneficiary:', error);
-        return null;
-    }
+    const { data, error } = await supabaseClient.from('beneficiaries').select('*').eq('project_id', projectId).maybeSingle();
+    if (error) return null;
     return data;
 }
 
@@ -537,53 +488,35 @@ async function db_saveProject(project) {
         const { data, error } = await supabaseClient
             .from('projects')
             .update({
-                name: project.name,
-                category: project.category,
-                budget: project.budget,
-                time: project.time,
-                status: project.status,
-                responsible: project.responsible,
-                assistant: project.assistant,
-                authorized: project.authorized,
-                activities: project.activities,
-                method: project.method,
-                output: project.output,
+                name: project.name, category: project.category, budget: project.budget,
+                time: project.time, status: project.status, responsible: project.responsible,
+                assistant: project.assistant, authorized: project.authorized,
+                activities: project.activities, method: project.method, output: project.output,
                 updated_at: new Date().toISOString()
             })
             .eq('id', project.id)
             .select()
             .single();
-        if (error) { console.error('Error updating project:', error); return null; }
+        if (error) return null;
         return data;
     } else {
         const { data, error } = await supabaseClient
             .from('projects')
             .insert([{
-                name: project.name,
-                category: project.category,
-                budget: project.budget,
-                time: project.time,
-                status: project.status,
-                responsible: project.responsible,
-                assistant: project.assistant,
-                authorized: project.authorized,
-                activities: project.activities,
-                method: project.method,
-                output: project.output
+                name: project.name, category: project.category, budget: project.budget,
+                time: project.time, status: project.status, responsible: project.responsible,
+                assistant: project.assistant, authorized: project.authorized,
+                activities: project.activities, method: project.method, output: project.output
             }])
             .select()
             .single();
-        if (error) { console.error('Error adding project:', error); return null; }
+        if (error) return null;
         return data;
     }
 }
 
 async function db_deleteProject(id) {
-    const { error } = await supabaseClient
-        .from('projects')
-        .delete()
-        .eq('id', id);
-    if (error) console.error('Error deleting project:', error);
+    const { error } = await supabaseClient.from('projects').delete().eq('id', id);
     return !error;
 }
 
@@ -592,21 +525,15 @@ async function db_saveBeneficiary(projectId, beneficiary) {
         .from('beneficiaries')
         .upsert({
             project_id: projectId,
-            male: beneficiary.male || 0,
-            female: beneficiary.female || 0,
-            dalit: beneficiary.dalit || 0,
-            janajati: beneficiary.janajati || 0,
-            disabled: beneficiary.disabled || 0,
-            returnee: beneficiary.returnee || 0,
+            male: beneficiary.male || 0, female: beneficiary.female || 0,
+            dalit: beneficiary.dalit || 0, janajati: beneficiary.janajati || 0,
+            disabled: beneficiary.disabled || 0, returnee: beneficiary.returnee || 0,
             entrepreneur: beneficiary.entrepreneur || 0,
             updated_at: new Date().toISOString()
         }, { onConflict: 'project_id' })
         .select()
         .single();
-    if (error) {
-        console.error('Error saving beneficiary:', error);
-        return null;
-    }
+    if (error) return null;
     return data;
 }
 
@@ -615,88 +542,46 @@ async function db_addExpense(projectId, expense) {
         .from('expenses')
         .insert([{
             project_id: projectId,
-            title: expense.title,
-            amount: expense.amount,
-            date: expense.date || '',
-            remark: expense.remark || ''
+            title: expense.title, amount: expense.amount,
+            date: expense.date || '', remark: expense.remark || ''
         }])
         .select()
         .single();
-    if (error) {
-        console.error('Error adding expense:', error);
-        return null;
-    }
+    if (error) return null;
     return data;
 }
 
 async function db_deleteAllExpenses(projectId) {
-    const { error } = await supabaseClient
-        .from('expenses')
-        .delete()
-        .eq('project_id', projectId);
-    if (error) console.error('Error deleting expenses:', error);
+    const { error } = await supabaseClient.from('expenses').delete().eq('project_id', projectId);
     return !error;
 }
 
 async function db_getUsers() {
-    const { data, error } = await supabaseClient
-        .from('users')
-        .select('*')
-        .order('id');
-    if (error) {
-        console.error('Error fetching users:', error);
-        return [];
-    }
+    const { data, error } = await supabaseClient.from('users').select('*').order('id');
+    if (error) return [];
     return data;
 }
 
 async function db_addUser(username, password, role) {
-    const { data, error } = await supabaseClient
-        .from('users')
-        .insert([{ username, password, role }])
-        .select()
-        .single();
-    if (error) {
-        console.error('Error adding user:', error);
-        return null;
-    }
+    const { data, error } = await supabaseClient.from('users').insert([{ username, password, role }]).select().single();
+    if (error) return null;
     return data;
 }
 
 async function db_deleteUser(id) {
-    const { error } = await supabaseClient
-        .from('users')
-        .delete()
-        .eq('id', id);
-    if (error) console.error('Error deleting user:', error);
+    const { error } = await supabaseClient.from('users').delete().eq('id', id);
     return !error;
 }
 
 // ============================================
-// SAVE / LOAD DATA
+// SAVE & LOAD
 // ============================================
 function saveProjects() {
     localStorage.setItem('projectDataV5', JSON.stringify(projects));
 }
 
-function getProjects() {
-    if (projects && projects.length > 0) return projects;
-    const stored = localStorage.getItem('projectDataV5');
-    if (stored) {
-        try { 
-            const data = JSON.parse(stored);
-            data.forEach(p => {
-                if (!p.beneficiary) p.beneficiary = getDefaultBeneficiary();
-            });
-            return data;
-        } catch(e) { return []; }
-    }
-    return [];
-}
-
 async function loadAllData() {
     try {
-        console.log('📥 Loading data from Supabase...');
         const projectsData = await db_getProjects();
         projects = projectsData.map(p => ({ ...p, budget: parseFloat(p.budget) || 0 }));
 
@@ -707,54 +592,20 @@ async function loadAllData() {
             const beneficiary = await db_getBeneficiary(p.id);
             if (beneficiary) {
                 p.beneficiary = {
-                    male: parseInt(beneficiary.male) || 0,
-                    female: parseInt(beneficiary.female) || 0,
-                    dalit: parseInt(beneficiary.dalit) || 0,
-                    janajati: parseInt(beneficiary.janajati) || 0,
-                    disabled: parseInt(beneficiary.disabled) || 0,
-                    returnee: parseInt(beneficiary.returnee) || 0,
+                    male: parseInt(beneficiary.male) || 0, female: parseInt(beneficiary.female) || 0,
+                    dalit: parseInt(beneficiary.dalit) || 0, janajati: parseInt(beneficiary.janajati) || 0,
+                    disabled: parseInt(beneficiary.disabled) || 0, returnee: parseInt(beneficiary.returnee) || 0,
                     entrepreneur: parseInt(beneficiary.entrepreneur) || 0
                 };
             } else {
                 p.beneficiary = getDefaultBeneficiary();
             }
         }
-
         saveProjects();
-        console.log(`✅ Loaded ${projects.length} projects`);
         return true;
     } catch (error) {
         console.error('Error loading data:', error);
         return false;
-    }
-}
-
-// ============================================
-// SYNC TO SUPABASE
-// ============================================
-async function syncToSupabase() {
-    if (!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
-    
-    const btn = event.target;
-    const originalText = btn.textContent;
-    btn.textContent = '⏳ सिङ्क हुँदै...';
-    btn.disabled = true;
-    
-    try {
-        for (let p of projects) {
-            await db_saveProject(p);
-            if (p.beneficiary) {
-                await db_saveBeneficiary(p.id, p.beneficiary);
-            }
-        }
-        await loadAllData();
-        renderAll();
-        alert('✅ सिङ्क पूरा भयो!');
-    } catch (error) {
-        alert('❌ सिङ्क गर्दा त्रुटि: ' + error.message);
-    } finally {
-        btn.textContent = originalText;
-        btn.disabled = false;
     }
 }
 
@@ -835,25 +686,8 @@ function renderCharts() {
         },
         options: { 
             responsive: true, 
-            plugins: { 
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return 'रु. ' + toNepaliWithComma(context.raw);
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    ticks: {
-                        callback: function(value) {
-                            return toNepaliWithComma(value);
-                        }
-                    }
-                }
-            }
+            plugins: { legend: { display: false } },
+            scales: { y: { ticks: { callback: v => toNepaliWithComma(v) } } }
         }
     });
 
@@ -874,10 +708,10 @@ function renderCharts() {
                 legend: { position: 'bottom' },
                 tooltip: {
                     callbacks: {
-                        label: function(context) {
-                            const total = context.dataset.data.reduce((a,b) => a + b, 0);
-                            const percentage = total > 0 ? Math.round((context.raw / total) * 100) : 0;
-                            return context.label + ': ' + toNepaliNumber(context.raw) + ' (' + toNepaliNumber(percentage) + '%)';
+                        label: function(ctx) {
+                            const total = ctx.dataset.data.reduce((a,b) => a + b, 0);
+                            const pct = total > 0 ? Math.round((ctx.raw / total) * 100) : 0;
+                            return ctx.label + ': ' + toNepaliNumber(ctx.raw) + ' (' + toNepaliNumber(pct) + '%)';
                         }
                     }
                 }
@@ -988,7 +822,6 @@ function openDetailView(id) {
 }
 
 function printDetail() { window.print(); }
-
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
 // ============================================
@@ -1060,9 +893,7 @@ document.getElementById('projectForm').addEventListener('submit', function(e) {
     if(!name || budget <= 0) { alert('नाम र बजेट भर्नुहोस्।'); return; }
     if(editMode) {
         const idx = projects.findIndex(p => p.id === id);
-        if(idx !== -1) {
-            projects[idx] = { ...projects[idx], name, category, budget, time, status, responsible, assistant, authorized, activities, method, output, beneficiary };
-        }
+        if(idx !== -1) projects[idx] = { ...projects[idx], name, category, budget, time, status, responsible, assistant, authorized, activities, method, output, beneficiary };
     } else {
         const newId = projects.length > 0 ? Math.max(...projects.map(p => p.id)) + 1 : 1;
         projects.push({ id: newId, name, category, budget, time, status, responsible, assistant, authorized, activities, method, output, beneficiary, expenses: [] });
@@ -1339,23 +1170,14 @@ function handleImport(event) {
                 projects = data.projects;
                 for (let p of projects) {
                     await db_saveProject(p);
-                    if (p.beneficiary) {
-                        await db_saveBeneficiary(p.id, p.beneficiary);
-                    }
+                    if (p.beneficiary) await db_saveBeneficiary(p.id, p.beneficiary);
                     for (let exp of (p.expenses || [])) {
-                        if (!exp.id) {
-                            await db_addExpense(p.id, exp);
-                        }
+                        if (!exp.id) await db_addExpense(p.id, exp);
                     }
                 }
                 await loadAllData();
                 renderAll();
                 alert('✅ डाटा आयात सफल!');
-            }
-            if(data.users) {
-                for (let u of data.users) {
-                    await db_addUser(u.username, u.password, u.role);
-                }
             }
         } catch(err) { alert('❌ त्रुटि: ' + err.message); }
     };
@@ -1375,9 +1197,7 @@ function switchTab(tabId) {
 }
 
 document.querySelectorAll('.tabs button').forEach(btn => {
-    btn.addEventListener('click', function() {
-        switchTab(this.dataset.tab);
-    });
+    btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
 });
 
 // ============================================
@@ -1475,19 +1295,10 @@ function generateReport() {
         </div>
         <div class="report-section">
             <h4>४. चार्ट विश्लेषण</h4>
-            <div class="report-charts" id="reportChartContainer">
-                <div class="chart-box">
-                    <h4>📊 प्रकृति अनुसार बजेट</h4>
-                    <canvas id="reportPieChart"></canvas>
-                </div>
-                <div class="chart-box">
-                    <h4>📊 बजेट र खर्च तुलना</h4>
-                    <canvas id="reportBarChart"></canvas>
-                </div>
-                <div class="chart-box">
-                    <h4>📈 कार्यक्रम प्रगति</h4>
-                    <canvas id="reportLineChart"></canvas>
-                </div>
+            <div class="report-charts">
+                <div class="chart-box"><h4>📊 प्रकृति अनुसार बजेट</h4><canvas id="reportPieChart"></canvas></div>
+                <div class="chart-box"><h4>📊 बजेट र खर्च तुलना</h4><canvas id="reportBarChart"></canvas></div>
+                <div class="chart-box"><h4>📈 कार्यक्रम प्रगति</h4><canvas id="reportLineChart"></canvas></div>
             </div>
         </div>
     `;
@@ -1576,7 +1387,7 @@ function generateReport() {
         </div>
         <div class="report-section">
             <h4>१२. निष्कर्ष</h4>
-            <p>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रमको हालसम्मको वित्तीय तथा भौतिक प्रगति सन्तोषजनक रहेको देखिन्छ। कार्यक्रम अन्तर्गत स्वीकृत बजेटमध्ये रु. ${toNepaliWithComma(totalExp)} खर्च भई ${toNepaliNumber(progressPercent)}% वित्तीय प्रगति हासिल भएको छ भने कार्यक्रमबाट ${toNepaliNumber(totalBeneficiaries)} जना प्रत्यक्ष लाभान्वित भएका छन्। बाँकी रहेका कार्यहरू तोकिएको समयसीमाभित्र सम्पन्न गरी निर्धारित लक्ष्य हासिल गरिने अपेक्षा गरिएको छ।</p>
+            <p>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रमको हालसम्मको वित्तीय तथा भौतिक प्रगति सन्तोषजनक रहेको देखिन्छ। कार्यक्रम अन्तर्गत स्वीकृत बजेटमध्ये रु. ${toNepaliWithComma(totalExp)} खर्च भई ${toNepaliNumber(progressPercent)}% वित्तीय प्रगति हासिल भएको छ भने कार्यक्रमबाट ${toNepaliNumber(totalBeneficiaries)} जना प्रत्यक्ष लाभान्वित भएका छन्।</p>
         </div>
         <div class="report-section">
             <div class="report-sign">
@@ -1588,15 +1399,9 @@ function generateReport() {
     `;
 
     container.innerHTML = reportHTML;
-
-    setTimeout(() => {
-        renderReportCharts(categories);
-    }, 300);
+    setTimeout(() => { renderReportCharts(categories); }, 300);
 }
 
-// ============================================
-// REPORT CHARTS
-// ============================================
 function renderReportCharts(categories) {
     const ctxPie = document.getElementById('reportPieChart');
     const ctxBar = document.getElementById('reportBarChart');
@@ -1608,28 +1413,8 @@ function renderReportCharts(categories) {
         const colors = ['#2e7d32','#1976d2','#f9a825','#d32f2f','#6a1b9a','#00838f','#e65100','#4a148c'];
         new Chart(ctxPie, {
             type: 'pie',
-            data: { 
-                labels, 
-                datasets: [{ 
-                    data, 
-                    backgroundColor: colors.slice(0, data.length) 
-                }] 
-            },
-            options: { 
-                responsive: true, 
-                plugins: { 
-                    legend: { position: 'bottom', labels: { font: { size: 10 } } },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const total = context.dataset.data.reduce((a,b) => a + b, 0);
-                                const percentage = total > 0 ? Math.round((context.raw / total) * 100) : 0;
-                                return context.label + ': रु. ' + toNepaliWithComma(context.raw) + ' (' + toNepaliNumber(percentage) + '%)';
-                            }
-                        }
-                    }
-                }
-            }
+            data: { labels, datasets: [{ data, backgroundColor: colors.slice(0, data.length) }] },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
         });
     }
 
@@ -1648,26 +1433,8 @@ function renderReportCharts(categories) {
             },
             options: {
                 responsive: true,
-                plugins: { 
-                    legend: { position: 'bottom', labels: { font: { size: 10 } } },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.label + ': रु. ' + toNepaliWithComma(context.raw);
-                            }
-                        }
-                    }
-                },
-                scales: { 
-                    y: { 
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return toNepaliWithComma(value);
-                            }
-                        }
-                    } 
-                }
+                plugins: { legend: { position: 'bottom' } },
+                scales: { y: { beginAtZero: true } }
             }
         });
     }
@@ -1695,27 +1462,8 @@ function renderReportCharts(categories) {
             },
             options: {
                 responsive: true,
-                plugins: { 
-                    legend: { position: 'bottom', labels: { font: { size: 10 } } },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return 'प्रगति: ' + toNepaliNumber(context.raw) + '%';
-                            }
-                        }
-                    }
-                },
-                scales: { 
-                    y: { 
-                        beginAtZero: true, 
-                        max: 100,
-                        ticks: {
-                            callback: function(value) {
-                                return toNepaliNumber(value) + '%';
-                            }
-                        }
-                    } 
-                }
+                plugins: { legend: { position: 'bottom' } },
+                scales: { y: { beginAtZero: true, max: 100 } }
             }
         });
     }
@@ -1727,18 +1475,16 @@ function renderReportCharts(categories) {
 function exportReportWord() {
     const reportElement = document.getElementById('reportContent');
     let reportHTML = reportElement.innerHTML;
-
     const chartIds = ['reportPieChart', 'reportBarChart', 'reportLineChart'];
     chartIds.forEach(id => {
         const canvas = document.getElementById(id);
         if(canvas) {
             const imgData = canvas.toDataURL('image/png');
             const imgTag = `<img src="${imgData}" style="max-width:100%;max-height:180px;border:1px solid #ddd;border-radius:4px;" />`;
-            const canvasTagRegex = new RegExp(`<canvas[^>]*id="${id}"[^>]*></canvas>`, 'g');
-            reportHTML = reportHTML.replace(canvasTagRegex, imgTag);
+            const regex = new RegExp(`<canvas[^>]*id="${id}"[^>]*></canvas>`, 'g');
+            reportHTML = reportHTML.replace(regex, imgTag);
         }
     });
-
     const fullDoc = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
         <head><meta charset="UTF-8"><title>प्रगति प्रतिवेदन</title>
@@ -1747,35 +1493,27 @@ function exportReportWord() {
             .report-header { text-align: center; margin-bottom: 25px; }
             .report-header h2 { color: #1a3c5e; font-size: 22px; }
             .report-header h3 { color: #2e7d32; font-size: 18px; }
-            .report-header h4 { font-size: 16px; margin: 4px 0; }
             .report-section { margin-bottom: 20px; padding: 10px 0; border-bottom: 1px solid #ddd; }
             .report-section h4 { color: #1a3c5e; border-bottom: 2px solid #e0e4ea; padding-bottom: 6px; margin-bottom: 10px; font-size: 16px; }
             .report-introduction { font-size: 14px; line-height: 1.8; text-align: justify; }
             .report-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0; }
-            .report-table th { background: #f0f4f8; padding: 5px 8px; border: 1px solid #ddd; text-align: left; }
+            .report-table th { background: #f0f4f8; padding: 5px 8px; border: 1px solid #ddd; }
             .report-table td { padding: 5px 8px; border: 1px solid #ddd; }
-            .row-detail { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+            .row-detail { display: flex; flex-wrap: wrap; gap: 10px; }
             .row-detail .item { flex: 1 1 200px; padding: 4px 0; }
             .row-detail .item .label { font-weight: 600; color: #1a3c5e; font-size: 12px; display: block; }
-            .row-detail .item .value { font-size: 14px; color: #333; }
+            .row-detail .item .value { font-size: 14px; }
             .progress-large { width: 100%; height: 16px; background: #e9ecef; border-radius: 6px; overflow: hidden; }
             .progress-large .fill { height: 100%; border-radius: 6px; background: #2e7d32; }
             .report-sign { display: flex; justify-content: space-between; margin-top: 25px; padding-top: 20px; border-top: 1px solid #ddd; }
             .report-sign .sign-block { text-align: center; flex: 1; }
             .report-sign .sign-block .line { margin-top: 30px; border-top: 1px solid #333; width: 180px; margin-left: auto; margin-right: auto; }
-            .report-charts { display: flex; flex-wrap: wrap; gap: 16px; margin: 12px 0; justify-content: center; }
-            .report-charts .chart-box { padding: 12px; background: #fafafa; border-radius: 8px; border: 1px solid #e0e4ea; min-width: 250px; flex: 1; text-align: center; }
-            .report-charts .chart-box h4 { font-size: 12px; color: #1a3c5e; margin-bottom: 6px; }
-            .report-charts .chart-box img { max-width: 100%; max-height: 180px; border: 1px solid #ddd; border-radius: 4px; }
-            .empty-msg { color: #999; padding: 10px 0; text-align: center; }
-            ul, ol { padding-left: 20px; margin: 8px 0; }
-            li { margin: 3px 0; }
+            .report-charts .chart-box img { max-width: 100%; max-height: 180px; }
         </style>
         </head>
         <body>${reportHTML}</body>
         </html>
     `;
-
     const blob = new Blob([fullDoc], { type: 'application/msword;charset=utf-8' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -1816,7 +1554,7 @@ function logout() {
 }
 
 // ============================================
-// INITIALIZE
+// INIT
 // ============================================
 document.querySelectorAll('.modal').forEach(modal => {
     modal.addEventListener('click', function(e) {
