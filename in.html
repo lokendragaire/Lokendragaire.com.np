@@ -140,6 +140,9 @@
         .beneficiary-grid .b-item label { font-size: 12px; margin: 0; display: inline; white-space: nowrap; }
         .beneficiary-grid .b-item input { width: 70px; padding: 4px 8px; font-size: 12px; }
         .report-introduction { font-size: 14px; line-height: 1.8; color: #333; text-align: justify; padding: 4px 0; }
+        .date-filter { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 10px 0; }
+        .date-filter label { font-weight: 600; font-size: 13px; color: #333; }
+        .date-filter input { padding: 6px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; background: #fafafa; }
         @media (max-width: 768px) {
             .row { grid-template-columns: 1fr; }
             .filters { flex-direction: column; align-items: stretch; }
@@ -151,6 +154,7 @@
             .report-sign .sign-block .line { width: 100%; }
             .report-charts { grid-template-columns: 1fr; }
             .beneficiary-grid { grid-template-columns: 1fr; }
+            .date-filter { flex-direction: column; align-items: stretch; }
         }
         @media print {
             body { background: white; padding: 0; }
@@ -265,7 +269,21 @@
                 <button class="btn-word" onclick="exportReportWord()">📄 Word (DOCX) मा निर्यात गर्नुहोस्</button>
             </div>
         </div>
-        <div id="reportContent"><div class="empty-msg">कृपया ड्यासबोर्डमा कार्यक्रमहरू थप्नुहोस्।</div></div>
+        
+        <!-- Date Range Filter -->
+        <div class="date-filter" style="background:#fff;padding:12px 16px;border-radius:10px;margin-bottom:16px;box-shadow:0 2px 6px rgba(0,0,0,0.06);">
+            <label>📅 मिति दायरा (Date Range):</label>
+            <input type="date" id="reportFromDate" />
+            <span style="color:#888;">देखि</span>
+            <input type="date" id="reportToDate" />
+            <button class="btn" onclick="generateDateRangeReport()" style="background:#2e7d32;">📊 रिपोर्ट हेर्नुहोस्</button>
+            <button class="btn" onclick="resetDateRangeReport()" style="background:#888;">↺ रिसेट</button>
+            <span id="dateRangeInfo" style="font-size:12px;color:#888;margin-left:10px;"></span>
+        </div>
+        
+        <div id="reportContent">
+            <div class="empty-msg">कृपया मिति चयन गरी "रिपोर्ट हेर्नुहोस्" मा क्लिक गर्नुहोस्।</div>
+        </div>
     </div>
 </div>
 
@@ -397,10 +415,10 @@
 
 <script>
 // ============================================
-// SUPABASE CONFIG
+// SUPABASE CONFIG (NEW PROJECT)
 // ============================================
-const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5';
+const SUPABASE_URL = 'https://lyzxsqussxalfpqejelv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_KUO0ydmJWPTFhCXiz9Ph3g_aqw5qRmA';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ============================================
@@ -431,6 +449,14 @@ function getTotalBeneficiaries(project) {
 
 function isAdmin() {
     return currentUser && currentUser.role === 'admin';
+}
+
+function formatDateToNepali(dateStr) {
+    if (!dateStr) return '-';
+    try {
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('ne-NP', { year: 'numeric', month: 'long', day: 'numeric' });
+    } catch(e) { return dateStr; }
 }
 
 // ============================================
@@ -716,7 +742,6 @@ function renderAll() {
     renderCharts();
     populateCategoryFilter();
     updateUIByRole();
-    generateReport();
 }
 
 function applyFilters() {
@@ -730,6 +755,47 @@ function applyFilters() {
         return true;
     });
     renderTable(filtered);
+}
+
+// ============================================
+// DATE RANGE REPORT
+// ============================================
+function generateDateRangeReport() {
+    const fromDate = document.getElementById('reportFromDate').value;
+    const toDate = document.getElementById('reportToDate').value;
+    const infoSpan = document.getElementById('dateRangeInfo');
+    
+    if (!fromDate || !toDate) {
+        alert('कृपया सुरु मिति र अन्त्य मिति चयन गर्नुहोस्।');
+        return;
+    }
+    
+    if (fromDate > toDate) {
+        alert('सुरु मिति अन्त्य मिति भन्दा पछि हुन सक्दैन।');
+        return;
+    }
+    
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+    to.setHours(23, 59, 59, 999);
+    
+    infoSpan.textContent = `📅 ${formatDateToNepali(fromDate)} देखि ${formatDateToNepali(toDate)} सम्म`;
+    
+    // Filter projects by date range (created_at)
+    const filteredProjects = projects.filter(p => {
+        if (!p.created_at) return true;
+        const pDate = new Date(p.created_at);
+        return pDate >= from && pDate <= to;
+    });
+    
+    generateReport(filteredProjects, fromDate, toDate);
+}
+
+function resetDateRangeReport() {
+    document.getElementById('reportFromDate').value = '';
+    document.getElementById('reportToDate').value = '';
+    document.getElementById('dateRangeInfo').textContent = '';
+    generateReport(projects);
 }
 
 // ============================================
@@ -1166,7 +1232,12 @@ function switchTab(tabId) {
     document.querySelectorAll('.tabs button').forEach(el => el.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
     document.querySelector(`.tabs button[data-tab="${tabId}"]`).classList.add('active');
-    if(tabId === 'tabReport') generateReport();
+    if(tabId === 'tabReport') {
+        // Default: show all projects in report
+        if (document.getElementById('reportContent').innerHTML.includes('कृपया मिति चयन')) {
+            generateReport(projects);
+        }
+    }
 }
 
 document.querySelectorAll('.tabs button').forEach(btn => {
@@ -1174,26 +1245,28 @@ document.querySelectorAll('.tabs button').forEach(btn => {
 });
 
 // ============================================
-// REPORT GENERATOR
+// REPORT GENERATOR - With Date Range Support
 // ============================================
-function generateReport() {
+function generateReport(filteredProjects, fromDate, toDate) {
     const container = document.getElementById('reportContent');
-    if(projects.length === 0) {
-        container.innerHTML = '<div class="empty-msg">कृपया कार्यक्रमहरू थप्नुहोस्।</div>';
+    const projectList = filteredProjects || projects;
+    
+    if(projectList.length === 0) {
+        container.innerHTML = '<div class="empty-msg">यस मिति दायरामा कुनै कार्यक्रम फेला परेन।</div>';
         return;
     }
 
-    const totalBudget = projects.reduce((s,p) => s + (p.budget || 0), 0);
-    const totalExp = projects.reduce((s,p) => s + getTotalExpenses(p), 0);
+    const totalBudget = projectList.reduce((s,p) => s + (p.budget || 0), 0);
+    const totalExp = projectList.reduce((s,p) => s + getTotalExpenses(p), 0);
     const totalBalance = totalBudget - totalExp;
     const progressPercent = totalBudget > 0 ? Math.round((totalExp / totalBudget) * 100) : 0;
-    const activeCount = projects.filter(p => p.status === 'सन्चालित').length;
-    const completedCount = projects.filter(p => p.status === 'सम्पन्न').length;
-    const pendingCount = projects.filter(p => p.status === 'सुरु हुन बाँकी').length;
+    const activeCount = projectList.filter(p => p.status === 'सन्चालित').length;
+    const completedCount = projectList.filter(p => p.status === 'सम्पन्न').length;
+    const pendingCount = projectList.filter(p => p.status === 'सुरु हुन बाँकी').length;
 
     let totalMale = 0, totalFemale = 0, totalDalit = 0, totalJanajati = 0;
     let totalDisabled = 0, totalReturnee = 0, totalEntrepreneur = 0;
-    projects.forEach(p => {
+    projectList.forEach(p => {
         const b = p.beneficiary || getDefaultBeneficiary();
         totalMale += b.male || 0; totalFemale += b.female || 0; totalDalit += b.dalit || 0;
         totalJanajati += b.janajati || 0; totalDisabled += b.disabled || 0;
@@ -1202,12 +1275,15 @@ function generateReport() {
     const totalBeneficiaries = totalMale + totalFemale + totalDalit + totalJanajati + totalDisabled + totalReturnee + totalEntrepreneur;
 
     const categories = {};
-    projects.forEach(p => {
+    projectList.forEach(p => {
         if(!categories[p.category]) categories[p.category] = { budget: 0, expense: 0, count: 0 };
         categories[p.category].budget += p.budget || 0;
         categories[p.category].expense += getTotalExpenses(p);
         categories[p.category].count += 1;
     });
+
+    const dateRangeText = (fromDate && toDate) ? 
+        ` (${formatDateToNepali(fromDate)} देखि ${formatDateToNepali(toDate)} सम्म)` : '';
 
     let reportHTML = `
         <div class="report-section">
@@ -1215,22 +1291,23 @@ function generateReport() {
                 <h2>गलकोट नगरपालिका</h2>
                 <h3>नगर कार्यपालिकाको कार्यालय</h3>
                 <h3>रोजगार, सीप तथा उद्यमशील शाखा</h3>
-                <h4>प्रगति प्रतिवेदन</h4>
+                <h4>प्रगति प्रतिवेदन${dateRangeText}</h4>
                 <p><strong>आर्थिक वर्ष :</strong> २०८३/८४</p>
                 <p><strong>प्रतिवेदन मिति :</strong> ${new Date().toLocaleDateString('ne-NP', {year:'numeric', month:'long', day:'numeric'})}</p>
+                ${fromDate && toDate ? `<p><strong>मिति दायरा :</strong> ${formatDateToNepali(fromDate)} देखि ${formatDateToNepali(toDate)} सम्म</p>` : ''}
             </div>
         </div>
         <div class="report-section">
             <h4>परिचय</h4>
             <div class="report-introduction">
                 गलकोट नगरपालिका अन्तर्गत रोजगार सेवा केन्द्रमार्फत सञ्चालित रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रम आर्थिक वर्ष २०८१/८२ मा स्वीकृत वार्षिक कार्यक्रम तथा बजेट अनुसार सञ्चालन गरिएको हो। 
-                ${projects.length > 0 ? `यस अवधिमा कुल ${projects.length} वटा कार्यक्रमहरू सञ्चालन भएका छन् जसमा रु. ${totalBudget.toLocaleString()} बजेट विनियोजन गरिएको थियो। हालसम्म रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ।` : ''}
+                ${projectList.length > 0 ? `यस अवधिमा कुल ${projectList.length} वटा कार्यक्रमहरू सञ्चालन भएका छन् जसमा रु. ${totalBudget.toLocaleString()} बजेट विनियोजन गरिएको थियो। हालसम्म रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ।` : ''}
             </div>
         </div>
         <div class="report-section">
             <h4>१. कार्यक्रमको संक्षिप्त विवरण</h4>
             <div class="row-detail">
-                <div class="item"><span class="label">कुल कार्यक्रम</span><span class="value">${projects.length} वटा</span></div>
+                <div class="item"><span class="label">कुल कार्यक्रम</span><span class="value">${projectList.length} वटा</span></div>
                 <div class="item"><span class="label">स्वीकृत बजेट</span><span class="value">रु. ${totalBudget.toLocaleString()}</span></div>
                 <div class="item"><span class="label">हालसम्म खर्च</span><span class="value">रु. ${totalExp.toLocaleString()}</span></div>
                 <div class="item"><span class="label">बाँकी बजेट</span><span class="value">रु. ${totalBalance.toLocaleString()}</span></div>
@@ -1279,7 +1356,7 @@ function generateReport() {
     // Activities
     let activitiesRows = '';
     const allActivities = [];
-    projects.forEach(p => {
+    projectList.forEach(p => {
         if(p.activities) {
             const acts = p.activities.split(',').map(a => a.trim());
             acts.forEach(a => { if(a) allActivities.push({ activity: a, project: p.name, status: p.status }); });
@@ -1291,7 +1368,7 @@ function generateReport() {
 
     // Expenses
     let expenseRows = '', expCounter = 1;
-    projects.forEach(p => {
+    projectList.forEach(p => {
         (p.expenses || []).forEach(e => {
             expenseRows += `<tr><td>${expCounter++}</td><td>${e.date || '-'}</td><td>${e.title || 'खर्च'}</td><td>${p.name}</td><td>रु. ${(e.amount||0).toLocaleString()}</td><td>${e.remark || '-'}</td></tr>`;
         });
@@ -1299,20 +1376,20 @@ function generateReport() {
 
     // Persons
     let personRows = '';
-    const uniquePersons = [...new Set(projects.filter(p => p.responsible).map(p => p.responsible))];
+    const uniquePersons = [...new Set(projectList.filter(p => p.responsible).map(p => p.responsible))];
     uniquePersons.slice(0, 10).forEach((person, idx) => {
-        const proj = projects.find(p => p.responsible === person);
+        const proj = projectList.find(p => p.responsible === person);
         personRows += `<tr><td>${idx+1}</td><td>${person}</td><td>${proj ? proj.authorized || 'प्रमुख' : 'प्रमुख'}</td><td>${proj ? proj.name : '-'}</td></tr>`;
     });
 
     // Achievements
     let achievementList = '';
-    projects.forEach(p => { if(p.output) achievementList += `<li>${p.output}</li>`; });
+    projectList.forEach(p => { if(p.output) achievementList += `<li>${p.output}</li>`; });
     if(!achievementList) achievementList = '<li>कुनै उपलब्धी रेकर्ड छैन।</li>';
 
     // Remaining works
     let remainingWorks = '';
-    const incomplete = projects.filter(p => p.status !== 'सम्पन्न');
+    const incomplete = projectList.filter(p => p.status !== 'सम्पन्न');
     incomplete.forEach(p => {
         remainingWorks += `<li>${p.name} - ${p.status} (बजेट: रु. ${(p.budget||0).toLocaleString()}, खर्च: रु. ${getTotalExpenses(p).toLocaleString()})</li>`;
     });
