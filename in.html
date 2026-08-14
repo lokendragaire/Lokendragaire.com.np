@@ -163,17 +163,14 @@
 </head>
 <body>
 
-<!-- ============================================ -->
-<!-- LOGIN PAGE -->
-<!-- ============================================ -->
 <div id="loginPage">
     <div class="login-box">
         <div class="logo">🔐</div>
         <h2>प्रणाली प्रवेश</h2>
         <p style="text-align:center;color:#777;font-size:14px;margin-bottom:16px;">रोजगार तथा उद्यमशीलता ड्यासबोर्ड</p>
         <form id="loginForm">
-            <input type="text" id="loginUsername" placeholder="प्रयोगकर्ता नाम (Username)" value="admin" required />
-            <input type="password" id="loginPassword" placeholder="पासवर्ड (Password)" value="admin123" required />
+            <input type="text" id="loginUsername" placeholder="प्रयोगकर्ता नाम" value="admin" required />
+            <input type="password" id="loginPassword" placeholder="पासवर्ड" value="admin123" required />
             <div class="error" id="loginError"></div>
             <button type="submit">🚪 प्रवेश गर्नुहोस्</button>
             <div class="hint">
@@ -183,12 +180,7 @@
     </div>
 </div>
 
-<!-- ============================================ -->
-<!-- MAIN DASHBOARD -->
-<!-- ============================================ -->
 <div class="container" id="mainDashboard" style="display:none;">
-    
-    <!-- HEADER -->
     <div class="login-header">
         <div class="user-info">
             👤 <span id="displayUsername">User</span> 
@@ -200,18 +192,15 @@
         </div>
     </div>
 
-    <!-- TABS -->
     <div class="tabs">
         <button class="active" data-tab="tabDashboard">📊 ड्यासबोर्ड</button>
         <button data-tab="tabReport">📄 प्रतिवेदन</button>
     </div>
 
-    <!-- TAB 1: DASHBOARD -->
     <div class="tab-content active" id="tabDashboard">
         <h1>📊 रोजगार, सीप तथा उद्यमशीलता शाखा</h1>
         <div class="subtitle">कार्यक्रम कार्यान्वयन स्थिति</div>
 
-        <!-- SUMMARY CARDS -->
         <div class="cards" id="summaryCards">
             <div class="card success"><div class="label">कुल बजेट</div><div class="value" id="totalBudget">०</div><div class="sub">रु.</div></div>
             <div class="card info"><div class="label">कुल खर्च</div><div class="value" id="totalExp">०</div><div class="sub">रु.</div></div>
@@ -221,7 +210,6 @@
             <div class="card purple"><div class="label">लाभग्राही</div><div class="value" id="totalBeneficiaries">०</div><div class="sub">जना</div></div>
         </div>
 
-        <!-- FILTERS -->
         <div class="filters">
             <label>प्रकृति:</label>
             <select id="filterCategory"><option value="">सबै</option></select>
@@ -234,22 +222,19 @@
             <button class="btn btn-report" onclick="switchTab('tabReport')">📄 प्रतिवेदन</button>
         </div>
 
-        <!-- ADMIN PANEL -->
         <div class="admin-toggle" id="adminPanel">
             <h4 style="color:#6a1b9a;margin-bottom:10px;">🔧 Admin Panel</h4>
             <div style="display:flex;flex-wrap:wrap;gap:8px;">
                 <button class="btn-admin-action" onclick="openUserManagement()">👥 प्रयोगकर्ता</button>
-                <button class="btn-admin-action btn-success" onclick="exportData()">📥 निर्यात</button>
+                <button class="btn-admin-action" onclick="exportData()">📥 निर्यात</button>
             </div>
         </div>
 
-        <!-- CHARTS -->
         <div class="row">
             <div class="chart-box"><h3>📈 बजेट विनियोजन</h3><canvas id="budgetChart"></canvas></div>
             <div class="chart-box"><h3>📊 कार्यक्रम स्थिति</h3><canvas id="statusChart"></canvas></div>
         </div>
 
-        <!-- TABLE -->
         <div class="table-wrap">
             <h3><span>📋 कार्यक्रमहरूको सूची</span></h3>
             <table>
@@ -259,7 +244,6 @@
         </div>
     </div>
 
-    <!-- TAB 2: REPORT -->
     <div class="tab-content" id="tabReport">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
             <h1>📄 प्रगति प्रतिवेदन</h1>
@@ -285,11 +269,7 @@
     </div>
 </div>
 
-<!-- ============================================ -->
 <!-- MODALS -->
-<!-- ============================================ -->
-
-<!-- PROJECT MODAL -->
 <div class="modal" id="projectModal">
     <div class="modal-box">
         <h2 id="modalTitle">नयाँ कार्यक्रम</h2>
@@ -351,7 +331,6 @@
     </div>
 </div>
 
-<!-- DETAIL MODAL -->
 <div class="modal" id="detailModal">
     <div class="modal-box">
         <h2 id="detailTitle">📄 विवरण</h2>
@@ -362,7 +341,6 @@
     </div>
 </div>
 
-<!-- EXPENSE MODAL -->
 <div class="modal" id="expenseModal">
     <div class="modal-box">
         <h2 id="expenseModalTitle">💰 खर्च प्रविष्टि</h2>
@@ -391,7 +369,6 @@
     </div>
 </div>
 
-<!-- USER MODAL -->
 <div class="modal" id="userModal">
     <div class="modal-box">
         <h2>👥 प्रयोगकर्ता व्यवस्थापन</h2>
@@ -414,21 +391,20 @@
     </div>
 </div>
 
-<!-- BENEFICIARY MODAL -->
 <div id="beneficiaryModal" class="modal"></div>
 
-<!-- ============================================ -->
-<!-- JAVASCRIPT -->
-<!-- ============================================ -->
 <script>
 // ============================================
-// SUPABASE CONFIG - नयाँ URL र Anon Key
+// SUPABASE CONFIG
 // ============================================
+// ⚠️ यहाँ आफ्नो Supabase URL र Anon Key हाल्नुहोस् ⚠️
 const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5';
 
+// Supabase client initialize
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 console.log('✅ Supabase Client Ready');
+console.log('🔗 URL:', SUPABASE_URL);
 
 // ============================================
 // APP STATE
@@ -467,7 +443,7 @@ function closeModal(id) {
 }
 
 // ============================================
-// SUPABASE DATABASE FUNCTIONS
+// DATABASE FUNCTIONS
 // ============================================
 
 // AUTHENTICATION
@@ -478,17 +454,27 @@ async function db_authenticate(username, password) {
             .from('users')
             .select('*')
             .eq('username', username)
-            .eq('password', password)
-            .maybeSingle();
+            .eq('password', password);
+        
+        console.log('📦 Data from Supabase:', data);
+        console.log('❌ Error:', error);
         
         if (error) {
             console.error('❌ Auth error:', error);
+            document.getElementById('loginError').textContent = '❌ Database error: ' + error.message;
             return null;
         }
-        console.log('✅ Auth success:', data);
-        return data;
+        
+        if (data && data.length > 0) {
+            console.log('✅ User found:', data[0]);
+            return data[0];
+        } else {
+            console.log('❌ User not found');
+            return null;
+        }
     } catch (err) {
         console.error('❌ Auth exception:', err);
+        document.getElementById('loginError').textContent = '❌ Connection error: ' + err.message;
         return null;
     }
 }
