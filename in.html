@@ -1072,6 +1072,7 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE
 // ========================================================================
 let currentUser = null;
 let currentUserRole = 'user';
+let currentUserId = null;
 let projects = [];
 let notifications = [];
 let unreadCount = 0;
@@ -1135,13 +1136,13 @@ document.addEventListener('click', function(e) {
 });
 
 async function loadNotifications() {
-    if (!currentUser) return;
+    if (!currentUserId) return;
     
     try {
         const { data, error } = await supabase
             .from('notifications')
             .select('*')
-            .eq('user_id', currentUser.id)
+            .eq('user_id', currentUserId)
             .order('created_at', { ascending: false })
             .limit(50);
 
@@ -1258,7 +1259,7 @@ async function sendNotification(userId, title, message, type = 'general', link =
 
         if (error) throw error;
         
-        if (currentUser && userId === currentUser.id) {
+        if (currentUserId && userId === currentUserId) {
             notifications.unshift(data[0]);
             unreadCount++;
             updateBadge();
@@ -1314,7 +1315,7 @@ function setupNotificationSubscription() {
         notificationSubscription.unsubscribe();
     }
 
-    if (!currentUser) return;
+    if (!currentUserId) return;
 
     notificationSubscription = supabase
         .channel('notifications-channel')
@@ -1324,7 +1325,7 @@ function setupNotificationSubscription() {
                 event: 'INSERT',
                 schema: 'public',
                 table: 'notifications',
-                filter: `user_id=eq.${currentUser.id}`
+                filter: `user_id=eq.${currentUserId}`
             },
             (payload) => {
                 const newNotif = payload.new;
@@ -1359,15 +1360,14 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         const { data: userData, error: userError } = await supabase
             .from('users')
             .select('*')
-            .eq('id', data.user.id)
+            .eq('email', email)
             .single();
 
         if (userError) {
-            // If user not in users table, create entry
+            // If user not in users table, create entry with BIGINT id
             const { data: newUser, error: createError } = await supabase
                 .from('users')
                 .insert({
-                    id: data.user.id,
                     email: data.user.email,
                     username: data.user.email.split('@')[0],
                     role: 'user'
@@ -1391,6 +1391,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             };
         }
         
+        currentUserId = currentUser.id;
         currentUserRole = currentUser.role;
 
         document.getElementById('loginError').textContent = '';
@@ -1422,6 +1423,7 @@ async function logout() {
             notificationSubscription = null;
         }
         currentUser = null;
+        currentUserId = null;
         currentUserRole = 'user';
         document.getElementById('mainDashboard').style.display = 'none';
         document.getElementById('loginModal').classList.add('show');
@@ -1853,7 +1855,7 @@ document.getElementById('projectForm').addEventListener('submit', async function
     showToast('✅ कार्यक्रम सुरक्षित गरियो!');
 
     await sendNotificationToOthers(
-        currentUser.id,
+        currentUserId,
         `${isEdit ? 'सम्पादन' : 'नयाँ'} कार्यक्रम`,
         `${currentUser.username} ले "${name}" ${isEdit ? 'सम्पादन' : 'थप'} गरे।`,
         'project',
@@ -1876,7 +1878,7 @@ async function deleteProject(id) {
         showToast('🗑️ कार्यक्रम मेटियो');
         
         await sendNotificationToOthers(
-            currentUser.id,
+            currentUserId,
             'कार्यक्रम मेटियो',
             `${currentUser.username} ले "${name}" मेटे।`,
             'project',
@@ -1961,7 +1963,7 @@ async function saveExpense() {
     showToast('✅ खर्च थपियो!');
 
     await sendNotificationToOthers(
-        currentUser.id,
+        currentUserId,
         'नयाँ खर्च',
         `${currentUser.username} ले "${p.name}" मा रु. ${amount.toLocaleString()} खर्च थपे।`,
         'expense',
@@ -2116,14 +2118,16 @@ async function addUser() {
 
         if (error) throw error;
 
-        await supabase
+        // Insert into users table with BIGINT id (auto-generated)
+        const { error: insertError } = await supabase
             .from('users')
             .insert({
-                id: data.user.id,
                 email: email,
                 username: email.split('@')[0],
                 role: role
             });
+
+        if (insertError) throw insertError;
 
         document.getElementById('newEmail').value = '';
         document.getElementById('newPassword').value = '';
@@ -2131,7 +2135,7 @@ async function addUser() {
         showToast('✅ प्रयोगकर्ता थपियो!');
         
         await sendNotificationToOthers(
-            currentUser.id,
+            currentUserId,
             'नयाँ प्रयोगकर्ता',
             `${currentUser.username} ले नयाँ प्रयोगकर्ता ${email} थपे।`,
             'user',
@@ -2147,6 +2151,7 @@ async function deleteUser(userId) {
     if(!confirm('प्रयोगकर्ता मेट्ने?')) return;
     
     try {
+        // Delete from users table
         await supabase.from('users').delete().eq('id', userId);
         await renderUserList();
         showToast('🗑️ प्रयोगकर्ता मेटियो');
@@ -2338,16 +2343,17 @@ document.getElementById('loginModal').classList.add('show');
             const { data: userData, error: userError } = await supabase
                 .from('users')
                 .select('*')
-                .eq('id', data.session.user.id)
+                .eq('email', data.session.user.email)
                 .single();
 
             if (!userError && userData) {
                 currentUser = {
-                    id: data.session.user.id,
-                    email: data.session.user.email,
+                    id: userData.id,
+                    email: userData.email,
                     role: userData.role || 'user',
-                    username: userData.username || data.session.user.email.split('@')[0]
+                    username: userData.username || userData.email.split('@')[0]
                 };
+                currentUserId = currentUser.id;
                 currentUserRole = currentUser.role;
 
                 document.getElementById('loginModal').classList.remove('show');
@@ -2369,7 +2375,7 @@ document.getElementById('loginModal').classList.add('show');
 })();
 
 console.log('📌 Supabase URL:', SUPABASE_URL);
-console.log('🔔 Notification system ready!');
+console.log('🔔 Notification system ready with BIGINT user_id!');
 </script>
 </body>
 </html>
