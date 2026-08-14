@@ -154,7 +154,9 @@
 </head>
 <body>
 
+<!-- ============================================ -->
 <!-- LOGIN MODAL -->
+<!-- ============================================ -->
 <div class="modal login-modal show" id="loginModal">
     <div class="modal-box">
         <div class="logo">🔐</div>
@@ -176,8 +178,12 @@
     </div>
 </div>
 
+<!-- ============================================ -->
 <!-- MAIN DASHBOARD -->
+<!-- ============================================ -->
 <div class="container" id="mainDashboard" style="display:none;">
+    
+    <!-- HEADER -->
     <div class="login-header">
         <div class="user-info">
             👤 <span id="displayUsername">User</span> 
@@ -189,25 +195,30 @@
         </div>
     </div>
 
+    <!-- TABS -->
     <div class="tabs">
         <button class="active" data-tab="tabDashboard">📊 ड्यासबोर्ड</button>
-        <button data-tab="tabReport">📄 प्रतिवेदन (Report)</button>
+        <button data-tab="tabReport">📄 प्रतिवेदन</button>
     </div>
 
+    <!-- ========================================== -->
     <!-- TAB 1: DASHBOARD -->
+    <!-- ========================================== -->
     <div class="tab-content active" id="tabDashboard">
         <h1>📊 रोजगार, सीप तथा उद्यमशीलता शाखा</h1>
-        <div class="subtitle">कार्यक्रम कार्यान्वयन स्थिति · Programme Tracking & Monitoring</div>
+        <div class="subtitle">कार्यक्रम कार्यान्वयन स्थिति</div>
 
+        <!-- SUMMARY CARDS -->
         <div class="cards" id="summaryCards">
             <div class="card success"><div class="label">कुल बजेट</div><div class="value" id="totalBudget">०</div><div class="sub">रु.</div></div>
             <div class="card info"><div class="label">कुल खर्च</div><div class="value" id="totalExp">०</div><div class="sub">रु.</div></div>
             <div class="card warning"><div class="label">बाँकी रकम</div><div class="value" id="totalBalance">०</div><div class="sub">रु.</div></div>
-            <div class="card"><div class="label">कार्यक्रम संख्या</div><div class="value" id="totalProjects">०</div><div class="sub">वटा</div></div>
+            <div class="card"><div class="label">कार्यक्रम</div><div class="value" id="totalProjects">०</div><div class="sub">वटा</div></div>
             <div class="card danger"><div class="label">सन्चालित</div><div class="value" id="activeProjects">०</div><div class="sub">वटा</div></div>
-            <div class="card purple"><div class="label">कुल लाभग्राही</div><div class="value" id="totalBeneficiaries">०</div><div class="sub">जना</div></div>
+            <div class="card purple"><div class="label">लाभग्राही</div><div class="value" id="totalBeneficiaries">०</div><div class="sub">जना</div></div>
         </div>
 
+        <!-- FILTERS -->
         <div class="filters">
             <label>प्रकृति:</label>
             <select id="filterCategory"><option value="">सबै</option></select>
@@ -217,45 +228,50 @@
             <input type="text" id="filterSearch" placeholder="कार्यक्रमको नाम..." />
             <button class="btn" onclick="applyFilters()">🔍 फिल्टर</button>
             <button class="btn btn-add" id="btnAddProject" onclick="openAddModal()">➕ नयाँ कार्यक्रम</button>
-            <button class="btn btn-report" onclick="switchTab('tabReport')">📄 प्रतिवेदन हेर्नुहोस्</button>
+            <button class="btn btn-report" onclick="switchTab('tabReport')">📄 प्रतिवेदन</button>
         </div>
 
+        <!-- ADMIN PANEL -->
         <div class="admin-toggle" id="adminPanel">
-            <h4 style="color:#6a1b9a;margin-bottom:10px;">🔧 Admin Control Panel</h4>
+            <h4 style="color:#6a1b9a;margin-bottom:10px;">🔧 Admin Panel</h4>
             <div style="display:flex;flex-wrap:wrap;gap:8px;">
-                <button class="btn-admin-action" onclick="openUserManagement()">👥 प्रयोगकर्ता व्यवस्थापन</button>
-                <button class="btn-admin-action btn-success" onclick="exportData()">📥 डाटा निर्यात (JSON)</button>
+                <button class="btn-admin-action" onclick="openUserManagement()">👥 प्रयोगकर्ता</button>
+                <button class="btn-admin-action btn-success" onclick="exportData()">📥 निर्यात</button>
             </div>
         </div>
 
+        <!-- CHARTS -->
         <div class="row">
-            <div class="chart-box"><h3>📈 बजेट विनियोजन (शीर्ष ८)</h3><canvas id="budgetChart"></canvas></div>
-            <div class="chart-box"><h3>📊 खर्चको अवस्था</h3><canvas id="statusChart"></canvas></div>
+            <div class="chart-box"><h3>📈 बजेट विनियोजन</h3><canvas id="budgetChart"></canvas></div>
+            <div class="chart-box"><h3>📊 कार्यक्रम स्थिति</h3><canvas id="statusChart"></canvas></div>
         </div>
 
+        <!-- TABLE -->
         <div class="table-wrap">
-            <h3><span>📋 कार्यक्रमहरूको सूची</span><span style="font-size:12px;font-weight:400;color:#777;">जिम्मेवार व्यक्ति सहित</span></h3>
+            <h3><span>📋 कार्यक्रमहरूको सूची</span></h3>
             <table>
-                <thead><tr><th>क्र.स</th><th>कार्यक्रमको नाम</th><th>प्रकृति</th><th>बजेट (रु.)</th><th>खर्च (रु.)</th><th>प्रगति</th><th>समय</th><th>जिम्मेवार व्यक्ति</th><th>स्थिति</th><th>कार्य</th></tr></thead>
-                <tbody id="projectTableBody"><tr><td colspan="10" class="empty-msg">कृपया "नयाँ कार्यक्रम" थप्नुहोस् वा डाटा लोड हुँदै...</td></tr></tbody>
+                <thead><tr><th>क्र.स</th><th>कार्यक्रम</th><th>प्रकृति</th><th>बजेट</th><th>खर्च</th><th>प्रगति</th><th>समय</th><th>जिम्मेवार</th><th>स्थिति</th><th>कार्य</th></tr></thead>
+                <tbody id="projectTableBody"><tr><td colspan="10" class="empty-msg">लोड हुँदै...</td></tr></tbody>
             </table>
         </div>
     </div>
 
+    <!-- ========================================== -->
     <!-- TAB 2: REPORT -->
+    <!-- ========================================== -->
     <div class="tab-content" id="tabReport">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
-            <h1>📄 रोजगार सेवा केन्द्र - कार्यक्रम प्रगति प्रतिवेदन</h1>
+            <h1>📄 प्रगति प्रतिवेदन</h1>
             <div class="report-actions" style="margin:0;">
-                <button class="btn-print" onclick="window.print()">🖨️ प्रिन्ट गर्नुहोस्</button>
-                <button class="btn-word" onclick="exportReportWord()">📄 Word मा निर्यात</button>
+                <button class="btn-print" onclick="window.print()">🖨️ प्रिन्ट</button>
+                <button class="btn-word" onclick="exportReportWord()">📄 Word</button>
             </div>
         </div>
         
         <div class="date-filter">
             <label>📅 मिति दायरा:</label>
             <input type="date" id="reportFromDate" />
-            <span style="color:#888;">देखि</span>
+            <span>देखि</span>
             <input type="date" id="reportToDate" />
             <button class="btn" onclick="generateDateRangeReport()" style="background:#2e7d32;">📊 रिपोर्ट</button>
             <button class="btn" onclick="resetDateRangeReport()" style="background:#888;">↺ रिसेट</button>
@@ -263,24 +279,31 @@
         </div>
         
         <div id="reportContent">
-            <div class="empty-msg">कृपया मिति चयन गरी "रिपोर्ट हेर्नुहोस्" मा क्लिक गर्नुहोस्।</div>
+            <div class="empty-msg">कृपया "रिपोर्ट" मा क्लिक गर्नुहोस्।</div>
         </div>
     </div>
 </div>
 
+<!-- ============================================ -->
+<!-- MODALS -->
+<!-- ============================================ -->
+
 <!-- PROJECT MODAL -->
 <div class="modal" id="projectModal">
     <div class="modal-box">
-        <h2 id="modalTitle">नयाँ कार्यक्रम थप्नुहोस्</h2>
+        <h2 id="modalTitle">नयाँ कार्यक्रम</h2>
         <form id="projectForm">
             <input type="hidden" id="editId" value="">
             <label>कार्यक्रमको नाम *</label>
             <input type="text" id="fName" required placeholder="जस्तै: आन्तरिक रोजगार सिर्जना" />
             <label>प्रकृति</label>
             <select id="fCategory">
-                <option value="रोजगारी">रोजगारी</option><option value="तालिम">तालिम</option>
-                <option value="अनुसन्धान">अनुसन्धान</option><option value="प्रवर्द्धन">प्रवर्द्धन</option>
-                <option value="उद्यमशीलता">उद्यमशीलता</option><option value="अन्य">अन्य</option>
+                <option value="रोजगारी">रोजगारी</option>
+                <option value="तालिम">तालिम</option>
+                <option value="अनुसन्धान">अनुसन्धान</option>
+                <option value="प्रवर्द्धन">प्रवर्द्धन</option>
+                <option value="उद्यमशीलता">उद्यमशीलता</option>
+                <option value="अन्य">अन्य</option>
             </select>
             <label>कुल बजेट (रु.) *</label>
             <input type="number" id="fBudget" required placeholder="जस्तै: 1100000" />
@@ -292,7 +315,7 @@
                 <option value="सन्चालित">सन्चालित</option>
                 <option value="सम्पन्न">सम्पन्न</option>
             </select>
-            <hr style="margin:12px 0;border-color:#eee;" />
+            <hr />
             <h4 style="color:#1a3c5e;font-size:14px;">👤 जिम्मेवार व्यक्तिहरू</h4>
             <label>जिम्मेवार व्यक्ति</label>
             <input type="text" id="fResponsible" placeholder="नाम, पद" />
@@ -300,7 +323,7 @@
             <input type="text" id="fAssistant" placeholder="नाम, पद" />
             <label>अख्तियार प्राप्त व्यक्ति</label>
             <input type="text" id="fAuthorized" placeholder="नाम, पद" />
-            <hr style="margin:12px 0;border-color:#eee;" />
+            <hr />
             <h4 style="color:#1a3c5e;font-size:14px;">📋 कार्य विवरण</h4>
             <label>गर्नुपर्ने काम</label>
             <textarea id="fActivities" rows="2"></textarea>
@@ -308,20 +331,20 @@
             <textarea id="fMethod" rows="2"></textarea>
             <label>उपलब्धी</label>
             <textarea id="fOutput" rows="2"></textarea>
-            <hr style="margin:12px 0;border-color:#eee;" />
-            <h4 style="color:#1a3c5e;font-size:14px;">👥 लाभग्राही विवरण</h4>
+            <hr />
+            <h4 style="color:#1a3c5e;font-size:14px;">👥 लाभग्राही</h4>
             <div class="beneficiary-grid">
                 <div class="b-item"><label>👨 पुरुष:</label><input type="number" id="fBeneficiaryMale" value="0" min="0" /></div>
                 <div class="b-item"><label>👩 महिला:</label><input type="number" id="fBeneficiaryFemale" value="0" min="0" /></div>
                 <div class="b-item"><label>🧑‍🦱 दलित:</label><input type="number" id="fBeneficiaryDalit" value="0" min="0" /></div>
                 <div class="b-item"><label>🧑‍🦰 जनजाति:</label><input type="number" id="fBeneficiaryJanajati" value="0" min="0" /></div>
-                <div class="b-item"><label>♿ अपाङ्गता भएका:</label><input type="number" id="fBeneficiaryDisabled" value="0" min="0" /></div>
-                <div class="b-item"><label>✈️ वैदेशिक रोजगारबाट फर्केका:</label><input type="number" id="fBeneficiaryReturnee" value="0" min="0" /></div>
-                <div class="b-item"><label>🚀 नयाँ उद्यमी:</label><input type="number" id="fBeneficiaryEntrepreneur" value="0" min="0" /></div>
+                <div class="b-item"><label>♿ अपाङ्गता:</label><input type="number" id="fBeneficiaryDisabled" value="0" min="0" /></div>
+                <div class="b-item"><label>✈️ फर्केका:</label><input type="number" id="fBeneficiaryReturnee" value="0" min="0" /></div>
+                <div class="b-item"><label>🚀 उद्यमी:</label><input type="number" id="fBeneficiaryEntrepreneur" value="0" min="0" /></div>
             </div>
             <div class="modal-btns">
                 <button type="button" class="cancel-btn" onclick="closeModal('projectModal')">रद्द</button>
-                <button type="submit" class="save-btn">💾 सुरक्षित गर्नुहोस्</button>
+                <button type="submit" class="save-btn">💾 सुरक्षित</button>
             </div>
         </form>
     </div>
@@ -330,10 +353,10 @@
 <!-- DETAIL MODAL -->
 <div class="modal" id="detailModal">
     <div class="modal-box">
-        <h2 id="detailTitle">📄 कार्यक्रमको पूर्ण विवरण</h2>
+        <h2 id="detailTitle">📄 विवरण</h2>
         <div id="detailContent"></div>
         <div class="modal-btns">
-            <button class="cancel-btn" onclick="closeModal('detailModal')">बन्द गर्नुहोस्</button>
+            <button class="cancel-btn" onclick="closeModal('detailModal')">बन्द</button>
         </div>
     </div>
 </div>
@@ -343,7 +366,7 @@
     <div class="modal-box">
         <h2 id="expenseModalTitle">💰 खर्च प्रविष्टि</h2>
         <div style="background:#f5f7fa;padding:10px;border-radius:6px;margin-bottom:12px;">
-            <strong>कार्यक्रम:</strong> <span style="color:#1a3c5e;" id="expProjectDisplay">-</span>
+            <strong>कार्यक्रम:</strong> <span id="expProjectDisplay">-</span>
         </div>
         <input type="hidden" id="expProjectId" value="">
         <label>खर्चको शीर्षक *</label>
@@ -360,9 +383,9 @@
             <div id="expenseTotalDisplay">जम्मा खर्च: रु. ०</div>
         </div>
         <div class="modal-btns">
-            <button type="button" class="cancel-btn" style="background:#d32f2f;color:#fff;" onclick="deleteAllExpenses()">🗑️ सबै खर्च मेट्नुहोस्</button>
+            <button type="button" class="cancel-btn" style="background:#d32f2f;color:#fff;" onclick="deleteAllExpenses()">🗑️ सबै मेट्नुहोस्</button>
             <button type="button" class="cancel-btn" onclick="closeModal('expenseModal')">बन्द</button>
-            <button type="button" class="save-btn" onclick="saveExpense()">💰 खर्च थप्नुहोस्</button>
+            <button type="button" class="save-btn" onclick="saveExpense()">💰 थप्नुहोस्</button>
         </div>
     </div>
 </div>
@@ -393,14 +416,16 @@
 <!-- BENEFICIARY MODAL -->
 <div class="modal" id="beneficiaryModal"></div>
 
+<!-- ============================================ -->
+<!-- JAVASCRIPT -->
+<!-- ============================================ -->
 <script>
 // ============================================
-// SUPABASE CONFIG - तपाईंको credentials
+// SUPABASE CONFIG
 // ============================================
 const SUPABASE_URL = 'https://lyzxsqussxalfpqejelv.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_KUO0ydmJWPTFhCXiz9Ph3g_aqw5qRmA';
 
-// Supabase Client
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 console.log('✅ Supabase Client Ready');
 
@@ -435,12 +460,8 @@ function isAdmin() {
     return currentUser && currentUser.role === 'admin';
 }
 
-function formatDateToNepali(dateStr) {
-    if (!dateStr) return '-';
-    try {
-        const d = new Date(dateStr);
-        return d.toLocaleDateString('ne-NP', { year: 'numeric', month: 'long', day: 'numeric' });
-    } catch(e) { return dateStr; }
+function closeModal(id) { 
+    document.getElementById(id).classList.remove('show'); 
 }
 
 // ============================================
@@ -450,7 +471,6 @@ function formatDateToNepali(dateStr) {
 // AUTHENTICATION
 async function db_authenticate(username, password) {
     try {
-        console.log('🔍 Authenticating:', username);
         const { data, error } = await supabase
             .from('users')
             .select('*')
@@ -459,13 +479,12 @@ async function db_authenticate(username, password) {
             .maybeSingle();
         
         if (error) {
-            console.log('❌ Auth error:', error);
+            console.error('Auth error:', error);
             return null;
         }
-        console.log('✅ Auth success:', data);
         return data;
     } catch (err) {
-        console.error('❌ Auth exception:', err);
+        console.error('Auth exception:', err);
         return null;
     }
 }
@@ -479,12 +498,12 @@ async function db_getProjects() {
             .order('id', { ascending: true });
         
         if (error) {
-            console.error('❌ Error fetching projects:', error);
+            console.error('Error fetching projects:', error);
             return [];
         }
         return data || [];
     } catch (err) {
-        console.error('❌ Exception fetching projects:', err);
+        console.error('Exception fetching projects:', err);
         return [];
     }
 }
@@ -513,7 +532,7 @@ async function db_saveProject(project) {
                 .single();
             
             if (error) {
-                console.error('❌ Error updating project:', error);
+                console.error('Error updating project:', error);
                 return null;
             }
             return data;
@@ -537,13 +556,13 @@ async function db_saveProject(project) {
                 .single();
             
             if (error) {
-                console.error('❌ Error inserting project:', error);
+                console.error('Error inserting project:', error);
                 return null;
             }
             return data;
         }
     } catch (err) {
-        console.error('❌ Exception saving project:', err);
+        console.error('Exception saving project:', err);
         return null;
     }
 }
@@ -556,12 +575,12 @@ async function db_deleteProject(id) {
             .eq('id', id);
         
         if (error) {
-            console.error('❌ Error deleting project:', error);
+            console.error('Error deleting project:', error);
             return false;
         }
         return true;
     } catch (err) {
-        console.error('❌ Exception deleting project:', err);
+        console.error('Exception deleting project:', err);
         return false;
     }
 }
@@ -576,12 +595,12 @@ async function db_getBeneficiary(projectId) {
             .maybeSingle();
         
         if (error) {
-            console.error('❌ Error fetching beneficiary:', error);
+            console.error('Error fetching beneficiary:', error);
             return null;
         }
         return data;
     } catch (err) {
-        console.error('❌ Exception fetching beneficiary:', err);
+        console.error('Exception fetching beneficiary:', err);
         return null;
     }
 }
@@ -605,12 +624,12 @@ async function db_saveBeneficiary(projectId, beneficiary) {
             .single();
         
         if (error) {
-            console.error('❌ Error saving beneficiary:', error);
+            console.error('Error saving beneficiary:', error);
             return null;
         }
         return data;
     } catch (err) {
-        console.error('❌ Exception saving beneficiary:', err);
+        console.error('Exception saving beneficiary:', err);
         return null;
     }
 }
@@ -625,12 +644,12 @@ async function db_getExpenses(projectId) {
             .order('id', { ascending: true });
         
         if (error) {
-            console.error('❌ Error fetching expenses:', error);
+            console.error('Error fetching expenses:', error);
             return [];
         }
         return data || [];
     } catch (err) {
-        console.error('❌ Exception fetching expenses:', err);
+        console.error('Exception fetching expenses:', err);
         return [];
     }
 }
@@ -650,12 +669,12 @@ async function db_addExpense(projectId, expense) {
             .single();
         
         if (error) {
-            console.error('❌ Error adding expense:', error);
+            console.error('Error adding expense:', error);
             return null;
         }
         return data;
     } catch (err) {
-        console.error('❌ Exception adding expense:', err);
+        console.error('Exception adding expense:', err);
         return null;
     }
 }
@@ -668,12 +687,12 @@ async function db_deleteAllExpenses(projectId) {
             .eq('project_id', projectId);
         
         if (error) {
-            console.error('❌ Error deleting expenses:', error);
+            console.error('Error deleting expenses:', error);
             return false;
         }
         return true;
     } catch (err) {
-        console.error('❌ Exception deleting expenses:', err);
+        console.error('Exception deleting expenses:', err);
         return false;
     }
 }
@@ -687,12 +706,12 @@ async function db_getUsers() {
             .order('id', { ascending: true });
         
         if (error) {
-            console.error('❌ Error fetching users:', error);
+            console.error('Error fetching users:', error);
             return [];
         }
         return data || [];
     } catch (err) {
-        console.error('❌ Exception fetching users:', err);
+        console.error('Exception fetching users:', err);
         return [];
     }
 }
@@ -706,12 +725,12 @@ async function db_addUser(username, password, role) {
             .single();
         
         if (error) {
-            console.error('❌ Error adding user:', error);
+            console.error('Error adding user:', error);
             return null;
         }
         return data;
     } catch (err) {
-        console.error('❌ Exception adding user:', err);
+        console.error('Exception adding user:', err);
         return null;
     }
 }
@@ -724,18 +743,18 @@ async function db_deleteUser(id) {
             .eq('id', id);
         
         if (error) {
-            console.error('❌ Error deleting user:', error);
+            console.error('Error deleting user:', error);
             return false;
         }
         return true;
     } catch (err) {
-        console.error('❌ Exception deleting user:', err);
+        console.error('Exception deleting user:', err);
         return false;
     }
 }
 
 // ============================================
-// LOAD DATA FROM SUPABASE
+// LOAD DATA
 // ============================================
 async function loadAllData() {
     try {
@@ -770,7 +789,7 @@ async function loadAllData() {
             }
         }
 
-        console.log('✅ Loaded', projects.length, 'projects from Supabase');
+        console.log('✅ Loaded', projects.length, 'projects');
         return true;
     } catch (error) {
         console.error('❌ Error loading data:', error);
@@ -800,7 +819,7 @@ function renderTable(filtered) {
     const tbody = document.getElementById('projectTableBody');
     const list = filtered || projects;
     if(list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" class="empty-msg">कुनै कार्यक्रम फेला परेन</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" class="empty-msg">कुनै कार्यक्रम छैन</td></tr>`;
         return;
     }
     let html = '';
@@ -808,9 +827,7 @@ function renderTable(filtered) {
         const totalExp = getTotalExpenses(p);
         const progress = p.budget > 0 ? Math.min(100, Math.round((totalExp / p.budget) * 100)) : 0;
         const statusClass = p.status === 'सन्चालित' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending');
-        let personHtml = '';
-        if(p.responsible) personHtml += `<div><span class="label">जिम्मेवार:</span> ${p.responsible}</div>`;
-        if(!personHtml) personHtml = '<span style="color:#999;">-</span>';
+        let personHtml = p.responsible ? `<div><span class="label">जिम्मेवार:</span> ${p.responsible}</div>` : '<span style="color:#999;">-</span>';
         let actionsHtml = '';
         actionsHtml += `<button class="view-btn" onclick="openDetailView(${p.id})">📄</button>`;
         actionsHtml += `<button class="expense-btn" onclick="openExpenseModal(${p.id})">💰</button>`;
@@ -821,7 +838,7 @@ function renderTable(filtered) {
         }
         html += `<tr>
             <td>${idx+1}</td>
-            <td><strong>${p.name}</strong><br><span style="font-size:10px;color:#888;">${p.activities ? p.activities.slice(0,30)+'...' : ''}</span></td>
+            <td><strong>${p.name}</strong></td>
             <td>${p.category || 'अन्य'}</td>
             <td>${(p.budget||0).toLocaleString()}</td>
             <td>${totalExp.toLocaleString()}</td>
@@ -924,7 +941,7 @@ function switchTab(tabId) {
     document.getElementById(tabId).classList.add('active');
     document.querySelector(`.tabs button[data-tab="${tabId}"]`).classList.add('active');
     if(tabId === 'tabReport') {
-        if (document.getElementById('reportContent').innerHTML.includes('कृपया मिति चयन')) {
+        if (document.getElementById('reportContent').innerHTML.includes('कृपया')) {
             generateReport(projects);
         }
     }
@@ -933,8 +950,6 @@ function switchTab(tabId) {
 document.querySelectorAll('.tabs button').forEach(btn => {
     btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
 });
-
-function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
 // ============================================
 // PROJECT CRUD
@@ -1026,9 +1041,9 @@ document.getElementById('projectForm').addEventListener('submit', async function
         closeModal('projectModal');
         renderAll();
         applyFilters();
-        alert('✅ कार्यक्रम सुरक्षित भयो!');
+        alert('✅ कार्यक्रम सुरक्षित!');
     } else {
-        alert('❌ कार्यक्रम सुरक्षित गर्न सकिएन।');
+        alert('❌ सुरक्षित गर्न सकिएन।');
     }
 });
 
@@ -1157,7 +1172,7 @@ function openBeneficiaryModal(projectId) {
                 <div class="b-item"><label>🧑‍🦰 जनजाति:</label><input type="number" id="beneficiaryJanajati" value="${b.janajati || 0}" min="0" /></div>
                 <div class="b-item"><label>♿ अपाङ्गता:</label><input type="number" id="beneficiaryDisabled" value="${b.disabled || 0}" min="0" /></div>
                 <div class="b-item"><label>✈️ फर्केका:</label><input type="number" id="beneficiaryReturnee" value="${b.returnee || 0}" min="0" /></div>
-                <div class="b-item"><label>🚀 नयाँ उद्यमी:</label><input type="number" id="beneficiaryEntrepreneur" value="${b.entrepreneur || 0}" min="0" /></div>
+                <div class="b-item"><label>🚀 उद्यमी:</label><input type="number" id="beneficiaryEntrepreneur" value="${b.entrepreneur || 0}" min="0" /></div>
             </div>
             <div style="margin-top:10px;padding:10px;background:#e8f5e9;border-radius:6px;">
                 <strong>📊 कुल: <span id="beneficiaryTotal">${getTotalBeneficiaries(p)}</span> जना</strong>
@@ -1265,7 +1280,7 @@ function openDetailView(id) {
             <div class="item"><span class="dlabel">🧑‍🦰 जनजाति</span><span class="dvalue">${b.janajati || 0}</span></div>
             <div class="item"><span class="dlabel">♿ अपाङ्गता</span><span class="dvalue">${b.disabled || 0}</span></div>
             <div class="item"><span class="dlabel">✈️ फर्केका</span><span class="dvalue">${b.returnee || 0}</span></div>
-            <div class="item"><span class="dlabel">🚀 नयाँ उद्यमी</span><span class="dvalue">${b.entrepreneur || 0}</span></div>
+            <div class="item"><span class="dlabel">🚀 उद्यमी</span><span class="dvalue">${b.entrepreneur || 0}</span></div>
         </div>
         <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">📋 कार्य विवरण</h4>
         <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
@@ -1372,11 +1387,11 @@ function generateDateRangeReport() {
         return;
     }
     
+    infoSpan.textContent = `📅 ${fromDate} देखि ${toDate} सम्म`;
+    
     const from = new Date(fromDate);
     const to = new Date(toDate);
     to.setHours(23, 59, 59, 999);
-    
-    infoSpan.textContent = `📅 ${formatDateToNepali(fromDate)} देखि ${formatDateToNepali(toDate)} सम्म`;
     
     const filteredProjects = projects.filter(p => {
         if (!p.created_at) return true;
@@ -1384,7 +1399,7 @@ function generateDateRangeReport() {
         return pDate >= from && pDate <= to;
     });
     
-    generateReport(filteredProjects, fromDate, toDate);
+    generateReport(filteredProjects);
 }
 
 function resetDateRangeReport() {
@@ -1394,88 +1409,42 @@ function resetDateRangeReport() {
     generateReport(projects);
 }
 
-function generateReport(filteredProjects, fromDate, toDate) {
+function generateReport(filteredProjects) {
     const container = document.getElementById('reportContent');
     const projectList = filteredProjects || projects;
     
     if(projectList.length === 0) {
-        container.innerHTML = '<div class="empty-msg">यस मिति दायरामा कुनै कार्यक्रम फेला परेन।</div>';
+        container.innerHTML = '<div class="empty-msg">कुनै कार्यक्रम फेला परेन।</div>';
         return;
     }
 
     const totalBudget = projectList.reduce((s,p) => s + (p.budget || 0), 0);
     const totalExp = projectList.reduce((s,p) => s + getTotalExpenses(p), 0);
-    const totalBalance = totalBudget - totalExp;
     const progressPercent = totalBudget > 0 ? Math.round((totalExp / totalBudget) * 100) : 0;
-    const activeCount = projectList.filter(p => p.status === 'सन्चालित').length;
-    const completedCount = projectList.filter(p => p.status === 'सम्पन्न').length;
-    const pendingCount = projectList.filter(p => p.status === 'सुरु हुन बाँकी').length;
-
-    let totalMale = 0, totalFemale = 0, totalDalit = 0, totalJanajati = 0;
-    let totalDisabled = 0, totalReturnee = 0, totalEntrepreneur = 0;
+    
+    let totalBeneficiaries = 0;
     projectList.forEach(p => {
-        const b = p.beneficiary || getDefaultBeneficiary();
-        totalMale += b.male || 0; totalFemale += b.female || 0; totalDalit += b.dalit || 0;
-        totalJanajati += b.janajati || 0; totalDisabled += b.disabled || 0;
-        totalReturnee += b.returnee || 0; totalEntrepreneur += b.entrepreneur || 0;
+        totalBeneficiaries += getTotalBeneficiaries(p);
     });
-    const totalBeneficiaries = totalMale + totalFemale + totalDalit + totalJanajati + totalDisabled + totalReturnee + totalEntrepreneur;
-
-    const dateRangeText = (fromDate && toDate) ? 
-        ` (${formatDateToNepali(fromDate)} देखि ${formatDateToNepali(toDate)} सम्म)` : '';
 
     let reportHTML = `
         <div class="report-section">
             <div class="report-header">
                 <h2>गलकोट नगरपालिका</h2>
-                <h3>नगर कार्यपालिकाको कार्यालय</h3>
                 <h3>रोजगार, सीप तथा उद्यमशील शाखा</h3>
-                <h4>प्रगति प्रतिवेदन${dateRangeText}</h4>
+                <h4>प्रगति प्रतिवेदन</h4>
                 <p><strong>आर्थिक वर्ष :</strong> २०८३/८४</p>
-                <p><strong>प्रतिवेदन मिति :</strong> ${new Date().toLocaleDateString('ne-NP', {year:'numeric', month:'long', day:'numeric'})}</p>
-                ${fromDate && toDate ? `<p><strong>मिति दायरा :</strong> ${formatDateToNepali(fromDate)} देखि ${formatDateToNepali(toDate)} सम्म</p>` : ''}
+                <p><strong>प्रतिवेदन मिति :</strong> ${new Date().toLocaleDateString('ne-NP')}</p>
             </div>
         </div>
         <div class="report-section">
-            <h4>परिचय</h4>
-            <div class="report-introduction">
-                गलकोट नगरपालिका अन्तर्गत रोजगार सेवा केन्द्रमार्फत सञ्चालित रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रम आर्थिक वर्ष २०८१/८२ मा स्वीकृत वार्षिक कार्यक्रम तथा बजेट अनुसार सञ्चालन गरिएको हो। 
-                ${projectList.length > 0 ? `यस अवधिमा कुल ${projectList.length} वटा कार्यक्रमहरू सञ्चालन भएका छन् जसमा रु. ${totalBudget.toLocaleString()} बजेट विनियोजन गरिएको थियो। हालसम्म रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ।` : ''}
-            </div>
-        </div>
-        <div class="report-section">
-            <h4>१. कार्यक्रमको संक्षिप्त विवरण</h4>
+            <h4>कार्यक्रमको संक्षिप्त विवरण</h4>
             <div class="row-detail">
                 <div class="item"><span class="label">कुल कार्यक्रम</span><span class="value">${projectList.length} वटा</span></div>
                 <div class="item"><span class="label">स्वीकृत बजेट</span><span class="value">रु. ${totalBudget.toLocaleString()}</span></div>
                 <div class="item"><span class="label">हालसम्म खर्च</span><span class="value">रु. ${totalExp.toLocaleString()}</span></div>
-                <div class="item"><span class="label">बाँकी बजेट</span><span class="value">रु. ${totalBalance.toLocaleString()}</span></div>
                 <div class="item"><span class="label">खर्च प्रतिशत</span><span class="value">${progressPercent}%</span></div>
-                <div class="item"><span class="label">सन्चालित</span><span class="value">${activeCount} वटा</span></div>
-                <div class="item"><span class="label">सम्पन्न</span><span class="value">${completedCount} वटा</span></div>
-                <div class="item"><span class="label">सुरु हुन बाँकी</span><span class="value">${pendingCount} वटा</span></div>
-            </div>
-        </div>
-        <div class="report-section">
-            <h4>२. लाभग्राही विवरण</h4>
-            <div class="row-detail">
-                <div class="item"><span class="label">👨 पुरुष</span><span class="value">${totalMale}</span></div>
-                <div class="item"><span class="label">👩 महिला</span><span class="value">${totalFemale}</span></div>
-                <div class="item"><span class="label">🧑‍🦱 दलित</span><span class="value">${totalDalit}</span></div>
-                <div class="item"><span class="label">🧑‍🦰 जनजाति</span><span class="value">${totalJanajati}</span></div>
-                <div class="item"><span class="label">♿ अपाङ्गता</span><span class="value">${totalDisabled}</span></div>
-                <div class="item"><span class="label">✈️ फर्केका</span><span class="value">${totalReturnee}</span></div>
-                <div class="item"><span class="label">🚀 नयाँ उद्यमी</span><span class="value">${totalEntrepreneur}</span></div>
-                <div class="item"><span class="label">📊 कुल लाभग्राही</span><span class="value"><strong>${totalBeneficiaries} जना</strong></span></div>
-            </div>
-        </div>
-        <div class="report-section">
-            <h4>३. वित्तीय प्रगति</h4>
-            <div class="row-detail">
-                <div class="item"><span class="label">कुल बजेट</span><span class="value">रु. ${totalBudget.toLocaleString()}</span></div>
-                <div class="item"><span class="label">हालसम्म खर्च</span><span class="value">रु. ${totalExp.toLocaleString()}</span></div>
-                <div class="item"><span class="label">बाँकी रकम</span><span class="value">रु. ${totalBalance.toLocaleString()}</span></div>
-                <div class="item"><span class="label">खर्च प्रतिशत</span><span class="value">${progressPercent}%</span></div>
+                <div class="item"><span class="label">कुल लाभग्राही</span><span class="value">${totalBeneficiaries} जना</span></div>
             </div>
             <div style="margin-top:10px;">
                 <div class="progress-large"><div class="fill" style="width:${progressPercent}%"></div></div>
@@ -1483,14 +1452,27 @@ function generateReport(filteredProjects, fromDate, toDate) {
             </div>
         </div>
         <div class="report-section">
-            <h4>४. निष्कर्ष</h4>
-            <p>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रमको हालसम्मको वित्तीय तथा भौतिक प्रगति सन्तोषजनक रहेको देखिन्छ। कार्यक्रम अन्तर्गत स्वीकृत बजेटमध्ये रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ भने कार्यक्रमबाट ${totalBeneficiaries} जना प्रत्यक्ष लाभान्वित भएका छन्।</p>
+            <h4>कार्यक्रमहरूको सूची</h4>
+            <table class="report-table">
+                <thead><tr><th>क्र.स</th><th>कार्यक्रम</th><th>प्रकृति</th><th>बजेट</th><th>खर्च</th><th>प्रगति</th><th>स्थिति</th></tr></thead>
+                <tbody>
+    `;
+    
+    projectList.forEach((p, idx) => {
+        const exp = getTotalExpenses(p);
+        const prog = p.budget > 0 ? Math.round((exp / p.budget) * 100) : 0;
+        reportHTML += `<tr><td>${idx+1}</td><td>${p.name}</td><td>${p.category || 'अन्य'}</td><td>रु. ${(p.budget||0).toLocaleString()}</td><td>रु. ${exp.toLocaleString()}</td><td>${prog}%</td><td>${p.status}</td></tr>`;
+    });
+    
+    reportHTML += `
+                </tbody>
+            </table>
         </div>
         <div class="report-section">
             <div class="report-sign">
-                <div class="sign-block"><strong>प्रतिवेदन तयार गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
-                <div class="sign-block"><strong>प्रमाणित गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
-                <div class="sign-block"><strong>स्वीकृत गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
+                <div class="sign-block"><strong>प्रतिवेदन तयार गर्ने</strong><br>नाम : ................................<br><div class="line"></div>हस्ताक्षर</div>
+                <div class="sign-block"><strong>प्रमाणित गर्ने</strong><br>नाम : ................................<br><div class="line"></div>हस्ताक्षर</div>
+                <div class="sign-block"><strong>स्वीकृत गर्ने</strong><br>नाम : ................................<br><div class="line"></div>हस्ताक्षर</div>
             </div>
         </div>
     `;
@@ -1499,8 +1481,7 @@ function generateReport(filteredProjects, fromDate, toDate) {
 }
 
 function exportReportWord() {
-    const reportElement = document.getElementById('reportContent');
-    const reportHTML = reportElement.innerHTML;
+    const reportHTML = document.getElementById('reportContent').innerHTML;
     const fullDoc = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
         <head><meta charset="UTF-8"><title>प्रगति प्रतिवेदन</title>
@@ -1511,13 +1492,15 @@ function exportReportWord() {
             .report-header h3 { color: #2e7d32; font-size: 18px; }
             .report-section { margin-bottom: 20px; padding: 10px 0; border-bottom: 1px solid #ddd; }
             .report-section h4 { color: #1a3c5e; border-bottom: 2px solid #e0e4ea; padding-bottom: 6px; margin-bottom: 10px; font-size: 16px; }
-            .report-introduction { font-size: 14px; line-height: 1.8; text-align: justify; }
             .row-detail { display: flex; flex-wrap: wrap; gap: 10px; }
             .row-detail .item { flex: 1 1 200px; padding: 4px 0; }
             .row-detail .item .label { font-weight: 600; color: #1a3c5e; font-size: 12px; display: block; }
             .row-detail .item .value { font-size: 14px; }
             .progress-large { width: 100%; height: 16px; background: #e9ecef; border-radius: 6px; overflow: hidden; }
             .progress-large .fill { height: 100%; border-radius: 6px; background: #2e7d32; }
+            .report-table { width: 100%; border-collapse: collapse; }
+            .report-table th, .report-table td { padding: 6px 10px; border: 1px solid #ddd; }
+            .report-table th { background: #f0f4f8; }
             .report-sign { display: flex; justify-content: space-between; margin-top: 25px; padding-top: 20px; border-top: 1px solid #ddd; }
             .report-sign .sign-block { text-align: center; flex: 1; }
             .report-sign .sign-block .line { margin-top: 30px; border-top: 1px solid #333; width: 180px; margin-left: auto; margin-right: auto; }
@@ -1553,7 +1536,7 @@ document.getElementById('loginForm').onsubmit = async function(e) {
         renderAll();
         console.log('✅ Login successful:', currentUser.username);
     } else {
-        document.getElementById('loginError').textContent = '❌ गलत प्रयोगकर्ता नाम वा पासवर्ड। कृपया SQL मा users table create गर्नुहोस्।';
+        document.getElementById('loginError').textContent = '❌ गलत प्रयोगकर्ता नाम वा पासवर्ड। SQL मा users table create गर्नुहोस्।';
         console.log('❌ Login failed for:', username);
     }
 };
@@ -1577,9 +1560,10 @@ document.querySelectorAll('.modal').forEach(modal => {
     });
 });
 
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Application loaded!');
     console.log('🔑 Supabase URL:', SUPABASE_URL);
+    console.log('📋 Login with: admin / admin123');
 });
 </script>
 </body>
