@@ -12,9 +12,16 @@
         .container { max-width: 1500px; margin: 0 auto; }
         h1 { color: #1a3c5e; border-left: 5px solid #2e7d32; padding-left: 15px; margin-bottom: 10px; font-size: 26px; }
         .subtitle { color: #555; margin-bottom: 20px; font-size: 14px; }
+        .login-box { background: #fff; padding: 40px; border-radius: 16px; max-width: 400px; margin: 50px auto; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .login-box h2 { text-align: center; color: #1a3c5e; margin-bottom: 10px; }
+        .login-box .logo { text-align: center; font-size: 48px; margin-bottom: 10px; }
+        .login-box input { width: 100%; padding: 10px 14px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .login-box button { width: 100%; padding: 12px; background: #2e7d32; color: #fff; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .login-box button:hover { background: #1f5a22; }
+        .login-box .error { color: #d32f2f; text-align: center; margin-top: 10px; }
+        .login-box .hint { font-size: 12px; color: #888; text-align: center; margin-top: 15px; background: #f5f7fa; padding: 10px; border-radius: 6px; }
         .login-header { background: #fff; padding: 12px 20px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.06); flex-wrap: wrap; gap: 10px; }
         .login-header .user-info { font-weight: 600; color: #1a3c5e; }
-        .login-header .user-info span { color: #2e7d32; }
         .login-header .btn-logout { padding: 6px 18px; background: #d32f2f; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
         .login-header .btn-logout:hover { background: #b71c1c; }
         .login-header .role-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
@@ -94,11 +101,6 @@
         .detail-expense-list { max-height: 120px; overflow-y: auto; background: #fff; border-radius: 6px; padding: 6px 10px; border: 1px solid #e0e4ea; }
         .detail-expense-list .item { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid #f5f5f5; font-size: 12px; }
         .detail-expense-list .item .amount { font-weight: 600; color: #d32f2f; }
-        .login-modal .modal-box { max-width: 400px; }
-        .login-modal .modal-box h2 { text-align: center; color: #1a3c5e; }
-        .login-modal .modal-box .logo { text-align: center; font-size: 48px; margin-bottom: 10px; }
-        .login-error { color: #d32f2f; font-size: 13px; text-align: center; margin-top: 8px; }
-        .login-hint { font-size: 12px; color: #888; text-align: center; margin-top: 10px; background: #f5f7fa; padding: 8px; border-radius: 6px; }
         .beneficiary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f8faff; padding: 12px; border-radius: 8px; margin: 8px 0; }
         .beneficiary-grid .b-item { display: flex; align-items: center; gap: 6px; }
         .beneficiary-grid .b-item label { font-size: 12px; margin: 0; display: inline; white-space: nowrap; }
@@ -155,23 +157,19 @@
 <body>
 
 <!-- ============================================ -->
-<!-- LOGIN MODAL -->
+<!-- LOGIN PAGE -->
 <!-- ============================================ -->
-<div class="modal login-modal show" id="loginModal">
-    <div class="modal-box">
+<div id="loginPage">
+    <div class="login-box">
         <div class="logo">🔐</div>
         <h2>प्रणाली प्रवेश</h2>
         <p style="text-align:center;color:#777;font-size:14px;margin-bottom:16px;">रोजगार तथा उद्यमशीलता ड्यासबोर्ड</p>
         <form id="loginForm">
-            <label>प्रयोगकर्ता नाम (Username)</label>
-            <input type="text" id="loginUsername" placeholder="admin वा user" value="admin" required />
-            <label>पासवर्ड (Password)</label>
-            <input type="password" id="loginPassword" placeholder="पासवर्ड" value="admin123" required />
-            <div class="login-error" id="loginError"></div>
-            <div class="modal-btns" style="justify-content:center;margin-top:16px;">
-                <button type="submit" class="save-btn" style="padding:10px 40px;">🚪 Log in्</button>
-            </div>
-            <div class="login-hint">
+            <input type="text" id="loginUsername" placeholder="प्रयोगकर्ता नाम (Username)" value="admin" required />
+            <input type="password" id="loginPassword" placeholder="पासवर्ड (Password)" value="admin123" required />
+            <div class="error" id="loginError"></div>
+            <button type="submit">🚪 प्रवेश गर्नुहोस्</button>
+            <div class="hint">
                 <strong>Admin:</strong> admin / admin123 &nbsp;|&nbsp; <strong>User:</strong> user / user123
             </div>
         </form>
@@ -191,7 +189,7 @@
         </div>
         <div>
             <span style="font-size:13px;color:#888;margin-right:12px;">📅 आर्थिक वर्ष २०८३/८४</span>
-            <button class="btn-logout" onclick="logout()">🚪 Log out</button>
+            <button class="btn-logout" onclick="logout()">🚪 बाहिरिनुहोस्</button>
         </div>
     </div>
 
@@ -201,9 +199,7 @@
         <button data-tab="tabReport">📄 प्रतिवेदन</button>
     </div>
 
-    <!-- ========================================== -->
     <!-- TAB 1: DASHBOARD -->
-    <!-- ========================================== -->
     <div class="tab-content active" id="tabDashboard">
         <h1>📊 रोजगार, सीप तथा उद्यमशीलता शाखा</h1>
         <div class="subtitle">कार्यक्रम कार्यान्वयन स्थिति</div>
@@ -256,9 +252,7 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
     <!-- TAB 2: REPORT -->
-    <!-- ========================================== -->
     <div class="tab-content" id="tabReport">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
             <h1>📄 प्रगति प्रतिवेदन</h1>
@@ -471,6 +465,7 @@ function closeModal(id) {
 // AUTHENTICATION
 async function db_authenticate(username, password) {
     try {
+        console.log('🔍 Authenticating:', username);
         const { data, error } = await supabase
             .from('users')
             .select('*')
@@ -479,12 +474,13 @@ async function db_authenticate(username, password) {
             .maybeSingle();
         
         if (error) {
-            console.error('Auth error:', error);
+            console.error('❌ Auth error:', error);
             return null;
         }
+        console.log('✅ Auth success:', data);
         return data;
     } catch (err) {
-        console.error('Auth exception:', err);
+        console.error('❌ Auth exception:', err);
         return null;
     }
 }
@@ -498,12 +494,12 @@ async function db_getProjects() {
             .order('id', { ascending: true });
         
         if (error) {
-            console.error('Error fetching projects:', error);
+            console.error('❌ Error fetching projects:', error);
             return [];
         }
         return data || [];
     } catch (err) {
-        console.error('Exception fetching projects:', err);
+        console.error('❌ Exception fetching projects:', err);
         return [];
     }
 }
@@ -532,7 +528,7 @@ async function db_saveProject(project) {
                 .single();
             
             if (error) {
-                console.error('Error updating project:', error);
+                console.error('❌ Error updating project:', error);
                 return null;
             }
             return data;
@@ -556,13 +552,13 @@ async function db_saveProject(project) {
                 .single();
             
             if (error) {
-                console.error('Error inserting project:', error);
+                console.error('❌ Error inserting project:', error);
                 return null;
             }
             return data;
         }
     } catch (err) {
-        console.error('Exception saving project:', err);
+        console.error('❌ Exception saving project:', err);
         return null;
     }
 }
@@ -575,12 +571,12 @@ async function db_deleteProject(id) {
             .eq('id', id);
         
         if (error) {
-            console.error('Error deleting project:', error);
+            console.error('❌ Error deleting project:', error);
             return false;
         }
         return true;
     } catch (err) {
-        console.error('Exception deleting project:', err);
+        console.error('❌ Exception deleting project:', err);
         return false;
     }
 }
@@ -595,12 +591,12 @@ async function db_getBeneficiary(projectId) {
             .maybeSingle();
         
         if (error) {
-            console.error('Error fetching beneficiary:', error);
+            console.error('❌ Error fetching beneficiary:', error);
             return null;
         }
         return data;
     } catch (err) {
-        console.error('Exception fetching beneficiary:', err);
+        console.error('❌ Exception fetching beneficiary:', err);
         return null;
     }
 }
@@ -624,12 +620,12 @@ async function db_saveBeneficiary(projectId, beneficiary) {
             .single();
         
         if (error) {
-            console.error('Error saving beneficiary:', error);
+            console.error('❌ Error saving beneficiary:', error);
             return null;
         }
         return data;
     } catch (err) {
-        console.error('Exception saving beneficiary:', err);
+        console.error('❌ Exception saving beneficiary:', err);
         return null;
     }
 }
@@ -644,12 +640,12 @@ async function db_getExpenses(projectId) {
             .order('id', { ascending: true });
         
         if (error) {
-            console.error('Error fetching expenses:', error);
+            console.error('❌ Error fetching expenses:', error);
             return [];
         }
         return data || [];
     } catch (err) {
-        console.error('Exception fetching expenses:', err);
+        console.error('❌ Exception fetching expenses:', err);
         return [];
     }
 }
@@ -669,12 +665,12 @@ async function db_addExpense(projectId, expense) {
             .single();
         
         if (error) {
-            console.error('Error adding expense:', error);
+            console.error('❌ Error adding expense:', error);
             return null;
         }
         return data;
     } catch (err) {
-        console.error('Exception adding expense:', err);
+        console.error('❌ Exception adding expense:', err);
         return null;
     }
 }
@@ -687,12 +683,12 @@ async function db_deleteAllExpenses(projectId) {
             .eq('project_id', projectId);
         
         if (error) {
-            console.error('Error deleting expenses:', error);
+            console.error('❌ Error deleting expenses:', error);
             return false;
         }
         return true;
     } catch (err) {
-        console.error('Exception deleting expenses:', err);
+        console.error('❌ Exception deleting expenses:', err);
         return false;
     }
 }
@@ -706,12 +702,12 @@ async function db_getUsers() {
             .order('id', { ascending: true });
         
         if (error) {
-            console.error('Error fetching users:', error);
+            console.error('❌ Error fetching users:', error);
             return [];
         }
         return data || [];
     } catch (err) {
-        console.error('Exception fetching users:', err);
+        console.error('❌ Exception fetching users:', err);
         return [];
     }
 }
@@ -725,12 +721,12 @@ async function db_addUser(username, password, role) {
             .single();
         
         if (error) {
-            console.error('Error adding user:', error);
+            console.error('❌ Error adding user:', error);
             return null;
         }
         return data;
     } catch (err) {
-        console.error('Exception adding user:', err);
+        console.error('❌ Exception adding user:', err);
         return null;
     }
 }
@@ -743,12 +739,12 @@ async function db_deleteUser(id) {
             .eq('id', id);
         
         if (error) {
-            console.error('Error deleting user:', error);
+            console.error('❌ Error deleting user:', error);
             return false;
         }
         return true;
     } catch (err) {
-        console.error('Exception deleting user:', err);
+        console.error('❌ Exception deleting user:', err);
         return false;
     }
 }
@@ -1530,13 +1526,13 @@ document.getElementById('loginForm').onsubmit = async function(e) {
     if (user) {
         currentUser = user;
         document.getElementById('loginError').textContent = '';
-        document.getElementById('loginModal').classList.remove('show');
+        document.getElementById('loginPage').style.display = 'none';
         document.getElementById('mainDashboard').style.display = 'block';
         await loadAllData();
         renderAll();
         console.log('✅ Login successful:', currentUser.username);
     } else {
-        document.getElementById('loginError').textContent = '❌ गलत प्रयोगकर्ता नाम वा पासवर्ड। SQL मा users table create गर्नुहोस्।';
+        document.getElementById('loginError').textContent = '❌ गलत प्रयोगकर्ता नाम वा पासवर्ड। कृपया SQL मा users table create गर्नुहोस्।';
         console.log('❌ Login failed for:', username);
     }
 };
@@ -1545,7 +1541,7 @@ function logout() {
     if(!confirm('बाहिरिने?')) return;
     currentUser = null;
     document.getElementById('mainDashboard').style.display = 'none';
-    document.getElementById('loginModal').classList.add('show');
+    document.getElementById('loginPage').style.display = 'block';
     document.getElementById('loginUsername').value = '';
     document.getElementById('loginPassword').value = '';
     document.getElementById('loginError').textContent = '';
