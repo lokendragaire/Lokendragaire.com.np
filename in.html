@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>रोजगार तथा उद्यमशीलता ड्यासबोर्ड</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Nirmala UI', sans-serif; }
@@ -49,10 +48,6 @@
         .admin-toggle.show { display: block; }
         .admin-toggle .btn-admin-action { padding: 6px 16px; border: none; border-radius: 6px; background: #6a1b9a; color: #fff; cursor: pointer; font-weight: 600; font-size: 13px; margin-right: 8px; }
         .admin-toggle .btn-admin-action:hover { background: #4a148c; }
-        .admin-toggle .btn-danger { background: #d32f2f; }
-        .admin-toggle .btn-danger:hover { background: #b71c1c; }
-        .admin-toggle .btn-success { background: #2e7d32; }
-        .admin-toggle .btn-success:hover { background: #1f5a22; }
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
         .chart-box { background: #fff; padding: 14px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         .chart-box h3 { font-size: 14px; color: #1a3c5e; margin-bottom: 8px; }
@@ -90,8 +85,6 @@
         .modal-btns .save-btn:hover { background: #1f5a22; }
         .modal-btns .cancel-btn { background: #e0e0e0; color: #333; }
         .modal-btns .cancel-btn:hover { background: #ccc; }
-        .modal-btns .print-btn { background: #1976d2; color: #fff; }
-        .modal-btns .print-btn:hover { background: #0d47a1; }
         .empty-msg { text-align: center; color: #999; padding: 20px 0; font-size: 13px; }
         .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: #f8faff; padding: 16px; border-radius: 10px; margin: 10px 0; }
         .detail-grid .item { padding: 6px 0; border-bottom: 1px solid #edf0f5; }
@@ -106,55 +99,46 @@
         .login-modal .modal-box .logo { text-align: center; font-size: 48px; margin-bottom: 10px; }
         .login-error { color: #d32f2f; font-size: 13px; text-align: center; margin-top: 8px; }
         .login-hint { font-size: 12px; color: #888; text-align: center; margin-top: 10px; background: #f5f7fa; padding: 8px; border-radius: 6px; }
-        .progress-large { width: 100%; height: 12px; background: #e9ecef; border-radius: 6px; overflow: hidden; }
-        .progress-large .fill { height: 100%; border-radius: 6px; background: #2e7d32; transition: width 0.4s; }
+        .beneficiary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f8faff; padding: 12px; border-radius: 8px; margin: 8px 0; }
+        .beneficiary-grid .b-item { display: flex; align-items: center; gap: 6px; }
+        .beneficiary-grid .b-item label { font-size: 12px; margin: 0; display: inline; white-space: nowrap; }
+        .beneficiary-grid .b-item input { width: 70px; padding: 4px 8px; font-size: 12px; }
+        .report-section { background: #fff; border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .report-section h4 { color: #1a3c5e; border-bottom: 2px solid #e0e4ea; padding-bottom: 8px; margin-bottom: 14px; font-size: 16px; }
         .report-header { text-align: center; margin-bottom: 25px; }
         .report-header h2 { color: #1a3c5e; font-size: 22px; }
         .report-header h3 { color: #2e7d32; font-size: 18px; margin-top: 4px; }
         .report-header p { color: #555; font-size: 14px; }
-        .report-section { background: #fff; border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .report-section h4 { color: #1a3c5e; border-bottom: 2px solid #e0e4ea; padding-bottom: 8px; margin-bottom: 14px; font-size: 16px; }
-        .report-section .row-detail { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .report-section .row-detail .item { padding: 4px 0; }
-        .report-section .row-detail .item .label { font-weight: 600; color: #1a3c5e; font-size: 12px; display: block; }
-        .report-section .row-detail .item .value { font-size: 14px; color: #333; }
-        .report-section .report-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0; }
-        .report-section .report-table th { background: #f0f4f8; padding: 6px 10px; border: 1px solid #ddd; font-size: 12px; text-align: left; }
-        .report-section .report-table td { padding: 6px 10px; border: 1px solid #ddd; }
-        .report-section .report-table tr:nth-child(even) { background: #fafafa; }
-        .report-sign { display: flex; justify-content: space-between; margin-top: 25px; padding-top: 20px; border-top: 1px solid #ddd; }
-        .report-sign .sign-block { text-align: center; flex: 1; }
-        .report-sign .sign-block .line { margin-top: 30px; border-top: 1px solid #333; width: 180px; margin-left: auto; margin-right: auto; }
         .report-actions { display: flex; gap: 12px; justify-content: center; margin: 20px 0 10px; flex-wrap: wrap; }
         .report-actions button { padding: 10px 30px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.2s; }
         .report-actions .btn-print { background: #1976d2; color: #fff; }
         .report-actions .btn-print:hover { background: #0d47a1; }
         .report-actions .btn-word { background: #e65100; color: #fff; }
         .report-actions .btn-word:hover { background: #bf360c; }
+        .date-filter { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 10px 0; background: #fff; padding: 12px 16px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+        .date-filter label { font-weight: 600; font-size: 13px; color: #333; }
+        .date-filter input { padding: 6px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; background: #fafafa; }
+        .report-introduction { font-size: 14px; line-height: 1.8; color: #333; text-align: justify; padding: 4px 0; }
+        .report-sign { display: flex; justify-content: space-between; margin-top: 25px; padding-top: 20px; border-top: 1px solid #ddd; }
+        .report-sign .sign-block { text-align: center; flex: 1; }
+        .report-sign .sign-block .line { margin-top: 30px; border-top: 1px solid #333; width: 180px; margin-left: auto; margin-right: auto; }
         .report-charts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 12px 0; }
         .report-charts .chart-box { padding: 12px; background: #fafafa; border-radius: 8px; border: 1px solid #e0e4ea; }
         .report-charts .chart-box canvas { max-height: 150px; max-width: 100%; }
         .report-charts .chart-box h4 { font-size: 12px; color: #1a3c5e; text-align: center; margin-bottom: 6px; }
-        .beneficiary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f8faff; padding: 12px; border-radius: 8px; margin: 8px 0; }
-        .beneficiary-grid .b-item { display: flex; align-items: center; gap: 6px; }
-        .beneficiary-grid .b-item label { font-size: 12px; margin: 0; display: inline; white-space: nowrap; }
-        .beneficiary-grid .b-item input { width: 70px; padding: 4px 8px; font-size: 12px; }
-        .report-introduction { font-size: 14px; line-height: 1.8; color: #333; text-align: justify; padding: 4px 0; }
-        .date-filter { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 10px 0; }
-        .date-filter label { font-weight: 600; font-size: 13px; color: #333; }
-        .date-filter input { padding: 6px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; background: #fafafa; }
+        .progress-large { width: 100%; height: 12px; background: #e9ecef; border-radius: 6px; overflow: hidden; }
+        .progress-large .fill { height: 100%; border-radius: 6px; background: #2e7d32; transition: width 0.4s; }
         @media (max-width: 768px) {
             .row { grid-template-columns: 1fr; }
             .filters { flex-direction: column; align-items: stretch; }
             .filters .btn-add { margin-left: 0; }
             .login-header { flex-direction: column; align-items: stretch; text-align: center; }
             .detail-grid { grid-template-columns: 1fr; }
-            .report-section .row-detail { grid-template-columns: 1fr; }
+            .report-charts { grid-template-columns: 1fr; }
             .report-sign { flex-direction: column; gap: 20px; }
             .report-sign .sign-block .line { width: 100%; }
-            .report-charts { grid-template-columns: 1fr; }
-            .beneficiary-grid { grid-template-columns: 1fr; }
             .date-filter { flex-direction: column; align-items: stretch; }
+            .beneficiary-grid { grid-template-columns: 1fr; }
         }
         @media print {
             body { background: white; padding: 0; }
@@ -178,9 +162,9 @@
         <p style="text-align:center;color:#777;font-size:14px;margin-bottom:16px;">रोजगार तथा उद्यमशीलता ड्यासबोर्ड</p>
         <form id="loginForm">
             <label>प्रयोगकर्ता नाम (Username)</label>
-            <input type="text" id="loginUsername" placeholder="admin वा user" required />
+            <input type="text" id="loginUsername" placeholder="admin वा user" value="admin" required />
             <label>पासवर्ड (Password)</label>
-            <input type="password" id="loginPassword" placeholder="पासवर्ड" required />
+            <input type="password" id="loginPassword" placeholder="पासवर्ड" value="admin123" required />
             <div class="login-error" id="loginError"></div>
             <div class="modal-btns" style="justify-content:center;margin-top:16px;">
                 <button type="submit" class="save-btn" style="padding:10px 40px;">🚪 प्रवेश गर्नुहोस्</button>
@@ -241,8 +225,6 @@
             <div style="display:flex;flex-wrap:wrap;gap:8px;">
                 <button class="btn-admin-action" onclick="openUserManagement()">👥 प्रयोगकर्ता व्यवस्थापन</button>
                 <button class="btn-admin-action btn-success" onclick="exportData()">📥 डाटा निर्यात (JSON)</button>
-                <button class="btn-admin-action" onclick="importData()">📤 डाटा आयात (JSON)</button>
-                <input type="file" id="importFileInput" style="display:none;" accept=".json" onchange="handleImport(event)" />
             </div>
         </div>
 
@@ -266,17 +248,16 @@
             <h1>📄 रोजगार सेवा केन्द्र - कार्यक्रम प्रगति प्रतिवेदन</h1>
             <div class="report-actions" style="margin:0;">
                 <button class="btn-print" onclick="window.print()">🖨️ प्रिन्ट गर्नुहोस्</button>
-                <button class="btn-word" onclick="exportReportWord()">📄 Word (DOCX) मा निर्यात गर्नुहोस्</button>
+                <button class="btn-word" onclick="exportReportWord()">📄 Word मा निर्यात</button>
             </div>
         </div>
         
-        <!-- Date Range Filter -->
-        <div class="date-filter" style="background:#fff;padding:12px 16px;border-radius:10px;margin-bottom:16px;box-shadow:0 2px 6px rgba(0,0,0,0.06);">
-            <label>📅 मिति दायरा (Date Range):</label>
+        <div class="date-filter">
+            <label>📅 मिति दायरा:</label>
             <input type="date" id="reportFromDate" />
             <span style="color:#888;">देखि</span>
             <input type="date" id="reportToDate" />
-            <button class="btn" onclick="generateDateRangeReport()" style="background:#2e7d32;">📊 रिपोर्ट हेर्नुहोस्</button>
+            <button class="btn" onclick="generateDateRangeReport()" style="background:#2e7d32;">📊 रिपोर्ट</button>
             <button class="btn" onclick="resetDateRangeReport()" style="background:#888;">↺ रिसेट</button>
             <span id="dateRangeInfo" style="font-size:12px;color:#888;margin-left:10px;"></span>
         </div>
@@ -352,7 +333,6 @@
         <h2 id="detailTitle">📄 कार्यक्रमको पूर्ण विवरण</h2>
         <div id="detailContent"></div>
         <div class="modal-btns">
-            <button class="print-btn" onclick="printDetail()">🖨️ प्रिन्ट गर्नुहोस्</button>
             <button class="cancel-btn" onclick="closeModal('detailModal')">बन्द गर्नुहोस्</button>
         </div>
     </div>
@@ -415,14 +395,14 @@
 
 <script>
 // ============================================
-// SUPABASE CONFIG - तपाईंको आफ्नो credentials हाल्नुहोस्
+// SUPABASE CONFIG - तपाईंको credentials
 // ============================================
 const SUPABASE_URL = 'https://lyzxsqussxalfpqejelv.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_KUO0ydmJWPTFhCXiz9Ph3g_aqw5qRmA';
 
-// Supabase client initialize गर्ने
+// Supabase Client
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-console.log('✅ Supabase client initialized');
+console.log('✅ Supabase Client Ready');
 
 // ============================================
 // APP STATE
@@ -464,7 +444,7 @@ function formatDateToNepali(dateStr) {
 }
 
 // ============================================
-// DATABASE FUNCTIONS
+// SUPABASE DATABASE FUNCTIONS
 // ============================================
 
 // AUTHENTICATION
@@ -755,7 +735,7 @@ async function db_deleteUser(id) {
 }
 
 // ============================================
-// LOAD ALL DATA
+// LOAD DATA FROM SUPABASE
 // ============================================
 async function loadAllData() {
     try {
@@ -790,7 +770,7 @@ async function loadAllData() {
             }
         }
 
-        console.log('✅ Loaded', projects.length, 'projects');
+        console.log('✅ Loaded', projects.length, 'projects from Supabase');
         return true;
     } catch (error) {
         console.error('❌ Error loading data:', error);
@@ -937,10 +917,6 @@ function applyFilters() {
     });
     renderTable(filtered);
 }
-
-// ============================================
-// REST OF THE FUNCTIONS (Modal, CRUD, Report, etc.)
-// ============================================
 
 function switchTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -1304,8 +1280,6 @@ function openDetailView(id) {
     document.getElementById('detailModal').classList.add('show');
 }
 
-function printDetail() { window.print(); }
-
 // ============================================
 // USER MANAGEMENT
 // ============================================
@@ -1368,7 +1342,7 @@ async function deleteUser(id) {
 }
 
 // ============================================
-// DATA EXPORT / IMPORT
+// DATA EXPORT
 // ============================================
 function exportData() {
     if (!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
@@ -1378,40 +1352,6 @@ function exportData() {
     link.download = `dashboard_data_${new Date().toISOString().slice(0,10)}.json`;
     link.href = URL.createObjectURL(blob);
     link.click();
-}
-
-function importData() {
-    if (!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
-    document.getElementById('importFileInput').click();
-}
-
-async function handleImport(event) {
-    const file = event.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-        try {
-            const data = JSON.parse(e.target.result);
-            if(data.projects) {
-                for (let p of data.projects) {
-                    const saved = await db_saveProject(p);
-                    if (saved && p.beneficiary) {
-                        await db_saveBeneficiary(saved.id, p.beneficiary);
-                    }
-                    if (saved && p.expenses) {
-                        for (let exp of p.expenses) {
-                            await db_addExpense(saved.id, exp);
-                        }
-                    }
-                }
-                await loadAllData();
-                renderAll();
-                alert('✅ डाटा आयात सफल!');
-            }
-        } catch(err) { alert('❌ त्रुटि: ' + err.message); }
-    };
-    reader.readAsText(file);
-    event.target.value = '';
 }
 
 // ============================================
@@ -1481,14 +1421,6 @@ function generateReport(filteredProjects, fromDate, toDate) {
     });
     const totalBeneficiaries = totalMale + totalFemale + totalDalit + totalJanajati + totalDisabled + totalReturnee + totalEntrepreneur;
 
-    const categories = {};
-    projectList.forEach(p => {
-        if(!categories[p.category]) categories[p.category] = { budget: 0, expense: 0, count: 0 };
-        categories[p.category].budget += p.budget || 0;
-        categories[p.category].expense += getTotalExpenses(p);
-        categories[p.category].count += 1;
-    });
-
     const dateRangeText = (fromDate && toDate) ? 
         ` (${formatDateToNepali(fromDate)} देखि ${formatDateToNepali(toDate)} सम्म)` : '';
 
@@ -1550,6 +1482,17 @@ function generateReport(filteredProjects, fromDate, toDate) {
                 <div style="text-align:center;font-size:13px;margin-top:4px;">वित्तीय प्रगति: ${progressPercent}%</div>
             </div>
         </div>
+        <div class="report-section">
+            <h4>४. निष्कर्ष</h4>
+            <p>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रमको हालसम्मको वित्तीय तथा भौतिक प्रगति सन्तोषजनक रहेको देखिन्छ। कार्यक्रम अन्तर्गत स्वीकृत बजेटमध्ये रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ भने कार्यक्रमबाट ${totalBeneficiaries} जना प्रत्यक्ष लाभान्वित भएका छन्।</p>
+        </div>
+        <div class="report-section">
+            <div class="report-sign">
+                <div class="sign-block"><strong>प्रतिवेदन तयार गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
+                <div class="sign-block"><strong>प्रमाणित गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
+                <div class="sign-block"><strong>स्वीकृत गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
+            </div>
+        </div>
     `;
 
     container.innerHTML = reportHTML;
@@ -1569,9 +1512,6 @@ function exportReportWord() {
             .report-section { margin-bottom: 20px; padding: 10px 0; border-bottom: 1px solid #ddd; }
             .report-section h4 { color: #1a3c5e; border-bottom: 2px solid #e0e4ea; padding-bottom: 6px; margin-bottom: 10px; font-size: 16px; }
             .report-introduction { font-size: 14px; line-height: 1.8; text-align: justify; }
-            .report-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0; }
-            .report-table th { background: #f0f4f8; padding: 5px 8px; border: 1px solid #ddd; }
-            .report-table td { padding: 5px 8px; border: 1px solid #ddd; }
             .row-detail { display: flex; flex-wrap: wrap; gap: 10px; }
             .row-detail .item { flex: 1 1 200px; padding: 4px 0; }
             .row-detail .item .label { font-weight: 600; color: #1a3c5e; font-size: 12px; display: block; }
@@ -1613,7 +1553,7 @@ document.getElementById('loginForm').onsubmit = async function(e) {
         renderAll();
         console.log('✅ Login successful:', currentUser.username);
     } else {
-        document.getElementById('loginError').textContent = '❌ गलत प्रयोगकर्ता नाम वा पासवर्ड।';
+        document.getElementById('loginError').textContent = '❌ गलत प्रयोगकर्ता नाम वा पासवर्ड। कृपया SQL मा users table create गर्नुहोस्।';
         console.log('❌ Login failed for:', username);
     }
 };
@@ -1637,27 +1577,9 @@ document.querySelectorAll('.modal').forEach(modal => {
     });
 });
 
-// Check connection
-async function checkSupabaseConnection() {
-    try {
-        const { data, error } = await supabase.from('users').select('count').limit(1);
-        if (error) {
-            console.warn('⚠️ Supabase connection warning:', error.message);
-            console.log('💡 Please create the tables in Supabase SQL Editor first.');
-            return false;
-        }
-        console.log('✅ Supabase connection successful!');
-        return true;
-    } catch (err) {
-        console.warn('⚠️ Supabase connection error:', err.message);
-        return false;
-    }
-}
-
 document.addEventListener('DOMContentLoaded', async function() {
-    console.log('✅ Application loaded successfully!');
+    console.log('✅ Application loaded!');
     console.log('🔑 Supabase URL:', SUPABASE_URL);
-    await checkSupabaseConnection();
 });
 </script>
 </body>
