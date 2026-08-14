@@ -80,7 +80,7 @@
             color: #0d47a1;
         }
 
-        /* Notification Bell Icon */
+        /* Notification Bell */
         .notification-wrapper {
             position: relative;
             display: inline-block;
@@ -115,7 +115,6 @@
             50% { transform: scale(1.1); }
         }
 
-        /* Notification Dropdown */
         .notification-dropdown {
             position: absolute;
             top: 40px;
@@ -673,7 +672,6 @@
             font-size: 12px;
         }
 
-        /* Toast Notification (for fallback) */
         .toast-notification {
             position: fixed;
             bottom: 20px;
@@ -697,6 +695,58 @@
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
+        }
+
+        .report-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .report-section h4 {
+            color: #1a3c5e;
+            border-bottom: 2px solid #e0e4ea;
+            padding-bottom: 8px;
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+        .report-table th {
+            background: #f0f4f8;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            font-size: 12px;
+            text-align: left;
+        }
+        .report-table td {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+        }
+        .report-table tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 20px 0 10px;
+            flex-wrap: wrap;
+        }
+        .report-actions button {
+            padding: 10px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
         }
 
         @media (max-width: 768px) {
@@ -731,7 +781,8 @@
                 <button type="submit" class="save-btn" style="padding:10px 40px;">🚪 प्रवेश गर्नुहोस्</button>
             </div>
             <div class="login-hint">
-                <strong>Demo:</strong> admin@example.com / admin123
+                <strong>Admin:</strong> admin@example.com / admin123<br>
+                <strong>User:</strong> user@example.com / user123
             </div>
         </form>
     </div>
@@ -852,9 +903,9 @@
         <div id="reportContent">
             <div class="empty-msg">कृपया प्रतिवेदन उत्पन्न गर्नुहोस्।</div>
         </div>
-        <div class="report-actions" style="margin-top:20px;">
-            <button class="btn" style="background:#1976d2;color:#fff;padding:10px 30px;" onclick="generateReport()">📊 प्रतिवेदन उत्पन्न गर्नुहोस्</button>
-            <button class="btn" style="background:#e65100;color:#fff;padding:10px 30px;" onclick="exportReportWord()">📄 Word</button>
+        <div class="report-actions">
+            <button style="background:#1976d2;color:#fff;" onclick="generateReport()">📊 प्रतिवेदन उत्पन्न गर्नुहोस्</button>
+            <button style="background:#e65100;color:#fff;" onclick="exportReportWord()">📄 Word</button>
         </div>
     </div>
 
@@ -1027,10 +1078,9 @@ let unreadCount = 0;
 let notificationSubscription = null;
 
 // ========================================================================
-// NOTIFICATION SYSTEM
+// HELPER FUNCTIONS
 // ========================================================================
 
-// Show toast notification (fallback)
 function showToast(message, type = 'success') {
     const toast = document.getElementById('toastNotification');
     toast.textContent = message;
@@ -1042,7 +1092,32 @@ function showToast(message, type = 'success') {
     }, 4000);
 }
 
-// Toggle notification dropdown
+function getDefaultBeneficiary() {
+    return { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0 };
+}
+
+function getTotalExpenses(project) {
+    return (project.expenses || []).reduce((sum, e) => sum + (e.amount || 0), 0);
+}
+
+function getTotalBeneficiaries(project) {
+    const b = project.beneficiary || getDefaultBeneficiary();
+    return (b.male || 0) + (b.female || 0) + (b.dalit || 0) + (b.janajati || 0) + 
+           (b.disabled || 0) + (b.returnee || 0) + (b.entrepreneur || 0);
+}
+
+function isAdmin() {
+    return currentUser && currentUser.role === 'admin';
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('show');
+}
+
+// ========================================================================
+// NOTIFICATION SYSTEM
+// ========================================================================
+
 function toggleNotificationDropdown() {
     const dropdown = document.getElementById('notificationDropdown');
     dropdown.classList.toggle('show');
@@ -1051,7 +1126,14 @@ function toggleNotificationDropdown() {
     }
 }
 
-// Load notifications from Supabase
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+    const wrapper = document.querySelector('.notification-wrapper');
+    if (wrapper && !wrapper.contains(e.target)) {
+        document.getElementById('notificationDropdown').classList.remove('show');
+    }
+});
+
 async function loadNotifications() {
     if (!currentUser) return;
     
@@ -1074,7 +1156,6 @@ async function loadNotifications() {
     }
 }
 
-// Render notifications in dropdown
 function renderNotifications() {
     const container = document.getElementById('notifList');
     
@@ -1105,7 +1186,6 @@ function renderNotifications() {
     container.innerHTML = html;
 }
 
-// Update badge count
 function updateBadge() {
     const badge = document.getElementById('notifBadge');
     if (unreadCount > 0) {
@@ -1116,7 +1196,6 @@ function updateBadge() {
     }
 }
 
-// Mark notification as read
 async function markNotificationRead(id) {
     try {
         const { error } = await supabase
@@ -1126,7 +1205,6 @@ async function markNotificationRead(id) {
 
         if (error) throw error;
         
-        // Update local state
         const notif = notifications.find(n => n.id === id);
         if (notif) {
             notif.is_read = true;
@@ -1139,7 +1217,6 @@ async function markNotificationRead(id) {
     }
 }
 
-// Mark all notifications as read
 async function markAllRead() {
     if (notifications.length === 0) return;
     
@@ -1164,7 +1241,6 @@ async function markAllRead() {
     }
 }
 
-// Send notification to user
 async function sendNotification(userId, title, message, type = 'general', link = null) {
     try {
         const { data, error } = await supabase
@@ -1182,7 +1258,6 @@ async function sendNotification(userId, title, message, type = 'general', link =
 
         if (error) throw error;
         
-        // If current user is the recipient, update UI
         if (currentUser && userId === currentUser.id) {
             notifications.unshift(data[0]);
             unreadCount++;
@@ -1197,7 +1272,6 @@ async function sendNotification(userId, title, message, type = 'general', link =
     }
 }
 
-// Send notification to all users except sender
 async function sendNotificationToOthers(senderId, title, message, type = 'general', link = null) {
     try {
         // Get all users except sender
@@ -1211,7 +1285,7 @@ async function sendNotificationToOthers(senderId, title, message, type = 'genera
         if (users.length === 0) return;
 
         // Send to each user
-        const notifications = users.map(u => ({
+        const notificationsData = users.map(u => ({
             user_id: u.id,
             title: title,
             message: message,
@@ -1223,7 +1297,7 @@ async function sendNotificationToOthers(senderId, title, message, type = 'genera
 
         const { error } = await supabase
             .from('notifications')
-            .insert(notifications);
+            .insert(notificationsData);
 
         if (error) throw error;
         
@@ -1235,7 +1309,6 @@ async function sendNotificationToOthers(senderId, title, message, type = 'genera
     }
 }
 
-// Setup real-time notification subscription
 function setupNotificationSubscription() {
     if (notificationSubscription) {
         notificationSubscription.unsubscribe();
@@ -1259,8 +1332,6 @@ function setupNotificationSubscription() {
                 unreadCount++;
                 updateBadge();
                 renderNotifications();
-                
-                // Show toast notification
                 showToast(`🔔 ${newNotif.title}: ${newNotif.message}`, 'warning');
             }
         )
@@ -1271,14 +1342,12 @@ function setupNotificationSubscription() {
 // AUTHENTICATION
 // ========================================================================
 
-// Login with Supabase
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
     
     try {
-        // Sign in with Supabase
         const { data, error } = await supabase.auth.signInWithPassword({
             email: email,
             password: password
@@ -1293,26 +1362,45 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             .eq('id', data.user.id)
             .single();
 
-        if (userError) throw userError;
-
-        currentUser = {
-            id: data.user.id,
-            email: data.user.email,
-            role: userData.role || 'user',
-            username: userData.username || email.split('@')[0]
-        };
+        if (userError) {
+            // If user not in users table, create entry
+            const { data: newUser, error: createError } = await supabase
+                .from('users')
+                .insert({
+                    id: data.user.id,
+                    email: data.user.email,
+                    username: data.user.email.split('@')[0],
+                    role: 'user'
+                })
+                .select()
+                .single();
+            
+            if (createError) throw createError;
+            currentUser = {
+                id: newUser.id,
+                email: newUser.email,
+                role: newUser.role || 'user',
+                username: newUser.username || newUser.email.split('@')[0]
+            };
+        } else {
+            currentUser = {
+                id: userData.id,
+                email: userData.email,
+                role: userData.role || 'user',
+                username: userData.username || userData.email.split('@')[0]
+            };
+        }
+        
         currentUserRole = currentUser.role;
 
         document.getElementById('loginError').textContent = '';
         document.getElementById('loginModal').classList.remove('show');
         document.getElementById('mainDashboard').style.display = 'block';
         
-        // Update UI
         document.getElementById('displayUsername').textContent = currentUser.username;
         document.getElementById('displayRole').textContent = currentUser.role === 'admin' ? 'Admin' : 'User';
         document.getElementById('displayRole').className = 'role-badge' + (currentUser.role === 'admin' ? ' admin' : '');
 
-        // Load data
         await loadProjects();
         await loadNotifications();
         setupNotificationSubscription();
@@ -1324,7 +1412,6 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     }
 });
 
-// Logout
 async function logout() {
     if (!confirm('के तपाईँ बाहिरिन चाहनुहुन्छ?')) return;
     
@@ -1369,7 +1456,6 @@ async function loadProjects() {
         return projects;
     } catch (error) {
         console.error('Error loading projects:', error);
-        // Try localStorage as fallback
         const stored = localStorage.getItem('projectDataV5');
         if (stored) {
             try {
@@ -1377,7 +1463,7 @@ async function loadProjects() {
                 return projects;
             } catch(e) {}
         }
-        projects = getDefaultProjects();
+        projects = [];
         return projects;
     }
 }
@@ -1410,46 +1496,24 @@ async function saveProjectToSupabase(project) {
         return data;
     } catch (error) {
         console.error('Error saving project:', error);
-        // Fallback to localStorage
-        saveProjectsToLocal();
+        localStorage.setItem('projectDataV5', JSON.stringify(projects));
         return null;
     }
 }
 
-function saveProjectsToLocal() {
-    localStorage.setItem('projectDataV5', JSON.stringify(projects));
-}
+async function deleteProjectFromSupabase(id) {
+    try {
+        const { error } = await supabase
+            .from('projects')
+            .delete()
+            .eq('id', id);
 
-function getDefaultBeneficiary() {
-    return { male: 0, female: 0, dalit: 0, janajati: 0, disabled: 0, returnee: 0, entrepreneur: 0 };
-}
-
-function getDefaultProjects() {
-    return [
-        { id: 1, name: 'आन्तरिक रोजगार सिर्जना', category: 'रोजगारी', budget: 1100000, time: 'Q2-Q4', status: 'प्रगतिमा', fiscalYear: '२०८१/८२',
-          responsible: 'राम प्रसाद शर्मा', assistant: 'शान्ति थापा', authorized: 'महेश अधिकारी',
-          activities: 'युवा सूचीकरण, निर्माण कार्य', method: 'स्थानीय सहयोग', output: '५० जनालाई रोजगारी',
-          expenses: [{ title: 'निर्माण सामग्री', amount: 200000, date: '२०८१/०४/१५', remark: 'बिल नं. १२' }],
-          beneficiary: { male: 30, female: 20, dalit: 10, janajati: 15, disabled: 2, returnee: 5, entrepreneur: 3 } }
-    ];
-}
-
-// ========================================================================
-// HELPERS
-// ========================================================================
-
-function getTotalExpenses(project) {
-    return (project.expenses || []).reduce((sum, e) => sum + (e.amount || 0), 0);
-}
-
-function getTotalBeneficiaries(project) {
-    const b = project.beneficiary || getDefaultBeneficiary();
-    return (b.male || 0) + (b.female || 0) + (b.dalit || 0) + (b.janajati || 0) + 
-           (b.disabled || 0) + (b.returnee || 0) + (b.entrepreneur || 0);
-}
-
-function isAdmin() {
-    return currentUser && currentUser.role === 'admin';
+        if (error) throw error;
+        return true;
+    } catch (error) {
+        console.error('Error deleting project:', error);
+        return false;
+    }
 }
 
 // ========================================================================
@@ -1568,7 +1632,6 @@ function renderAnalytics() {
     document.getElementById('maxBudget').textContent = Math.max(...projects.map(p => p.budget||0)).toLocaleString();
     document.getElementById('minBudget').textContent = Math.min(...projects.map(p => p.budget||0)).toLocaleString();
 
-    // Category chart
     const ctx1 = document.getElementById('analyticsCategoryChart').getContext('2d');
     if(window.analyticsCategoryChart) window.analyticsCategoryChart.destroy();
     const categories = {};
@@ -1585,7 +1648,6 @@ function renderAnalytics() {
         options: { responsive: true, plugins: { legend: { display: false } } }
     });
 
-    // Beneficiary chart
     const ctx3 = document.getElementById('analyticsBeneficiaryChart').getContext('2d');
     if(window.analyticsBeneficiaryChart) window.analyticsBeneficiaryChart.destroy();
     let totalMale = 0, totalFemale = 0, totalDalit = 0, totalJanajati = 0, totalDisabled = 0, totalReturnee = 0, totalEntrepreneur = 0;
@@ -1693,12 +1755,11 @@ function openDetailView(id) {
 }
 
 // ========================================================================
-// PROJECT MODAL
+// PROJECT CRUD OPERATIONS
 // ========================================================================
 
 function openAddModal() {
     if(!isAdmin()) { showToast('Admin ले मात्र गर्न सक्छ।', 'error'); return; }
-    editMode = false;
     document.getElementById('modalTitle').textContent = '➕ नयाँ कार्यक्रम';
     document.getElementById('editId').value = '';
     document.getElementById('projectForm').reset();
@@ -1711,7 +1772,6 @@ function openEditModal(id) {
     if(!isAdmin()) { showToast('Admin ले मात्र गर्न सक्छ।', 'error'); return; }
     const p = projects.find(x => x.id === id);
     if(!p) return;
-    editMode = true;
     document.getElementById('modalTitle').textContent = '✏️ कार्यक्रम सम्पादन';
     document.getElementById('editId').value = id;
     document.getElementById('fName').value = p.name || '';
@@ -1737,10 +1797,6 @@ function openEditModal(id) {
     document.getElementById('fBeneficiaryEntrepreneur').value = b.entrepreneur || 0;
     
     document.getElementById('projectModal').classList.add('show');
-}
-
-function closeModal(id) {
-    document.getElementById(id).classList.remove('show');
 }
 
 document.getElementById('projectForm').addEventListener('submit', async function(e) {
@@ -1777,7 +1833,8 @@ document.getElementById('projectForm').addEventListener('submit', async function
     }
 
     let project;
-    if(editMode) {
+    const isEdit = id > 0;
+    if(isEdit) {
         const idx = projects.findIndex(p => p.id === id);
         if(idx !== -1) {
             project = { ...projects[idx], name, category, budget, time, status, fiscalYear, responsible, assistant, authorized, activities, method, output, beneficiary };
@@ -1795,11 +1852,10 @@ document.getElementById('projectForm').addEventListener('submit', async function
     applyFilters();
     showToast('✅ कार्यक्रम सुरक्षित गरियो!');
 
-    // Send notification to all users
     await sendNotificationToOthers(
         currentUser.id,
-        `${editMode ? 'सम्पादन' : 'नयाँ'} कार्यक्रम`,
-        `${currentUser.username} ले "${name}" ${editMode ? 'सम्पादन' : 'थप'} गरे।`,
+        `${isEdit ? 'सम्पादन' : 'नयाँ'} कार्यक्रम`,
+        `${currentUser.username} ले "${name}" ${isEdit ? 'सम्पादन' : 'थप'} गरे।`,
         'project',
         '#'
     );
@@ -1812,16 +1868,9 @@ async function deleteProject(id) {
     const project = projects.find(p => p.id === id);
     const name = project ? project.name : 'अज्ञात';
     
-    try {
-        const { error } = await supabase
-            .from('projects')
-            .delete()
-            .eq('id', id);
-
-        if (error) throw error;
-        
+    const success = await deleteProjectFromSupabase(id);
+    if (success) {
         projects = projects.filter(p => p.id !== id);
-        saveProjectsToLocal();
         renderAll();
         applyFilters();
         showToast('🗑️ कार्यक्रम मेटियो');
@@ -1833,18 +1882,13 @@ async function deleteProject(id) {
             'project',
             '#'
         );
-    } catch (error) {
-        console.error('Delete error:', error);
-        // Fallback
-        projects = projects.filter(p => p.id !== id);
-        saveProjectsToLocal();
-        renderAll();
-        applyFilters();
+    } else {
+        showToast('❌ मेट्न सकिएन', 'error');
     }
 }
 
 // ========================================================================
-// EXPENSE MODAL
+// EXPENSE OPERATIONS
 // ========================================================================
 
 let currentExpenseProjectId = null;
@@ -1940,7 +1984,7 @@ async function deleteAllExpenses() {
 }
 
 // ========================================================================
-// BENEFICIARY MODAL
+// BENEFICIARY OPERATIONS
 // ========================================================================
 
 let beneficiaryEditProjectId = null;
@@ -2014,7 +2058,7 @@ async function saveBeneficiary() {
 }
 
 // ========================================================================
-// USER MANAGEMENT (Supabase)
+// USER MANAGEMENT
 // ========================================================================
 
 function openUserManagement() {
@@ -2062,7 +2106,6 @@ async function addUser() {
     }
 
     try {
-        // Create user in Supabase Auth
         const { data, error } = await supabase.auth.signUp({
             email: email,
             password: password,
@@ -2073,8 +2116,7 @@ async function addUser() {
 
         if (error) throw error;
 
-        // Add user to users table
-        const { error: insertError } = await supabase
+        await supabase
             .from('users')
             .insert({
                 id: data.user.id,
@@ -2083,14 +2125,11 @@ async function addUser() {
                 role: role
             });
 
-        if (insertError) throw insertError;
-
         document.getElementById('newEmail').value = '';
         document.getElementById('newPassword').value = '';
         await renderUserList();
         showToast('✅ प्रयोगकर्ता थपियो!');
         
-        // Send notification
         await sendNotificationToOthers(
             currentUser.id,
             'नयाँ प्रयोगकर्ता',
@@ -2108,13 +2147,7 @@ async function deleteUser(userId) {
     if(!confirm('प्रयोगकर्ता मेट्ने?')) return;
     
     try {
-        // Delete from auth
-        const { error } = await supabase.auth.admin.deleteUser(userId);
-        if (error) throw error;
-        
-        // Delete from users table
         await supabase.from('users').delete().eq('id', userId);
-        
         await renderUserList();
         showToast('🗑️ प्रयोगकर्ता मेटियो');
     } catch (error) {
@@ -2139,8 +2172,8 @@ function generateReport() {
     const progress = totalBudget > 0 ? Math.round((totalExp/totalBudget)*100) : 0;
 
     let html = `
-        <div class="report-section" style="background:#fff;padding:20px;border-radius:12px;margin-bottom:16px;">
-            <h3 style="color:#1a3c5e;">📊 कार्यक्रम प्रतिवेदन</h3>
+        <div class="report-section">
+            <h4>📊 कार्यक्रम प्रतिवेदन</h4>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;">
                 <div style="background:#f8faff;padding:12px;border-radius:8px;text-align:center;">
                     <div style="font-size:22px;font-weight:700;color:#1a3c5e;">${projects.length}</div>
@@ -2164,28 +2197,23 @@ function generateReport() {
                 <div style="text-align:center;font-size:13px;margin-top:4px;">वित्तीय प्रगति: ${progress}%</div>
             </div>
         </div>
-        <div style="background:#fff;padding:20px;border-radius:12px;">
-            <h4 style="color:#1a3c5e;">📋 कार्यक्रम सूची</h4>
-            <table class="report-table" style="width:100%;border-collapse:collapse;font-size:12px;margin-top:10px;">
-                <thead><tr style="background:#f7f9fc;">
-                    <th style="padding:8px;border:1px solid #ddd;">क्र.स</th>
-                    <th style="padding:8px;border:1px solid #ddd;">कार्यक्रम</th>
-                    <th style="padding:8px;border:1px solid #ddd;">बजेट</th>
-                    <th style="padding:8px;border:1px solid #ddd;">खर्च</th>
-                    <th style="padding:8px;border:1px solid #ddd;">प्रगति</th>
-                    <th style="padding:8px;border:1px solid #ddd;">स्थिति</th>
+        <div class="report-section">
+            <h4>📋 कार्यक्रम सूची</h4>
+            <table class="report-table">
+                <thead><tr>
+                    <th>क्र.स</th><th>कार्यक्रम</th><th>बजेट</th><th>खर्च</th><th>प्रगति</th><th>स्थिति</th>
                 </tr></thead>
                 <tbody>
                     ${projects.map((p,i) => {
                         const exp = getTotalExpenses(p);
                         const prog = p.budget > 0 ? Math.round((exp/p.budget)*100) : 0;
                         return `<tr>
-                            <td style="padding:6px 8px;border:1px solid #ddd;">${i+1}</td>
-                            <td style="padding:6px 8px;border:1px solid #ddd;">${p.name}</td>
-                            <td style="padding:6px 8px;border:1px solid #ddd;">रु. ${(p.budget||0).toLocaleString()}</td>
-                            <td style="padding:6px 8px;border:1px solid #ddd;">रु. ${exp.toLocaleString()}</td>
-                            <td style="padding:6px 8px;border:1px solid #ddd;">${prog}%</td>
-                            <td style="padding:6px 8px;border:1px solid #ddd;"><span class="status-badge ${p.status === 'प्रगतिमा' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending')}">${p.status}</span></td>
+                            <td>${i+1}</td>
+                            <td>${p.name}</td>
+                            <td>रु. ${(p.budget||0).toLocaleString()}</td>
+                            <td>रु. ${exp.toLocaleString()}</td>
+                            <td>${prog}%</td>
+                            <td><span class="status-badge ${p.status === 'प्रगतिमा' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending')}">${p.status}</span></td>
                         </tr>`;
                     }).join('')}
                 </tbody>
@@ -2211,7 +2239,7 @@ function exportReportWord() {
 }
 
 // ========================================================================
-// DATA EXPORT
+// DATA EXPORT/IMPORT
 // ========================================================================
 
 function exportData() {
@@ -2239,7 +2267,7 @@ function handleImport(event) {
             const data = JSON.parse(e.target.result);
             if(data.projects) {
                 projects = data.projects;
-                saveProjectsToLocal();
+                localStorage.setItem('projectDataV5', JSON.stringify(projects));
                 renderAll();
                 showToast('✅ डाटा आयात सफल!');
             }
@@ -2307,7 +2335,6 @@ document.getElementById('loginModal').classList.add('show');
     try {
         const { data, error } = await supabase.auth.getSession();
         if (data.session) {
-            // Auto-login if session exists
             const { data: userData, error: userError } = await supabase
                 .from('users')
                 .select('*')
@@ -2342,8 +2369,7 @@ document.getElementById('loginModal').classList.add('show');
 })();
 
 console.log('📌 Supabase URL:', SUPABASE_URL);
-console.log('📌 Supabase Key:', SUPABASE_PUBLISHABLE_KEY);
-console.log('🔔 Notification system ready with bell icon!');
+console.log('🔔 Notification system ready!');
 </script>
 </body>
 </html>
