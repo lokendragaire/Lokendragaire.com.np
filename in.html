@@ -415,16 +415,13 @@
 
 <script>
 // ============================================
-// SUPABASE CONFIG (FIXED)
+// SUPABASE CONFIG - तपाईंको आफ्नो credentials हाल्नुहोस्
 // ============================================
-// IMPORTANT: Replace with your actual Supabase credentials
-// Go to: https://app.supabase.com/project/_/settings/api
 const SUPABASE_URL = 'https://lyzxsqussxalfpqejelv.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_KUO0ydmJWPTFhCXiz9Ph3g_aqw5qRmA';
 
-// Create Supabase client correctly
+// Supabase client initialize गर्ने
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 console.log('✅ Supabase client initialized');
 
 // ============================================
@@ -435,71 +432,6 @@ let projects = [];
 let editMode = false;
 let currentExpenseProjectId = null;
 let beneficiaryEditProjectId = null;
-let usingSupabase = true;
-
-// ============================================
-// DATABASE SCHEMA SETUP
-// Run this once in Supabase SQL Editor:
-/*
--- USERS TABLE
-CREATE TABLE users (
-  id BIGSERIAL PRIMARY KEY,
-  username TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL,
-  role TEXT DEFAULT 'user',
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- PROJECTS TABLE
-CREATE TABLE projects (
-  id BIGSERIAL PRIMARY KEY,
-  name TEXT NOT NULL,
-  category TEXT,
-  budget NUMERIC DEFAULT 0,
-  time TEXT,
-  status TEXT DEFAULT 'सुरु हुन बाँकी',
-  responsible TEXT,
-  assistant TEXT,
-  authorized TEXT,
-  activities TEXT,
-  method TEXT,
-  output TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- BENEFICIARIES TABLE
-CREATE TABLE beneficiaries (
-  id BIGSERIAL PRIMARY KEY,
-  project_id BIGINT REFERENCES projects(id) ON DELETE CASCADE UNIQUE,
-  male INT DEFAULT 0,
-  female INT DEFAULT 0,
-  dalit INT DEFAULT 0,
-  janajati INT DEFAULT 0,
-  disabled INT DEFAULT 0,
-  returnee INT DEFAULT 0,
-  entrepreneur INT DEFAULT 0,
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- EXPENSES TABLE
-CREATE TABLE expenses (
-  id BIGSERIAL PRIMARY KEY,
-  project_id BIGINT REFERENCES projects(id) ON DELETE CASCADE,
-  title TEXT,
-  amount NUMERIC DEFAULT 0,
-  date TEXT,
-  remark TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- INSERT DEFAULT USERS
-INSERT INTO users (username, password, role) VALUES 
-('admin', 'admin123', 'admin'),
-('user', 'user123', 'user')
-ON CONFLICT (username) DO NOTHING;
-*/
-// ============================================
 
 // ============================================
 // HELPERS
@@ -532,7 +464,7 @@ function formatDateToNepali(dateStr) {
 }
 
 // ============================================
-// DATABASE FUNCTIONS (FIXED)
+// DATABASE FUNCTIONS
 // ============================================
 
 // AUTHENTICATION
@@ -544,7 +476,7 @@ async function db_authenticate(username, password) {
             .select('*')
             .eq('username', username)
             .eq('password', password)
-            .single();
+            .maybeSingle();
         
         if (error) {
             console.log('❌ Auth error:', error);
@@ -580,7 +512,6 @@ async function db_getProjects() {
 async function db_saveProject(project) {
     try {
         if (project.id) {
-            // UPDATE
             const { data, error } = await supabase
                 .from('projects')
                 .update({
@@ -607,7 +538,6 @@ async function db_saveProject(project) {
             }
             return data;
         } else {
-            // INSERT
             const { data, error } = await supabase
                 .from('projects')
                 .insert([{
@@ -831,7 +761,6 @@ async function loadAllData() {
     try {
         console.log('🔄 Loading data from Supabase...');
         
-        // Get projects
         const projectsData = await db_getProjects();
         projects = projectsData.map(p => ({ 
             ...p, 
@@ -840,16 +769,13 @@ async function loadAllData() {
             beneficiary: getDefaultBeneficiary()
         }));
 
-        // Load beneficiaries and expenses for each project
         for (let p of projects) {
-            // Load expenses
             const expenses = await db_getExpenses(p.id);
             p.expenses = expenses.map(e => ({
                 ...e,
                 amount: parseFloat(e.amount) || 0
             }));
 
-            // Load beneficiary
             const beneficiary = await db_getBeneficiary(p.id);
             if (beneficiary) {
                 p.beneficiary = {
@@ -861,8 +787,6 @@ async function loadAllData() {
                     returnee: parseInt(beneficiary.returnee) || 0,
                     entrepreneur: parseInt(beneficiary.entrepreneur) || 0
                 };
-            } else {
-                p.beneficiary = getDefaultBeneficiary();
             }
         }
 
@@ -1015,112 +939,29 @@ function applyFilters() {
 }
 
 // ============================================
-// DATE RANGE REPORT
+// REST OF THE FUNCTIONS (Modal, CRUD, Report, etc.)
 // ============================================
-function generateDateRangeReport() {
-    const fromDate = document.getElementById('reportFromDate').value;
-    const toDate = document.getElementById('reportToDate').value;
-    const infoSpan = document.getElementById('dateRangeInfo');
-    
-    if (!fromDate || !toDate) {
-        alert('कृपया सुरु मिति र अन्त्य मिति चयन गर्नुहोस्।');
-        return;
+
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tabs button').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    document.querySelector(`.tabs button[data-tab="${tabId}"]`).classList.add('active');
+    if(tabId === 'tabReport') {
+        if (document.getElementById('reportContent').innerHTML.includes('कृपया मिति चयन')) {
+            generateReport(projects);
+        }
     }
-    
-    if (fromDate > toDate) {
-        alert('सुरु मिति अन्त्य मिति भन्दा पछि हुन सक्दैन।');
-        return;
-    }
-    
-    const from = new Date(fromDate);
-    const to = new Date(toDate);
-    to.setHours(23, 59, 59, 999);
-    
-    infoSpan.textContent = `📅 ${formatDateToNepali(fromDate)} देखि ${formatDateToNepali(toDate)} सम्म`;
-    
-    const filteredProjects = projects.filter(p => {
-        if (!p.created_at) return true;
-        const pDate = new Date(p.created_at);
-        return pDate >= from && pDate <= to;
-    });
-    
-    generateReport(filteredProjects, fromDate, toDate);
 }
 
-function resetDateRangeReport() {
-    document.getElementById('reportFromDate').value = '';
-    document.getElementById('reportToDate').value = '';
-    document.getElementById('dateRangeInfo').textContent = '';
-    generateReport(projects);
-}
+document.querySelectorAll('.tabs button').forEach(btn => {
+    btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
+});
 
-// ============================================
-// DETAIL VIEW
-// ============================================
-function openDetailView(id) {
-    const p = projects.find(x => x.id === id);
-    if(!p) { alert('कार्यक्रम फेला परेन'); return; }
-    const totalExp = getTotalExpenses(p);
-    const progress = p.budget > 0 ? Math.min(100, Math.round((totalExp / p.budget) * 100)) : 0;
-    const b = p.beneficiary || getDefaultBeneficiary();
-    const totalBen = getTotalBeneficiaries(p);
-    let expenseHtml = '';
-    if(p.expenses && p.expenses.length > 0) {
-        p.expenses.forEach(e => {
-            expenseHtml += `<div class="item"><span>${e.title || 'खर्च'} ${e.date ? ' - '+e.date : ''}</span><span class="amount">रु. ${(e.amount||0).toLocaleString()}</span></div>`;
-        });
-    } else {
-        expenseHtml = '<div style="color:#999;padding:6px 0;">कुनै खर्च छैन</div>';
-    }
-    document.getElementById('detailTitle').textContent = `📄 ${p.name} - पूर्ण विवरण`;
-    document.getElementById('detailContent').innerHTML = `
-        <div style="background:#f0f4f8;padding:12px;border-radius:8px;margin-bottom:12px;">
-            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-                <span><strong>📌 प्रकृति:</strong> ${p.category || 'अन्य'}</span>
-                <span><strong>⏱️ समय:</strong> ${p.time || '-'}</span>
-                <span><strong>📊 स्थिति:</strong> <span class="status-badge ${p.status === 'सन्चालित' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending')}">${p.status}</span></span>
-            </div>
-        </div>
-        <div class="detail-grid">
-            <div class="item"><span class="dlabel">💰 कुल बजेट</span><span class="dvalue">रु. ${(p.budget||0).toLocaleString()}</span></div>
-            <div class="item"><span class="dlabel">💸 हालसम्मको खर्च</span><span class="dvalue">रु. ${totalExp.toLocaleString()}</span></div>
-            <div class="item"><span class="dlabel">📈 प्रगति</span><span class="dvalue">${progress}%</span></div>
-            <div class="item"><span class="dlabel">👥 कुल लाभग्राही</span><span class="dvalue">${totalBen} जना</span></div>
-        </div>
-        <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">👤 जिम्मेवार व्यक्तिहरू</h4>
-        <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
-            <div class="item"><span class="dlabel">जिम्मेवार</span><span class="dvalue">${p.responsible || '-'}</span></div>
-            <div class="item"><span class="dlabel">सहायक</span><span class="dvalue">${p.assistant || '-'}</span></div>
-            <div class="item detail-full"><span class="dlabel">अख्तियार</span><span class="dvalue">${p.authorized || '-'}</span></div>
-        </div>
-        <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">👥 लाभग्राही</h4>
-        <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
-            <div class="item"><span class="dlabel">👨 पुरुष</span><span class="dvalue">${b.male || 0}</span></div>
-            <div class="item"><span class="dlabel">👩 महिला</span><span class="dvalue">${b.female || 0}</span></div>
-            <div class="item"><span class="dlabel">🧑‍🦱 दलित</span><span class="dvalue">${b.dalit || 0}</span></div>
-            <div class="item"><span class="dlabel">🧑‍🦰 जनजाति</span><span class="dvalue">${b.janajati || 0}</span></div>
-            <div class="item"><span class="dlabel">♿ अपाङ्गता</span><span class="dvalue">${b.disabled || 0}</span></div>
-            <div class="item"><span class="dlabel">✈️ फर्केका</span><span class="dvalue">${b.returnee || 0}</span></div>
-            <div class="item"><span class="dlabel">🚀 नयाँ उद्यमी</span><span class="dvalue">${b.entrepreneur || 0}</span></div>
-        </div>
-        <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">📋 कार्य विवरण</h4>
-        <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
-            <div class="item detail-full"><span class="dlabel">📌 गर्नुपर्ने काम</span><span class="dvalue">${p.activities || '-'}</span></div>
-            <div class="item detail-full"><span class="dlabel">🔧 कसरी गर्ने?</span><span class="dvalue">${p.method || '-'}</span></div>
-            <div class="item detail-full"><span class="dlabel">🎯 उपलब्धी</span><span class="dvalue">${p.output || '-'}</span></div>
-        </div>
-        <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">💰 खर्च विवरण</h4>
-        <div class="detail-expense-list">${expenseHtml}</div>
-        <div style="text-align:right;font-weight:700;font-size:15px;margin-top:6px;">जम्मा खर्च: रु. ${totalExp.toLocaleString()}</div>
-    `;
-    document.getElementById('detailModal').classList.add('show');
-}
-
-function printDetail() { window.print(); }
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
 // ============================================
-// PROJECT CRUD (UPDATED TO USE SUPABASE)
+// PROJECT CRUD
 // ============================================
 function openAddModal() {
     if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
@@ -1192,26 +1033,19 @@ document.getElementById('projectForm').addEventListener('submit', async function
     
     const projectData = { id, name, category, budget, time, status, responsible, assistant, authorized, activities, method, output };
     
-    // Save to Supabase
     const savedProject = await db_saveProject(projectData);
     if (savedProject) {
-        // Save beneficiary
         if (id) {
-            // Update existing
             const idx = projects.findIndex(p => p.id === id);
             if (idx !== -1) {
                 projects[idx] = { ...projects[idx], ...projectData, beneficiary };
             }
         } else {
-            // New project
             const newProject = { ...savedProject, expenses: [], beneficiary };
             projects.push(newProject);
         }
         
-        // Save beneficiary to Supabase
         await db_saveBeneficiary(savedProject.id, beneficiary);
-        
-        // Reload data to ensure consistency
         await loadAllData();
         closeModal('projectModal');
         renderAll();
@@ -1238,7 +1072,7 @@ async function deleteProject(id) {
 }
 
 // ============================================
-// EXPENSE MODAL (UPDATED)
+// EXPENSE FUNCTIONS
 // ============================================
 function openExpenseModal(projectId) {
     if(!currentUser) { alert('लगइन गर्नुहोस्।'); return; }
@@ -1292,12 +1126,10 @@ async function saveExpense() {
     if (savedExpense) {
         p.expenses.push({ ...savedExpense, amount: parseFloat(savedExpense.amount) || 0 });
         
-        // Update status based on expenses
         const totalExp = getTotalExpenses(p);
         if (totalExp > 0 && p.status === 'सुरु हुन बाँकी') p.status = 'सन्चालित';
         if (totalExp >= p.budget && p.budget > 0) p.status = 'सम्पन्न';
         
-        // Update project status in Supabase
         await db_saveProject(p);
         
         renderExpenseHistory(projectId);
@@ -1331,7 +1163,7 @@ async function deleteAllExpenses() {
 }
 
 // ============================================
-// BENEFICIARY MODAL (UPDATED)
+// BENEFICIARY FUNCTIONS
 // ============================================
 function openBeneficiaryModal(projectId) {
     if(!currentUser) { alert('कृपया पहिले लगइन गर्नुहोस्।'); return; }
@@ -1411,7 +1243,71 @@ async function saveBeneficiary() {
 }
 
 // ============================================
-// USER MANAGEMENT (UPDATED)
+// DETAIL VIEW
+// ============================================
+function openDetailView(id) {
+    const p = projects.find(x => x.id === id);
+    if(!p) { alert('कार्यक्रम फेला परेन'); return; }
+    const totalExp = getTotalExpenses(p);
+    const progress = p.budget > 0 ? Math.min(100, Math.round((totalExp / p.budget) * 100)) : 0;
+    const b = p.beneficiary || getDefaultBeneficiary();
+    const totalBen = getTotalBeneficiaries(p);
+    let expenseHtml = '';
+    if(p.expenses && p.expenses.length > 0) {
+        p.expenses.forEach(e => {
+            expenseHtml += `<div class="item"><span>${e.title || 'खर्च'} ${e.date ? ' - '+e.date : ''}</span><span class="amount">रु. ${(e.amount||0).toLocaleString()}</span></div>`;
+        });
+    } else {
+        expenseHtml = '<div style="color:#999;padding:6px 0;">कुनै खर्च छैन</div>';
+    }
+    document.getElementById('detailTitle').textContent = `📄 ${p.name} - पूर्ण विवरण`;
+    document.getElementById('detailContent').innerHTML = `
+        <div style="background:#f0f4f8;padding:12px;border-radius:8px;margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                <span><strong>📌 प्रकृति:</strong> ${p.category || 'अन्य'}</span>
+                <span><strong>⏱️ समय:</strong> ${p.time || '-'}</span>
+                <span><strong>📊 स्थिति:</strong> <span class="status-badge ${p.status === 'सन्चालित' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending')}">${p.status}</span></span>
+            </div>
+        </div>
+        <div class="detail-grid">
+            <div class="item"><span class="dlabel">💰 कुल बजेट</span><span class="dvalue">रु. ${(p.budget||0).toLocaleString()}</span></div>
+            <div class="item"><span class="dlabel">💸 हालसम्मको खर्च</span><span class="dvalue">रु. ${totalExp.toLocaleString()}</span></div>
+            <div class="item"><span class="dlabel">📈 प्रगति</span><span class="dvalue">${progress}%</span></div>
+            <div class="item"><span class="dlabel">👥 कुल लाभग्राही</span><span class="dvalue">${totalBen} जना</span></div>
+        </div>
+        <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">👤 जिम्मेवार व्यक्तिहरू</h4>
+        <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
+            <div class="item"><span class="dlabel">जिम्मेवार</span><span class="dvalue">${p.responsible || '-'}</span></div>
+            <div class="item"><span class="dlabel">सहायक</span><span class="dvalue">${p.assistant || '-'}</span></div>
+            <div class="item detail-full"><span class="dlabel">अख्तियार</span><span class="dvalue">${p.authorized || '-'}</span></div>
+        </div>
+        <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">👥 लाभग्राही</h4>
+        <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
+            <div class="item"><span class="dlabel">👨 पुरुष</span><span class="dvalue">${b.male || 0}</span></div>
+            <div class="item"><span class="dlabel">👩 महिला</span><span class="dvalue">${b.female || 0}</span></div>
+            <div class="item"><span class="dlabel">🧑‍🦱 दलित</span><span class="dvalue">${b.dalit || 0}</span></div>
+            <div class="item"><span class="dlabel">🧑‍🦰 जनजाति</span><span class="dvalue">${b.janajati || 0}</span></div>
+            <div class="item"><span class="dlabel">♿ अपाङ्गता</span><span class="dvalue">${b.disabled || 0}</span></div>
+            <div class="item"><span class="dlabel">✈️ फर्केका</span><span class="dvalue">${b.returnee || 0}</span></div>
+            <div class="item"><span class="dlabel">🚀 नयाँ उद्यमी</span><span class="dvalue">${b.entrepreneur || 0}</span></div>
+        </div>
+        <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">📋 कार्य विवरण</h4>
+        <div class="detail-grid" style="background:#fff;border:1px solid #e0e4ea;">
+            <div class="item detail-full"><span class="dlabel">📌 गर्नुपर्ने काम</span><span class="dvalue">${p.activities || '-'}</span></div>
+            <div class="item detail-full"><span class="dlabel">🔧 कसरी गर्ने?</span><span class="dvalue">${p.method || '-'}</span></div>
+            <div class="item detail-full"><span class="dlabel">🎯 उपलब्धी</span><span class="dvalue">${p.output || '-'}</span></div>
+        </div>
+        <h4 style="color:#1a3c5e;font-size:14px;margin:12px 0 6px;">💰 खर्च विवरण</h4>
+        <div class="detail-expense-list">${expenseHtml}</div>
+        <div style="text-align:right;font-weight:700;font-size:15px;margin-top:6px;">जम्मा खर्च: रु. ${totalExp.toLocaleString()}</div>
+    `;
+    document.getElementById('detailModal').classList.add('show');
+}
+
+function printDetail() { window.print(); }
+
+// ============================================
+// USER MANAGEMENT
 // ============================================
 function openUserManagement() {
     if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
@@ -1519,27 +1415,45 @@ async function handleImport(event) {
 }
 
 // ============================================
-// TABS
+// REPORT FUNCTIONS
 // ============================================
-function switchTab(tabId) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.tabs button').forEach(el => el.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    document.querySelector(`.tabs button[data-tab="${tabId}"]`).classList.add('active');
-    if(tabId === 'tabReport') {
-        if (document.getElementById('reportContent').innerHTML.includes('कृपया मिति चयन')) {
-            generateReport(projects);
-        }
+function generateDateRangeReport() {
+    const fromDate = document.getElementById('reportFromDate').value;
+    const toDate = document.getElementById('reportToDate').value;
+    const infoSpan = document.getElementById('dateRangeInfo');
+    
+    if (!fromDate || !toDate) {
+        alert('कृपया सुरु मिति र अन्त्य मिति चयन गर्नुहोस्।');
+        return;
     }
+    
+    if (fromDate > toDate) {
+        alert('सुरु मिति अन्त्य मिति भन्दा पछि हुन सक्दैन।');
+        return;
+    }
+    
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+    to.setHours(23, 59, 59, 999);
+    
+    infoSpan.textContent = `📅 ${formatDateToNepali(fromDate)} देखि ${formatDateToNepali(toDate)} सम्म`;
+    
+    const filteredProjects = projects.filter(p => {
+        if (!p.created_at) return true;
+        const pDate = new Date(p.created_at);
+        return pDate >= from && pDate <= to;
+    });
+    
+    generateReport(filteredProjects, fromDate, toDate);
 }
 
-document.querySelectorAll('.tabs button').forEach(btn => {
-    btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
-});
+function resetDateRangeReport() {
+    document.getElementById('reportFromDate').value = '';
+    document.getElementById('reportToDate').value = '';
+    document.getElementById('dateRangeInfo').textContent = '';
+    generateReport(projects);
+}
 
-// ============================================
-// REPORT GENERATOR
-// ============================================
 function generateReport(filteredProjects, fromDate, toDate) {
     const container = document.getElementById('reportContent');
     const projectList = filteredProjects || projects;
@@ -1636,198 +1550,14 @@ function generateReport(filteredProjects, fromDate, toDate) {
                 <div style="text-align:center;font-size:13px;margin-top:4px;">वित्तीय प्रगति: ${progressPercent}%</div>
             </div>
         </div>
-        <div class="report-section">
-            <h4>४. चार्ट विश्लेषण</h4>
-            <div class="report-charts">
-                <div class="chart-box"><h4>📊 प्रकृति अनुसार बजेट</h4><canvas id="reportPieChart"></canvas></div>
-                <div class="chart-box"><h4>📊 बजेट र खर्च तुलना</h4><canvas id="reportBarChart"></canvas></div>
-                <div class="chart-box"><h4>📈 कार्यक्रम प्रगति</h4><canvas id="reportLineChart"></canvas></div>
-            </div>
-        </div>
-    `;
-
-    // Activities
-    let activitiesRows = '';
-    const allActivities = [];
-    projectList.forEach(p => {
-        if(p.activities) {
-            const acts = p.activities.split(',').map(a => a.trim());
-            acts.forEach(a => { if(a) allActivities.push({ activity: a, project: p.name, status: p.status }); });
-        }
-    });
-    allActivities.slice(0, 10).forEach((a, idx) => {
-        activitiesRows += `<tr><td>${idx+1}</td><td>${a.activity}</td><td>${a.project}</td><td>${a.status}</td></tr>`;
-    });
-
-    // Expenses
-    let expenseRows = '', expCounter = 1;
-    projectList.forEach(p => {
-        (p.expenses || []).forEach(e => {
-            expenseRows += `<tr><td>${expCounter++}</td><td>${e.date || '-'}</td><td>${e.title || 'खर्च'}</td><td>${p.name}</td><td>रु. ${(e.amount||0).toLocaleString()}</td><td>${e.remark || '-'}</td></tr>`;
-        });
-    });
-
-    // Persons
-    let personRows = '';
-    const uniquePersons = [...new Set(projectList.filter(p => p.responsible).map(p => p.responsible))];
-    uniquePersons.slice(0, 10).forEach((person, idx) => {
-        const proj = projectList.find(p => p.responsible === person);
-        personRows += `<tr><td>${idx+1}</td><td>${person}</td><td>${proj ? proj.authorized || 'प्रमुख' : 'प्रमुख'}</td><td>${proj ? proj.name : '-'}</td></tr>`;
-    });
-
-    // Achievements
-    let achievementList = '';
-    projectList.forEach(p => { if(p.output) achievementList += `<li>${p.output}</li>`; });
-    if(!achievementList) achievementList = '<li>कुनै उपलब्धी रेकर्ड छैन।</li>';
-
-    // Remaining works
-    let remainingWorks = '';
-    const incomplete = projectList.filter(p => p.status !== 'सम्पन्न');
-    incomplete.forEach(p => {
-        remainingWorks += `<li>${p.name} - ${p.status} (बजेट: रु. ${(p.budget||0).toLocaleString()}, खर्च: रु. ${getTotalExpenses(p).toLocaleString()})</li>`;
-    });
-    if(!remainingWorks) remainingWorks = '<li>सबै कार्यक्रम सम्पन्न।</li>';
-
-    // Challenges
-    let challenges = '';
-    if(pendingCount > 0) challenges += `<li>${pendingCount} वटा सुरु हुन बाँकी।</li>`;
-    if(activeCount > 0) challenges += `<li>${activeCount} वटा सन्चालित, समयमै सम्पन्न गर्न प्रयास आवश्यक।</li>`;
-    if(!challenges) challenges = '<li>कुनै समस्या छैन।</li>';
-
-    reportHTML += `
-        <div class="report-section">
-            <h4>५. गतिविधिहरू</h4>
-            <table class="report-table"><thead><tr><th>क्र.स</th><th>गतिविधि</th><th>कार्यक्रम</th><th>स्थिति</th></tr></thead><tbody>${activitiesRows || '<tr><td colspan="4" class="empty-msg">कुनै गतिविधि छैन</td></tr>'}</tbody></table>
-        </div>
-        <div class="report-section">
-            <h4>६. खर्च विवरण</h4>
-            <table class="report-table"><thead><tr><th>क्र.स</th><th>मिति</th><th>शीर्षक</th><th>कार्यक्रम</th><th>रकम</th><th>कैफियत</th></tr></thead><tbody>${expenseRows || '<tr><td colspan="6" class="empty-msg">कुनै खर्च छैन</td></tr>'}</tbody></table>
-        </div>
-        <div class="report-section">
-            <h4>७. उपलब्धी</h4>
-            <ul>${achievementList}</ul>
-        </div>
-        <div class="report-section">
-            <h4>८. संलग्न व्यक्तिहरू</h4>
-            <table class="report-table"><thead><tr><th>क्र.स</th><th>नाम</th><th>पद</th><th>कार्यक्रम</th></tr></thead><tbody>${personRows || '<tr><td colspan="4" class="empty-msg">कुनै व्यक्ति छैन</td></tr>'}</tbody></table>
-        </div>
-        <div class="report-section">
-            <h4>९. समस्या</h4>
-            <ul>${challenges}</ul>
-        </div>
-        <div class="report-section">
-            <h4>१०. बाँकी कार्य</h4>
-            <ul>${remainingWorks}</ul>
-        </div>
-        <div class="report-section">
-            <h4>११. आगामी योजना</h4>
-            <ol>
-                <li>नियमित अनुगमन बढाउने</li>
-                <li>बाँकी कार्यको प्राथमिकीकरण</li>
-                <li>लाभग्राहीको सन्तुष्टि मूल्याङ्कन</li>
-                <li>कार्यक्रमको प्रभाव मूल्याङ्कन</li>
-            </ol>
-        </div>
-        <div class="report-section">
-            <h4>१२. निष्कर्ष</h4>
-            <p>रोजगार, सीप विकास, उद्यमशीलता तथा लघुउद्यम कार्यक्रमको हालसम्मको वित्तीय तथा भौतिक प्रगति सन्तोषजनक रहेको देखिन्छ। कार्यक्रम अन्तर्गत स्वीकृत बजेटमध्ये रु. ${totalExp.toLocaleString()} खर्च भई ${progressPercent}% वित्तीय प्रगति हासिल भएको छ भने कार्यक्रमबाट ${totalBeneficiaries} जना प्रत्यक्ष लाभान्वित भएका छन्।</p>
-        </div>
-        <div class="report-section">
-            <div class="report-sign">
-                <div class="sign-block"><strong>प्रतिवेदन तयार गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
-                <div class="sign-block"><strong>प्रमाणित गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
-                <div class="sign-block"><strong>स्वीकृत गर्ने</strong><br>नाम : ................................<br>पद : ................................<br><div class="line"></div>हस्ताक्षर</div>
-            </div>
-        </div>
     `;
 
     container.innerHTML = reportHTML;
-    setTimeout(() => { renderReportCharts(categories); }, 300);
 }
 
-function renderReportCharts(categories) {
-    const ctxPie = document.getElementById('reportPieChart');
-    const ctxBar = document.getElementById('reportBarChart');
-    const ctxLine = document.getElementById('reportLineChart');
-
-    if(ctxPie) {
-        const labels = Object.keys(categories);
-        const data = labels.map(k => categories[k].budget);
-        const colors = ['#2e7d32','#1976d2','#f9a825','#d32f2f','#6a1b9a','#00838f','#e65100','#4a148c'];
-        new Chart(ctxPie, {
-            type: 'pie',
-            data: { labels, datasets: [{ data, backgroundColor: colors.slice(0, data.length) }] },
-            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
-        });
-    }
-
-    if(ctxBar) {
-        const labels = Object.keys(categories);
-        const budgetData = labels.map(k => categories[k].budget);
-        const expenseData = labels.map(k => categories[k].expense);
-        new Chart(ctxBar, {
-            type: 'bar',
-            data: {
-                labels,
-                datasets: [
-                    { label: 'बजेट', data: budgetData, backgroundColor: '#1976d2' },
-                    { label: 'खर्च', data: expenseData, backgroundColor: '#d32f2f' }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { position: 'bottom' } },
-                scales: { y: { beginAtZero: true } }
-            }
-        });
-    }
-
-    if(ctxLine) {
-        const sortedProjects = [...projects].sort((a,b) => (a.budget||0) - (b.budget||0));
-        const labels = sortedProjects.map(p => p.name.length > 10 ? p.name.slice(0,8)+'..' : p.name);
-        const progressData = sortedProjects.map(p => {
-            const exp = getTotalExpenses(p);
-            return p.budget > 0 ? Math.round((exp / p.budget) * 100) : 0;
-        });
-        new Chart(ctxLine, {
-            type: 'line',
-            data: {
-                labels,
-                datasets: [{
-                    label: 'प्रगति (%)',
-                    data: progressData,
-                    borderColor: '#2e7d32',
-                    backgroundColor: 'rgba(46,125,50,0.1)',
-                    fill: true,
-                    tension: 0.3,
-                    pointBackgroundColor: '#2e7d32'
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { position: 'bottom' } },
-                scales: { y: { beginAtZero: true, max: 100 } }
-            }
-        });
-    }
-}
-
-// ============================================
-// EXPORT REPORT TO WORD
-// ============================================
 function exportReportWord() {
     const reportElement = document.getElementById('reportContent');
-    let reportHTML = reportElement.innerHTML;
-    const chartIds = ['reportPieChart', 'reportBarChart', 'reportLineChart'];
-    chartIds.forEach(id => {
-        const canvas = document.getElementById(id);
-        if(canvas) {
-            const imgData = canvas.toDataURL('image/png');
-            const imgTag = `<img src="${imgData}" style="max-width:100%;max-height:180px;border:1px solid #ddd;border-radius:4px;" />`;
-            const regex = new RegExp(`<canvas[^>]*id="${id}"[^>]*></canvas>`, 'g');
-            reportHTML = reportHTML.replace(regex, imgTag);
-        }
-    });
+    const reportHTML = reportElement.innerHTML;
     const fullDoc = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
         <head><meta charset="UTF-8"><title>प्रगति प्रतिवेदन</title>
@@ -1851,7 +1581,6 @@ function exportReportWord() {
             .report-sign { display: flex; justify-content: space-between; margin-top: 25px; padding-top: 20px; border-top: 1px solid #ddd; }
             .report-sign .sign-block { text-align: center; flex: 1; }
             .report-sign .sign-block .line { margin-top: 30px; border-top: 1px solid #333; width: 180px; margin-left: auto; margin-right: auto; }
-            .report-charts .chart-box img { max-width: 100%; max-height: 180px; }
         </style>
         </head>
         <body>${reportHTML}</body>
@@ -1908,14 +1637,13 @@ document.querySelectorAll('.modal').forEach(modal => {
     });
 });
 
-// Check connection to Supabase
+// Check connection
 async function checkSupabaseConnection() {
     try {
         const { data, error } = await supabase.from('users').select('count').limit(1);
         if (error) {
             console.warn('⚠️ Supabase connection warning:', error.message);
-            console.log('💡 Make sure you have created the tables in Supabase.');
-            console.log('📋 Run the SQL script provided in the comments.');
+            console.log('💡 Please create the tables in Supabase SQL Editor first.');
             return false;
         }
         console.log('✅ Supabase connection successful!');
@@ -1929,16 +1657,7 @@ async function checkSupabaseConnection() {
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('✅ Application loaded successfully!');
     console.log('🔑 Supabase URL:', SUPABASE_URL);
-    
-    // Check connection
-    const connected = await checkSupabaseConnection();
-    if (!connected) {
-        console.log('💡 Please ensure:');
-        console.log('1. Supabase project is active');
-        console.log('2. Tables are created (users, projects, beneficiaries, expenses)');
-        console.log('3. Default users are inserted');
-        console.log('4. CORS is configured for your domain');
-    }
+    await checkSupabaseConnection();
 });
 </script>
 </body>
