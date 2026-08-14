@@ -415,11 +415,17 @@
 
 <script>
 // ============================================
-// SUPABASE CONFIG (NEW PROJECT)
+// SUPABASE CONFIG (FIXED)
 // ============================================
+// IMPORTANT: Replace with your actual Supabase credentials
+// Go to: https://app.supabase.com/project/_/settings/api
 const SUPABASE_URL = 'https://lyzxsqussxalfpqejelv.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_KUO0ydmJWPTFhCXiz9Ph3g_aqw5qRmA';
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5enhzcXVzc3hhbGZwcWVqZWx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDM4NTUyMDAsImV4cCI6MjAxOTQzMTIwMH0.cpWm4pBFB6qCQQCqY6M5mHZ3f5pBqUQvQFuxQvB8XoI';
+
+// Create Supabase client correctly
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+console.log('✅ Supabase client initialized');
 
 // ============================================
 // APP STATE
@@ -429,6 +435,71 @@ let projects = [];
 let editMode = false;
 let currentExpenseProjectId = null;
 let beneficiaryEditProjectId = null;
+let usingSupabase = true;
+
+// ============================================
+// DATABASE SCHEMA SETUP
+// Run this once in Supabase SQL Editor:
+/*
+-- USERS TABLE
+CREATE TABLE users (
+  id BIGSERIAL PRIMARY KEY,
+  username TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  role TEXT DEFAULT 'user',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- PROJECTS TABLE
+CREATE TABLE projects (
+  id BIGSERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  category TEXT,
+  budget NUMERIC DEFAULT 0,
+  time TEXT,
+  status TEXT DEFAULT 'सुरु हुन बाँकी',
+  responsible TEXT,
+  assistant TEXT,
+  authorized TEXT,
+  activities TEXT,
+  method TEXT,
+  output TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- BENEFICIARIES TABLE
+CREATE TABLE beneficiaries (
+  id BIGSERIAL PRIMARY KEY,
+  project_id BIGINT REFERENCES projects(id) ON DELETE CASCADE UNIQUE,
+  male INT DEFAULT 0,
+  female INT DEFAULT 0,
+  dalit INT DEFAULT 0,
+  janajati INT DEFAULT 0,
+  disabled INT DEFAULT 0,
+  returnee INT DEFAULT 0,
+  entrepreneur INT DEFAULT 0,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- EXPENSES TABLE
+CREATE TABLE expenses (
+  id BIGSERIAL PRIMARY KEY,
+  project_id BIGINT REFERENCES projects(id) ON DELETE CASCADE,
+  title TEXT,
+  amount NUMERIC DEFAULT 0,
+  date TEXT,
+  remark TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- INSERT DEFAULT USERS
+INSERT INTO users (username, password, role) VALUES 
+('admin', 'admin123', 'admin'),
+('user', 'user123', 'user')
+ON CONFLICT (username) DO NOTHING;
+*/
+// ============================================
 
 // ============================================
 // HELPERS
@@ -438,13 +509,14 @@ function getDefaultBeneficiary() {
 }
 
 function getTotalExpenses(project) {
-    return (project.expenses || []).reduce((sum, e) => sum + (e.amount || 0), 0);
+    return (project.expenses || []).reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
 }
 
 function getTotalBeneficiaries(project) {
     const b = project.beneficiary || getDefaultBeneficiary();
-    return (b.male || 0) + (b.female || 0) + (b.dalit || 0) + (b.janajati || 0) + 
-           (b.disabled || 0) + (b.returnee || 0) + (b.entrepreneur || 0);
+    return (parseInt(b.male) || 0) + (parseInt(b.female) || 0) + (parseInt(b.dalit) || 0) + 
+           (parseInt(b.janajati) || 0) + (parseInt(b.disabled) || 0) + 
+           (parseInt(b.returnee) || 0) + (parseInt(b.entrepreneur) || 0);
 }
 
 function isAdmin() {
@@ -460,159 +532,344 @@ function formatDateToNepali(dateStr) {
 }
 
 // ============================================
-// DATABASE FUNCTIONS
+// DATABASE FUNCTIONS (FIXED)
 // ============================================
+
+// AUTHENTICATION
 async function db_authenticate(username, password) {
-    const { data, error } = await supabaseClient
-        .from('users')
-        .select('*')
-        .eq('username', username)
-        .eq('password', password)
-        .maybeSingle();
-    if (error || !data) return null;
-    return data;
+    try {
+        console.log('🔍 Authenticating:', username);
+        const { data, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('username', username)
+            .eq('password', password)
+            .single();
+        
+        if (error) {
+            console.log('❌ Auth error:', error);
+            return null;
+        }
+        console.log('✅ Auth success:', data);
+        return data;
+    } catch (err) {
+        console.error('❌ Auth exception:', err);
+        return null;
+    }
 }
 
+// PROJECTS
 async function db_getProjects() {
-    const { data, error } = await supabaseClient.from('projects').select('*').order('id');
-    if (error) return [];
-    return data;
-}
-
-async function db_getExpenses(projectId) {
-    const { data, error } = await supabaseClient.from('expenses').select('*').eq('project_id', projectId).order('id');
-    if (error) return [];
-    return data;
-}
-
-async function db_getBeneficiary(projectId) {
-    const { data, error } = await supabaseClient.from('beneficiaries').select('*').eq('project_id', projectId).maybeSingle();
-    if (error) return null;
-    return data;
+    try {
+        const { data, error } = await supabase
+            .from('projects')
+            .select('*')
+            .order('id', { ascending: true });
+        
+        if (error) {
+            console.error('❌ Error fetching projects:', error);
+            return [];
+        }
+        return data || [];
+    } catch (err) {
+        console.error('❌ Exception fetching projects:', err);
+        return [];
+    }
 }
 
 async function db_saveProject(project) {
-    if (project.id) {
-        const { data, error } = await supabaseClient
-            .from('projects')
-            .update({
-                name: project.name, category: project.category, budget: project.budget,
-                time: project.time, status: project.status, responsible: project.responsible,
-                assistant: project.assistant, authorized: project.authorized,
-                activities: project.activities, method: project.method, output: project.output,
-                updated_at: new Date().toISOString()
-            })
-            .eq('id', project.id)
-            .select()
-            .single();
-        if (error) return null;
-        return data;
-    } else {
-        const { data, error } = await supabaseClient
-            .from('projects')
-            .insert([{
-                name: project.name, category: project.category, budget: project.budget,
-                time: project.time, status: project.status, responsible: project.responsible,
-                assistant: project.assistant, authorized: project.authorized,
-                activities: project.activities, method: project.method, output: project.output
-            }])
-            .select()
-            .single();
-        if (error) return null;
-        return data;
+    try {
+        if (project.id) {
+            // UPDATE
+            const { data, error } = await supabase
+                .from('projects')
+                .update({
+                    name: project.name,
+                    category: project.category,
+                    budget: parseFloat(project.budget) || 0,
+                    time: project.time || '',
+                    status: project.status || 'सुरु हुन बाँकी',
+                    responsible: project.responsible || '',
+                    assistant: project.assistant || '',
+                    authorized: project.authorized || '',
+                    activities: project.activities || '',
+                    method: project.method || '',
+                    output: project.output || '',
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', project.id)
+                .select()
+                .single();
+            
+            if (error) {
+                console.error('❌ Error updating project:', error);
+                return null;
+            }
+            return data;
+        } else {
+            // INSERT
+            const { data, error } = await supabase
+                .from('projects')
+                .insert([{
+                    name: project.name,
+                    category: project.category || 'अन्य',
+                    budget: parseFloat(project.budget) || 0,
+                    time: project.time || '',
+                    status: project.status || 'सुरु हुन बाँकी',
+                    responsible: project.responsible || '',
+                    assistant: project.assistant || '',
+                    authorized: project.authorized || '',
+                    activities: project.activities || '',
+                    method: project.method || '',
+                    output: project.output || ''
+                }])
+                .select()
+                .single();
+            
+            if (error) {
+                console.error('❌ Error inserting project:', error);
+                return null;
+            }
+            return data;
+        }
+    } catch (err) {
+        console.error('❌ Exception saving project:', err);
+        return null;
     }
 }
 
 async function db_deleteProject(id) {
-    const { error } = await supabaseClient.from('projects').delete().eq('id', id);
-    return !error;
+    try {
+        const { error } = await supabase
+            .from('projects')
+            .delete()
+            .eq('id', id);
+        
+        if (error) {
+            console.error('❌ Error deleting project:', error);
+            return false;
+        }
+        return true;
+    } catch (err) {
+        console.error('❌ Exception deleting project:', err);
+        return false;
+    }
+}
+
+// BENEFICIARIES
+async function db_getBeneficiary(projectId) {
+    try {
+        const { data, error } = await supabase
+            .from('beneficiaries')
+            .select('*')
+            .eq('project_id', projectId)
+            .maybeSingle();
+        
+        if (error) {
+            console.error('❌ Error fetching beneficiary:', error);
+            return null;
+        }
+        return data;
+    } catch (err) {
+        console.error('❌ Exception fetching beneficiary:', err);
+        return null;
+    }
 }
 
 async function db_saveBeneficiary(projectId, beneficiary) {
-    const { data, error } = await supabaseClient
-        .from('beneficiaries')
-        .upsert({
-            project_id: projectId,
-            male: beneficiary.male || 0, female: beneficiary.female || 0,
-            dalit: beneficiary.dalit || 0, janajati: beneficiary.janajati || 0,
-            disabled: beneficiary.disabled || 0, returnee: beneficiary.returnee || 0,
-            entrepreneur: beneficiary.entrepreneur || 0,
-            updated_at: new Date().toISOString()
-        }, { onConflict: 'project_id' })
-        .select()
-        .single();
-    if (error) return null;
-    return data;
+    try {
+        const { data, error } = await supabase
+            .from('beneficiaries')
+            .upsert({
+                project_id: projectId,
+                male: parseInt(beneficiary.male) || 0,
+                female: parseInt(beneficiary.female) || 0,
+                dalit: parseInt(beneficiary.dalit) || 0,
+                janajati: parseInt(beneficiary.janajati) || 0,
+                disabled: parseInt(beneficiary.disabled) || 0,
+                returnee: parseInt(beneficiary.returnee) || 0,
+                entrepreneur: parseInt(beneficiary.entrepreneur) || 0,
+                updated_at: new Date().toISOString()
+            }, { onConflict: 'project_id' })
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('❌ Error saving beneficiary:', error);
+            return null;
+        }
+        return data;
+    } catch (err) {
+        console.error('❌ Exception saving beneficiary:', err);
+        return null;
+    }
+}
+
+// EXPENSES
+async function db_getExpenses(projectId) {
+    try {
+        const { data, error } = await supabase
+            .from('expenses')
+            .select('*')
+            .eq('project_id', projectId)
+            .order('id', { ascending: true });
+        
+        if (error) {
+            console.error('❌ Error fetching expenses:', error);
+            return [];
+        }
+        return data || [];
+    } catch (err) {
+        console.error('❌ Exception fetching expenses:', err);
+        return [];
+    }
 }
 
 async function db_addExpense(projectId, expense) {
-    const { data, error } = await supabaseClient
-        .from('expenses')
-        .insert([{
-            project_id: projectId,
-            title: expense.title, amount: expense.amount,
-            date: expense.date || '', remark: expense.remark || ''
-        }])
-        .select()
-        .single();
-    if (error) return null;
-    return data;
+    try {
+        const { data, error } = await supabase
+            .from('expenses')
+            .insert([{
+                project_id: projectId,
+                title: expense.title || 'खर्च',
+                amount: parseFloat(expense.amount) || 0,
+                date: expense.date || '',
+                remark: expense.remark || ''
+            }])
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('❌ Error adding expense:', error);
+            return null;
+        }
+        return data;
+    } catch (err) {
+        console.error('❌ Exception adding expense:', err);
+        return null;
+    }
 }
 
 async function db_deleteAllExpenses(projectId) {
-    const { error } = await supabaseClient.from('expenses').delete().eq('project_id', projectId);
-    return !error;
+    try {
+        const { error } = await supabase
+            .from('expenses')
+            .delete()
+            .eq('project_id', projectId);
+        
+        if (error) {
+            console.error('❌ Error deleting expenses:', error);
+            return false;
+        }
+        return true;
+    } catch (err) {
+        console.error('❌ Exception deleting expenses:', err);
+        return false;
+    }
 }
 
+// USERS
 async function db_getUsers() {
-    const { data, error } = await supabaseClient.from('users').select('*').order('id');
-    if (error) return [];
-    return data;
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .select('*')
+            .order('id', { ascending: true });
+        
+        if (error) {
+            console.error('❌ Error fetching users:', error);
+            return [];
+        }
+        return data || [];
+    } catch (err) {
+        console.error('❌ Exception fetching users:', err);
+        return [];
+    }
 }
 
 async function db_addUser(username, password, role) {
-    const { data, error } = await supabaseClient.from('users').insert([{ username, password, role }]).select().single();
-    if (error) return null;
-    return data;
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .insert([{ username, password, role: role || 'user' }])
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('❌ Error adding user:', error);
+            return null;
+        }
+        return data;
+    } catch (err) {
+        console.error('❌ Exception adding user:', err);
+        return null;
+    }
 }
 
 async function db_deleteUser(id) {
-    const { error } = await supabaseClient.from('users').delete().eq('id', id);
-    return !error;
+    try {
+        const { error } = await supabase
+            .from('users')
+            .delete()
+            .eq('id', id);
+        
+        if (error) {
+            console.error('❌ Error deleting user:', error);
+            return false;
+        }
+        return true;
+    } catch (err) {
+        console.error('❌ Exception deleting user:', err);
+        return false;
+    }
 }
 
 // ============================================
-// SAVE & LOAD
+// LOAD ALL DATA
 // ============================================
-function saveProjects() {
-    localStorage.setItem('projectDataV5', JSON.stringify(projects));
-}
-
 async function loadAllData() {
     try {
+        console.log('🔄 Loading data from Supabase...');
+        
+        // Get projects
         const projectsData = await db_getProjects();
-        projects = projectsData.map(p => ({ ...p, budget: parseFloat(p.budget) || 0 }));
+        projects = projectsData.map(p => ({ 
+            ...p, 
+            budget: parseFloat(p.budget) || 0,
+            expenses: [],
+            beneficiary: getDefaultBeneficiary()
+        }));
 
+        // Load beneficiaries and expenses for each project
         for (let p of projects) {
+            // Load expenses
             const expenses = await db_getExpenses(p.id);
-            p.expenses = expenses.map(e => ({ ...e, amount: parseFloat(e.amount) || 0 }));
+            p.expenses = expenses.map(e => ({
+                ...e,
+                amount: parseFloat(e.amount) || 0
+            }));
 
+            // Load beneficiary
             const beneficiary = await db_getBeneficiary(p.id);
             if (beneficiary) {
                 p.beneficiary = {
-                    male: parseInt(beneficiary.male) || 0, female: parseInt(beneficiary.female) || 0,
-                    dalit: parseInt(beneficiary.dalit) || 0, janajati: parseInt(beneficiary.janajati) || 0,
-                    disabled: parseInt(beneficiary.disabled) || 0, returnee: parseInt(beneficiary.returnee) || 0,
+                    male: parseInt(beneficiary.male) || 0,
+                    female: parseInt(beneficiary.female) || 0,
+                    dalit: parseInt(beneficiary.dalit) || 0,
+                    janajati: parseInt(beneficiary.janajati) || 0,
+                    disabled: parseInt(beneficiary.disabled) || 0,
+                    returnee: parseInt(beneficiary.returnee) || 0,
                     entrepreneur: parseInt(beneficiary.entrepreneur) || 0
                 };
             } else {
                 p.beneficiary = getDefaultBeneficiary();
             }
         }
-        saveProjects();
+
+        console.log('✅ Loaded', projects.length, 'projects');
         return true;
     } catch (error) {
-        console.error('Error loading data:', error);
+        console.error('❌ Error loading data:', error);
         return false;
     }
 }
@@ -781,7 +1038,6 @@ function generateDateRangeReport() {
     
     infoSpan.textContent = `📅 ${formatDateToNepali(fromDate)} देखि ${formatDateToNepali(toDate)} सम्म`;
     
-    // Filter projects by date range (created_at)
     const filteredProjects = projects.filter(p => {
         if (!p.created_at) return true;
         const pDate = new Date(p.created_at);
@@ -864,7 +1120,7 @@ function printDetail() { window.print(); }
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
 // ============================================
-// PROJECT CRUD
+// PROJECT CRUD (UPDATED TO USE SUPABASE)
 // ============================================
 function openAddModal() {
     if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
@@ -905,10 +1161,11 @@ function openEditModal(id) {
     document.getElementById('projectModal').classList.add('show');
 }
 
-document.getElementById('projectForm').addEventListener('submit', function(e) {
+document.getElementById('projectForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
-    const id = parseInt(document.getElementById('editId').value);
+    
+    const id = parseInt(document.getElementById('editId').value) || null;
     const name = document.getElementById('fName').value.trim();
     const category = document.getElementById('fCategory').value;
     const budget = parseFloat(document.getElementById('fBudget').value) || 0;
@@ -920,6 +1177,7 @@ document.getElementById('projectForm').addEventListener('submit', function(e) {
     const activities = document.getElementById('fActivities').value.trim();
     const method = document.getElementById('fMethod').value.trim();
     const output = document.getElementById('fOutput').value.trim();
+    
     const beneficiary = {
         male: parseInt(document.getElementById('fBeneficiaryMale').value) || 0,
         female: parseInt(document.getElementById('fBeneficiaryFemale').value) || 0,
@@ -929,27 +1187,48 @@ document.getElementById('projectForm').addEventListener('submit', function(e) {
         returnee: parseInt(document.getElementById('fBeneficiaryReturnee').value) || 0,
         entrepreneur: parseInt(document.getElementById('fBeneficiaryEntrepreneur').value) || 0
     };
+    
     if(!name || budget <= 0) { alert('नाम र बजेट भर्नुहोस्।'); return; }
-    if(editMode) {
-        const idx = projects.findIndex(p => p.id === id);
-        if(idx !== -1) projects[idx] = { ...projects[idx], name, category, budget, time, status, responsible, assistant, authorized, activities, method, output, beneficiary };
+    
+    const projectData = { id, name, category, budget, time, status, responsible, assistant, authorized, activities, method, output };
+    
+    // Save to Supabase
+    const savedProject = await db_saveProject(projectData);
+    if (savedProject) {
+        // Save beneficiary
+        if (id) {
+            // Update existing
+            const idx = projects.findIndex(p => p.id === id);
+            if (idx !== -1) {
+                projects[idx] = { ...projects[idx], ...projectData, beneficiary };
+            }
+        } else {
+            // New project
+            const newProject = { ...savedProject, expenses: [], beneficiary };
+            projects.push(newProject);
+        }
+        
+        // Save beneficiary to Supabase
+        await db_saveBeneficiary(savedProject.id, beneficiary);
+        
+        // Reload data to ensure consistency
+        await loadAllData();
+        closeModal('projectModal');
+        renderAll();
+        applyFilters();
+        alert('✅ कार्यक्रम सुरक्षित भयो!');
     } else {
-        const newId = projects.length > 0 ? Math.max(...projects.map(p => p.id)) + 1 : 1;
-        projects.push({ id: newId, name, category, budget, time, status, responsible, assistant, authorized, activities, method, output, beneficiary, expenses: [] });
+        alert('❌ कार्यक्रम सुरक्षित गर्न सकिएन।');
     }
-    saveProjects();
-    closeModal('projectModal');
-    renderAll();
-    applyFilters();
 });
 
 async function deleteProject(id) {
     if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
     if(!confirm('के तपाईँ यो कार्यक्रम मेट्न चाहनुहुन्छ?')) return;
+    
     const success = await db_deleteProject(id);
     if (success) {
         projects = projects.filter(p => p.id !== id);
-        saveProjects();
         renderAll();
         applyFilters();
         alert('✅ कार्यक्रम मेटियो!');
@@ -959,7 +1238,7 @@ async function deleteProject(id) {
 }
 
 // ============================================
-// EXPENSE MODAL
+// EXPENSE MODAL (UPDATED)
 // ============================================
 function openExpenseModal(projectId) {
     if(!currentUser) { alert('लगइन गर्नुहोस्।'); return; }
@@ -1000,19 +1279,27 @@ async function saveExpense() {
     const projectId = parseInt(document.getElementById('expProjectId').value);
     const p = projects.find(x => x.id === projectId);
     if (!p) { alert('कार्यक्रम फेला परेन'); return; }
+    
     const title = document.getElementById('expTitle').value.trim();
     const amount = parseFloat(document.getElementById('expAmount').value);
     const date = document.getElementById('expDate').value.trim();
     const remark = document.getElementById('expRemark').value.trim();
+    
     if (!title || !amount || amount <= 0) { alert('शीर्षक र रकम भर्नुहोस्।'); return; }
     if (!p.expenses) p.expenses = [];
+    
     const savedExpense = await db_addExpense(projectId, { title, amount, date, remark });
     if (savedExpense) {
         p.expenses.push({ ...savedExpense, amount: parseFloat(savedExpense.amount) || 0 });
+        
+        // Update status based on expenses
         const totalExp = getTotalExpenses(p);
         if (totalExp > 0 && p.status === 'सुरु हुन बाँकी') p.status = 'सन्चालित';
         if (totalExp >= p.budget && p.budget > 0) p.status = 'सम्पन्न';
-        saveProjects();
+        
+        // Update project status in Supabase
+        await db_saveProject(p);
+        
         renderExpenseHistory(projectId);
         renderAll();
         applyFilters();
@@ -1030,10 +1317,10 @@ async function deleteAllExpenses() {
     const p = projects.find(x => x.id === projectId);
     if (!p) return;
     if (!confirm(`"${p.name}" को सबै खर्च मेट्ने?`)) return;
+    
     const success = await db_deleteAllExpenses(projectId);
     if (success) {
         p.expenses = [];
-        saveProjects();
         renderExpenseHistory(projectId);
         renderAll();
         applyFilters();
@@ -1044,7 +1331,7 @@ async function deleteAllExpenses() {
 }
 
 // ============================================
-// BENEFICIARY MODAL
+// BENEFICIARY MODAL (UPDATED)
 // ============================================
 function openBeneficiaryModal(projectId) {
     if(!currentUser) { alert('कृपया पहिले लगइन गर्नुहोस्।'); return; }
@@ -1101,6 +1388,7 @@ function closeBeneficiaryModal() {
 async function saveBeneficiary() {
     const p = projects.find(x => x.id === beneficiaryEditProjectId);
     if (!p) return;
+    
     const beneficiary = {
         male: parseInt(document.getElementById('beneficiaryMale').value) || 0,
         female: parseInt(document.getElementById('beneficiaryFemale').value) || 0,
@@ -1110,10 +1398,10 @@ async function saveBeneficiary() {
         returnee: parseInt(document.getElementById('beneficiaryReturnee').value) || 0,
         entrepreneur: parseInt(document.getElementById('beneficiaryEntrepreneur').value) || 0
     };
+    
     const saved = await db_saveBeneficiary(p.id, beneficiary);
     if (saved) {
         p.beneficiary = beneficiary;
-        saveProjects();
         closeBeneficiaryModal();
         renderAll();
         alert('✅ लाभग्राही विवरण सुरक्षित!');
@@ -1123,7 +1411,7 @@ async function saveBeneficiary() {
 }
 
 // ============================================
-// USER MANAGEMENT
+// USER MANAGEMENT (UPDATED)
 // ============================================
 function openUserManagement() {
     if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
@@ -1151,8 +1439,10 @@ async function addUser() {
     const password = document.getElementById('newPassword').value.trim();
     const role = document.getElementById('newRole').value;
     if (!username || !password) { alert('Username र Password भर्नुहोस्।'); return; }
+    
     const users = await db_getUsers();
     if (users.find(u => u.username === username)) { alert('यो username पहिले नै छ।'); return; }
+    
     const newUser = await db_addUser(username, password, role);
     if (newUser) {
         document.getElementById('newUsername').value = '';
@@ -1171,6 +1461,7 @@ async function deleteUser(id) {
     if (!user) return;
     if (user.username === 'admin') { alert('मुख्य Admin मेट्न सकिँदैन।'); return; }
     if (!confirm(`"${user.username}" मेट्ने?`)) return;
+    
     const success = await db_deleteUser(id);
     if (success) {
         renderUserList();
@@ -1185,7 +1476,7 @@ async function deleteUser(id) {
 // ============================================
 function exportData() {
     if (!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
-    const data = { projects, users: [], exportedAt: new Date().toISOString() };
+    const data = { projects, exportedAt: new Date().toISOString() };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const link = document.createElement('a');
     link.download = `dashboard_data_${new Date().toISOString().slice(0,10)}.json`;
@@ -1198,7 +1489,7 @@ function importData() {
     document.getElementById('importFileInput').click();
 }
 
-function handleImport(event) {
+async function handleImport(event) {
     const file = event.target.files[0];
     if(!file) return;
     const reader = new FileReader();
@@ -1206,12 +1497,15 @@ function handleImport(event) {
         try {
             const data = JSON.parse(e.target.result);
             if(data.projects) {
-                projects = data.projects;
-                for (let p of projects) {
-                    await db_saveProject(p);
-                    if (p.beneficiary) await db_saveBeneficiary(p.id, p.beneficiary);
-                    for (let exp of (p.expenses || [])) {
-                        if (!exp.id) await db_addExpense(p.id, exp);
+                for (let p of data.projects) {
+                    const saved = await db_saveProject(p);
+                    if (saved && p.beneficiary) {
+                        await db_saveBeneficiary(saved.id, p.beneficiary);
+                    }
+                    if (saved && p.expenses) {
+                        for (let exp of p.expenses) {
+                            await db_addExpense(saved.id, exp);
+                        }
                     }
                 }
                 await loadAllData();
@@ -1233,7 +1527,6 @@ function switchTab(tabId) {
     document.getElementById(tabId).classList.add('active');
     document.querySelector(`.tabs button[data-tab="${tabId}"]`).classList.add('active');
     if(tabId === 'tabReport') {
-        // Default: show all projects in report
         if (document.getElementById('reportContent').innerHTML.includes('कृपया मिति चयन')) {
             generateReport(projects);
         }
@@ -1245,7 +1538,7 @@ document.querySelectorAll('.tabs button').forEach(btn => {
 });
 
 // ============================================
-// REPORT GENERATOR - With Date Range Support
+// REPORT GENERATOR
 // ============================================
 function generateReport(filteredProjects, fromDate, toDate) {
     const container = document.getElementById('reportContent');
@@ -1615,9 +1908,37 @@ document.querySelectorAll('.modal').forEach(modal => {
     });
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+// Check connection to Supabase
+async function checkSupabaseConnection() {
+    try {
+        const { data, error } = await supabase.from('users').select('count').limit(1);
+        if (error) {
+            console.warn('⚠️ Supabase connection warning:', error.message);
+            console.log('💡 Make sure you have created the tables in Supabase.');
+            console.log('📋 Run the SQL script provided in the comments.');
+            return false;
+        }
+        console.log('✅ Supabase connection successful!');
+        return true;
+    } catch (err) {
+        console.warn('⚠️ Supabase connection error:', err.message);
+        return false;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
     console.log('✅ Application loaded successfully!');
     console.log('🔑 Supabase URL:', SUPABASE_URL);
+    
+    // Check connection
+    const connected = await checkSupabaseConnection();
+    if (!connected) {
+        console.log('💡 Please ensure:');
+        console.log('1. Supabase project is active');
+        console.log('2. Tables are created (users, projects, beneficiaries, expenses)');
+        console.log('3. Default users are inserted');
+        console.log('4. CORS is configured for your domain');
+    }
 });
 </script>
 </body>
