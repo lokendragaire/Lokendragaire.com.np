@@ -134,6 +134,9 @@
         .row-detail .item { flex: 1 1 200px; padding: 4px 0; }
         .row-detail .item .label { font-weight: 600; color: #1a3c5e; font-size: 12px; display: block; }
         .row-detail .item .value { font-size: 14px; }
+        .report-table { width: 100%; border-collapse: collapse; }
+        .report-table th, .report-table td { padding: 6px 10px; border: 1px solid #ddd; }
+        .report-table th { background: #f0f4f8; }
         @media (max-width: 768px) {
             .row { grid-template-columns: 1fr; }
             .filters { flex-direction: column; align-items: stretch; }
@@ -156,17 +159,10 @@
             .container { max-width: 100%; }
             .report-charts .chart-box canvas { max-height: 120px; }
         }
-        .report-table { width: 100%; border-collapse: collapse; }
-        .report-table th, .report-table td { padding: 6px 10px; border: 1px solid #ddd; }
-        .report-table th { background: #f0f4f8; }
-        .loading { text-align: center; padding: 20px; color: #1a3c5e; font-size: 14px; }
     </style>
 </head>
 <body>
 
-<!-- ============================================ -->
-<!-- LOGIN PAGE -->
-<!-- ============================================ -->
 <div id="loginPage">
     <div class="login-box">
         <div class="logo">🔐</div>
@@ -176,7 +172,7 @@
             <input type="text" id="loginUsername" placeholder="प्रयोगकर्ता नाम" value="admin" required />
             <input type="password" id="loginPassword" placeholder="पासवर्ड" value="admin123" required />
             <div class="error" id="loginError"></div>
-            <button type="submit" id="loginBtn">🚪 प्रवेश गर्नुहोस्</button>
+            <button type="submit">🚪 प्रवेश गर्नुहोस्</button>
             <div class="hint">
                 <strong>Admin:</strong> admin / admin123 &nbsp;|&nbsp; <strong>User:</strong> user / user123
             </div>
@@ -184,9 +180,6 @@
     </div>
 </div>
 
-<!-- ============================================ -->
-<!-- MAIN DASHBOARD -->
-<!-- ============================================ -->
 <div class="container" id="mainDashboard" style="display:none;">
     <div class="login-header">
         <div class="user-info">
@@ -204,12 +197,11 @@
         <button data-tab="tabReport">📄 प्रतिवेदन</button>
     </div>
 
-    <!-- TAB 1: DASHBOARD -->
     <div class="tab-content active" id="tabDashboard">
         <h1>📊 रोजगार, सीप तथा उद्यमशीलता शाखा</h1>
         <div class="subtitle">कार्यक्रम कार्यान्वयन स्थिति</div>
 
-        <div class="cards" id="summaryCards">
+        <div class="cards">
             <div class="card success"><div class="label">कुल बजेट</div><div class="value" id="totalBudget">०</div><div class="sub">रु.</div></div>
             <div class="card info"><div class="label">कुल खर्च</div><div class="value" id="totalExp">०</div><div class="sub">रु.</div></div>
             <div class="card warning"><div class="label">बाँकी रकम</div><div class="value" id="totalBalance">०</div><div class="sub">रु.</div></div>
@@ -252,7 +244,6 @@
         </div>
     </div>
 
-    <!-- TAB 2: REPORT -->
     <div class="tab-content" id="tabReport">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
             <h1>📄 प्रगति प्रतिवेदन</h1>
@@ -278,11 +269,7 @@
     </div>
 </div>
 
-<!-- ============================================ -->
 <!-- MODALS -->
-<!-- ============================================ -->
-
-<!-- PROJECT MODAL -->
 <div class="modal" id="projectModal">
     <div class="modal-box">
         <h2 id="modalTitle">नयाँ कार्यक्रम</h2>
@@ -344,7 +331,6 @@
     </div>
 </div>
 
-<!-- DETAIL MODAL -->
 <div class="modal" id="detailModal">
     <div class="modal-box">
         <h2 id="detailTitle">📄 विवरण</h2>
@@ -355,7 +341,6 @@
     </div>
 </div>
 
-<!-- EXPENSE MODAL -->
 <div class="modal" id="expenseModal">
     <div class="modal-box">
         <h2 id="expenseModalTitle">💰 खर्च प्रविष्टि</h2>
@@ -384,7 +369,6 @@
     </div>
 </div>
 
-<!-- USER MODAL -->
 <div class="modal" id="userModal">
     <div class="modal-box">
         <h2>👥 प्रयोगकर्ता व्यवस्थापन</h2>
@@ -407,28 +391,23 @@
     </div>
 </div>
 
-<!-- BENEFICIARY MODAL -->
 <div id="beneficiaryModal" class="modal"></div>
 
-<!-- ============================================ -->
-<!-- JAVASCRIPT -->
-<!-- ============================================ -->
 <script>
 // ============================================
-// SUPABASE CONFIG
+// SUPABASE CONFIG - तपाईंको URL र Key
 // ============================================
 const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5';
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-console.log('✅ Supabase Client Ready');
+console.log('✅ Supabase Ready');
 
 // ============================================
-// APP STATE
+// STATE
 // ============================================
 let currentUser = null;
 let projects = [];
-let editMode = false;
 let currentExpenseProjectId = null;
 let beneficiaryEditProjectId = null;
 
@@ -455,44 +434,30 @@ function isAdmin() {
 }
 
 function closeModal(id) { 
-    const modal = document.getElementById(id);
-    if (modal) modal.classList.remove('show'); 
+    document.getElementById(id).classList.remove('show'); 
 }
 
 // ============================================
-// AUTHENTICATION
+// AUTH
 // ============================================
-async function db_authenticate(username, password) {
+async function loginUser(username, password) {
     try {
-        console.log('🔍 Authenticating:', username);
-        
-        // Simple query without maybeSingle
         const { data, error } = await supabase
             .from('users')
             .select('*')
             .eq('username', username)
             .eq('password', password);
         
-        console.log('📦 Data:', data);
-        console.log('❌ Error:', error);
-        
         if (error) {
-            console.error('❌ Auth error:', error);
-            document.getElementById('loginError').textContent = '❌ Database Error: ' + error.message;
+            console.error('Login error:', error);
             return null;
         }
-        
         if (data && data.length > 0) {
-            console.log('✅ User found:', data[0]);
             return data[0];
-        } else {
-            console.log('❌ No user found');
-            document.getElementById('loginError').textContent = '❌ गलत प्रयोगकर्ता नाम वा पासवर्ड';
-            return null;
         }
+        return null;
     } catch (err) {
-        console.error('❌ Auth exception:', err);
-        document.getElementById('loginError').textContent = '❌ Connection Error: ' + err.message;
+        console.error('Login exception:', err);
         return null;
     }
 }
@@ -500,26 +465,18 @@ async function db_authenticate(username, password) {
 // ============================================
 // DATABASE FUNCTIONS
 // ============================================
-
-async function db_getProjects() {
+async function getProjects() {
     try {
         const { data, error } = await supabase
             .from('projects')
             .select('*')
             .order('id', { ascending: true });
-        
-        if (error) {
-            console.error('❌ Error fetching projects:', error);
-            return [];
-        }
+        if (error) return [];
         return data || [];
-    } catch (err) {
-        console.error('❌ Exception fetching projects:', err);
-        return [];
-    }
+    } catch (err) { return []; }
 }
 
-async function db_saveProject(project) {
+async function saveProject(project) {
     try {
         if (project.id) {
             const { data, error } = await supabase
@@ -541,11 +498,7 @@ async function db_saveProject(project) {
                 .eq('id', project.id)
                 .select()
                 .single();
-            
-            if (error) {
-                console.error('❌ Error updating project:', error);
-                return null;
-            }
+            if (error) return null;
             return data;
         } else {
             const { data, error } = await supabase
@@ -565,57 +518,36 @@ async function db_saveProject(project) {
                 }])
                 .select()
                 .single();
-            
-            if (error) {
-                console.error('❌ Error inserting project:', error);
-                return null;
-            }
+            if (error) return null;
             return data;
         }
-    } catch (err) {
-        console.error('❌ Exception saving project:', err);
-        return null;
-    }
+    } catch (err) { return null; }
 }
 
-async function db_deleteProject(id) {
+async function deleteProject(id) {
     try {
         const { error } = await supabase
             .from('projects')
             .delete()
             .eq('id', id);
-        
-        if (error) {
-            console.error('❌ Error deleting project:', error);
-            return false;
-        }
+        if (error) return false;
         return true;
-    } catch (err) {
-        console.error('❌ Exception deleting project:', err);
-        return false;
-    }
+    } catch (err) { return false; }
 }
 
-async function db_getBeneficiary(projectId) {
+async function getBeneficiary(projectId) {
     try {
         const { data, error } = await supabase
             .from('beneficiaries')
             .select('*')
             .eq('project_id', projectId)
             .maybeSingle();
-        
-        if (error) {
-            console.error('❌ Error fetching beneficiary:', error);
-            return null;
-        }
+        if (error) return null;
         return data;
-    } catch (err) {
-        console.error('❌ Exception fetching beneficiary:', err);
-        return null;
-    }
+    } catch (err) { return null; }
 }
 
-async function db_saveBeneficiary(projectId, beneficiary) {
+async function saveBeneficiary(projectId, beneficiary) {
     try {
         const { data, error } = await supabase
             .from('beneficiaries')
@@ -632,38 +564,24 @@ async function db_saveBeneficiary(projectId, beneficiary) {
             }, { onConflict: 'project_id' })
             .select()
             .single();
-        
-        if (error) {
-            console.error('❌ Error saving beneficiary:', error);
-            return null;
-        }
+        if (error) return null;
         return data;
-    } catch (err) {
-        console.error('❌ Exception saving beneficiary:', err);
-        return null;
-    }
+    } catch (err) { return null; }
 }
 
-async function db_getExpenses(projectId) {
+async function getExpenses(projectId) {
     try {
         const { data, error } = await supabase
             .from('expenses')
             .select('*')
             .eq('project_id', projectId)
             .order('id', { ascending: true });
-        
-        if (error) {
-            console.error('❌ Error fetching expenses:', error);
-            return [];
-        }
+        if (error) return [];
         return data || [];
-    } catch (err) {
-        console.error('❌ Exception fetching expenses:', err);
-        return [];
-    }
+    } catch (err) { return []; }
 }
 
-async function db_addExpense(projectId, expense) {
+async function addExpense(projectId, expense) {
     try {
         const { data, error } = await supabase
             .from('expenses')
@@ -676,89 +594,54 @@ async function db_addExpense(projectId, expense) {
             }])
             .select()
             .single();
-        
-        if (error) {
-            console.error('❌ Error adding expense:', error);
-            return null;
-        }
+        if (error) return null;
         return data;
-    } catch (err) {
-        console.error('❌ Exception adding expense:', err);
-        return null;
-    }
+    } catch (err) { return null; }
 }
 
-async function db_deleteAllExpenses(projectId) {
+async function deleteAllExpenses(projectId) {
     try {
         const { error } = await supabase
             .from('expenses')
             .delete()
             .eq('project_id', projectId);
-        
-        if (error) {
-            console.error('❌ Error deleting expenses:', error);
-            return false;
-        }
+        if (error) return false;
         return true;
-    } catch (err) {
-        console.error('❌ Exception deleting expenses:', err);
-        return false;
-    }
+    } catch (err) { return false; }
 }
 
-async function db_getUsers() {
+async function getUsers() {
     try {
         const { data, error } = await supabase
             .from('users')
             .select('*')
             .order('id', { ascending: true });
-        
-        if (error) {
-            console.error('❌ Error fetching users:', error);
-            return [];
-        }
+        if (error) return [];
         return data || [];
-    } catch (err) {
-        console.error('❌ Exception fetching users:', err);
-        return [];
-    }
+    } catch (err) { return []; }
 }
 
-async function db_addUser(username, password, role) {
+async function addUser(username, password, role) {
     try {
         const { data, error } = await supabase
             .from('users')
             .insert([{ username, password, role: role || 'user' }])
             .select()
             .single();
-        
-        if (error) {
-            console.error('❌ Error adding user:', error);
-            return null;
-        }
+        if (error) return null;
         return data;
-    } catch (err) {
-        console.error('❌ Exception adding user:', err);
-        return null;
-    }
+    } catch (err) { return null; }
 }
 
-async function db_deleteUser(id) {
+async function deleteUser(id) {
     try {
         const { error } = await supabase
             .from('users')
             .delete()
             .eq('id', id);
-        
-        if (error) {
-            console.error('❌ Error deleting user:', error);
-            return false;
-        }
+        if (error) return false;
         return true;
-    } catch (err) {
-        console.error('❌ Exception deleting user:', err);
-        return false;
-    }
+    } catch (err) { return false; }
 }
 
 // ============================================
@@ -766,9 +649,7 @@ async function db_deleteUser(id) {
 // ============================================
 async function loadAllData() {
     try {
-        console.log('🔄 Loading data...');
-        
-        const projectsData = await db_getProjects();
+        const projectsData = await getProjects();
         projects = projectsData.map(p => ({ 
             ...p, 
             budget: parseFloat(p.budget) || 0,
@@ -777,13 +658,13 @@ async function loadAllData() {
         }));
 
         for (let p of projects) {
-            const expenses = await db_getExpenses(p.id);
+            const expenses = await getExpenses(p.id);
             p.expenses = expenses.map(e => ({
                 ...e,
                 amount: parseFloat(e.amount) || 0
             }));
 
-            const beneficiary = await db_getBeneficiary(p.id);
+            const beneficiary = await getBeneficiary(p.id);
             if (beneficiary) {
                 p.beneficiary = {
                     male: parseInt(beneficiary.male) || 0,
@@ -796,17 +677,15 @@ async function loadAllData() {
                 };
             }
         }
-
-        console.log('✅ Loaded', projects.length, 'projects');
         return true;
     } catch (error) {
-        console.error('❌ Error loading data:', error);
+        console.error('Load error:', error);
         return false;
     }
 }
 
 // ============================================
-// RENDER FUNCTIONS
+// RENDER
 // ============================================
 function renderSummary() {
     const totalBudget = projects.reduce((s,p) => s + (p.budget || 0), 0);
@@ -964,7 +843,6 @@ document.querySelectorAll('.tabs button').forEach(btn => {
 // ============================================
 function openAddModal() {
     if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
-    editMode = false;
     document.getElementById('modalTitle').textContent = '➕ नयाँ कार्यक्रम';
     document.getElementById('editId').value = '';
     document.getElementById('projectForm').reset();
@@ -976,7 +854,6 @@ function openEditModal(id) {
     if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
     const p = projects.find(x => x.id === id);
     if(!p) return;
-    editMode = true;
     document.getElementById('modalTitle').textContent = '✏️ कार्यक्रम सम्पादन';
     document.getElementById('editId').value = id;
     document.getElementById('fName').value = p.name || '';
@@ -1032,7 +909,7 @@ document.getElementById('projectForm').addEventListener('submit', async function
     
     const projectData = { id, name, category, budget, time, status, responsible, assistant, authorized, activities, method, output };
     
-    const savedProject = await db_saveProject(projectData);
+    const savedProject = await saveProject(projectData);
     if (savedProject) {
         if (id) {
             const idx = projects.findIndex(p => p.id === id);
@@ -1044,7 +921,7 @@ document.getElementById('projectForm').addEventListener('submit', async function
             projects.push(newProject);
         }
         
-        await db_saveBeneficiary(savedProject.id, beneficiary);
+        await saveBeneficiary(savedProject.id, beneficiary);
         await loadAllData();
         closeModal('projectModal');
         renderAll();
@@ -1059,7 +936,7 @@ async function deleteProject(id) {
     if(!isAdmin()) { alert('Admin ले मात्र गर्न सक्छ।'); return; }
     if(!confirm('के तपाईँ यो कार्यक्रम मेट्न चाहनुहुन्छ?')) return;
     
-    const success = await db_deleteProject(id);
+    const success = await deleteProject(id);
     if (success) {
         projects = projects.filter(p => p.id !== id);
         renderAll();
@@ -1121,7 +998,7 @@ async function saveExpense() {
     if (!title || !amount || amount <= 0) { alert('शीर्षक र रकम भर्नुहोस्।'); return; }
     if (!p.expenses) p.expenses = [];
     
-    const savedExpense = await db_addExpense(projectId, { title, amount, date, remark });
+    const savedExpense = await addExpense(projectId, { title, amount, date, remark });
     if (savedExpense) {
         p.expenses.push({ ...savedExpense, amount: parseFloat(savedExpense.amount) || 0 });
         
@@ -1129,7 +1006,7 @@ async function saveExpense() {
         if (totalExp > 0 && p.status === 'सुरु हुन बाँकी') p.status = 'सन्चालित';
         if (totalExp >= p.budget && p.budget > 0) p.status = 'सम्पन्न';
         
-        await db_saveProject(p);
+        await saveProject(p);
         
         renderExpenseHistory(projectId);
         renderAll();
@@ -1149,7 +1026,7 @@ async function deleteAllExpenses() {
     if (!p) return;
     if (!confirm(`"${p.name}" को सबै खर्च मेट्ने?`)) return;
     
-    const success = await db_deleteAllExpenses(projectId);
+    const success = await deleteAllExpenses(projectId);
     if (success) {
         p.expenses = [];
         renderExpenseHistory(projectId);
@@ -1230,7 +1107,7 @@ async function saveBeneficiary() {
         entrepreneur: parseInt(document.getElementById('beneficiaryEntrepreneur').value) || 0
     };
     
-    const saved = await db_saveBeneficiary(p.id, beneficiary);
+    const saved = await saveBeneficiary(p.id, beneficiary);
     if (saved) {
         p.beneficiary = beneficiary;
         closeBeneficiaryModal();
@@ -1313,7 +1190,7 @@ function openUserManagement() {
 }
 
 async function renderUserList() {
-    const users = await db_getUsers();
+    const users = await getUsers();
     const container = document.getElementById('userList');
     if(users.length === 0) { container.innerHTML = '<div class="empty-msg">कुनै प्रयोगकर्ता छैन</div>'; return; }
     let html = '';
@@ -1333,10 +1210,10 @@ async function addUser() {
     const role = document.getElementById('newRole').value;
     if (!username || !password) { alert('Username र Password भर्नुहोस्।'); return; }
     
-    const users = await db_getUsers();
+    const users = await getUsers();
     if (users.find(u => u.username === username)) { alert('यो username पहिले नै छ।'); return; }
     
-    const newUser = await db_addUser(username, password, role);
+    const newUser = await addUser(username, password, role);
     if (newUser) {
         document.getElementById('newUsername').value = '';
         document.getElementById('newPassword').value = '';
@@ -1349,13 +1226,13 @@ async function addUser() {
 
 async function deleteUser(id) {
     if (!isAdmin()) return;
-    const users = await db_getUsers();
+    const users = await getUsers();
     const user = users.find(u => u.id === id);
     if (!user) return;
     if (user.username === 'admin') { alert('मुख्य Admin मेट्न सकिँदैन।'); return; }
     if (!confirm(`"${user.username}" मेट्ने?`)) return;
     
-    const success = await db_deleteUser(id);
+    const success = await deleteUser(id);
     if (success) {
         renderUserList();
         alert('🗑️ मेटियो।');
@@ -1378,7 +1255,7 @@ function exportData() {
 }
 
 // ============================================
-// REPORT FUNCTIONS
+// REPORT
 // ============================================
 function generateDateRangeReport() {
     const fromDate = document.getElementById('reportFromDate').value;
@@ -1532,9 +1409,7 @@ document.getElementById('loginForm').onsubmit = async function(e) {
     const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
     
-    console.log('🔍 Trying to login:', username);
-    
-    const user = await db_authenticate(username, password);
+    const user = await loginUser(username, password);
     if (user) {
         currentUser = user;
         document.getElementById('loginError').textContent = '';
@@ -1542,7 +1417,9 @@ document.getElementById('loginForm').onsubmit = async function(e) {
         document.getElementById('mainDashboard').style.display = 'block';
         await loadAllData();
         renderAll();
-        console.log('✅ Login successful:', currentUser.username);
+        alert('✅ स्वागत छ! ' + user.username);
+    } else {
+        document.getElementById('loginError').textContent = '❌ गलत प्रयोगकर्ता नाम वा पासवर्ड';
     }
 };
 
@@ -1551,8 +1428,8 @@ function logout() {
     currentUser = null;
     document.getElementById('mainDashboard').style.display = 'none';
     document.getElementById('loginPage').style.display = 'block';
-    document.getElementById('loginUsername').value = '';
-    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginUsername').value = 'admin';
+    document.getElementById('loginPassword').value = 'admin123';
     document.getElementById('loginError').textContent = '';
 }
 
@@ -1566,9 +1443,9 @@ document.querySelectorAll('.modal').forEach(modal => {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ Application loaded!');
-    console.log('🔑 Supabase URL:', SUPABASE_URL);
-    console.log('📋 Login with: admin / admin123');
+    console.log('✅ Application Ready!');
+    console.log('🔗 Supabase:', SUPABASE_URL);
+    console.log('🔑 Login: admin/admin123');
 });
 </script>
 </body>
