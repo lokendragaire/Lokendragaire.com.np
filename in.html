@@ -130,6 +130,10 @@
         .report-charts .chart-box h4 { font-size: 12px; color: #1a3c5e; text-align: center; margin-bottom: 6px; }
         .progress-large { width: 100%; height: 12px; background: #e9ecef; border-radius: 6px; overflow: hidden; }
         .progress-large .fill { height: 100%; border-radius: 6px; background: #2e7d32; transition: width 0.4s; }
+        .row-detail { display: flex; flex-wrap: wrap; gap: 10px; }
+        .row-detail .item { flex: 1 1 200px; padding: 4px 0; }
+        .row-detail .item .label { font-weight: 600; color: #1a3c5e; font-size: 12px; display: block; }
+        .row-detail .item .value { font-size: 14px; }
         @media (max-width: 768px) {
             .row { grid-template-columns: 1fr; }
             .filters { flex-direction: column; align-items: stretch; }
@@ -152,6 +156,9 @@
             .container { max-width: 100%; }
             .report-charts .chart-box canvas { max-height: 120px; }
         }
+        .report-table { width: 100%; border-collapse: collapse; }
+        .report-table th, .report-table td { padding: 6px 10px; border: 1px solid #ddd; }
+        .report-table th { background: #f0f4f8; }
     </style>
 </head>
 <body>
@@ -408,17 +415,17 @@
 </div>
 
 <!-- BENEFICIARY MODAL -->
-<div class="modal" id="beneficiaryModal"></div>
+<div id="beneficiaryModal" class="modal"></div>
 
 <!-- ============================================ -->
 <!-- JAVASCRIPT -->
 <!-- ============================================ -->
 <script>
 // ============================================
-// SUPABASE CONFIG
+// SUPABASE CONFIG - नयाँ URL र Anon Key
 // ============================================
-const SUPABASE_URL = 'https://lyzxsqussxalfpqejelv.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_KUO0ydmJWPTFhCXiz9Ph3g_aqw5qRmA';
+const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5';
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 console.log('✅ Supabase Client Ready');
@@ -455,7 +462,8 @@ function isAdmin() {
 }
 
 function closeModal(id) { 
-    document.getElementById(id).classList.remove('show'); 
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.remove('show'); 
 }
 
 // ============================================
