@@ -33,9 +33,7 @@
         }
         .login-header .role-badge.admin { background: #e3f2fd; color: #0d47a1; }
 
-        .notification-wrapper {
-            position: relative; display: inline-block; cursor: pointer; margin-right: 15px;
-        }
+        .notification-wrapper { position: relative; display: inline-block; cursor: pointer; margin-right: 15px; }
         .notification-wrapper .bell-icon { font-size: 24px; color: #1a3c5e; transition: 0.3s; }
         .notification-wrapper .bell-icon:hover { color: #2e7d32; transform: scale(1.1); }
         .notification-wrapper .badge {
@@ -58,51 +56,31 @@
             padding: 12px 16px; border-bottom: 1px solid #e0e4ea;
             font-weight: 700; color: #1a3c5e;
             display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; background: #fff;
-            border-radius: 12px 12px 0 0; z-index: 1;
+            position: sticky; top: 0; background: #fff; z-index: 1;
         }
         .notification-dropdown .header .mark-all { font-size: 12px; color: #1976d2; cursor: pointer; font-weight: 600; }
-        .notification-dropdown .header .mark-all:hover { text-decoration: underline; }
         .notification-dropdown .notif-item {
             padding: 10px 16px; border-bottom: 1px solid #f5f5f5;
-            display: flex; align-items: start; gap: 10px;
-            transition: 0.2s; cursor: pointer;
+            display: flex; align-items: start; gap: 10px; transition: 0.2s; cursor: pointer;
         }
         .notification-dropdown .notif-item:hover { background: #f8faff; }
         .notification-dropdown .notif-item.unread { background: #e3f2fd; border-left: 3px solid #1976d2; }
-        .notification-dropdown .notif-item .icon { font-size: 18px; margin-top: 2px; }
-        .notification-dropdown .notif-item .content { flex: 1; }
         .notification-dropdown .notif-item .content .title { font-weight: 600; font-size: 13px; color: #1a3c5e; }
         .notification-dropdown .notif-item .content .desc { font-size: 12px; color: #666; margin-top: 2px; }
         .notification-dropdown .notif-item .content .time { font-size: 10px; color: #999; margin-top: 4px; }
         .notification-dropdown .empty-msg { padding: 30px 16px; text-align: center; color: #999; font-size: 13px; }
 
-        .tabs {
-            display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap;
-            background: #fff; padding: 6px 12px; border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-        }
-        .tabs button {
-            padding: 8px 18px; border: none; border-radius: 6px;
-            background: transparent; cursor: pointer; font-weight: 600;
-            font-size: 13px; color: #555; transition: 0.2s;
-        }
+        .tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; background: #fff; padding: 6px 12px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+        .tabs button { padding: 8px 18px; border: none; border-radius: 6px; background: transparent; cursor: pointer; font-weight: 600; font-size: 13px; color: #555; transition: 0.2s; }
         .tabs button:hover { background: #e8f0fe; }
         .tabs button.active { background: #1a3c5e; color: #fff; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        .cards {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-            gap: 14px; margin-bottom: 20px;
-        }
-        .card {
-            background: #fff; padding: 16px 18px; border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            border-left: 5px solid #2e7d32; transition: transform 0.2s;
-        }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 20px; }
+        .card { background: #fff; padding: 16px 18px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-left: 5px solid #2e7d32; transition: transform 0.2s; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
-        .card .label { font-size: 12px; color: #777; text-transform: uppercase; letter-spacing: 0.3px; }
+        .card .label { font-size: 12px; color: #777; text-transform: uppercase; }
         .card .value { font-size: 24px; font-weight: 700; color: #1a3c5e; margin-top: 4px; }
         .card .sub { font-size: 12px; color: #888; margin-top: 2px; }
         .card.warning { border-left-color: #f9a825; }
@@ -112,180 +90,67 @@
         .card.purple { border-left-color: #6a1b9a; }
         .card.teal { border-left-color: #00838f; }
 
-        .filters {
-            display: flex; flex-wrap: wrap; gap: 10px;
-            background: #fff; padding: 12px 16px; border-radius: 10px;
-            margin-bottom: 20px; align-items: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-        }
+        .filters { display: flex; flex-wrap: wrap; gap: 10px; background: #fff; padding: 12px 16px; border-radius: 10px; margin-bottom: 20px; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
         .filters label { font-weight: 600; font-size: 13px; color: #333; }
-        .filters select, .filters input {
-            padding: 6px 12px; border: 1px solid #ccc; border-radius: 6px;
-            font-size: 13px; background: #fafafa;
-        }
-        .filters .btn {
-            padding: 6px 18px; border: none; border-radius: 6px;
-            background: #1a3c5e; color: #fff; font-weight: 600;
-            cursor: pointer; font-size: 13px; transition: 0.2s;
-        }
+        .filters select, .filters input { padding: 6px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; background: #fafafa; }
+        .filters .btn { padding: 6px 18px; border: none; border-radius: 6px; background: #1a3c5e; color: #fff; font-weight: 600; cursor: pointer; font-size: 13px; transition: 0.2s; }
         .filters .btn:hover { background: #0f2a42; }
         .filters .btn-add { background: #2e7d32; }
         .filters .btn-add:hover { background: #1f5a22; }
         .filters .btn-export { background: #00838f; }
         .filters .btn-export:hover { background: #006064; }
 
-        .admin-toggle {
-            background: #fff; padding: 8px 16px; border-radius: 8px;
-            margin-bottom: 16px; display: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-        }
+        .admin-toggle { background: #fff; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; display: none; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
         .admin-toggle.show { display: block; }
-        .admin-toggle .btn-admin-action {
-            padding: 6px 16px; border: none; border-radius: 6px;
-            background: #6a1b9a; color: #fff; cursor: pointer;
-            font-weight: 600; font-size: 13px; margin-right: 8px;
-        }
-        .admin-toggle .btn-admin-action:hover { background: #4a148c; }
-        .admin-toggle .btn-success { background: #2e7d32; }
-        .admin-toggle .btn-success:hover { background: #1f5a22; }
+        .admin-toggle .btn-admin-action { padding: 6px 16px; border: none; border-radius: 6px; background: #6a1b9a; color: #fff; cursor: pointer; font-weight: 600; font-size: 13px; margin-right: 8px; }
 
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
         .chart-box { background: #fff; padding: 14px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         .chart-box h3 { font-size: 14px; color: #1a3c5e; margin-bottom: 8px; }
-        .chart-box canvas { max-height: 200px; max-width: 100%; }
+        .chart-box canvas { max-height: 200px; width: 100%; }
 
-        .table-wrap {
-            background: #fff; border-radius: 12px; padding: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow-x: auto;
-        }
-        .table-wrap h3 {
-            font-size: 15px; color: #1a3c5e; margin-bottom: 10px;
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
-        }
+        .table-wrap { background: #fff; border-radius: 12px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        th {
-            background: #f7f9fc; color: #1a3c5e; padding: 8px 8px; text-align: left;
-            border-bottom: 2px solid #e0e4ea; white-space: nowrap;
-            font-size: 11px; text-transform: uppercase;
-        }
-        td { padding: 8px 8px; border-bottom: 1px solid #edf0f5; vertical-align: middle; }
+        th { background: #f7f9fc; color: #1a3c5e; padding: 8px; text-align: left; border-bottom: 2px solid #e0e4ea; font-size: 11px; text-transform: uppercase; }
+        td { padding: 8px; border-bottom: 1px solid #edf0f5; vertical-align: middle; }
         tr:hover { background: #f8faff; }
-        .progress-bar {
-            width: 80px; height: 7px; background: #e9ecef; border-radius: 4px;
-            overflow: hidden; display: inline-block; vertical-align: middle;
-        }
+        
+        .progress-bar { width: 80px; height: 7px; background: #e9ecef; border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; }
         .progress-bar .fill { height: 100%; border-radius: 4px; background: #2e7d32; transition: width 0.4s; }
-        .status-badge {
-            padding: 2px 10px; border-radius: 20px; font-size: 10px;
-            font-weight: 600; display: inline-block;
-        }
+        .status-badge { padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; display: inline-block; }
         .status-badge.active { background: #e8f5e9; color: #2e7d32; }
         .status-badge.pending { background: #fff3e0; color: #e65100; }
         .status-badge.completed { background: #e3f2fd; color: #0d47a1; }
 
-        .actions button {
-            border: none; background: transparent; cursor: pointer;
-            font-size: 15px; margin: 0 2px; padding: 3px 5px; border-radius: 4px;
-            transition: 0.2s;
-        }
+        .actions button { border: none; background: transparent; cursor: pointer; font-size: 15px; margin: 0 2px; padding: 3px 5px; border-radius: 4px; }
         .actions .edit-btn:hover { background: #e3f2fd; color: #0d47a1; }
         .actions .del-btn:hover { background: #ffebee; color: #c62828; }
         .actions .expense-btn:hover { background: #e8f5e9; color: #2e7d32; }
-        .actions .view-btn:hover { background: #e8f5e9; color: #0d47a1; }
-        .actions .beneficiary-btn:hover { background: #e8f5e9; color: #6a1b9a; }
 
-        .person-info { font-size: 11px; line-height: 1.5; color: #333; }
-        .person-info .label { color: #777; font-size: 10px; }
-
-        .modal {
-            display: none; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.5);
-            z-index: 999; justify-content: center; align-items: center;
-        }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; justify-content: center; align-items: center; }
         .modal.show { display: flex; }
-        .modal-box {
-            background: #fff; padding: 25px 30px; border-radius: 16px;
-            max-width: 700px; width: 94%; max-height: 90vh; overflow-y: auto;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
+        .modal-box { background: #fff; padding: 25px 30px; border-radius: 16px; max-width: 700px; width: 94%; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
         .modal-box h2 { color: #1a3c5e; margin-bottom: 16px; font-size: 20px; }
         .modal-box label { font-weight: 600; font-size: 13px; display: block; margin: 8px 0 4px; color: #333; }
-        .modal-box input, .modal-box select, .modal-box textarea {
-            width: 100%; padding: 7px 12px; border: 1px solid #ccc;
-            border-radius: 6px; font-size: 13px;
-        }
-        .modal-box textarea { resize: vertical; min-height: 40px; }
-        .modal-btns {
-            display: flex; gap: 10px; margin-top: 16px;
-            justify-content: flex-end; flex-wrap: wrap;
-        }
-        .modal-btns button {
-            padding: 7px 22px; border: none; border-radius: 6px;
-            font-weight: 600; cursor: pointer; font-size: 13px;
-        }
+        .modal-box input, .modal-box select, .modal-box textarea { width: 100%; padding: 7px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; }
+        .modal-btns { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
+        .modal-btns button { padding: 7px 22px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; }
         .modal-btns .save-btn { background: #2e7d32; color: #fff; }
-        .modal-btns .save-btn:hover { background: #1f5a22; }
         .modal-btns .cancel-btn { background: #e0e0e0; color: #333; }
-        .modal-btns .cancel-btn:hover { background: #ccc; }
-        .modal-btns .print-btn { background: #1976d2; color: #fff; }
-        .modal-btns .print-btn:hover { background: #0d47a1; }
-
-        .empty-msg { text-align: center; color: #999; padding: 20px 0; font-size: 13px; }
-
-        .detail-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-            background: #f8faff; padding: 16px; border-radius: 10px; margin: 10px 0;
-        }
-        .detail-grid .item { padding: 6px 0; border-bottom: 1px solid #edf0f5; }
-        .detail-grid .item .dlabel { font-weight: 600; color: #1a3c5e; font-size: 12px; display: block; }
-        .detail-grid .item .dvalue { font-size: 13px; color: #333; }
-        .detail-expense-list {
-            max-height: 120px; overflow-y: auto; background: #fff;
-            border-radius: 6px; padding: 6px 10px; border: 1px solid #e0e4ea;
-        }
-        .detail-expense-list .item {
-            display: flex; justify-content: space-between;
-            padding: 3px 0; border-bottom: 1px solid #f5f5f5; font-size: 12px;
-        }
-        .detail-expense-list .item .amount { font-weight: 600; color: #d32f2f; }
 
         .login-modal .modal-box { max-width: 400px; }
-        .login-modal .modal-box h2 { text-align: center; color: #1a3c5e; }
-        .login-modal .modal-box .logo { text-align: center; font-size: 48px; margin-bottom: 10px; }
         .login-error { color: #d32f2f; font-size: 13px; text-align: center; margin-top: 8px; }
 
-        .beneficiary-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-            background: #f8faff; padding: 12px; border-radius: 8px; margin: 8px 0;
-        }
+        .beneficiary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f8faff; padding: 12px; border-radius: 8px; margin: 8px 0; }
         .beneficiary-grid .b-item { display: flex; align-items: center; gap: 6px; }
-        .beneficiary-grid .b-item label { font-size: 12px; margin: 0; display: inline; white-space: nowrap; }
         .beneficiary-grid .b-item input { width: 70px; padding: 4px 8px; font-size: 12px; }
 
-        .toast-notification {
-            position: fixed; bottom: 20px; right: 20px; background: #2e7d32;
-            color: #fff; padding: 12px 24px; border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 9999;
-            animation: slideIn 0.3s ease-out; display: none;
-        }
+        .toast-notification { position: fixed; bottom: 20px; right: 20px; background: #2e7d32; color: #fff; padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 9999; display: none; }
         .toast-notification.error { background: #d32f2f; }
-        .toast-notification.warning { background: #f9a825; color: #333; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-        .report-section {
-            background: #fff; border-radius: 12px; padding: 18px 20px;
-            margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-        .report-section h4 {
-            color: #1a3c5e; border-bottom: 2px solid #e0e4ea;
-            padding-bottom: 8px; margin-bottom: 14px; font-size: 16px;
-        }
+        
+        .report-section { background: #fff; border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; }
         .report-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0; }
-        .report-table th { background: #f0f4f8; padding: 6px 10px; border: 1px solid #ddd; font-size: 12px; text-align: left; }
-        .report-table td { padding: 6px 10px; border: 1px solid #ddd; }
-
-        .report-actions { display: flex; gap: 12px; justify-content: center; margin: 20px 0 10px; flex-wrap: wrap; }
-        .report-actions button { padding: 10px 30px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; }
+        .report-table th, .report-table td { padding: 6px 10px; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
@@ -295,14 +160,14 @@
 <!-- LOGIN MODAL -->
 <div class="modal login-modal show" id="loginModal">
     <div class="modal-box">
-        <div class="logo">🔐</div>
-        <h2>प्रणाली प्रवेश</h2>
+        <div style="text-align: center; font-size: 48px;">🔐</div>
+        <h2 style="text-align: center;">प्रणाली प्रवेश</h2>
         <p style="text-align:center;color:#777;font-size:14px;margin-bottom:16px;">रोजगार तथा उद्यमशीलता ड्यासबोर्ड</p>
         <form id="loginForm">
             <label>इमेल (Email)</label>
-            <input type="email" id="loginEmail" placeholder="admin@example.com" required />
+            <input type="email" id="loginEmail" placeholder="ram@example.com" required />
             <label>पासवर्ड (Password)</label>
-            <input type="password" id="loginPassword" placeholder="पासवर्ड" required />
+            <input type="password" id="loginPassword" placeholder="Sita" required />
             <div class="login-error" id="loginError"></div>
             <div class="modal-btns" style="justify-content:center;margin-top:16px;">
                 <button type="submit" class="save-btn" style="padding:10px 40px;">🚪 प्रवेश गर्नुहोस्</button>
@@ -350,7 +215,7 @@
         <h1>📊 रोजगार तथा उद्यमशीलता कार्यक्रम ड्यासबोर्ड</h1>
         <div class="subtitle">कार्यक्रम कार्यान्वयन समिति · Tracking & Monitoring</div>
 
-        <div class="cards" id="summaryCards">
+        <div class="cards">
             <div class="card success"><div class="label">कुल बजेट</div><div class="value" id="totalBudget">०</div><div class="sub">रु.</div></div>
             <div class="card info"><div class="label">कुल खर्च</div><div class="value" id="totalExp">०</div><div class="sub">रु.</div></div>
             <div class="card warning"><div class="label">बाँकी रकम</div><div class="value" id="totalBalance">०</div><div class="sub">रु.</div></div>
@@ -374,7 +239,7 @@
         <div class="admin-toggle" id="adminPanel">
             <h4 style="color:#6a1b9a;margin-bottom:10px;">🔧 Admin Control Panel</h4>
             <div style="display:flex;flex-wrap:wrap;gap:8px;">
-                <button class="btn-admin-action btn-success" onclick="exportData()">📥 डाटा निर्यात (JSON)</button>
+                <button class="btn-admin-action" style="background:#2e7d32;" onclick="exportData()">📥 डाटा निर्यात (JSON)</button>
                 <button class="btn-admin-action" onclick="importData()">📤 डाटा आयात (JSON)</button>
                 <input type="file" id="importFileInput" style="display:none;" accept=".json" onchange="handleImport(event)" />
             </div>
@@ -400,7 +265,7 @@
                     </tr>
                 </thead>
                 <tbody id="projectTableBody">
-                    <tr><td colspan="10" class="empty-msg">डाटा लोड हुँदै...</td></tr>
+                    <tr><td colspan="10" class="empty-msg">डाटा लोड हुँदैछ...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -410,9 +275,9 @@
     <div class="tab-content" id="tabReport">
         <h1>📄 प्रतिवेदन</h1>
         <div id="reportContent"><div class="empty-msg">कृपया प्रतिवेदन उत्पन्न गर्नुहोस्।</div></div>
-        <div class="report-actions">
-            <button style="background:#1976d2;color:#fff;" onclick="generateReport()">📊 प्रतिवेदन उत्पन्न गर्नुहोस्</button>
-            <button style="background:#e65100;color:#fff;" onclick="exportReportWord()">📄 Word डाउनलोड</button>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:20px;">
+            <button style="padding:10px 25px;background:#1976d2;color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer;" onclick="generateReport()">📊 प्रतिवेदन उत्पन्न गर्नुहोस्</button>
+            <button style="padding:10px 25px;background:#e65100;color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer;" onclick="exportReportWord()">📄 Word डाउनलोड</button>
         </div>
     </div>
 
@@ -503,7 +368,7 @@
 </div>
 
 <script>
-// SUPABASE CREDENTIALS
+// SUPABASE CONFIGURATION
 const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
@@ -511,6 +376,7 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE
 let currentUser = null;
 let currentUserId = null;
 let projects = [];
+let notifications = [];
 
 function showToast(message, type = 'success') {
     const toast = document.getElementById('toastNotification');
@@ -541,7 +407,7 @@ function closeModal(id) {
     document.getElementById(id).classList.remove('show');
 }
 
-// AUTH LOGIC
+// LOGIN SYSTEM
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
@@ -564,6 +430,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         document.getElementById('mainDashboard').style.display = 'block';
         document.getElementById('displayUsername').textContent = currentUser.username;
         document.getElementById('displayRole').textContent = currentUser.role;
+        document.getElementById('displayRole').className = 'role-badge' + (currentUser.role === 'admin' ? ' admin' : '');
 
         await loadProjects();
         renderAll();
@@ -578,7 +445,7 @@ async function logout() {
     location.reload();
 }
 
-// DATA OPERATIONS
+// LOAD DATA
 async function loadProjects() {
     try {
         let query = supabase.from('projects').select('*').order('created_at', { ascending: false });
@@ -598,43 +465,93 @@ async function saveProjectToSupabase(project) {
     if (error) showToast('त्रुटि: ' + error.message, 'error');
 }
 
-// RENDER FUNCTION
+// RENDER DASHBOARD
+function renderSummary() {
+    const totalBudget = projects.reduce((s,p) => s + (Number(p.budget) || 0), 0);
+    const totalExp = projects.reduce((s,p) => s + getTotalExpenses(p), 0);
+    const balance = totalBudget - totalExp;
+    const active = projects.filter(p => p.status === 'प्रगतिमा').length;
+    const totalBeneficiaries = projects.reduce((s,p) => s + getTotalBeneficiaries(p), 0);
+
+    document.getElementById('totalBudget').textContent = totalBudget.toLocaleString();
+    document.getElementById('totalExp').textContent = totalExp.toLocaleString();
+    document.getElementById('totalBalance').textContent = balance.toLocaleString();
+    document.getElementById('totalProjects').textContent = projects.length;
+    document.getElementById('activeProjects').textContent = active;
+    document.getElementById('totalBeneficiaries').textContent = totalBeneficiaries.toLocaleString();
+}
+
 function renderTable(filtered) {
     const tbody = document.getElementById('projectTableBody');
     const list = filtered || projects;
     if(list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" class="empty-msg">कुनै कार्यक्रम छैन</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" class="empty-msg">कुनै कार्यक्रम फेला परेन</td></tr>`;
         return;
     }
     let html = '';
     list.forEach((p, idx) => {
         const totalExp = getTotalExpenses(p);
         const progress = p.budget > 0 ? Math.min(100, Math.round((totalExp / p.budget) * 100)) : 0;
+        const statusClass = p.status === 'प्रगतिमा' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending');
         
         html += `<tr>
             <td>${idx+1}</td>
             <td><strong>${p.name}</strong></td>
             <td>${p.category || 'अन्य'}</td>
-            <td>${(p.budget||0).toLocaleString()}</td>
+            <td>${(Number(p.budget)||0).toLocaleString()}</td>
             <td>${totalExp.toLocaleString()}</td>
-            <td><div class="progress-bar"><div class="fill" style="width:${progress}%"></div></div> ${progress}%</td>
+            <td>
+                <div class="progress-bar"><div class="fill" style="width:${progress}%"></div></div>
+                <span style="font-size:11px;margin-left:4px;">${progress}%</span>
+            </td>
             <td>${p.time || '-'}</td>
             <td>${p.responsible || '-'}</td>
-            <td><span class="status-badge">${p.status}</span></td>
+            <td><span class="status-badge ${statusClass}">${p.status}</span></td>
             <td class="actions">
                 <button class="expense-btn" onclick="openExpenseModal(${p.id})">💰</button>
-                <button class="del-btn" onclick="deleteProject(${p.id})">🗑️</button>
+                ${(isAdmin() || p.user_id === currentUserId) ? `<button class="del-btn" onclick="deleteProject(${p.id})">🗑️</button>` : ''}
             </td>
         </tr>`;
     });
     tbody.innerHTML = html;
 }
 
+function renderCharts() {
+    const ctx1 = document.getElementById('budgetChart').getContext('2d');
+    const ctx2 = document.getElementById('statusChart').getContext('2d');
+    if(window.budgetChartInstance) window.budgetChartInstance.destroy();
+    if(window.statusChartInstance) window.statusChartInstance.destroy();
+
+    const sorted = [...projects].sort((a,b) => (b.budget||0) - (a.budget||0)).slice(0,8);
+    window.budgetChartInstance = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: sorted.map(p => p.name.length > 12 ? p.name.slice(0,10)+'..' : p.name),
+            datasets: [{ label: 'बजेट (रु.)', data: sorted.map(p => p.budget), backgroundColor: '#2e7d32' }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    const statusCount = { 'प्रगतिमा':0, 'सुरु हुन बाँकी':0, 'सम्पन्न':0 };
+    projects.forEach(p => { if(statusCount[p.status] !== undefined) statusCount[p.status]++; });
+    window.statusChartInstance = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: ['प्रगतिमा', 'सुरु हुन बाँकी', 'सम्पन्न'],
+            datasets: [{ data: [statusCount['प्रगतिमा'], statusCount['सुरु हुन बाँकी'], statusCount['सम्पन्न']], backgroundColor: ['#2e7d32', '#f9a825', '#1976d2'] }]
+        },
+        options: { responsive: true }
+    });
+}
+
 function renderAll() {
+    renderSummary();
     renderTable();
+    renderCharts();
     document.getElementById('adminPanel').classList.toggle('show', isAdmin());
 }
 
+// ADD & EDIT PROJECT
 function openAddModal() {
     document.getElementById('editId').value = '';
     document.getElementById('projectForm').reset();
@@ -657,7 +574,9 @@ document.getElementById('projectForm').addEventListener('submit', async function
         user_id: currentUserId,
         beneficiary: {
             male: Number(document.getElementById('fBeneficiaryMale').value),
-            female: Number(document.getElementById('fBeneficiaryFemale').value)
+            female: Number(document.getElementById('fBeneficiaryFemale').value),
+            dalit: Number(document.getElementById('fBeneficiaryDalit').value),
+            janajati: Number(document.getElementById('fBeneficiaryJanajati').value)
         }
     };
 
@@ -665,6 +584,7 @@ document.getElementById('projectForm').addEventListener('submit', async function
     closeModal('projectModal');
     await loadProjects();
     renderAll();
+    showToast('✅ सुरक्षित भयो!');
 });
 
 async function deleteProject(id) {
@@ -672,11 +592,29 @@ async function deleteProject(id) {
     await supabase.from('projects').delete().eq('id', id);
     await loadProjects();
     renderAll();
+    showToast('🗑️ मेटियो!');
 }
 
+// EXPENSES
 function openExpenseModal(id) {
     document.getElementById('expProjectId').value = id;
+    renderExpenseHistory(id);
     document.getElementById('expenseModal').classList.add('show');
+}
+
+function renderExpenseHistory(id) {
+    const p = projects.find(x => x.id == id);
+    const list = document.getElementById('expenseHistoryList');
+    if(!p || !p.expenses || p.expenses.length === 0) {
+        list.innerHTML = '<div style="color:#888;padding:5px;">कुनै खर्च छैन</div>';
+        return;
+    }
+    list.innerHTML = p.expenses.map(e => `
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #eee;">
+            <span>${e.title} (${e.date||'-'})</span>
+            <strong>रु. ${Number(e.amount).toLocaleString()}</strong>
+        </div>
+    `).join('');
 }
 
 async function saveExpense() {
@@ -686,15 +624,47 @@ async function saveExpense() {
     
     const title = document.getElementById('expTitle').value;
     const amount = Number(document.getElementById('expAmount').value);
-    
+    const date = document.getElementById('expDate').value;
+
+    if(!title || !amount) return;
+
     const expenses = p.expenses || [];
-    expenses.push({ title, amount, date: document.getElementById('expDate').value });
-    
+    expenses.push({ title, amount, date });
     p.expenses = expenses;
+
     await saveProjectToSupabase(p);
     closeModal('expenseModal');
     await loadProjects();
     renderAll();
+    showToast('💰 खर्च थपियो!');
+}
+
+// TABS NAVIGATION
+document.querySelectorAll('.tabs button').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tabs button').forEach(el => el.classList.remove('active'));
+        document.getElementById(this.dataset.tab).classList.add('active');
+        this.classList.add('active');
+    });
+});
+
+// EXCEL EXPORT
+function exportDashboardToExcel() {
+    if(projects.length === 0) { showToast('कुनै डाटा छैन।', 'error'); return; }
+    const data = projects.map((p, i) => ({
+        'क्र.स': i+1,
+        'कार्यक्रम': p.name,
+        'प्रकृति': p.category || 'अन्य',
+        'बजेट': p.budget || 0,
+        'खर्च': getTotalExpenses(p),
+        'स्थिति': p.status,
+        'जिम्मेवार': p.responsible || '-'
+    }));
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(data);
+    XLSX.utils.book_append_sheet(wb, ws, 'ड्यासबोर्ड');
+    XLSX.writeFile(wb, `ड्यासबोर्ड_${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 </script>
 </body>
