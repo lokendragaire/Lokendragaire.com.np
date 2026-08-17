@@ -614,7 +614,7 @@
 
 <script>
 // ========================================================================
-// SUPABASE CONFIGURATION
+// SUPABASE CONFIGURATION - TIMRO SUPABASE KO DETAILS RAKH
 // ========================================================================
 const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5';
@@ -694,7 +694,7 @@ async function loadNotifications() {
         const { data, error } = await supabase
             .from('notifications')
             .select('*')
-            .eq('user_id', currentUserId)
+            .eq('receiver_id', currentUserId)
             .order('created_at', { ascending: false })
             .limit(50);
 
@@ -797,7 +797,7 @@ async function markAllRead() {
 async function sendNotificationToOthers(senderId, title, message, type = 'general', link = null) {
     try {
         const { data: users, error: userError } = await supabase
-            .from('users')
+            .from('user_profiles')
             .select('id')
             .neq('id', senderId);
 
@@ -806,7 +806,8 @@ async function sendNotificationToOthers(senderId, title, message, type = 'genera
         if (users.length === 0) return;
 
         const notificationsData = users.map(u => ({
-            user_id: u.id,
+            receiver_id: u.id,
+            sender_id: senderId,
             title: title,
             message: message,
             type: type,
@@ -843,7 +844,7 @@ function setupNotificationSubscription() {
                 event: 'INSERT',
                 schema: 'public',
                 table: 'notifications',
-                filter: `user_id=eq.${currentUserId}`
+                filter: `receiver_id=eq.${currentUserId}`
             },
             (payload) => {
                 const newNotif = payload.new;
@@ -874,26 +875,24 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 
         if (error) throw error;
 
-        // Get user profile from users table
         const { data: userData, error: userError } = await supabase
-            .from('users')
+            .from('user_profiles')
             .select('*')
-            .eq('username', email.split('@')[0])
+            .eq('id', data.user.id)
             .maybeSingle();
 
         if (userData) {
             currentUser = {
                 id: userData.id,
-                username: userData.username,
+                username: userData.username || email.split('@')[0],
                 role: userData.role || 'user'
             };
         } else {
-            // Create user in users table
             const { data: newUser, error: createError } = await supabase
-                .from('users')
+                .from('user_profiles')
                 .insert({
+                    id: data.user.id,
                     username: email.split('@')[0],
-                    password: password,
                     role: 'user'
                 })
                 .select()
@@ -956,14 +955,20 @@ async function logout() {
 
 async function loadProjects() {
     try {
-        const { data, error } = await supabase
+        let query = supabase
             .from('projects')
             .select('*')
             .order('created_at', { ascending: false });
 
+        if (!isAdmin()) {
+            query = query.eq('user_id', currentUserId);
+        }
+
+        const { data, error } = await query;
+
         if (error) throw error;
         
-        projects = data.map(p => ({
+        projects = (data || []).map(p => ({
             ...p,
             beneficiary: p.beneficiary || getDefaultBeneficiary(),
             expenses: p.expenses || []
@@ -979,6 +984,10 @@ async function loadProjects() {
 
 async function saveProjectToSupabase(project) {
     try {
+        if (!project.user_id) {
+            project.user_id = currentUserId;
+        }
+
         const { data, error } = await supabase
             .from('projects')
             .upsert({
@@ -988,7 +997,6 @@ async function saveProjectToSupabase(project) {
                 budget: project.budget,
                 time: project.time,
                 status: project.status,
-                fiscal_year: project.fiscalYear,
                 responsible: project.responsible,
                 assistant: project.assistant,
                 authorized: project.authorized,
@@ -997,6 +1005,8 @@ async function saveProjectToSupabase(project) {
                 output: project.output,
                 beneficiary: project.beneficiary,
                 expenses: project.expenses,
+                program_id: project.program_id || 'program1',
+                user_id: project.user_id || currentUserId,
                 updated_at: new Date().toISOString()
             })
             .select();
@@ -1064,7 +1074,7 @@ function renderTable(filtered) {
         actionsHtml += `<button class="view-btn" onclick="openDetailView(${p.id})">📄</button>`;
         actionsHtml += `<button class="expense-btn" onclick="openExpenseModal(${p.id})">💰</button>`;
         actionsHtml += `<button class="beneficiary-btn" onclick="openBeneficiaryModal(${p.id})">👥</button>`;
-        if(isAdmin()) {
+        if(isAdmin() || p.user_id === currentUserId) {
             actionsHtml += `<button class="edit-btn" onclick="openEditModal(${p.id})">✏️</button>`;
             actionsHtml += `<button class="del-btn" onclick="deleteProject(${p.id})">🗑️</button>`;
         }
@@ -1221,7 +1231,6 @@ function applyFilters() {
 function updateUIByRole() {
     const isAdminUser = isAdmin();
     document.getElementById('adminPanel').classList.toggle('show', isAdminUser);
-    document.getElementById('btnAddProject').style.display = isAdminUser ? 'inline-block' : 'none';
 }
 
 // ========================================================================
@@ -1267,7 +1276,7 @@ function openDetailView(id) {
 // ========================================================================
 
 function openAddModal() {
-    if(!isAdmin()) { showToast('Admin ले मात्र गर्न सक्छ।', 'error'); return; }
+    if(!currentUser) { showToast('लगइन गर्नुहोस्।', 'error'); return; }
     document.getElementById('modalTitle').textContent = '➕ नयाँ कार्यक्रम';
     document.getElementById('editId').value = '';
     document.getElementById('projectForm').reset();
@@ -1277,9 +1286,13 @@ function openAddModal() {
 }
 
 function openEditModal(id) {
-    if(!isAdmin()) { showToast('Admin ले मात्र गर्न सक्छ।', 'error'); return; }
+    if(!currentUser) { showToast('लगइन गर्नुहोस्।', 'error'); return; }
     const p = projects.find(x => x.id === id);
     if(!p) return;
+    if (p.user_id !== currentUserId && !isAdmin()) {
+        showToast('तपाईंले यो कार्यक्रम सम्पादन गर्न सक्नुहुन्न।', 'error');
+        return;
+    }
     document.getElementById('modalTitle').textContent = '✏️ कार्यक्रम सम्पादन';
     document.getElementById('editId').value = id;
     document.getElementById('fName').value = p.name || '';
@@ -1309,7 +1322,7 @@ function openEditModal(id) {
 
 document.getElementById('projectForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    if(!isAdmin()) { showToast('Admin ले मात्र गर्न सक्छ।', 'error'); return; }
+    if(!currentUser) { showToast('लगइन गर्नुहोस्।', 'error'); return; }
     
     const id = parseInt(document.getElementById('editId').value);
     const name = document.getElementById('fName').value.trim();
@@ -1350,7 +1363,26 @@ document.getElementById('projectForm').addEventListener('submit', async function
         }
     } else {
         const newId = projects.length > 0 ? Math.max(...projects.map(p => p.id || 0)) + 1 : 1;
-        project = { id: newId, name, category, budget, time, status, fiscalYear, responsible, assistant, authorized, activities, method, output, beneficiary, expenses: [], created_at: new Date().toISOString() };
+        project = { 
+            id: newId, 
+            name, 
+            category, 
+            budget, 
+            time, 
+            status, 
+            fiscalYear, 
+            responsible, 
+            assistant, 
+            authorized, 
+            activities, 
+            method, 
+            output, 
+            beneficiary, 
+            expenses: [], 
+            program_id: 'program1',
+            user_id: currentUserId,
+            created_at: new Date().toISOString() 
+        };
         projects.push(project);
     }
 
@@ -1370,10 +1402,17 @@ document.getElementById('projectForm').addEventListener('submit', async function
 });
 
 async function deleteProject(id) {
-    if(!isAdmin()) { showToast('Admin ले मात्र गर्न सक्छ।', 'error'); return; }
+    if(!currentUser) { showToast('लगइन गर्नुहोस्।', 'error'); return; }
+    const project = projects.find(p => p.id === id);
+    if (!project) return;
+    
+    if (project.user_id !== currentUserId && !isAdmin()) {
+        showToast('तपाईंले यो कार्यक्रम मेट्न सक्नुहुन्न।', 'error');
+        return;
+    }
+    
     if(!confirm('के तपाईँ यो कार्यक्रम मेट्न चाहनुहुन्छ?')) return;
     
-    const project = projects.find(p => p.id === id);
     const name = project ? project.name : 'अज्ञात';
     
     const success = await deleteProjectFromSupabase(id);
@@ -1403,9 +1442,15 @@ let currentExpenseProjectId = null;
 
 function openExpenseModal(projectId) {
     if(!currentUser) { showToast('लगइन गर्नुहोस्।', 'error'); return; }
-    currentExpenseProjectId = projectId;
     const p = projects.find(x => x.id === projectId);
     if(!p) return;
+    
+    if (p.user_id !== currentUserId && !isAdmin()) {
+        showToast('तपाईंले यो कार्यक्रममा खर्च थप्न सक्नुहुन्न।', 'error');
+        return;
+    }
+    
+    currentExpenseProjectId = projectId;
     document.getElementById('expProjectDisplay').textContent = p.name;
     document.getElementById('expProjectId').value = projectId;
     document.getElementById('expTitle').value = '';
@@ -1501,6 +1546,12 @@ function openBeneficiaryModal(projectId) {
     if(!currentUser) { showToast('लगइन गर्नुहोस्।', 'error'); return; }
     const p = projects.find(x => x.id === projectId);
     if(!p) return;
+    
+    if (p.user_id !== currentUserId && !isAdmin()) {
+        showToast('तपाईंले यो कार्यक्रमको लाभग्राही सम्पादन गर्न सक्नुहुन्न।', 'error');
+        return;
+    }
+    
     beneficiaryEditProjectId = projectId;
     const b = p.beneficiary || getDefaultBeneficiary();
     
@@ -1578,7 +1629,7 @@ function openUserManagement() {
 async function renderUserList() {
     try {
         const { data, error } = await supabase
-            .from('users')
+            .from('user_profiles')
             .select('*')
             .order('created_at', { ascending: true });
 
@@ -1604,33 +1655,30 @@ async function renderUserList() {
 
 async function addUser() {
     if(!isAdmin()) return;
-    const username = document.getElementById('newEmail').value.trim().split('@')[0];
+    const email = document.getElementById('newEmail').value.trim();
+    const username = email.split('@')[0];
     const password = document.getElementById('newPassword').value.trim();
     const role = document.getElementById('newRole').value;
     
-    if(!username || !password) {
-        showToast('Username र पासवर्ड भर्नुहोस्।', 'error');
+    if(!email || !password) {
+        showToast('Email र पासवर्ड भर्नुहोस्।', 'error');
         return;
     }
 
     try {
         const { data, error } = await supabase.auth.signUp({
-            email: document.getElementById('newEmail').value.trim(),
+            email: email,
             password: password,
             options: {
-                data: { role: role, username: username }
+                data: { 
+                    role: role, 
+                    username: username,
+                    programs: '["program1"]'
+                }
             }
         });
 
         if (error) throw error;
-
-        await supabase
-            .from('users')
-            .insert({
-                username: username,
-                password: password,
-                role: role
-            });
 
         document.getElementById('newEmail').value = '';
         document.getElementById('newPassword').value = '';
@@ -1654,7 +1702,10 @@ async function deleteUser(userId) {
     if(!confirm('प्रयोगकर्ता मेट्ने?')) return;
     
     try {
-        await supabase.from('users').delete().eq('id', userId);
+        const { error } = await supabase.auth.admin.deleteUser(userId);
+        if (error) {
+            await supabase.from('user_profiles').delete().eq('id', userId);
+        }
         await renderUserList();
         showToast('🗑️ प्रयोगकर्ता मेटियो');
     } catch (error) {
@@ -1842,15 +1893,15 @@ document.getElementById('loginModal').classList.add('show');
         const { data, error } = await supabase.auth.getSession();
         if (data.session) {
             const { data: userData, error: userError } = await supabase
-                .from('users')
+                .from('user_profiles')
                 .select('*')
-                .eq('username', data.session.user.email.split('@')[0])
+                .eq('id', data.session.user.id)
                 .maybeSingle();
 
             if (userData) {
                 currentUser = {
                     id: userData.id,
-                    username: userData.username,
+                    username: userData.username || data.session.user.email.split('@')[0],
                     role: userData.role || 'user'
                 };
                 currentUserId = currentUser.id;
