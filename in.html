@@ -239,15 +239,13 @@
         .detail-grid .item { padding: 6px 0; border-bottom: 1px solid #edf0f5; }
         .detail-grid .item .dlabel { font-weight: 600; color: #1a3c5e; font-size: 12px; display: block; }
         .detail-grid .item .dvalue { font-size: 13px; color: #333; }
-        .detail-full { grid-column: 1 / -1; }
         .detail-expense-list {
             max-height: 120px; overflow-y: auto; background: #fff;
             border-radius: 6px; padding: 6px 10px; border: 1px solid #e0e4ea;
         }
         .detail-expense-list .item {
             display: flex; justify-content: space-between;
-            padding: 3px 0; border-bottom: 1px solid #f5f5f5;
-            font-size: 12px;
+            padding: 3px 0; border-bottom: 1px solid #f5f5f5; font-size: 12px;
         }
         .detail-expense-list .item .amount { font-weight: 600; color: #d32f2f; }
 
@@ -255,13 +253,6 @@
         .login-modal .modal-box h2 { text-align: center; color: #1a3c5e; }
         .login-modal .modal-box .logo { text-align: center; font-size: 48px; margin-bottom: 10px; }
         .login-error { color: #d32f2f; font-size: 13px; text-align: center; margin-top: 8px; }
-        .login-hint {
-            font-size: 12px; color: #888; text-align: center; margin-top: 10px;
-            background: #f5f7fa; padding: 8px; border-radius: 6px;
-        }
-
-        .progress-large { width: 100%; height: 12px; background: #e9ecef; border-radius: 6px; overflow: hidden; }
-        .progress-large .fill { height: 100%; border-radius: 6px; background: #2e7d32; transition: width 0.4s; }
 
         .beneficiary-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
@@ -289,31 +280,12 @@
             color: #1a3c5e; border-bottom: 2px solid #e0e4ea;
             padding-bottom: 8px; margin-bottom: 14px; font-size: 16px;
         }
-        .report-table {
-            width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0;
-        }
+        .report-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0; }
         .report-table th { background: #f0f4f8; padding: 6px 10px; border: 1px solid #ddd; font-size: 12px; text-align: left; }
         .report-table td { padding: 6px 10px; border: 1px solid #ddd; }
-        .report-table tr:nth-child(even) { background: #fafafa; }
 
-        .report-actions {
-            display: flex; gap: 12px; justify-content: center;
-            margin: 20px 0 10px; flex-wrap: wrap;
-        }
-        .report-actions button {
-            padding: 10px 30px; border: none; border-radius: 8px;
-            font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.2s;
-        }
-
-        @media (max-width: 768px) {
-            .row { grid-template-columns: 1fr; }
-            .filters { flex-direction: column; align-items: stretch; }
-            .filters .btn-add { margin-left: 0; }
-            .login-header { flex-direction: column; align-items: stretch; text-align: center; }
-            .detail-grid { grid-template-columns: 1fr; }
-            .beneficiary-grid { grid-template-columns: 1fr; }
-            .notification-dropdown { width: 320px; right: -20px; }
-        }
+        .report-actions { display: flex; gap: 12px; justify-content: center; margin: 20px 0 10px; flex-wrap: wrap; }
+        .report-actions button { padding: 10px 30px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -327,17 +299,13 @@
         <h2>प्रणाली प्रवेश</h2>
         <p style="text-align:center;color:#777;font-size:14px;margin-bottom:16px;">रोजगार तथा उद्यमशीलता ड्यासबोर्ड</p>
         <form id="loginForm">
-            <label>प्रयोगकर्ता नाम (Email)</label>
+            <label>इमेल (Email)</label>
             <input type="email" id="loginEmail" placeholder="admin@example.com" required />
             <label>पासवर्ड (Password)</label>
             <input type="password" id="loginPassword" placeholder="पासवर्ड" required />
             <div class="login-error" id="loginError"></div>
             <div class="modal-btns" style="justify-content:center;margin-top:16px;">
                 <button type="submit" class="save-btn" style="padding:10px 40px;">🚪 प्रवेश गर्नुहोस्</button>
-            </div>
-            <div class="login-hint">
-                <strong>Admin:</strong> admin@example.com / admin123<br>
-                <strong>User:</strong> user@example.com / user123
             </div>
         </form>
     </div>
@@ -347,11 +315,11 @@
 <div class="container" id="mainDashboard" style="display:none;">
     <div class="login-header">
         <div class="user-info">
-            👤 <span id="displayUsername">Admin</span> 
-            <span class="role-badge" id="displayRole">Admin</span>
+            👤 <span id="displayUsername">User</span> 
+            <span class="role-badge" id="displayRole">User</span>
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
-            <span style="font-size:13px;color:#888;">📅 आर्थिक वर्ष २०८१/८२</span>
+            <span style="font-size:13px;color:#888;">📅 आ.व. २०८१/८२</span>
             
             <div class="notification-wrapper" onclick="toggleNotificationDropdown()">
                 <span class="bell-icon">🔔</span>
@@ -380,7 +348,7 @@
     <!-- TAB 1: DASHBOARD -->
     <div class="tab-content active" id="tabDashboard">
         <h1>📊 रोजगार तथा उद्यमशीलता कार्यक्रम ड्यासबोर्ड</h1>
-        <div class="subtitle">स्थानीय तह कार्यक्रम कार्यान्वयन समिति · Tracking & Monitoring</div>
+        <div class="subtitle">कार्यक्रम कार्यान्वयन समिति · Tracking & Monitoring</div>
 
         <div class="cards" id="summaryCards">
             <div class="card success"><div class="label">कुल बजेट</div><div class="value" id="totalBudget">०</div><div class="sub">रु.</div></div>
@@ -399,14 +367,13 @@
             <label>खोज:</label>
             <input type="text" id="filterSearch" placeholder="कार्यक्रमको नाम..." />
             <button class="btn" onclick="applyFilters()">🔍 फिल्टर</button>
-            <button class="btn btn-add" id="btnAddProject" onclick="openAddModal()">➕ नयाँ कार्यक्रम</button>
+            <button class="btn btn-add" onclick="openAddModal()">➕ नयाँ कार्यक्रम</button>
             <button class="btn btn-export" onclick="exportDashboardToExcel()">📊 Excel</button>
         </div>
 
         <div class="admin-toggle" id="adminPanel">
             <h4 style="color:#6a1b9a;margin-bottom:10px;">🔧 Admin Control Panel</h4>
             <div style="display:flex;flex-wrap:wrap;gap:8px;">
-                <button class="btn-admin-action" onclick="openUserManagement()">👥 प्रयोगकर्ता व्यवस्थापन</button>
                 <button class="btn-admin-action btn-success" onclick="exportData()">📥 डाटा निर्यात (JSON)</button>
                 <button class="btn-admin-action" onclick="importData()">📤 डाटा आयात (JSON)</button>
                 <input type="file" id="importFileInput" style="display:none;" accept=".json" onchange="handleImport(event)" />
@@ -425,27 +392,15 @@
         </div>
 
         <div class="table-wrap">
-            <h3>
-                <span>📋 कार्यक्रमहरूको सूची</span>
-                <span style="font-size:12px;font-weight:400;color:#777;">जिम्मेवार व्यक्ति सहित</span>
-            </h3>
+            <h3>📋 कार्यक्रमहरूको सूची</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>क्र.स</th>
-                        <th>कार्यक्रमको नाम</th>
-                        <th>प्रकृति</th>
-                        <th>बजेट (रु.)</th>
-                        <th>खर्च (रु.)</th>
-                        <th>प्रगति</th>
-                        <th>समय</th>
-                        <th>जिम्मेवार व्यक्ति</th>
-                        <th>स्थिति</th>
-                        <th>कार्य</th>
+                        <th>क्र.स</th><th>कार्यक्रमको नाम</th><th>प्रकृति</th><th>बजेट (रु.)</th><th>खर्च (रु.)</th><th>प्रगति</th><th>समय</th><th>जिम्मेवार</th><th>स्थिति</th><th>कार्य</th>
                     </tr>
                 </thead>
                 <tbody id="projectTableBody">
-                    <tr><td colspan="10" class="empty-msg">कृपया "नयाँ कार्यक्रम" थप्नुहोस् वा डाटा लोड हुँदै...</td></tr>
+                    <tr><td colspan="10" class="empty-msg">डाटा लोड हुँदै...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -454,23 +409,21 @@
     <!-- TAB 2: REPORT -->
     <div class="tab-content" id="tabReport">
         <h1>📄 प्रतिवेदन</h1>
-        <div id="reportContent">
-            <div class="empty-msg">कृपया प्रतिवेदन उत्पन्न गर्नुहोस्।</div>
-        </div>
+        <div id="reportContent"><div class="empty-msg">कृपया प्रतिवेदन उत्पन्न गर्नुहोस्।</div></div>
         <div class="report-actions">
             <button style="background:#1976d2;color:#fff;" onclick="generateReport()">📊 प्रतिवेदन उत्पन्न गर्नुहोस्</button>
-            <button style="background:#e65100;color:#fff;" onclick="exportReportWord()">📄 Word</button>
+            <button style="background:#e65100;color:#fff;" onclick="exportReportWord()">📄 Word डाउनलोड</button>
         </div>
     </div>
 
     <!-- TAB 3: ANALYTICS -->
     <div class="tab-content" id="tabAnalytics">
         <h1>📈 विश्लेषण</h1>
-        <div class="cards" id="analyticsCards">
+        <div class="cards">
             <div class="card teal"><div class="label">औसत बजेट</div><div class="value" id="avgBudget">०</div></div>
             <div class="card purple"><div class="label">औसत खर्च</div><div class="value" id="avgExpense">०</div></div>
-            <div class="card warning"><div class="label">सबैभन्दा धेरै बजेट</div><div class="value" id="maxBudget">०</div></div>
-            <div class="card danger"><div class="label">सबैभन्दा कम बजेट</div><div class="value" id="minBudget">०</div></div>
+            <div class="card warning"><div class="label">अधिकतम बजेट</div><div class="value" id="maxBudget">०</div></div>
+            <div class="card danger"><div class="label">न्यूनतम बजेट</div><div class="value" id="minBudget">०</div></div>
         </div>
         <div class="row">
             <div class="chart-box"><h3>📊 प्रकृति अनुसार कार्यक्रम</h3><canvas id="analyticsCategoryChart"></canvas></div>
@@ -486,7 +439,7 @@
         <form id="projectForm">
             <input type="hidden" id="editId" value="">
             <label>कार्यक्रमको नाम *</label>
-            <input type="text" id="fName" required placeholder="जस्तै: आन्तरिक रोजगार सिर्जना" />
+            <input type="text" id="fName" required placeholder="कार्यक्रमको नाम" />
             <label>प्रकृति</label>
             <select id="fCategory">
                 <option value="रोजगारी">रोजगारी</option>
@@ -497,7 +450,7 @@
                 <option value="अन्य">अन्य</option>
             </select>
             <label>कुल बजेट (रु.) *</label>
-            <input type="number" id="fBudget" required placeholder="जस्तै: 1100000" />
+            <input type="number" id="fBudget" required placeholder="0" />
             <label>कार्यान्वयन समय</label>
             <input type="text" id="fTime" placeholder="जस्तै: Q2-Q4" />
             <label>स्थिति</label>
@@ -506,35 +459,19 @@
                 <option value="प्रगतिमा">प्रगतिमा</option>
                 <option value="सम्पन्न">सम्पन्न</option>
             </select>
-            <label>आर्थिक वर्ष</label>
-            <input type="text" id="fFiscalYear" value="२०८१/८२" />
-            <hr style="margin:12px 0;">
-            <h4 style="color:#1a3c5e;font-size:14px;">👤 जिम्मेवार व्यक्तिहरू</h4>
             <label>जिम्मेवार व्यक्ति</label>
             <input type="text" id="fResponsible" placeholder="नाम, पद" />
-            <label>सहायक व्यक्ति</label>
-            <input type="text" id="fAssistant" placeholder="नाम, पद" />
-            <label>अख्तियार प्राप्त व्यक्ति</label>
-            <input type="text" id="fAuthorized" placeholder="नाम, पद" />
-            <hr style="margin:12px 0;">
-            <h4 style="color:#1a3c5e;font-size:14px;">📋 कार्य विवरण</h4>
             <label>गर्नुपर्ने काम</label>
             <textarea id="fActivities" rows="2"></textarea>
-            <label>कसरी गर्ने?</label>
-            <textarea id="fMethod" rows="2"></textarea>
-            <label>उपलब्धी</label>
-            <textarea id="fOutput" rows="2"></textarea>
-            <hr style="margin:12px 0;">
-            <h4 style="color:#1a3c5e;font-size:14px;">👥 लाभग्राही विवरण</h4>
+            
+            <h4 style="color:#1a3c5e;margin-top:12px;">👥 लाभग्राही विवरण</h4>
             <div class="beneficiary-grid">
                 <div class="b-item"><label>👨 पुरुष:</label><input type="number" id="fBeneficiaryMale" value="0" min="0" /></div>
                 <div class="b-item"><label>👩 महिला:</label><input type="number" id="fBeneficiaryFemale" value="0" min="0" /></div>
                 <div class="b-item"><label>🧑‍🦱 दलित:</label><input type="number" id="fBeneficiaryDalit" value="0" min="0" /></div>
                 <div class="b-item"><label>🧑‍🦰 जनजाति:</label><input type="number" id="fBeneficiaryJanajati" value="0" min="0" /></div>
-                <div class="b-item"><label>♿ अपाङ्गता:</label><input type="number" id="fBeneficiaryDisabled" value="0" min="0" /></div>
-                <div class="b-item"><label>✈️ वैदेशिक फर्केका:</label><input type="number" id="fBeneficiaryReturnee" value="0" min="0" /></div>
-                <div class="b-item"><label>🚀 नयाँ उद्यमी:</label><input type="number" id="fBeneficiaryEntrepreneur" value="0" min="0" /></div>
             </div>
+
             <div class="modal-btns">
                 <button type="button" class="cancel-btn" onclick="closeModal('projectModal')">रद्द</button>
                 <button type="submit" class="save-btn">💾 सुरक्षित गर्नुहोस्</button>
@@ -543,107 +480,44 @@
     </div>
 </div>
 
-<!-- DETAIL MODAL -->
-<div class="modal" id="detailModal">
-    <div class="modal-box">
-        <h2 id="detailTitle">📄 कार्यक्रमको पूर्ण विवरण</h2>
-        <div id="detailContent"></div>
-        <div class="modal-btns">
-            <button class="print-btn" onclick="window.print()">🖨️ प्रिन्ट</button>
-            <button class="cancel-btn" onclick="closeModal('detailModal')">बन्द</button>
-        </div>
-    </div>
-</div>
-
 <!-- EXPENSE MODAL -->
 <div class="modal" id="expenseModal">
     <div class="modal-box">
-        <h2 id="expenseModalTitle">💰 खर्च प्रविष्टि</h2>
-        <div style="background:#f5f7fa;padding:10px;border-radius:6px;margin-bottom:12px;">
-            <strong>कार्यक्रम:</strong> <span id="expProjectDisplay">-</span>
-        </div>
+        <h2>💰 खर्च प्रविष्टि</h2>
         <input type="hidden" id="expProjectId" value="">
         <label>खर्चको शीर्षक *</label>
-        <input type="text" id="expTitle" placeholder="जस्तै: निर्माण सामग्री" required />
+        <input type="text" id="expTitle" required />
         <label>रकम (रु.) *</label>
-        <input type="number" id="expAmount" placeholder="जस्तै: 50000" required />
+        <input type="number" id="expAmount" required />
         <label>मिति</label>
         <input type="text" id="expDate" placeholder="२०८१/०४/१५" />
-        <label>कैफियत</label>
-        <input type="text" id="expRemark" placeholder="बिल नम्बर..." />
         <div style="margin:12px 0;">
-            <h4 style="font-size:14px;color:#1a3c5e;">📜 खर्च इतिहास</h4>
-            <div id="expenseHistoryList"><div class="empty-msg">कुनै खर्च छैन</div></div>
-            <div id="expenseTotalDisplay">जम्मा खर्च: रु. ०</div>
+            <h4>📜 खर्च इतिहास</h4>
+            <div id="expenseHistoryList"></div>
         </div>
         <div class="modal-btns">
-            <button type="button" class="cancel-btn" style="background:#d32f2f;color:#fff;" onclick="deleteAllExpenses()">🗑️ सबै मेट्नुहोस्</button>
             <button type="button" class="cancel-btn" onclick="closeModal('expenseModal')">बन्द</button>
-            <button type="button" class="save-btn" onclick="saveExpense()">💰 खर्च थप्नुहोस्</button>
+            <button type="button" class="save-btn" onclick="saveExpense()">💰 थप्नुहोस्</button>
         </div>
     </div>
 </div>
-
-<!-- USER MANAGEMENT MODAL -->
-<div class="modal" id="userModal">
-    <div class="modal-box">
-        <h2>👥 प्रयोगकर्ता व्यवस्थापन</h2>
-        <div style="margin-bottom:12px;">
-            <label>नयाँ प्रयोगकर्ता</label>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <input type="email" id="newEmail" placeholder="Email" style="flex:1;" />
-                <input type="password" id="newPassword" placeholder="Password" style="flex:1;" />
-                <select id="newRole" style="flex:0.5;">
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                </select>
-                <button class="btn" style="background:#2e7d32;color:#fff;" onclick="addUser()">➕ थप्नुहोस्</button>
-            </div>
-        </div>
-        <div id="userList" style="max-height:300px;overflow-y:auto;border:1px solid #eee;border-radius:6px;padding:10px;">
-            <div class="empty-msg">कुनै प्रयोगकर्ता छैन</div>
-        </div>
-        <div class="modal-btns">
-            <button class="cancel-btn" onclick="closeModal('userModal')">बन्द</button>
-        </div>
-    </div>
-</div>
-
-<!-- BENEFICIARY MODAL -->
-<div class="modal" id="beneficiaryModal"></div>
 
 <script>
-// ========================================================================
-// SUPABASE CONFIGURATION - TIMRO SUPABASE KO DETAILS RAKH
-// ========================================================================
+// SUPABASE CREDENTIALS
 const SUPABASE_URL = 'https://yrvetxtjvkdvknnvngez.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_nDDWRyOR3CTow6X8E7JdEQ_K8PcFfk5';
-
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-// ========================================================================
-// STATE
-// ========================================================================
 let currentUser = null;
 let currentUserId = null;
 let projects = [];
-let notifications = [];
-let unreadCount = 0;
-let notificationSubscription = null;
-
-// ========================================================================
-// HELPER FUNCTIONS
-// ========================================================================
 
 function showToast(message, type = 'success') {
     const toast = document.getElementById('toastNotification');
     toast.textContent = message;
     toast.className = 'toast-notification ' + type;
     toast.style.display = 'block';
-    clearTimeout(toast._timeout);
-    toast._timeout = setTimeout(() => {
-        toast.style.display = 'none';
-    }, 4000);
+    setTimeout(() => { toast.style.display = 'none'; }, 4000);
 }
 
 function getDefaultBeneficiary() {
@@ -651,13 +525,12 @@ function getDefaultBeneficiary() {
 }
 
 function getTotalExpenses(project) {
-    return (project.expenses || []).reduce((sum, e) => sum + (e.amount || 0), 0);
+    return (project.expenses || []).reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
 }
 
 function getTotalBeneficiaries(project) {
     const b = project.beneficiary || getDefaultBeneficiary();
-    return (b.male || 0) + (b.female || 0) + (b.dalit || 0) + (b.janajati || 0) + 
-           (b.disabled || 0) + (b.returnee || 0) + (b.entrepreneur || 0);
+    return (b.male || 0) + (b.female || 0) + (b.dalit || 0) + (b.janajati || 0);
 }
 
 function isAdmin() {
@@ -668,1264 +541,161 @@ function closeModal(id) {
     document.getElementById(id).classList.remove('show');
 }
 
-// ========================================================================
-// NOTIFICATION SYSTEM
-// ========================================================================
-
-function toggleNotificationDropdown() {
-    const dropdown = document.getElementById('notificationDropdown');
-    dropdown.classList.toggle('show');
-    if (dropdown.classList.contains('show')) {
-        loadNotifications();
-    }
-}
-
-document.addEventListener('click', function(e) {
-    const wrapper = document.querySelector('.notification-wrapper');
-    if (wrapper && !wrapper.contains(e.target)) {
-        document.getElementById('notificationDropdown').classList.remove('show');
-    }
-});
-
-async function loadNotifications() {
-    if (!currentUserId) return;
-    
-    try {
-        const { data, error } = await supabase
-            .from('notifications')
-            .select('*')
-            .eq('receiver_id', currentUserId)
-            .order('created_at', { ascending: false })
-            .limit(50);
-
-        if (error) throw error;
-        
-        notifications = data || [];
-        unreadCount = notifications.filter(n => !n.is_read).length;
-        renderNotifications();
-        updateBadge();
-    } catch (error) {
-        console.error('Error loading notifications:', error);
-    }
-}
-
-function renderNotifications() {
-    const container = document.getElementById('notifList');
-    
-    if (notifications.length === 0) {
-        container.innerHTML = '<div class="empty-msg">कुनै सूचना छैन</div>';
-        return;
-    }
-
-    let html = '';
-    notifications.forEach(n => {
-        const icon = n.type === 'project' ? '📋' : 
-                     n.type === 'expense' ? '💰' :
-                     n.type === 'user' ? '👤' : '🔔';
-        const isUnread = !n.is_read;
-        const time = new Date(n.created_at).toLocaleString('ne-NP');
-        
-        html += `
-            <div class="notif-item ${isUnread ? 'unread' : ''}" onclick="markNotificationRead('${n.id}')">
-                <span class="icon">${icon}</span>
-                <div class="content">
-                    <div class="title">${n.title}</div>
-                    <div class="desc">${n.message}</div>
-                    <div class="time">${time}</div>
-                </div>
-            </div>
-        `;
-    });
-    container.innerHTML = html;
-}
-
-function updateBadge() {
-    const badge = document.getElementById('notifBadge');
-    if (unreadCount > 0) {
-        badge.style.display = 'block';
-        badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
-    } else {
-        badge.style.display = 'none';
-    }
-}
-
-async function markNotificationRead(id) {
-    try {
-        const { error } = await supabase
-            .from('notifications')
-            .update({ is_read: true })
-            .eq('id', id);
-
-        if (error) throw error;
-        
-        const notif = notifications.find(n => n.id === id);
-        if (notif) {
-            notif.is_read = true;
-            unreadCount = Math.max(0, unreadCount - 1);
-            updateBadge();
-            renderNotifications();
-        }
-    } catch (error) {
-        console.error('Error marking notification as read:', error);
-    }
-}
-
-async function markAllRead() {
-    if (notifications.length === 0) return;
-    
-    try {
-        const ids = notifications.filter(n => !n.is_read).map(n => n.id);
-        if (ids.length === 0) return;
-
-        const { error } = await supabase
-            .from('notifications')
-            .update({ is_read: true })
-            .in('id', ids);
-
-        if (error) throw error;
-        
-        notifications.forEach(n => n.is_read = true);
-        unreadCount = 0;
-        updateBadge();
-        renderNotifications();
-        showToast('✅ सबै सूचना पढियो भनी चिन्ह लगाइयो');
-    } catch (error) {
-        console.error('Error marking all as read:', error);
-    }
-}
-
-async function sendNotificationToOthers(senderId, title, message, type = 'general', link = null) {
-    try {
-        const { data: users, error: userError } = await supabase
-            .from('user_profiles')
-            .select('id')
-            .neq('id', senderId);
-
-        if (userError) throw userError;
-        
-        if (users.length === 0) return;
-
-        const notificationsData = users.map(u => ({
-            receiver_id: u.id,
-            sender_id: senderId,
-            title: title,
-            message: message,
-            type: type,
-            link: link,
-            is_read: false,
-            created_at: new Date().toISOString()
-        }));
-
-        const { error } = await supabase
-            .from('notifications')
-            .insert(notificationsData);
-
-        if (error) throw error;
-        
-        return true;
-    } catch (error) {
-        console.error('Error sending notifications:', error);
-        return false;
-    }
-}
-
-function setupNotificationSubscription() {
-    if (notificationSubscription) {
-        notificationSubscription.unsubscribe();
-    }
-
-    if (!currentUserId) return;
-
-    notificationSubscription = supabase
-        .channel('notifications-channel')
-        .on(
-            'postgres_changes',
-            {
-                event: 'INSERT',
-                schema: 'public',
-                table: 'notifications',
-                filter: `receiver_id=eq.${currentUserId}`
-            },
-            (payload) => {
-                const newNotif = payload.new;
-                notifications.unshift(newNotif);
-                unreadCount++;
-                updateBadge();
-                renderNotifications();
-                showToast(`🔔 ${newNotif.title}: ${newNotif.message}`, 'warning');
-            }
-        )
-        .subscribe();
-}
-
-// ========================================================================
-// AUTHENTICATION
-// ========================================================================
-
+// AUTH LOGIC
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
     
     try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password
-        });
-
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
 
-        const { data: userData, error: userError } = await supabase
-            .from('user_profiles')
-            .select('*')
-            .eq('id', data.user.id)
-            .maybeSingle();
-
-        if (userData) {
-            currentUser = {
-                id: userData.id,
-                username: userData.username || email.split('@')[0],
-                role: userData.role || 'user'
-            };
-        } else {
-            const { data: newUser, error: createError } = await supabase
-                .from('user_profiles')
-                .insert({
-                    id: data.user.id,
-                    username: email.split('@')[0],
-                    role: 'user'
-                })
-                .select()
-                .single();
-            
-            if (createError) throw createError;
-            currentUser = {
-                id: newUser.id,
-                username: newUser.username,
-                role: newUser.role || 'user'
-            };
-        }
+        const { data: userData } = await supabase.from('user_profiles').select('*').eq('id', data.user.id).single();
         
+        currentUser = {
+            id: data.user.id,
+            username: userData?.username || email.split('@')[0],
+            role: userData?.role || 'user'
+        };
         currentUserId = currentUser.id;
 
-        document.getElementById('loginError').textContent = '';
         document.getElementById('loginModal').classList.remove('show');
         document.getElementById('mainDashboard').style.display = 'block';
-        
         document.getElementById('displayUsername').textContent = currentUser.username;
-        document.getElementById('displayRole').textContent = currentUser.role === 'admin' ? 'Admin' : 'User';
-        document.getElementById('displayRole').className = 'role-badge' + (currentUser.role === 'admin' ? ' admin' : '');
+        document.getElementById('displayRole').textContent = currentUser.role;
 
         await loadProjects();
-        await loadNotifications();
-        setupNotificationSubscription();
         renderAll();
         showToast(`👋 स्वागतम्! ${currentUser.username}`);
-
     } catch (error) {
         document.getElementById('loginError').textContent = '❌ ' + error.message;
     }
 });
 
 async function logout() {
-    if (!confirm('के तपाईँ बाहिरिन चाहनुहुन्छ?')) return;
-    
-    try {
-        await supabase.auth.signOut();
-        if (notificationSubscription) {
-            notificationSubscription.unsubscribe();
-            notificationSubscription = null;
-        }
-        currentUser = null;
-        currentUserId = null;
-        document.getElementById('mainDashboard').style.display = 'none';
-        document.getElementById('loginModal').classList.add('show');
-        document.getElementById('loginEmail').value = '';
-        document.getElementById('loginPassword').value = '';
-        document.getElementById('loginError').textContent = '';
-        showToast('🚪 बाहिरिनु भयो');
-    } catch (error) {
-        console.error('Logout error:', error);
-    }
+    await supabase.auth.signOut();
+    location.reload();
 }
 
-// ========================================================================
-// PROJECT DATA FUNCTIONS
-// ========================================================================
-
+// DATA OPERATIONS
 async function loadProjects() {
     try {
-        let query = supabase
-            .from('projects')
-            .select('*')
-            .order('created_at', { ascending: false });
-
-        if (!isAdmin()) {
-            query = query.eq('user_id', currentUserId);
-        }
-
+        let query = supabase.from('projects').select('*').order('created_at', { ascending: false });
+        if (!isAdmin()) { query = query.eq('user_id', currentUserId); }
+        
         const { data, error } = await query;
-
         if (error) throw error;
         
-        projects = (data || []).map(p => ({
-            ...p,
-            beneficiary: p.beneficiary || getDefaultBeneficiary(),
-            expenses: p.expenses || []
-        }));
-        
-        return projects;
+        projects = data || [];
     } catch (error) {
-        console.error('Error loading projects:', error);
-        projects = [];
-        return projects;
+        showToast('डाटा लोड गर्न सकिएन: ' + error.message, 'error');
     }
 }
 
 async function saveProjectToSupabase(project) {
-    try {
-        if (!project.user_id) {
-            project.user_id = currentUserId;
-        }
-
-        const { data, error } = await supabase
-            .from('projects')
-            .upsert({
-                id: project.id,
-                name: project.name,
-                category: project.category,
-                budget: project.budget,
-                time: project.time,
-                status: project.status,
-                responsible: project.responsible,
-                assistant: project.assistant,
-                authorized: project.authorized,
-                activities: project.activities,
-                method: project.method,
-                output: project.output,
-                beneficiary: project.beneficiary,
-                expenses: project.expenses,
-                program_id: project.program_id || 'program1',
-                user_id: project.user_id || currentUserId,
-                updated_at: new Date().toISOString()
-            })
-            .select();
-
-        if (error) throw error;
-        return data;
-    } catch (error) {
-        console.error('Error saving project:', error);
-        return null;
-    }
+    const { error } = await supabase.from('projects').upsert(project);
+    if (error) showToast('त्रुटि: ' + error.message, 'error');
 }
 
-async function deleteProjectFromSupabase(id) {
-    try {
-        const { error } = await supabase
-            .from('projects')
-            .delete()
-            .eq('id', id);
-
-        if (error) throw error;
-        return true;
-    } catch (error) {
-        console.error('Error deleting project:', error);
-        return false;
-    }
-}
-
-// ========================================================================
-// RENDER FUNCTIONS
-// ========================================================================
-
-function renderSummary() {
-    const totalBudget = projects.reduce((s,p) => s + (p.budget || 0), 0);
-    const totalExp = projects.reduce((s,p) => s + getTotalExpenses(p), 0);
-    const balance = totalBudget - totalExp;
-    const active = projects.filter(p => p.status === 'प्रगतिमा').length;
-    const totalBeneficiaries = projects.reduce((s,p) => s + getTotalBeneficiaries(p), 0);
-    document.getElementById('totalBudget').textContent = totalBudget.toLocaleString();
-    document.getElementById('totalExp').textContent = totalExp.toLocaleString();
-    document.getElementById('totalBalance').textContent = balance.toLocaleString();
-    document.getElementById('totalProjects').textContent = projects.length;
-    document.getElementById('activeProjects').textContent = active;
-    document.getElementById('totalBeneficiaries').textContent = totalBeneficiaries.toLocaleString();
-}
-
+// RENDER FUNCTION
 function renderTable(filtered) {
     const tbody = document.getElementById('projectTableBody');
     const list = filtered || projects;
     if(list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" class="empty-msg">कुनै कार्यक्रम फेला परेन</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" class="empty-msg">कुनै कार्यक्रम छैन</td></tr>`;
         return;
     }
     let html = '';
     list.forEach((p, idx) => {
         const totalExp = getTotalExpenses(p);
         const progress = p.budget > 0 ? Math.min(100, Math.round((totalExp / p.budget) * 100)) : 0;
-        const statusClass = p.status === 'प्रगतिमा' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending');
         
-        let personHtml = '';
-        if(p.responsible) personHtml += `<div><span class="label">जिम्मेवार:</span> ${p.responsible}</div>`;
-        if(p.assistant) personHtml += `<div><span class="label">सहायक:</span> ${p.assistant}</div>`;
-        if(!personHtml) personHtml = '<span style="color:#999;">-</span>';
-
-        let actionsHtml = '';
-        actionsHtml += `<button class="view-btn" onclick="openDetailView(${p.id})">📄</button>`;
-        actionsHtml += `<button class="expense-btn" onclick="openExpenseModal(${p.id})">💰</button>`;
-        actionsHtml += `<button class="beneficiary-btn" onclick="openBeneficiaryModal(${p.id})">👥</button>`;
-        if(isAdmin() || p.user_id === currentUserId) {
-            actionsHtml += `<button class="edit-btn" onclick="openEditModal(${p.id})">✏️</button>`;
-            actionsHtml += `<button class="del-btn" onclick="deleteProject(${p.id})">🗑️</button>`;
-        }
-
         html += `<tr>
             <td>${idx+1}</td>
-            <td><strong>${p.name}</strong><br><span style="font-size:10px;color:#888;">${p.activities ? p.activities.slice(0,30)+'...' : ''}</span></td>
+            <td><strong>${p.name}</strong></td>
             <td>${p.category || 'अन्य'}</td>
             <td>${(p.budget||0).toLocaleString()}</td>
             <td>${totalExp.toLocaleString()}</td>
-            <td>
-                <div class="progress-bar"><div class="fill" style="width:${progress}%"></div></div>
-                <span style="font-size:11px;margin-left:4px;">${progress}%</span>
+            <td><div class="progress-bar"><div class="fill" style="width:${progress}%"></div></div> ${progress}%</td>
+            <td>${p.time || '-'}</td>
+            <td>${p.responsible || '-'}</td>
+            <td><span class="status-badge">${p.status}</span></td>
+            <td class="actions">
+                <button class="expense-btn" onclick="openExpenseModal(${p.id})">💰</button>
+                <button class="del-btn" onclick="deleteProject(${p.id})">🗑️</button>
             </td>
-            <td style="font-size:11px;">${p.time || '-'}</td>
-            <td class="person-info">${personHtml}</td>
-            <td><span class="status-badge ${statusClass}">${p.status}</span></td>
-            <td class="actions">${actionsHtml}</td>
         </tr>`;
     });
     tbody.innerHTML = html;
 }
 
-function renderCharts() {
-    const ctx1 = document.getElementById('budgetChart').getContext('2d');
-    const ctx2 = document.getElementById('statusChart').getContext('2d');
-    if(window.budgetChartInstance) window.budgetChartInstance.destroy();
-    if(window.statusChartInstance) window.statusChartInstance.destroy();
-
-    const sorted = [...projects].sort((a,b) => (b.budget||0) - (a.budget||0)).slice(0,8);
-    window.budgetChartInstance = new Chart(ctx1, {
-        type: 'bar',
-        data: {
-            labels: sorted.map(p => p.name.length > 15 ? p.name.slice(0,12)+'..' : p.name),
-            datasets: [{
-                label: 'बजेट (रु.)',
-                data: sorted.map(p => p.budget),
-                backgroundColor: ['#2e7d32','#1976d2','#f9a825','#d32f2f','#6a1b9a','#00838f','#e65100','#4a148c'],
-                borderRadius: 4
-            }]
-        },
-        options: { responsive: true, plugins: { legend: { display: false } } }
-    });
-
-    const statusCount = { 'प्रगतिमा':0, 'सुरु हुन बाँकी':0, 'सम्पन्न':0 };
-    projects.forEach(p => { if(statusCount[p.status] !== undefined) statusCount[p.status]++; });
-    window.statusChartInstance = new Chart(ctx2, {
-        type: 'doughnut',
-        data: {
-            labels: ['प्रगतिमा', 'सुरु हुन बाँकी', 'सम्पन्न'],
-            datasets: [{
-                data: [statusCount['प्रगतिमा'], statusCount['सुरु हुन बाँकी'], statusCount['सम्पन्न']],
-                backgroundColor: ['#2e7d32', '#f9a825', '#1976d2']
-            }]
-        },
-        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
-    });
-}
-
-function renderAnalytics() {
-    if(projects.length === 0) {
-        document.getElementById('avgBudget').textContent = '०';
-        document.getElementById('avgExpense').textContent = '०';
-        document.getElementById('maxBudget').textContent = '०';
-        document.getElementById('minBudget').textContent = '०';
-        return;
-    }
-
-    const totalBudget = projects.reduce((s,p) => s + (p.budget || 0), 0);
-    const totalExpense = projects.reduce((s,p) => s + getTotalExpenses(p), 0);
-    document.getElementById('avgBudget').textContent = Math.round(totalBudget/projects.length).toLocaleString();
-    document.getElementById('avgExpense').textContent = Math.round(totalExpense/projects.length).toLocaleString();
-    document.getElementById('maxBudget').textContent = Math.max(...projects.map(p => p.budget||0)).toLocaleString();
-    document.getElementById('minBudget').textContent = Math.min(...projects.map(p => p.budget||0)).toLocaleString();
-
-    const ctx1 = document.getElementById('analyticsCategoryChart').getContext('2d');
-    if(window.analyticsCategoryChart) window.analyticsCategoryChart.destroy();
-    const categories = {};
-    projects.forEach(p => {
-        const cat = p.category || 'अन्य';
-        categories[cat] = (categories[cat] || 0) + 1;
-    });
-    window.analyticsCategoryChart = new Chart(ctx1, {
-        type: 'bar',
-        data: {
-            labels: Object.keys(categories),
-            datasets: [{ label: 'कार्यक्रम संख्या', data: Object.values(categories), backgroundColor: ['#2e7d32','#1976d2','#f9a825','#d32f2f','#6a1b9a','#00838f'] }]
-        },
-        options: { responsive: true, plugins: { legend: { display: false } } }
-    });
-
-    const ctx3 = document.getElementById('analyticsBeneficiaryChart').getContext('2d');
-    if(window.analyticsBeneficiaryChart) window.analyticsBeneficiaryChart.destroy();
-    let totalMale = 0, totalFemale = 0, totalDalit = 0, totalJanajati = 0, totalDisabled = 0, totalReturnee = 0, totalEntrepreneur = 0;
-    projects.forEach(p => {
-        const b = p.beneficiary || getDefaultBeneficiary();
-        totalMale += b.male || 0;
-        totalFemale += b.female || 0;
-        totalDalit += b.dalit || 0;
-        totalJanajati += b.janajati || 0;
-        totalDisabled += b.disabled || 0;
-        totalReturnee += b.returnee || 0;
-        totalEntrepreneur += b.entrepreneur || 0;
-    });
-    window.analyticsBeneficiaryChart = new Chart(ctx3, {
-        type: 'pie',
-        data: {
-            labels: ['पुरुष', 'महिला', 'दलित', 'जनजाति', 'अपाङ्गता', 'वैदेशिक फर्केका', 'नयाँ उद्यमी'],
-            datasets: [{ data: [totalMale, totalFemale, totalDalit, totalJanajati, totalDisabled, totalReturnee, totalEntrepreneur], 
-                backgroundColor: ['#1976d2', '#d32f2f', '#f9a825', '#6a1b9a', '#00838f', '#e65100', '#2e7d32'] }]
-        },
-        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
-    });
-}
-
 function renderAll() {
-    renderSummary();
     renderTable();
-    renderCharts();
-    renderAnalytics();
-    populateCategoryFilter();
-    updateUIByRole();
+    document.getElementById('adminPanel').classList.toggle('show', isAdmin());
 }
-
-// ========================================================================
-// FILTERS
-// ========================================================================
-
-function populateCategoryFilter() {
-    const sel = document.getElementById('filterCategory');
-    const cats = [...new Set(projects.map(p => p.category).filter(Boolean))];
-    const current = sel.value;
-    sel.innerHTML = '<option value="">सबै</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
-    sel.value = current;
-}
-
-function applyFilters() {
-    const cat = document.getElementById('filterCategory').value;
-    const status = document.getElementById('filterStatus').value;
-    const search = document.getElementById('filterSearch').value.toLowerCase();
-    let filtered = projects.filter(p => {
-        if(cat && p.category !== cat) return false;
-        if(status && p.status !== status) return false;
-        if(search && !p.name.toLowerCase().includes(search) && !(p.activities||'').toLowerCase().includes(search)) return false;
-        return true;
-    });
-    renderTable(filtered);
-}
-
-// ========================================================================
-// UI BY ROLE
-// ========================================================================
-
-function updateUIByRole() {
-    const isAdminUser = isAdmin();
-    document.getElementById('adminPanel').classList.toggle('show', isAdminUser);
-}
-
-// ========================================================================
-// DETAIL VIEW
-// ========================================================================
-
-function openDetailView(id) {
-    const p = projects.find(x => x.id === id);
-    if(!p) { showToast('कार्यक्रम फेला परेन', 'error'); return; }
-    
-    const totalExp = getTotalExpenses(p);
-    const progress = p.budget > 0 ? Math.min(100, Math.round((totalExp / p.budget) * 100)) : 0;
-    const b = p.beneficiary || getDefaultBeneficiary();
-
-    let expenseHtml = '';
-    if(p.expenses && p.expenses.length > 0) {
-        p.expenses.forEach(e => {
-            expenseHtml += `<div class="item"><span>${e.title || 'खर्च'} ${e.date || ''}</span><span class="amount">रु. ${(e.amount||0).toLocaleString()}</span></div>`;
-        });
-    } else {
-        expenseHtml = '<div style="color:#999;padding:6px 0;">कुनै खर्च छैन</div>';
-    }
-
-    document.getElementById('detailTitle').textContent = `📄 ${p.name}`;
-    document.getElementById('detailContent').innerHTML = `
-        <div class="detail-grid">
-            <div class="item"><span class="dlabel">बजेट</span><span class="dvalue">रु. ${(p.budget||0).toLocaleString()}</span></div>
-            <div class="item"><span class="dlabel">खर्च</span><span class="dvalue">रु. ${totalExp.toLocaleString()}</span></div>
-            <div class="item"><span class="dlabel">प्रगति</span><span class="dvalue">${progress}%</span></div>
-            <div class="item"><span class="dlabel">स्थिति</span><span class="dvalue">${p.status}</span></div>
-            <div class="item"><span class="dlabel">जिम्मेवार</span><span class="dvalue">${p.responsible || '-'}</span></div>
-            <div class="item"><span class="dlabel">सहायक</span><span class="dvalue">${p.assistant || '-'}</span></div>
-        </div>
-        <h4 style="margin:10px 0 6px;">💰 खर्च विवरण</h4>
-        <div class="detail-expense-list">${expenseHtml}</div>
-        <div style="text-align:right;font-weight:700;margin-top:6px;">जम्मा: रु. ${totalExp.toLocaleString()}</div>
-    `;
-    document.getElementById('detailModal').classList.add('show');
-}
-
-// ========================================================================
-// PROJECT CRUD OPERATIONS
-// ========================================================================
 
 function openAddModal() {
-    if(!currentUser) { showToast('लगइन गर्नुहोस्।', 'error'); return; }
-    document.getElementById('modalTitle').textContent = '➕ नयाँ कार्यक्रम';
     document.getElementById('editId').value = '';
     document.getElementById('projectForm').reset();
-    document.querySelectorAll('.beneficiary-grid input').forEach(inp => inp.value = 0);
-    document.getElementById('fFiscalYear').value = '२०८१/८२';
-    document.getElementById('projectModal').classList.add('show');
-}
-
-function openEditModal(id) {
-    if(!currentUser) { showToast('लगइन गर्नुहोस्।', 'error'); return; }
-    const p = projects.find(x => x.id === id);
-    if(!p) return;
-    if (p.user_id !== currentUserId && !isAdmin()) {
-        showToast('तपाईंले यो कार्यक्रम सम्पादन गर्न सक्नुहुन्न।', 'error');
-        return;
-    }
-    document.getElementById('modalTitle').textContent = '✏️ कार्यक्रम सम्पादन';
-    document.getElementById('editId').value = id;
-    document.getElementById('fName').value = p.name || '';
-    document.getElementById('fCategory').value = p.category || 'अन्य';
-    document.getElementById('fBudget').value = p.budget || 0;
-    document.getElementById('fTime').value = p.time || '';
-    document.getElementById('fStatus').value = p.status || 'सुरु हुन बाँकी';
-    document.getElementById('fFiscalYear').value = p.fiscalYear || '२०८१/८२';
-    document.getElementById('fResponsible').value = p.responsible || '';
-    document.getElementById('fAssistant').value = p.assistant || '';
-    document.getElementById('fAuthorized').value = p.authorized || '';
-    document.getElementById('fActivities').value = p.activities || '';
-    document.getElementById('fMethod').value = p.method || '';
-    document.getElementById('fOutput').value = p.output || '';
-    
-    const b = p.beneficiary || getDefaultBeneficiary();
-    document.getElementById('fBeneficiaryMale').value = b.male || 0;
-    document.getElementById('fBeneficiaryFemale').value = b.female || 0;
-    document.getElementById('fBeneficiaryDalit').value = b.dalit || 0;
-    document.getElementById('fBeneficiaryJanajati').value = b.janajati || 0;
-    document.getElementById('fBeneficiaryDisabled').value = b.disabled || 0;
-    document.getElementById('fBeneficiaryReturnee').value = b.returnee || 0;
-    document.getElementById('fBeneficiaryEntrepreneur').value = b.entrepreneur || 0;
-    
     document.getElementById('projectModal').classList.add('show');
 }
 
 document.getElementById('projectForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    if(!currentUser) { showToast('लगइन गर्नुहोस्।', 'error'); return; }
+    const id = document.getElementById('editId').value || Date.now();
+    const name = document.getElementById('fName').value;
+    const budget = Number(document.getElementById('fBudget').value);
     
-    const id = parseInt(document.getElementById('editId').value);
-    const name = document.getElementById('fName').value.trim();
-    const category = document.getElementById('fCategory').value;
-    const budget = parseFloat(document.getElementById('fBudget').value) || 0;
-    const time = document.getElementById('fTime').value.trim();
-    const status = document.getElementById('fStatus').value;
-    const fiscalYear = document.getElementById('fFiscalYear').value.trim();
-    const responsible = document.getElementById('fResponsible').value.trim();
-    const assistant = document.getElementById('fAssistant').value.trim();
-    const authorized = document.getElementById('fAuthorized').value.trim();
-    const activities = document.getElementById('fActivities').value.trim();
-    const method = document.getElementById('fMethod').value.trim();
-    const output = document.getElementById('fOutput').value.trim();
-
-    const beneficiary = {
-        male: parseInt(document.getElementById('fBeneficiaryMale').value) || 0,
-        female: parseInt(document.getElementById('fBeneficiaryFemale').value) || 0,
-        dalit: parseInt(document.getElementById('fBeneficiaryDalit').value) || 0,
-        janajati: parseInt(document.getElementById('fBeneficiaryJanajati').value) || 0,
-        disabled: parseInt(document.getElementById('fBeneficiaryDisabled').value) || 0,
-        returnee: parseInt(document.getElementById('fBeneficiaryReturnee').value) || 0,
-        entrepreneur: parseInt(document.getElementById('fBeneficiaryEntrepreneur').value) || 0
-    };
-
-    if(!name || budget <= 0) {
-        showToast('नाम र बजेट सही भर्नुहोस्।', 'error');
-        return;
-    }
-
-    let project;
-    const isEdit = id > 0;
-    if(isEdit) {
-        const idx = projects.findIndex(p => p.id === id);
-        if(idx !== -1) {
-            project = { ...projects[idx], name, category, budget, time, status, fiscalYear, responsible, assistant, authorized, activities, method, output, beneficiary };
-            projects[idx] = project;
+    const project = {
+        id, name, budget,
+        category: document.getElementById('fCategory').value,
+        time: document.getElementById('fTime').value,
+        status: document.getElementById('fStatus').value,
+        responsible: document.getElementById('fResponsible').value,
+        activities: document.getElementById('fActivities').value,
+        user_id: currentUserId,
+        beneficiary: {
+            male: Number(document.getElementById('fBeneficiaryMale').value),
+            female: Number(document.getElementById('fBeneficiaryFemale').value)
         }
-    } else {
-        const newId = projects.length > 0 ? Math.max(...projects.map(p => p.id || 0)) + 1 : 1;
-        project = { 
-            id: newId, 
-            name, 
-            category, 
-            budget, 
-            time, 
-            status, 
-            fiscalYear, 
-            responsible, 
-            assistant, 
-            authorized, 
-            activities, 
-            method, 
-            output, 
-            beneficiary, 
-            expenses: [], 
-            program_id: 'program1',
-            user_id: currentUserId,
-            created_at: new Date().toISOString() 
-        };
-        projects.push(project);
-    }
+    };
 
     await saveProjectToSupabase(project);
     closeModal('projectModal');
+    await loadProjects();
     renderAll();
-    applyFilters();
-    showToast('✅ कार्यक्रम सुरक्षित गरियो!');
-
-    await sendNotificationToOthers(
-        currentUserId,
-        `${isEdit ? 'सम्पादन' : 'नयाँ'} कार्यक्रम`,
-        `${currentUser.username} ले "${name}" ${isEdit ? 'सम्पादन' : 'थप'} गरे।`,
-        'project',
-        '#'
-    );
 });
 
 async function deleteProject(id) {
-    if(!currentUser) { showToast('लगइन गर्नुहोस्।', 'error'); return; }
-    const project = projects.find(p => p.id === id);
-    if (!project) return;
-    
-    if (project.user_id !== currentUserId && !isAdmin()) {
-        showToast('तपाईंले यो कार्यक्रम मेट्न सक्नुहुन्न।', 'error');
-        return;
-    }
-    
-    if(!confirm('के तपाईँ यो कार्यक्रम मेट्न चाहनुहुन्छ?')) return;
-    
-    const name = project ? project.name : 'अज्ञात';
-    
-    const success = await deleteProjectFromSupabase(id);
-    if (success) {
-        projects = projects.filter(p => p.id !== id);
-        renderAll();
-        applyFilters();
-        showToast('🗑️ कार्यक्रम मेटियो');
-        
-        await sendNotificationToOthers(
-            currentUserId,
-            'कार्यक्रम मेटियो',
-            `${currentUser.username} ले "${name}" मेटे।`,
-            'project',
-            '#'
-        );
-    } else {
-        showToast('❌ मेट्न सकिएन', 'error');
-    }
+    if(!confirm('के यो कार्यक्रम मेट्ने हो?')) return;
+    await supabase.from('projects').delete().eq('id', id);
+    await loadProjects();
+    renderAll();
 }
 
-// ========================================================================
-// EXPENSE OPERATIONS
-// ========================================================================
-
-let currentExpenseProjectId = null;
-
-function openExpenseModal(projectId) {
-    if(!currentUser) { showToast('लगइन गर्नुहोस्।', 'error'); return; }
-    const p = projects.find(x => x.id === projectId);
-    if(!p) return;
-    
-    if (p.user_id !== currentUserId && !isAdmin()) {
-        showToast('तपाईंले यो कार्यक्रममा खर्च थप्न सक्नुहुन्न।', 'error');
-        return;
-    }
-    
-    currentExpenseProjectId = projectId;
-    document.getElementById('expProjectDisplay').textContent = p.name;
-    document.getElementById('expProjectId').value = projectId;
-    document.getElementById('expTitle').value = '';
-    document.getElementById('expAmount').value = '';
-    document.getElementById('expDate').value = '';
-    document.getElementById('expRemark').value = '';
-    renderExpenseHistory(projectId);
+function openExpenseModal(id) {
+    document.getElementById('expProjectId').value = id;
     document.getElementById('expenseModal').classList.add('show');
 }
 
-function renderExpenseHistory(projectId) {
-    const p = projects.find(x => x.id === projectId);
-    if(!p) return;
-    const list = document.getElementById('expenseHistoryList');
-    const totalDisplay = document.getElementById('expenseTotalDisplay');
-    if(!p.expenses || p.expenses.length === 0) {
-        list.innerHTML = '<div class="empty-msg">कुनै खर्च छैन</div>';
-        totalDisplay.textContent = 'जम्मा खर्च: रु. ०';
-        return;
-    }
-    let html = '';
-    let total = 0;
-    p.expenses.forEach(e => {
-        total += e.amount || 0;
-        html += `<div class="item"><span>${e.title || 'खर्च'} ${e.date || ''}</span><span class="amount">रु. ${(e.amount||0).toLocaleString()}</span></div>`;
-    });
-    list.innerHTML = html;
-    totalDisplay.textContent = `जम्मा खर्च: रु. ${total.toLocaleString()}`;
-}
-
 async function saveExpense() {
-    const projectId = parseInt(document.getElementById('expProjectId').value);
-    const p = projects.find(x => x.id === projectId);
-    if(!p) { showToast('कार्यक्रम फेला परेन', 'error'); return; }
-
-    const title = document.getElementById('expTitle').value.trim();
-    const amount = parseFloat(document.getElementById('expAmount').value);
-    const date = document.getElementById('expDate').value.trim();
-    const remark = document.getElementById('expRemark').value.trim();
-
-    if(!title || !amount || amount <= 0) {
-        showToast('शीर्षक र सही रकम भर्नुहोस्।', 'error');
-        return;
-    }
-
-    if(!p.expenses) p.expenses = [];
-    p.expenses.push({ title, amount, date, remark });
-    
-    const totalExp = getTotalExpenses(p);
-    if(totalExp > 0 && p.status === 'सुरु हुन बाँकी') p.status = 'प्रगतिमा';
-    if(totalExp >= p.budget && p.budget > 0) p.status = 'सम्पन्न';
-
-    await saveProjectToSupabase(p);
-    renderExpenseHistory(projectId);
-    renderAll();
-    applyFilters();
-    document.getElementById('expTitle').value = '';
-    document.getElementById('expAmount').value = '';
-    document.getElementById('expDate').value = '';
-    document.getElementById('expRemark').value = '';
-    showToast('✅ खर्च थपियो!');
-
-    await sendNotificationToOthers(
-        currentUserId,
-        'नयाँ खर्च',
-        `${currentUser.username} ले "${p.name}" मा रु. ${amount.toLocaleString()} खर्च थपे।`,
-        'expense',
-        '#'
-    );
-}
-
-async function deleteAllExpenses() {
-    if(!isAdmin()) { showToast('Admin ले मात्र गर्न सक्छ।', 'error'); return; }
-    const projectId = parseInt(document.getElementById('expProjectId').value);
-    const p = projects.find(x => x.id === projectId);
-    if(!p) return;
-    if(!confirm(`"${p.name}" को सबै खर्च मेट्ने?`)) return;
-    p.expenses = [];
-    await saveProjectToSupabase(p);
-    renderExpenseHistory(projectId);
-    renderAll();
-    applyFilters();
-    showToast('🗑️ सबै खर्च मेटियो');
-}
-
-// ========================================================================
-// BENEFICIARY OPERATIONS
-// ========================================================================
-
-let beneficiaryEditProjectId = null;
-
-function openBeneficiaryModal(projectId) {
-    if(!currentUser) { showToast('लगइन गर्नुहोस्।', 'error'); return; }
-    const p = projects.find(x => x.id === projectId);
+    const id = document.getElementById('expProjectId').value;
+    const p = projects.find(x => x.id == id);
     if(!p) return;
     
-    if (p.user_id !== currentUserId && !isAdmin()) {
-        showToast('तपाईंले यो कार्यक्रमको लाभग्राही सम्पादन गर्न सक्नुहुन्न।', 'error');
-        return;
-    }
+    const title = document.getElementById('expTitle').value;
+    const amount = Number(document.getElementById('expAmount').value);
     
-    beneficiaryEditProjectId = projectId;
-    const b = p.beneficiary || getDefaultBeneficiary();
+    const expenses = p.expenses || [];
+    expenses.push({ title, amount, date: document.getElementById('expDate').value });
     
-    const modalHtml = `
-        <div class="modal-box">
-            <h2>👥 लाभग्राही विवरण - ${p.name}</h2>
-            <div class="beneficiary-grid">
-                <div class="b-item"><label>👨 पुरुष:</label><input type="number" id="beneficiaryMale" value="${b.male||0}" min="0" /></div>
-                <div class="b-item"><label>👩 महिला:</label><input type="number" id="beneficiaryFemale" value="${b.female||0}" min="0" /></div>
-                <div class="b-item"><label>🧑‍🦱 दलित:</label><input type="number" id="beneficiaryDalit" value="${b.dalit||0}" min="0" /></div>
-                <div class="b-item"><label>🧑‍🦰 जनजाति:</label><input type="number" id="beneficiaryJanajati" value="${b.janajati||0}" min="0" /></div>
-                <div class="b-item"><label>♿ अपाङ्गता:</label><input type="number" id="beneficiaryDisabled" value="${b.disabled||0}" min="0" /></div>
-                <div class="b-item"><label>✈️ वैदेशिक फर्केका:</label><input type="number" id="beneficiaryReturnee" value="${b.returnee||0}" min="0" /></div>
-                <div class="b-item"><label>🚀 नयाँ उद्यमी:</label><input type="number" id="beneficiaryEntrepreneur" value="${b.entrepreneur||0}" min="0" /></div>
-            </div>
-            <div style="margin-top:10px;padding:10px;background:#e8f5e9;border-radius:6px;">
-                <strong>कुल: <span id="beneficiaryTotal">${getTotalBeneficiaries(p)}</span> जना</strong>
-            </div>
-            <div class="modal-btns">
-                <button class="cancel-btn" onclick="closeBeneficiaryModal()">रद्द</button>
-                <button class="save-btn" onclick="saveBeneficiary()">💾 सुरक्षित</button>
-            </div>
-        </div>
-    `;
-
-    let modal = document.getElementById('beneficiaryModal');
-    modal.innerHTML = modalHtml;
-    modal.classList.add('show');
-
-    document.querySelectorAll('#beneficiaryModal input[type="number"]').forEach(input => {
-        input.addEventListener('input', function() {
-            let total = 0;
-            document.querySelectorAll('#beneficiaryModal input[type="number"]').forEach(inp => {
-                total += parseInt(inp.value) || 0;
-            });
-            document.getElementById('beneficiaryTotal').textContent = total;
-        });
-    });
-}
-
-function closeBeneficiaryModal() {
-    document.getElementById('beneficiaryModal').classList.remove('show');
-}
-
-async function saveBeneficiary() {
-    const p = projects.find(x => x.id === beneficiaryEditProjectId);
-    if(!p) return;
-    
-    p.beneficiary = {
-        male: parseInt(document.getElementById('beneficiaryMale').value) || 0,
-        female: parseInt(document.getElementById('beneficiaryFemale').value) || 0,
-        dalit: parseInt(document.getElementById('beneficiaryDalit').value) || 0,
-        janajati: parseInt(document.getElementById('beneficiaryJanajati').value) || 0,
-        disabled: parseInt(document.getElementById('beneficiaryDisabled').value) || 0,
-        returnee: parseInt(document.getElementById('beneficiaryReturnee').value) || 0,
-        entrepreneur: parseInt(document.getElementById('beneficiaryEntrepreneur').value) || 0
-    };
-    
+    p.expenses = expenses;
     await saveProjectToSupabase(p);
-    closeBeneficiaryModal();
+    closeModal('expenseModal');
+    await loadProjects();
     renderAll();
-    showToast('✅ लाभग्राही सुरक्षित गरियो!');
 }
-
-// ========================================================================
-// USER MANAGEMENT
-// ========================================================================
-
-function openUserManagement() {
-    if(!isAdmin()) { showToast('Admin ले मात्र गर्न सक्छ।', 'error'); return; }
-    renderUserList();
-    document.getElementById('userModal').classList.add('show');
-}
-
-async function renderUserList() {
-    try {
-        const { data, error } = await supabase
-            .from('user_profiles')
-            .select('*')
-            .order('created_at', { ascending: true });
-
-        if (error) throw error;
-        
-        const container = document.getElementById('userList');
-        if(data.length === 0) {
-            container.innerHTML = '<div class="empty-msg">कुनै प्रयोगकर्ता छैन</div>';
-            return;
-        }
-        let html = '';
-        data.forEach(u => {
-            html += `<div style="display:flex;justify-content:space-between;padding:6px 4px;border-bottom:1px solid #eee;align-items:center;">
-                <span><strong>${u.username || u.id}</strong> <span style="font-size:11px;color:#888;">(${u.role})</span></span>
-                <button onclick="deleteUser('${u.id}')" style="border:none;background:#ffebee;color:#d32f2f;padding:2px 10px;border-radius:4px;cursor:pointer;">मेट्नुहोस्</button>
-            </div>`;
-        });
-        container.innerHTML = html;
-    } catch (error) {
-        console.error('Error loading users:', error);
-    }
-}
-
-async function addUser() {
-    if(!isAdmin()) return;
-    const email = document.getElementById('newEmail').value.trim();
-    const username = email.split('@')[0];
-    const password = document.getElementById('newPassword').value.trim();
-    const role = document.getElementById('newRole').value;
-    
-    if(!email || !password) {
-        showToast('Email र पासवर्ड भर्नुहोस्।', 'error');
-        return;
-    }
-
-    try {
-        const { data, error } = await supabase.auth.signUp({
-            email: email,
-            password: password,
-            options: {
-                data: { 
-                    role: role, 
-                    username: username,
-                    programs: '["program1"]'
-                }
-            }
-        });
-
-        if (error) throw error;
-
-        document.getElementById('newEmail').value = '';
-        document.getElementById('newPassword').value = '';
-        await renderUserList();
-        showToast('✅ प्रयोगकर्ता थपियो!');
-        
-        await sendNotificationToOthers(
-            currentUserId,
-            'नयाँ प्रयोगकर्ता',
-            `${currentUser.username} ले नयाँ प्रयोगकर्ता ${username} थपे।`,
-            'user',
-            '#'
-        );
-    } catch (error) {
-        showToast('❌ ' + error.message, 'error');
-    }
-}
-
-async function deleteUser(userId) {
-    if(!isAdmin()) return;
-    if(!confirm('प्रयोगकर्ता मेट्ने?')) return;
-    
-    try {
-        const { error } = await supabase.auth.admin.deleteUser(userId);
-        if (error) {
-            await supabase.from('user_profiles').delete().eq('id', userId);
-        }
-        await renderUserList();
-        showToast('🗑️ प्रयोगकर्ता मेटियो');
-    } catch (error) {
-        showToast('❌ ' + error.message, 'error');
-    }
-}
-
-// ========================================================================
-// REPORT
-// ========================================================================
-
-function generateReport() {
-    const container = document.getElementById('reportContent');
-    if(projects.length === 0) {
-        container.innerHTML = '<div class="empty-msg">कुनै कार्यक्रम छैन</div>';
-        return;
-    }
-
-    const totalBudget = projects.reduce((s,p) => s + (p.budget||0), 0);
-    const totalExp = projects.reduce((s,p) => s + getTotalExpenses(p), 0);
-    const totalBeneficiaries = projects.reduce((s,p) => s + getTotalBeneficiaries(p), 0);
-    const progress = totalBudget > 0 ? Math.round((totalExp/totalBudget)*100) : 0;
-
-    let html = `
-        <div class="report-section">
-            <h4>📊 कार्यक्रम प्रतिवेदन</h4>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;">
-                <div style="background:#f8faff;padding:12px;border-radius:8px;text-align:center;">
-                    <div style="font-size:22px;font-weight:700;color:#1a3c5e;">${projects.length}</div>
-                    <div style="font-size:11px;color:#777;">कुल कार्यक्रम</div>
-                </div>
-                <div style="background:#f8faff;padding:12px;border-radius:8px;text-align:center;">
-                    <div style="font-size:22px;font-weight:700;color:#2e7d32;">रु. ${totalBudget.toLocaleString()}</div>
-                    <div style="font-size:11px;color:#777;">कुल बजेट</div>
-                </div>
-                <div style="background:#f8faff;padding:12px;border-radius:8px;text-align:center;">
-                    <div style="font-size:22px;font-weight:700;color:#d32f2f;">रु. ${totalExp.toLocaleString()}</div>
-                    <div style="font-size:11px;color:#777;">कुल खर्च</div>
-                </div>
-                <div style="background:#f8faff;padding:12px;border-radius:8px;text-align:center;">
-                    <div style="font-size:22px;font-weight:700;color:#6a1b9a;">${totalBeneficiaries}</div>
-                    <div style="font-size:11px;color:#777;">कुल लाभग्राही</div>
-                </div>
-            </div>
-            <div style="margin:10px 0;">
-                <div class="progress-large"><div class="fill" style="width:${progress}%"></div></div>
-                <div style="text-align:center;font-size:13px;margin-top:4px;">वित्तीय प्रगति: ${progress}%</div>
-            </div>
-        </div>
-        <div class="report-section">
-            <h4>📋 कार्यक्रम सूची</h4>
-            <table class="report-table">
-                <thead><tr>
-                    <th>क्र.स</th><th>कार्यक्रम</th><th>बजेट</th><th>खर्च</th><th>प्रगति</th><th>स्थिति</th>
-                </tr></thead>
-                <tbody>
-                    ${projects.map((p,i) => {
-                        const exp = getTotalExpenses(p);
-                        const prog = p.budget > 0 ? Math.round((exp/p.budget)*100) : 0;
-                        return `<tr>
-                            <td>${i+1}</td>
-                            <td>${p.name}</td>
-                            <td>रु. ${(p.budget||0).toLocaleString()}</td>
-                            <td>रु. ${exp.toLocaleString()}</td>
-                            <td>${prog}%</td>
-                            <td><span class="status-badge ${p.status === 'प्रगतिमा' ? 'active' : (p.status === 'सम्पन्न' ? 'completed' : 'pending')}">${p.status}</span></td>
-                        </tr>`;
-                    }).join('')}
-                </tbody>
-            </table>
-        </div>
-    `;
-    container.innerHTML = html;
-}
-
-function exportReportWord() {
-    const content = document.getElementById('reportContent').innerHTML;
-    const fullDoc = `
-        <html><head><meta charset="UTF-8"><title>प्रतिवेदन</title>
-        <style>body{font-family:'Nirmala UI',sans-serif;padding:30px;}</style></head>
-        <body>${content}</body></html>
-    `;
-    const blob = new Blob([fullDoc], { type: 'application/msword;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `प्रतिवेदन_${new Date().toISOString().slice(0,10)}.doc`;
-    link.click();
-    showToast('📄 Word डाउनलोड भयो!');
-}
-
-// ========================================================================
-// DATA EXPORT/IMPORT
-// ========================================================================
-
-function exportData() {
-    if(!isAdmin()) { showToast('Admin ले मात्र गर्न सक्छ।', 'error'); return; }
-    const data = { projects, exportedAt: new Date().toISOString() };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const link = document.createElement('a');
-    link.download = `dashboard_data_${new Date().toISOString().slice(0,10)}.json`;
-    link.href = URL.createObjectURL(blob);
-    link.click();
-    showToast('✅ डाटा निर्यात भयो!');
-}
-
-function importData() {
-    if(!isAdmin()) { showToast('Admin ले मात्र गर्न सक्छ।', 'error'); return; }
-    document.getElementById('importFileInput').click();
-}
-
-function handleImport(event) {
-    const file = event.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const data = JSON.parse(e.target.result);
-            if(data.projects) {
-                projects = data.projects;
-                renderAll();
-                showToast('✅ डाटा आयात सफल!');
-            }
-        } catch(err) {
-            showToast('❌ त्रुटि: ' + err.message, 'error');
-        }
-    };
-    reader.readAsText(file);
-    event.target.value = '';
-}
-
-function exportDashboardToExcel() {
-    if(projects.length === 0) { showToast('कुनै डाटा छैन।', 'error'); return; }
-    const data = projects.map((p, i) => ({
-        'क्र.स': i+1,
-        'कार्यक्रम': p.name,
-        'प्रकृति': p.category || 'अन्य',
-        'बजेट': p.budget || 0,
-        'खर्च': getTotalExpenses(p),
-        'प्रगति%': p.budget > 0 ? Math.round((getTotalExpenses(p)/p.budget)*100) : 0,
-        'स्थिति': p.status,
-        'जिम्मेवार': p.responsible || '-'
-    }));
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(data);
-    XLSX.utils.book_append_sheet(wb, ws, 'ड्यासबोर्ड');
-    XLSX.writeFile(wb, `ड्यासबोर्ड_${new Date().toISOString().slice(0,10)}.xlsx`);
-    showToast('✅ Excel डाउनलोड भयो!');
-}
-
-// ========================================================================
-// TABS
-// ========================================================================
-
-document.querySelectorAll('.tabs button').forEach(btn => {
-    btn.addEventListener('click', function() {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.tabs button').forEach(el => el.classList.remove('active'));
-        document.getElementById(this.dataset.tab).classList.add('active');
-        this.classList.add('active');
-        if(this.dataset.tab === 'tabReport') generateReport();
-        if(this.dataset.tab === 'tabAnalytics') renderAnalytics();
-    });
-});
-
-// ========================================================================
-// MODAL CLOSE ON OUTSIDE CLICK
-// ========================================================================
-
-document.querySelectorAll('.modal').forEach(modal => {
-    modal.addEventListener('click', function(e) {
-        if(e.target === this) this.classList.remove('show');
-    });
-});
-
-// ========================================================================
-// INIT
-// ========================================================================
-
-document.getElementById('mainDashboard').style.display = 'none';
-document.getElementById('loginModal').classList.add('show');
-
-// Check for existing session
-(async function checkSession() {
-    try {
-        const { data, error } = await supabase.auth.getSession();
-        if (data.session) {
-            const { data: userData, error: userError } = await supabase
-                .from('user_profiles')
-                .select('*')
-                .eq('id', data.session.user.id)
-                .maybeSingle();
-
-            if (userData) {
-                currentUser = {
-                    id: userData.id,
-                    username: userData.username || data.session.user.email.split('@')[0],
-                    role: userData.role || 'user'
-                };
-                currentUserId = currentUser.id;
-
-                document.getElementById('loginModal').classList.remove('show');
-                document.getElementById('mainDashboard').style.display = 'block';
-                document.getElementById('displayUsername').textContent = currentUser.username;
-                document.getElementById('displayRole').textContent = currentUser.role === 'admin' ? 'Admin' : 'User';
-                document.getElementById('displayRole').className = 'role-badge' + (currentUser.role === 'admin' ? ' admin' : '');
-
-                await loadProjects();
-                await loadNotifications();
-                setupNotificationSubscription();
-                renderAll();
-                showToast(`👋 स्वागतम्! ${currentUser.username}`);
-            }
-        }
-    } catch (error) {
-        console.error('Session check error:', error);
-    }
-})();
-
-console.log('📌 Supabase URL:', SUPABASE_URL);
-console.log('🔔 Notification system ready!');
 </script>
 </body>
 </html>
