@@ -3,2115 +3,1346 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NepalCart — Complete E-Commerce with Supabase</title>
+    <title>ABC Pvt. Ltd. – Complete System with E-Commerce</title>
+
+    <!-- Tailwind + FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- html2pdf -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
-        /* ========================================
-                   CSS VARIABLES
-                ======================================== */
-        :root {
-            --primary: #1a73e8;
-            --primary-dark: #1557b0;
-            --secondary: #ff6b6b;
-            --accent: #ffd93d;
-            --bg: #f0f2f5;
-            --card: #ffffff;
-            --text: #1a1a2e;
-            --text-light: #6c757d;
-            --shadow: 0 4px 20px rgba(0,0,0,0.06);
-            --radius: 16px;
-            --radius-sm: 10px;
-            --transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
-            --orange: #ff6b00;
-            --green: #00a651;
-            --red: #e63946;
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 18px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border-left: 5px solid #1e3a5f;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
-        a { text-decoration: none; color: inherit; }
-        .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #e9ecef; }
-        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
-
-        /* ========================================
-                   TOP BAR
-                ======================================== */
-        .top-bar {
-            background: #1a1a2e;
-            color: #adb5bd;
-            font-size: 12px;
-            padding: 6px 0;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
+        .stat-card .label { font-size: 12px; color: #666; text-transform: uppercase; }
+        .stat-card .value { font-size: 22px; font-weight: 700; color: #1e3a5f; }
+        .badge-credit { background: #fee2e2; color: #b91c1c; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
+        .badge-paid { background: #dcfce7; color: #166534; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
+        .badge-pending { background: #fef3c7; color: #92400e; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
+        .badge-delivered { background: #dbeafe; color: #1e40af; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
+        .badge-shipped { background: #e0e7ff; color: #3730a3; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
+        
+        .nav-btn {
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .top-bar a { color: #adb5bd; margin: 0 8px; }
-        .top-bar a:hover { color: #fff; }
-
-        /* ========================================
-                   HEADER
-                ======================================== */
-        header {
-            background: #fff;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        .header-inner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-        .logo { font-size: 28px; font-weight: 900; color: var(--primary); }
-        .logo i { color: var(--orange); }
-        .logo span { color: var(--text); font-weight: 400; }
-        .search-bar {
-            flex: 1;
-            max-width: 520px;
-            display: flex;
-            background: var(--bg);
-            border-radius: 8px;
-            overflow: hidden;
-            border: 2px solid transparent;
-            transition: var(--transition);
-        }
-        .search-bar:focus-within { border-color: var(--primary); background: #fff; }
-        .search-bar input { flex: 1; padding: 10px 18px; border: none; background: transparent; font-size: 14px; outline: none; }
-        .search-bar button { background: var(--primary); color: #fff; border: none; padding: 10px 22px; cursor: pointer; transition: var(--transition); }
-        .search-bar button:hover { background: var(--primary-dark); }
-        .header-actions { display: flex; gap: 20px; align-items: center; }
-        .header-actions a { font-size: 20px; color: var(--text); transition: var(--transition); position: relative; }
-        .header-actions a:hover { color: var(--primary); }
-        .badge {
-            position: absolute;
-            top: -8px;
-            right: -10px;
-            background: var(--secondary);
-            color: #fff;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 50px;
-            min-width: 20px;
-            text-align: center;
-        }
-        .admin-link {
-            background: var(--primary);
-            color: #fff !important;
-            padding: 8px 18px;
-            border-radius: 50px;
-            font-size: 13px;
+        .nav-btn.active {
+            background: #eef2ff;
+            color: #1e3a5f;
             font-weight: 600;
+            border-right: 3px solid #1e3a5f;
         }
-        .admin-link:hover { background: var(--primary-dark) !important; color: #fff !important; }
+        .nav-btn:hover { background: #f1f5f9; }
 
-        /* ========================================
-                   CATEGORY NAV
-                ======================================== */
-        .category-nav {
-            background: #fff;
-            border-top: 1px solid #e9ecef;
-            padding: 8px 0;
-            overflow-x: auto;
-            white-space: nowrap;
+        #loginOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
             display: flex;
-            gap: 24px;
-            font-size: 14px;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        #loginOverlay.hidden { display: none; }
+        .login-card {
+            background: white;
+            padding: 32px 28px;
+            border-radius: 20px;
+            width: 380px;
+            max-width: 92%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .login-card h2 { color: #1e3a5f; font-weight: 700; }
+        .login-card input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            margin-top: 4px;
+        }
+        .login-card button {
+            width: 100%;
+            padding: 12px;
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .login-card button:hover { background: #15324f; }
+
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1e3a5f;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            z-index: 9999;
+            display: none;
             font-weight: 500;
         }
-        .category-nav a { color: var(--text-light); transition: var(--transition); }
-        .category-nav a:hover { color: var(--primary); }
-        .category-nav i { margin-right: 6px; }
+        #toast.show { display: block; }
 
-        /* ========================================
-                   HERO BANNER
-                ======================================== */
-        .hero-banner {
-            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-            color: #fff;
-            padding: 50px 40px;
-            border-radius: var(--radius);
-            margin: 20px 0 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .hero-banner h1 { font-size: 38px; font-weight: 900; }
-        .hero-banner h1 span { color: var(--accent); }
-        .hero-banner p { opacity: 0.8; max-width: 450px; margin: 10px 0 20px; }
-        .btn-primary {
-            background: var(--primary);
-            color: #fff;
-            padding: 14px 40px;
-            border-radius: 50px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-block;
-        }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(26,115,232,0.3); }
-
-        /* ========================================
-                   PRODUCT GRID
-                ======================================== */
-        .section-title {
-            font-size: 26px;
-            font-weight: 800;
-            margin: 30px 0 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .section-title i { color: var(--primary); }
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 20px;
-        }
-        .product-card {
-            background: #fff;
-            border-radius: var(--radius-sm);
-            padding: 16px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            cursor: pointer;
-            border: 1px solid #f0f0f0;
-            position: relative;
-        }
-        .product-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
-        .product-img { width: 100%; height: 150px; background: #f8f9fa; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 56px; }
-        .product-name { font-weight: 600; font-size: 15px; margin: 10px 0 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 44px; }
-        .product-rating { font-size: 13px; color: #f59e0b; }
-        .product-price { font-weight: 800; font-size: 20px; color: var(--primary); margin: 4px 0; }
-        .product-price small { font-size: 13px; font-weight: 400; color: var(--text-light); text-decoration: line-through; margin-left: 8px; }
-        .product-stock { font-size: 12px; color: var(--text-light); }
-        .product-stock .in-stock { color: var(--green); }
-        .product-stock .out-of-stock { color: var(--red); }
-        .product-actions { display: flex; gap: 8px; margin-top: 10px; }
-        .btn-cart {
-            flex: 1;
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 13px;
-            transition: var(--transition);
-        }
-        .btn-cart:hover { background: var(--primary-dark); }
-        .btn-cart:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-whatsapp {
-            background: #25D366;
-            color: #fff;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        /* ========================================
-                   PRODUCT DETAIL MODAL
-                ======================================== */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .modal-overlay.active { display: flex; }
-        .modal-content {
-            background: #fff;
-            max-width: 1000px;
-            width: 100%;
-            border-radius: var(--radius);
+        .invoice-box {
+            background: white;
             padding: 30px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            animation: fadeUp 0.3s ease;
+            border-radius: 12px;
+            font-family: 'Segoe UI', sans-serif;
         }
-        @keyframes fadeUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .modal-close {
-            position: sticky;
-            top: 0;
-            float: right;
-            font-size: 28px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text-light);
-            z-index: 10;
-        }
-        .modal-close:hover { color: var(--secondary); }
-        .modal-product { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        .modal-product .product-img { height: 300px; font-size: 100px; }
-        .modal-product .product-name { font-size: 24px; -webkit-line-clamp: unset; }
-        .modal-product .product-price { font-size: 28px; }
-        .modal-product .product-desc { color: var(--text-light); margin: 12px 0; line-height: 1.8; }
-        .modal-product .product-specs {
-            font-size: 14px;
-            background: var(--bg);
+        .invoice-box table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .invoice-box th { background: #f1f5f9; padding: 8px; text-align: left; }
+        .invoice-box td { padding: 6px 8px; border-bottom: 1px solid #e2e8f0; }
+
+        .product-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
             padding: 16px;
-            border-radius: var(--radius-sm);
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4px 20px;
+            transition: all 0.3s;
+            background: white;
         }
-        .modal-product .product-specs .spec-label { font-weight: 600; color: var(--text); }
-        .modal-product .product-specs .spec-value { color: var(--text-light); }
-
-        /* ========================================
-                   ORDER FORM
-                ======================================== */
-        .order-form { margin-top: 24px; border-top: 2px solid #f0f2f5; padding-top: 20px; }
-        .order-form h3 { font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 4px; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 10px 14px;
-            border: 2px solid #e9ecef;
-            border-radius: var(--radius-sm);
-            font-size: 14px;
-            transition: var(--transition);
-            font-family: inherit;
+        .product-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
         }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            border-color: var(--primary);
-            outline: none;
-        }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .payment-options { display: flex; gap: 12px; flex-wrap: wrap; margin: 8px 0; }
-        .payment-option {
-            flex: 1;
-            min-width: 80px;
-            padding: 10px 16px;
-            border: 2px solid #e9ecef;
-            border-radius: var(--radius-sm);
-            text-align: center;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: var(--transition);
-        }
-        .payment-option:hover { border-color: var(--primary); }
-        .payment-option.selected { border-color: var(--primary); background: rgba(26,115,232,0.05); }
-        .payment-option i { display: block; font-size: 22px; margin-bottom: 4px; }
-        .btn-submit { width: 100%; padding: 14px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); font-weight: 700; font-size: 16px; cursor: pointer; transition: var(--transition); }
-        .btn-submit:hover { background: var(--primary-dark); }
-        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-
-        /* ========================================
-                   CART SIDEBAR
-                ======================================== */
-        .cart-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1500; }
-        .cart-sidebar {
-            position: fixed;
-            right: 0;
-            top: 0;
-            width: 420px;
-            max-width: 94%;
-            height: 100%;
-            background: #fff;
-            padding: 24px;
-            overflow-y: auto;
-            z-index: 1600;
-            transform: translateX(100%);
-            transition: 0.35s cubic-bezier(0.22,1,0.36,1);
-            box-shadow: -8px 0 30px rgba(0,0,0,0.06);
-        }
-        .cart-sidebar.open { transform: translateX(0); }
-        .cart-sidebar h2 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .cart-sidebar h2 i { cursor: pointer; color: var(--text-light); }
-        .cart-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f2f5; align-items: center; }
-        .cart-item-info { display: flex; align-items: center; gap: 10px; }
-        .cart-item-info span { font-size: 28px; }
-        .cart-item-qty { display: flex; align-items: center; gap: 8px; }
-        .cart-item-qty button { background: var(--bg); border: none; width: 26px; height: 26px; border-radius: 50%; font-weight: 700; cursor: pointer; }
-        .cart-item-qty button:hover { background: var(--primary); color: #fff; }
-        .cart-total { font-size: 22px; font-weight: 800; padding: 16px 0; border-top: 2px solid #f0f2f5; margin: 12px 0; }
-        .cart-actions button { width: 100%; padding: 14px; border-radius: var(--radius-sm); font-weight: 700; border: none; cursor: pointer; margin-bottom: 8px; }
-        .btn-checkout { background: var(--primary); color: #fff; }
-        .btn-checkout:hover { background: var(--primary-dark); }
-        .btn-cod { background: var(--accent); color: var(--text); }
-
-        /* ========================================
-                   TRACKING
-                ======================================== */
-        .tracking-section {
-            background: #fff;
-            border-radius: var(--radius);
-            padding: 24px;
-            margin: 30px 0;
-            box-shadow: var(--shadow);
-        }
-        .tracking-input { display: flex; gap: 12px; flex-wrap: wrap; }
-        .tracking-input input { flex: 1; min-width: 180px; padding: 12px 18px; border: 2px solid #e9ecef; border-radius: var(--radius-sm); font-size: 14px; }
-        .tracking-input button { padding: 12px 28px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer; }
-        .tracking-result { margin-top: 16px; padding: 16px; background: var(--bg); border-radius: var(--radius-sm); display: none; }
-        .tracking-result.show { display: block; }
-        .tracking-steps { display: flex; gap: 12px; flex-wrap: wrap; }
-        .tracking-step { flex: 1; min-width: 80px; padding: 12px; background: #fff; border-radius: var(--radius-sm); text-align: center; border: 2px solid #e9ecef; }
-        .tracking-step.active { border-color: var(--primary); background: rgba(26,115,232,0.04); }
-        .tracking-step .step-icon { font-size: 24px; }
-
-        /* ========================================
-                   LOADING
-                ======================================== */
-        .loading { text-align: center; padding: 40px; color: var(--text-light); }
-        .loading i { font-size: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* ========================================
-                   ADMIN PANEL
-                ======================================== */
-        #adminPanel {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: #0f0f1a;
-            z-index: 9999;
-            overflow-y: auto;
-            padding: 20px;
-        }
-        #adminPanel.active { display: block; }
-
-        .admin-login {
-            max-width: 400px;
-            margin: 80px auto;
-            background: #1e1e2e;
-            padding: 40px;
-            border-radius: var(--radius);
-            color: #fff;
-        }
-        .admin-login h2 { text-align: center; margin-bottom: 24px; }
-        .admin-login input {
-            width: 100%;
-            padding: 12px 16px;
-            margin-bottom: 14px;
-            border: 2px solid #333;
-            border-radius: var(--radius-sm);
-            background: #2a2a3e;
-            color: #fff;
-            font-size: 15px;
-        }
-        .admin-login input:focus { border-color: var(--primary); outline: none; }
-        .admin-login button {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            border-radius: var(--radius-sm);
+        .product-card .price {
+            font-size: 20px;
             font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
+            color: #1e3a5f;
         }
-        .admin-login button:hover { background: var(--primary-dark); }
-        .admin-login .error { color: var(--secondary); font-size: 13px; text-align: center; margin-top: 10px; }
-
-        .admin-dashboard { display: none; color: #e9ecef; }
-        .admin-dashboard.active { display: block; }
-
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 24px;
-            background: #1a1a2e;
-            border-radius: var(--radius-sm);
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 12px;
+        .product-card .old-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 14px;
+            font-weight: 400;
         }
-        .admin-header h2 { color: #fff; }
-        .admin-header .logout-btn {
-            background: var(--secondary);
-            color: #fff;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .admin-header .logout-btn:hover { background: #e63946; }
-
-        .admin-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .admin-stat {
-            background: #1e1e2e;
-            padding: 20px;
-            border-radius: var(--radius-sm);
-            text-align: center;
-            border-left: 4px solid var(--primary);
-        }
-        .admin-stat h3 { font-size: 26px; color: #fff; }
-        .admin-stat p { color: #adb5bd; font-size: 13px; }
-
-        .admin-tabs {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-        .admin-tabs button {
-            padding: 10px 24px;
-            background: #1e1e2e;
-            color: #adb5bd;
-            border: none;
-            border-radius: var(--radius-sm);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 13px;
-        }
-        .admin-tabs button:hover { background: #2a2a3e; color: #fff; }
-        .admin-tabs button.active { background: var(--primary); color: #fff; }
-        .admin-tab-content {
-            display: none;
-            background: #1a1a2e;
-            padding: 20px;
-            border-radius: var(--radius-sm);
-        }
-        .admin-tab-content.active { display: block; }
-
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-        .admin-table th, .admin-table td {
-            padding: 10px 12px;
-            text-align: left;
-            border-bottom: 1px solid #2a2a3e;
-        }
-        .admin-table th { color: #adb5bd; font-weight: 600; }
-        .admin-table td { color: #e9ecef; }
-        .admin-table .btn-sm {
-            padding: 4px 12px;
-            border: none;
-            border-radius: 4px;
-            font-weight: 600;
-            cursor: pointer;
+        .discount-badge {
+            background: #dc2626;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
             font-size: 12px;
-            margin: 2px;
-        }
-        .btn-edit { background: var(--accent); color: #1a1a2e; }
-        .btn-delete { background: var(--secondary); color: #fff; }
-        .btn-supply { background: var(--green); color: #fff; }
-        .btn-view { background: var(--primary); color: #fff; }
-        .btn-notification {
-            background: var(--orange);
-            color: #fff;
-            border: none;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 11px;
-        }
-
-        .admin-form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .admin-form input, .admin-form select, .admin-form textarea {
-            padding: 10px 14px;
-            background: #2a2a3e;
-            border: 2px solid #333;
-            border-radius: var(--radius-sm);
-            color: #fff;
-            font-size: 14px;
-            width: 100%;
-        }
-        .admin-form input:focus, .admin-form select:focus, .admin-form textarea:focus {
-            border-color: var(--primary);
-            outline: none;
-        }
-        .admin-form .full-width { grid-column: 1 / -1; }
-        .admin-form button {
-            padding: 12px;
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            border-radius: var(--radius-sm);
             font-weight: 700;
-            cursor: pointer;
-        }
-        .admin-form button:hover { background: var(--primary-dark); }
-
-        .notification-badge {
-            background: var(--red);
-            color: #fff;
-            border-radius: 50%;
-            padding: 2px 8px;
-            font-size: 11px;
-            margin-left: 4px;
         }
 
-        /* ========================================
-                   RESPONSIVE
-                ======================================== */
-        @media (max-width: 768px) {
-            .header-inner { flex-direction: column; align-items: stretch; }
-            .search-bar { max-width: 100%; }
-            .hero-banner { padding: 30px 20px; text-align: center; }
-            .hero-banner h1 { font-size: 28px; }
-            .modal-product { grid-template-columns: 1fr; }
-            .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-            .form-row { grid-template-columns: 1fr; }
-            .cart-sidebar { width: 100%; max-width: 100%; }
-            .admin-form { grid-template-columns: 1fr; }
-            .admin-stats { grid-template-columns: 1fr 1fr; }
-            .admin-header { flex-direction: column; align-items: stretch; }
-            .modal-product .product-specs { grid-template-columns: 1fr; }
+        @media print {
+            .no-print { display: none !important; }
+            .invoice-box { padding: 20px; }
         }
-        @media (max-width: 480px) {
-            .product-grid { grid-template-columns: 1fr; }
-            .modal-content { padding: 16px; }
-            .payment-options { flex-direction: column; }
-            .admin-stats { grid-template-columns: 1fr; }
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #1a1a2e;
-            color: #fff;
-            padding: 14px 24px;
-            border-radius: var(--radius-sm);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-            z-index: 3000;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.4s ease;
-            max-width: 380px;
-        }
-        .toast.show { transform: translateY(0); opacity: 1; }
-        .toast i { margin-right: 10px; color: var(--accent); }
-        .toast.error i { color: var(--red); }
     </style>
 </head>
 <body>
 
-    <!-- ========================================
-    TOP BAR
-    ======================================== -->
-    <div class="top-bar container">
-        <div>
-            <i class="fas fa-phone"></i> 984-1234567 &nbsp;|&nbsp; <i class="fas fa-envelope"></i> info@nepalmart.com
-        </div>
-        <div>
-            <a href="#"><i class="fas fa-user"></i> Account</a>
-            <a href="#"><i class="fas fa-heart"></i> Wishlist</a>
-            <a href="#" onclick="openAdmin()"><i class="fas fa-user-shield"></i> Admin</a>
-        </div>
-    </div>
+<!-- ===== TOAST ===== -->
+<div id="toast"></div>
 
-    <!-- ========================================
-    HEADER
-    ======================================== -->
-    <header>
-        <div class="container header-inner">
-            <a href="#" class="logo"><i class="fas fa-store"></i>Nepal<span>Cart</span></a>
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Search products..." onkeyup="filterProducts()" />
-                <button><i class="fas fa-search"></i></button>
+<!-- ===== LOGIN OVERLAY ===== -->
+<div id="loginOverlay">
+    <div class="login-card">
+        <h2 class="text-2xl text-center">🧾 ABC Pvt. Ltd.</h2>
+        <p class="text-center text-gray-500 text-sm mb-4">Complete Business Management System</p>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="mb-3">
+                <label class="text-sm font-medium">Username</label>
+                <input type="text" id="loginUser" value="admin" required />
             </div>
-            <div class="header-actions">
-                <a href="#" onclick="toggleCart()">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span class="badge" id="cartBadge">0</span>
-                </a>
-                <a href="#" onclick="document.getElementById('trackingSection').scrollIntoView({behavior:'smooth'})"><i class="fas fa-truck"></i></a>
-                <a href="https://wa.me/9779841234567" target="_blank"><i class="fab fa-whatsapp" style="color:#25D366;"></i></a>
-                <a href="#" class="admin-link" onclick="openAdmin()"><i class="fas fa-user-shield"></i> Admin</a>
+            <div class="mb-4">
+                <label class="text-sm font-medium">Password</label>
+                <input type="password" id="loginPass" value="admin123" required />
             </div>
-        </div>
-    </header>
-
-    <!-- ========================================
-    CATEGORY NAV
-    ======================================== -->
-    <div class="container category-nav">
-        <a href="#" onclick="filterCategory('All')"><i class="fas fa-th"></i> All</a>
-        <a href="#" onclick="filterCategory('Electronics')"><i class="fas fa-mobile-alt"></i> Electronics</a>
-        <a href="#" onclick="filterCategory('Fashion')"><i class="fas fa-tshirt"></i> Fashion</a>
-        <a href="#" onclick="filterCategory('Accessories')"><i class="fas fa-headphones"></i> Accessories</a>
-        <a href="#" onclick="filterCategory('Home')"><i class="fas fa-home"></i> Home</a>
+            <button type="submit">🔐 Login</button>
+            <p class="text-xs text-center text-gray-400 mt-3">demo: admin / admin123</p>
+        </form>
     </div>
+</div>
 
-    <!-- ========================================
-    HERO BANNER
-    ======================================== -->
-    <div class="container hero-banner">
-        <div>
-            <h1>Biggest <span>Sale</span> of the Year!</h1>
-            <p>Up to 60% off on electronics, fashion & more. Free shipping on orders above NPR 5,000.</p>
-            <a href="#products" class="btn-primary"><i class="fas fa-store"></i> Shop Now</a>
+<!-- ===== MAIN APP ===== -->
+<div id="app" class="hidden">
+
+    <!-- ====== NAVBAR ====== -->
+    <nav class="bg-[#1e3a5f] text-white px-6 py-3 flex justify-between items-center flex-wrap gap-3 sticky top-0 z-50">
+        <div class="text-xl font-bold">🧾 ABC <span class="text-yellow-400">Pvt. Ltd.</span></div>
+        <div class="flex items-center gap-3 flex-wrap text-sm">
+            <button onclick="switchTab('dashboard')" class="hover:underline">📊 Dashboard</button>
+            <button onclick="switchTab('orders')" class="hover:underline">📦 Orders</button>
+            <button onclick="switchTab('billing')" class="hover:underline">📝 Billing</button>
+            <button onclick="switchTab('credit')" class="hover:underline">🔴 Credit</button>
+            <button onclick="switchTab('products')" class="hover:underline">🛍️ Products</button>
+            <button onclick="switchTab('accounting')" class="hover:underline">💰 Accounting</button>
+            <button onclick="logout()" class="bg-red-600 px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-red-700">🚪 Logout</button>
         </div>
-        <div style="font-size:80px;opacity:0.3;">🛍️</div>
-    </div>
+    </nav>
 
-    <!-- ========================================
-    PRODUCTS
-    ======================================== -->
-    <div class="container" id="products">
-        <div class="section-title"><i class="fas fa-fire"></i> Featured Products</div>
-        <div id="productLoader" class="loading"><i class="fas fa-spinner"></i> Loading products...</div>
-        <div class="product-grid" id="productGrid"></div>
-    </div>
+    <!-- ====== MAIN CONTAINER ====== -->
+    <div class="max-w-7xl mx-auto p-4 grid grid-cols-1 md:grid-cols-6 gap-6">
 
-    <!-- ========================================
-    TRACKING
-    ======================================== -->
-    <div class="container tracking-section" id="trackingSection">
-        <h3><i class="fas fa-truck" style="color:var(--primary);"></i> Track Your Order</h3>
-        <div class="tracking-input">
-            <input type="text" id="trackingInput" placeholder="Enter tracking code (NP-2026-XXXXX)" />
-            <button onclick="trackOrder()"><i class="fas fa-search"></i> Track</button>
-        </div>
-        <div class="tracking-result" id="trackingResult">
-            <h4>Order Status</h4>
-            <div class="tracking-steps" id="trackingSteps">
-                <div class="tracking-step active"><div class="step-icon">📋</div>Placed</div>
-                <div class="tracking-step"><div class="step-icon">⚙️</div>Processing</div>
-                <div class="tracking-step"><div class="step-icon">🚚</div>Dispatched</div>
-                <div class="tracking-step"><div class="step-icon">✅</div>Delivered</div>
+        <!-- SIDEBAR -->
+        <aside class="md:col-span-1 space-y-3">
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <p class="text-xs text-gray-400 uppercase font-semibold">Total Revenue</p>
+                <p class="text-xl font-bold text-[#1e3a5f]" id="sideRevenue">Rs. 0</p>
+                <p class="text-xs text-gray-400 uppercase font-semibold mt-2">Pending Orders</p>
+                <p class="text-xl font-bold text-orange-600" id="sideOrders">0</p>
+                <p class="text-xs text-gray-400 uppercase font-semibold mt-2">Pending Credit</p>
+                <p class="text-xl font-bold text-red-600" id="sideCredit">Rs. 0</p>
             </div>
-            <p id="trackingDetail" style="margin-top:10px;color:var(--text-light);"></p>
-        </div>
-    </div>
+            <div class="bg-white rounded-xl p-3 shadow-sm space-y-1">
+                <button onclick="switchTab('dashboard')" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2"><i class="fa-regular fa-chart-pie"></i> Dashboard</button>
+                <button onclick="switchTab('orders')" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2"><i class="fa-regular fa-truck"></i> Orders</button>
+                <button onclick="switchTab('billing')" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2"><i class="fa-regular fa-pen-to-square"></i> New Bill</button>
+                <button onclick="switchTab('credit')" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2"><i class="fa-regular fa-circle-exclamation"></i> Credit List</button>
+                <button onclick="switchTab('products')" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2"><i class="fa-regular fa-box"></i> Products</button>
+                <button onclick="switchTab('accounting')" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2"><i class="fa-regular fa-chart-pie"></i> Accounting</button>
+            </div>
+        </aside>
 
-    <!-- ========================================
-    CART SIDEBAR
-    ======================================== -->
-    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
-    <div class="cart-sidebar" id="cartSidebar">
-        <h2><span><i class="fas fa-shopping-bag"></i> Your Cart</span> <i class="fas fa-times" onclick="toggleCart()"></i></h2>
-        <div id="cartItems"></div>
-        <div class="cart-total" id="cartTotal">Total: NPR 0</div>
-        <div class="cart-actions">
-            <button class="btn-checkout" onclick="openCheckout()"><i class="fas fa-credit-card"></i> Checkout</button>
-            <button class="btn-cod" onclick="quickCOD()"><i class="fas fa-money-bill-wave"></i> Cash on Delivery</button>
-        </div>
-        <p style="font-size:12px;color:var(--text-light);text-align:center;"><i class="fas fa-lock"></i> Secure Payment</p>
-    </div>
+        <!-- ====== MAIN CONTENT ====== -->
+        <main class="md:col-span-5 space-y-4">
 
-    <!-- ========================================
-    PRODUCT DETAIL + ORDER MODAL
-    ======================================== -->
-    <div class="modal-overlay" id="productModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
-            <div class="modal-product" id="modalProduct"></div>
-            <div class="order-form" id="orderForm">
-                <h3><i class="fas fa-shipping-fast" style="color:var(--primary);"></i> Shipping Details</h3>
-                <div class="form-row">
-                    <div class="form-group"><label>Full Name *</label><input type="text" id="fullName" placeholder="Ram Sharma" /></div>
-                    <div class="form-group"><label>Phone *</label><input type="tel" id="phoneNumber" placeholder="9841234567" /></div>
+            <!-- ===== DASHBOARD TAB ===== -->
+            <section id="tab-dashboard" class="tab-content active">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="stat-card"><div class="label">💰 Total Revenue</div><div class="value" id="dashRevenue">Rs. 0</div></div>
+                    <div class="stat-card" style="border-left-color:#b91c1c;"><div class="label">🔴 Pending Credit</div><div class="value text-red-600" id="dashCredit">Rs. 0</div></div>
+                    <div class="stat-card" style="border-left-color:#d97706;"><div class="label">📦 Pending Orders</div><div class="value text-orange-600" id="dashOrders">0</div></div>
+                    <div class="stat-card" style="border-left-color:#059669;"><div class="label">🛍️ Total Products</div><div class="value" id="dashProducts">0</div></div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group"><label>Province</label>
-                        <select id="province">
-                            <option>Province 1</option><option>Province 2</option>
-                            <option selected>Bagmati</option><option>Gandaki</option>
-                            <option>Lumbini</option><option>Karnali</option><option>Sudurpashchim</option>
+
+                <!-- Recent Orders -->
+                <div class="bg-white p-4 rounded-xl shadow-sm">
+                    <h4 class="font-semibold text-[#1e3a5f] mb-2">📦 Recent Online Orders</h4>
+                    <div id="recentOrders" class="text-sm"></div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white p-4 rounded-xl shadow-sm">
+                    <h4 class="font-semibold text-[#1e3a5f] mb-2">📌 Recent Activity</h4>
+                    <div id="recentActivity" class="text-sm text-gray-600 space-y-1"></div>
+                </div>
+            </section>
+
+            <!-- ===== ORDERS TAB (Online Orders) ===== -->
+            <section id="tab-orders" class="tab-content">
+                <div class="bg-white p-5 rounded-xl shadow-sm">
+                    <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
+                        <h3 class="text-lg font-bold text-[#1e3a5f]">📦 Online Orders Management</h3>
+                        <button onclick="exportOrdersCSV()" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm">📥 Export CSV</button>
+                    </div>
+
+                    <!-- Order Stats -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                        <div class="bg-blue-50 p-3 rounded-lg text-center"><span class="text-xs text-gray-600">Total</span><div class="font-bold text-xl" id="orderTotal">0</div></div>
+                        <div class="bg-yellow-50 p-3 rounded-lg text-center"><span class="text-xs text-gray-600">Pending</span><div class="font-bold text-xl text-orange-600" id="orderPending">0</div></div>
+                        <div class="bg-purple-50 p-3 rounded-lg text-center"><span class="text-xs text-gray-600">Shipped</span><div class="font-bold text-xl text-purple-600" id="orderShipped">0</div></div>
+                        <div class="bg-green-50 p-3 rounded-lg text-center"><span class="text-xs text-gray-600">Delivered</span><div class="font-bold text-xl text-green-600" id="orderDelivered">0</div></div>
+                    </div>
+
+                    <!-- Filter -->
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <input type="text" id="orderSearch" placeholder="🔍 Search by customer/tracking" onkeyup="filterOrders()" class="border rounded-lg p-2 text-sm flex-1 min-w-[150px]" />
+                        <select id="orderStatusFilter" onchange="filterOrders()" class="border rounded-lg p-2 text-sm">
+                            <option value="ALL">All Status</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                        <select id="orderPaymentFilter" onchange="filterOrders()" class="border rounded-lg p-2 text-sm">
+                            <option value="ALL">All Payments</option>
+                            <option value="COD">COD</option>
+                            <option value="Prepaid">Prepaid</option>
                         </select>
                     </div>
-                    <div class="form-group"><label>City *</label><input type="text" id="city" placeholder="Kathmandu" /></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label>Ward</label><input type="number" id="ward" placeholder="16" /></div>
-                    <div class="form-group"><label>Landmark</label><input type="text" id="landmark" placeholder="Near Boudha" /></div>
-                </div>
-                <div class="form-group"><label>Address *</label><textarea id="address" rows="2" placeholder="House no, street..."></textarea></div>
 
-                <h3><i class="fas fa-wallet"></i> Payment</h3>
-                <div class="payment-options">
-                    <div class="payment-option selected" data-method="esewa" onclick="selectPayment(this)"><i class="fas fa-wallet"></i> eSewa</div>
-                    <div class="payment-option" data-method="khalti" onclick="selectPayment(this)"><i class="fas fa-mobile-alt"></i> Khalti</div>
-                    <div class="payment-option" data-method="cod" onclick="selectPayment(this)"><i class="fas fa-money-bill-wave"></i> COD</div>
-                </div>
-                <button class="btn-submit" onclick="placeOrder()" id="placeOrderBtn"><i class="fas fa-check-circle"></i> Place Order</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================
-    ADMIN PANEL
-    ======================================== -->
-    <div id="adminPanel">
-        <!-- Login -->
-        <div class="admin-login" id="adminLogin">
-            <h2><i class="fas fa-user-shield"></i> Admin Login</h2>
-            <input type="text" id="adminUser" placeholder="Username" value="admin" />
-            <input type="password" id="adminPass" placeholder="Password" value="admin123" />
-            <button onclick="adminLogin()"><i class="fas fa-sign-in-alt"></i> Login</button>
-            <div class="error" id="adminError"></div>
-        </div>
-
-        <!-- Dashboard -->
-        <div class="admin-dashboard" id="adminDashboard">
-            <div class="admin-header">
-                <h2><i class="fas fa-store"></i> NepalCart Admin Panel</h2>
-                <div>
-                    <span id="adminTime" style="margin-right:16px;color:#adb5bd;"></span>
-                    <button class="logout-btn" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                </div>
-            </div>
-
-            <!-- Stats -->
-            <div class="admin-stats" id="adminStats">
-                <div class="admin-stat"><h3 id="statProducts">0</h3><p>Products</p></div>
-                <div class="admin-stat"><h3 id="statOrders">0</h3><p>Orders</p></div>
-                <div class="admin-stat"><h3 id="statRevenue">NPR 0</h3><p>Revenue</p></div>
-                <div class="admin-stat"><h3 id="statLowStock">0</h3><p>Low Stock Alert</p></div>
-                <div class="admin-stat" style="border-left-color:var(--orange);"><h3 id="statNotifications">0</h3><p>Notifications</p></div>
-            </div>
-
-            <!-- Tabs -->
-            <div class="admin-tabs">
-                <button class="active" data-tab="tabProducts"><i class="fas fa-box"></i> Products</button>
-                <button data-tab="tabInventory"><i class="fas fa-warehouse"></i> Inventory</button>
-                <button data-tab="tabOrders"><i class="fas fa-list"></i> Orders <span id="orderNotifBadge" class="notification-badge" style="display:none;">0</span></button>
-                <button data-tab="tabFinance"><i class="fas fa-chart-line"></i> Finance</button>
-                <button data-tab="tabNotifications"><i class="fas fa-bell"></i> Notifications <span id="notifBadge" class="notification-badge" style="display:none;">0</span></button>
-            </div>
-
-            <!-- TAB: Products -->
-            <div class="admin-tab-content active" id="tabProducts">
-                <h3 style="color:#fff;margin-bottom:12px;"><i class="fas fa-plus-circle"></i> Add New Product</h3>
-                <div class="admin-form">
-                    <input type="text" id="prodName" placeholder="Product Name *" />
-                    <input type="text" id="prodIcon" placeholder="Emoji Icon" value="📱" />
-                    <input type="number" id="prodPrice" placeholder="Price (NPR) *" />
-                    <input type="number" id="prodOldPrice" placeholder="Old Price (NPR)" />
-                    <input type="number" id="prodStock" placeholder="Stock Quantity *" value="10" />
-                    <input type="text" id="prodCategory" placeholder="Category (e.g. Electronics)" />
-                    <input type="text" id="prodBrand" placeholder="Brand" />
-                    <input type="text" id="prodModel" placeholder="Model" />
-                    <input type="text" id="prodRam" placeholder="RAM (e.g. 8GB)" />
-                    <input type="text" id="prodRom" placeholder="ROM/Storage (e.g. 256GB)" />
-                    <input type="text" id="prodColor" placeholder="Color" />
-                    <input type="text" id="prodBattery" placeholder="Battery (e.g. 5000mAh)" />
-                    <input type="text" id="prodCamera" placeholder="Camera (e.g. 48MP)" />
-                    <input type="text" id="prodProcessor" placeholder="Processor" />
-                    <input type="text" id="prodDisplay" placeholder="Display (e.g. 6.7\")" />
-                    <input type="text" id="prodOs" placeholder="OS" />
-                    <input type="text" id="prodNetwork" placeholder="Network" />
-                    <input type="text" id="prodWarranty" placeholder="Warranty" />
-                    <input type="text" id="prodRating" placeholder="Rating" value="4.5" />
-                    <textarea id="prodDesc" class="full-width" rows="2" placeholder="Product Description"></textarea>
-                    <button class="full-width" onclick="addProduct()"><i class="fas fa-plus"></i> Add Product</button>
-                </div>
-                <h3 style="color:#fff;margin:20px 0 10px;">Product List</h3>
-                <div style="overflow-x:auto;">
-                    <table class="admin-table">
-                        <thead><tr><th>Icon</th><th>Name</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
-                        <tbody id="adminProductBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- TAB: Inventory -->
-            <div class="admin-tab-content" id="tabInventory">
-                <h3 style="color:#fff;margin-bottom:12px;"><i class="fas fa-warehouse"></i> Inventory Management</h3>
-                <p style="color:#adb5bd;margin-bottom:12px;">Stock updates automatically when orders are placed.</p>
-                <div style="overflow-x:auto;">
-                    <table class="admin-table">
-                        <thead><tr><th>Name</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead>
-                        <tbody id="adminInventoryBody"></tbody>
-                    </table>
-                </div>
-                <div style="margin-top:16px;padding:12px;background:#2a2a3e;border-radius:var(--radius-sm);">
-                    <h4 style="color:var(--orange);"><i class="fas fa-exclamation-triangle"></i> Low Stock Alert</h4>
-                    <div id="lowStockList" style="color:#e9ecef;font-size:13px;"></div>
-                </div>
-            </div>
-
-            <!-- TAB: Orders -->
-            <div class="admin-tab-content" id="tabOrders">
-                <h3 style="color:#fff;margin-bottom:12px;"><i class="fas fa-truck"></i> Order Management</h3>
-                <div style="overflow-x:auto;">
-                    <table class="admin-table">
-                        <thead><tr><th>Tracking</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead>
-                        <tbody id="adminOrderBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- TAB: Finance -->
-            <div class="admin-tab-content" id="tabFinance">
-                <h3 style="color:#fff;margin-bottom:12px;"><i class="fas fa-coins"></i> Finance Dashboard</h3>
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px;">
-                    <div class="admin-stat" style="border-left-color:var(--green);"><h3 id="finTotalRevenue">NPR 0</h3><p>Total Revenue</p></div>
-                    <div class="admin-stat" style="border-left-color:var(--secondary);"><h3 id="finTotalExpense">NPR 0</h3><p>Total Expenses</p></div>
-                    <div class="admin-stat" style="border-left-color:var(--accent);"><h3 id="finProfit">NPR 0</h3><p>Net Profit</p></div>
-                    <div class="admin-stat" style="border-left-color:var(--primary);"><h3 id="finTotalOrders">0</h3><p>Total Orders</p></div>
-                </div>
-                <div class="admin-form" style="grid-template-columns:1fr 1fr;">
-                    <input type="text" id="expenseDesc" placeholder="Expense Description" />
-                    <input type="number" id="expenseAmount" placeholder="Amount (NPR)" />
-                    <button class="full-width" onclick="addExpense()"><i class="fas fa-minus-circle"></i> Add Expense</button>
-                </div>
-                <h4 style="color:#adb5bd;">Expense History</h4>
-                <ul id="expenseList" style="color:#e9ecef;list-style:none;font-size:13px;"></ul>
-            </div>
-
-            <!-- TAB: Notifications -->
-            <div class="admin-tab-content" id="tabNotifications">
-                <h3 style="color:#fff;margin-bottom:12px;"><i class="fas fa-bell"></i> Real-time Notifications</h3>
-                <div id="notificationList" style="color:#e9ecef;"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================
-    TOAST
-    ======================================== -->
-    <div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toastMsg"></span></div>
-
-    <!-- ========================================
-    FOOTER
-    ======================================== -->
-    <footer style="background:#1a1a2e;color:#adb5bd;padding:40px 0 20px;margin-top:40px;">
-        <div class="container">
-            <div class="footer-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:30px;">
-                <div>
-                    <h4 style="color:#fff;"><i class="fas fa-store" style="color:var(--primary);"></i> NepalCart</h4>
-                    <p style="font-size:13px;">Kathmandu, Nepal<br />📞 984-1234567<br />📧 info@nepalmart.com</p>
-                </div>
-                <div>
-                    <h4 style="color:#fff;">Quick Links</h4>
-                    <a href="#" style="display:block;font-size:13px;margin:4px 0;transition:var(--transition);">About Us</a>
-                    <a href="#" style="display:block;font-size:13px;margin:4px 0;transition:var(--transition);">Contact</a>
-                    <a href="#" style="display:block;font-size:13px;margin:4px 0;transition:var(--transition);">Terms & Conditions</a>
-                    <a href="#" style="display:block;font-size:13px;margin:4px 0;transition:var(--transition);">Privacy Policy</a>
-                </div>
-                <div>
-                    <h4 style="color:#fff;">Payment</h4>
-                    <a href="#" style="display:block;font-size:13px;margin:4px 0;transition:var(--transition);"><i class="fas fa-wallet"></i> eSewa</a>
-                    <a href="#" style="display:block;font-size:13px;margin:4px 0;transition:var(--transition);"><i class="fas fa-wallet"></i> Khalti</a>
-                    <a href="#" style="display:block;font-size:13px;margin:4px 0;transition:var(--transition);"><i class="fas fa-money-bill-wave"></i> Cash on Delivery</a>
-                </div>
-                <div>
-                    <h4 style="color:#fff;">Follow</h4>
-                    <div style="display:flex;gap:12px;font-size:20px;">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-tiktok"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    <!-- Orders Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm border">
+                            <thead class="bg-gray-50"><tr>
+                                <th class="p-2 border">#Order</th>
+                                <th class="p-2 border">Tracking</th>
+                                <th class="p-2 border">Customer</th>
+                                <th class="p-2 border">Items</th>
+                                <th class="p-2 border text-right">Total</th>
+                                <th class="p-2 border">Payment</th>
+                                <th class="p-2 border">Status</th>
+                                <th class="p-2 border">Action</th>
+                            </tr></thead>
+                            <tbody id="ordersTableBody"></tbody>
+                        </table>
                     </div>
                 </div>
-            </div>
-            <div class="copyright" style="text-align:center;border-top:1px solid #333;padding-top:16px;margin-top:24px;font-size:13px;">© 2026 NepalCart. All rights reserved. Made with ❤️ in Nepal</div>
-        </div>
-    </footer>
+            </section>
 
-    <!-- ========================================
-    SUPABASE + APPLICATION JS
-    ======================================== -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        // ========================================
-        // SUPABASE CONFIGURATION
-        // ========================================
-        // 🔑 REPLACE WITH YOUR SUPABASE CREDENTIALS
-        const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
-        const SUPABASE_KEY = 'YOUR_ANON_PUBLIC_KEY';
-
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        // ========================================
-        // APPLICATION STATE
-        // ========================================
-        let cart = [];
-        let currentProduct = null;
-        let selectedPayment = 'esewa';
-        let allProducts = [];
-        let allOrders = [];
-        let allExpenses = [];
-        let allNotifications = [];
-        let isAdminLoggedIn = false;
-
-        // ========================================
-        // DOM REFS
-        // ========================================
-        const productGrid = document.getElementById('productGrid');
-        const productLoader = document.getElementById('productLoader');
-        const cartItems = document.getElementById('cartItems');
-        const cartTotal = document.getElementById('cartTotal');
-        const cartBadge = document.getElementById('cartBadge');
-
-        // ========================================
-        // TOAST
-        // ========================================
-        function showToast(msg, isError = false) {
-            const t = document.getElementById('toast');
-            document.getElementById('toastMsg').textContent = msg;
-            t.className = 'toast' + (isError ? ' error' : '');
-            t.classList.add('show');
-            clearTimeout(t._timeout);
-            t._timeout = setTimeout(() => t.classList.remove('show'), 4000);
-        }
-
-        // ========================================
-        // LOAD PRODUCTS FROM SUPABASE
-        // ========================================
-        async function loadProducts() {
-            try {
-                productLoader.style.display = 'block';
-                productGrid.style.display = 'none';
-
-                const { data, error } = await supabase
-                    .from('products')
-                    .select('*')
-                    .order('id', { ascending: false });
-
-                if (error) throw error;
-
-                allProducts = data || [];
-                renderProducts(allProducts);
-                productLoader.style.display = 'none';
-                productGrid.style.display = 'grid';
-
-                // Also update admin if open
-                if (isAdminLoggedIn) renderAdminProducts();
-
-            } catch (err) {
-                console.error('Error loading products:', err);
-                showToast('❌ Failed to load products. Using demo data.', true);
-                // Fallback demo products
-                allProducts = getDemoProducts();
-                renderProducts(allProducts);
-                productLoader.style.display = 'none';
-                productGrid.style.display = 'grid';
-            }
-        }
-
-        // Demo products if Supabase fails
-        function getDemoProducts() {
-            return [
-                { id: 1, name: 'iPhone 15 Pro Max', icon: '📱', price: 185000, old_price: 195000, rating: 4.8,
-                    description: 'Titanium body, A17 Pro chip, 48MP camera',
-                    brand: 'Apple', model: 'A3108', ram: '8GB', rom: '256GB', color: 'Natural Titanium',
-                    battery: '4441mAh', camera: '48MP + 12MP + 12MP', processor: 'A17 Pro',
-                    display: '6.7" OLED', os: 'iOS 17', network: '5G', warranty: '1 Year',
-                    stock: 12, category: 'Electronics' },
-                { id: 2, name: 'Samsung Galaxy S24 Ultra', icon: '📱', price: 155000, old_price: 165000, rating: 4.7,
-                    description: 'AI-powered, 200MP camera, S Pen included',
-                    brand: 'Samsung', model: 'SM-S928', ram: '12GB', rom: '256GB', color: 'Titanium Gray',
-                    battery: '5000mAh', camera: '200MP + 50MP + 12MP', processor: 'Snapdragon 8 Gen 3',
-                    display: '6.8" Dynamic AMOLED', os: 'Android 14', network: '5G', warranty: '1 Year',
-                    stock: 8, category: 'Electronics' },
-                { id: 3, name: 'Sony WH-1000XM5', icon: '🎧', price: 45000, old_price: 52000, rating: 4.9,
-                    description: 'Industry-leading noise cancellation, 30-hour battery',
-                    brand: 'Sony', model: 'WH-1000XM5', ram: '-', rom: '-', color: 'Black',
-                    battery: '30 hours', camera: '-', processor: '-',
-                    display: '-', os: '-', network: 'Bluetooth 5.2', warranty: '1 Year',
-                    stock: 15, category: 'Accessories' },
-                { id: 4, name: 'Nike Air Max 270', icon: '👟', price: 22000, old_price: 28000, rating: 4.6,
-                    description: 'Iconic Air Max cushioning, breathable mesh',
-                    brand: 'Nike', model: 'Air Max 270', ram: '-', rom: '-', color: 'White/Black',
-                    battery: '-', camera: '-', processor: '-',
-                    display: '-', os: '-', network: '-', warranty: '6 Months',
-                    stock: 20, category: 'Fashion' },
-                { id: 5, name: 'Apple Watch Series 9', icon: '⌚', price: 52000, old_price: 59000, rating: 4.8,
-                    description: 'Always-on Retina display, S9 chip, ECG app',
-                    brand: 'Apple', model: 'A2770', ram: '-', rom: '64GB', color: 'Starlight',
-                    battery: '18 hours', camera: '-', processor: 'S9 SiP',
-                    display: '1.9" OLED', os: 'watchOS 10', network: 'GPS + Cellular', warranty: '1 Year',
-                    stock: 6, category: 'Electronics' },
-                { id: 6, name: 'Premium Leather Backpack', icon: '🎒', price: 4500, old_price: 6500, rating: 4.4,
-                    description: 'Genuine leather, water-resistant, laptop compartment',
-                    brand: 'Urban', model: 'UB-2024', ram: '-', rom: '-', color: 'Brown',
-                    battery: '-', camera: '-', processor: '-',
-                    display: '-', os: '-', network: '-', warranty: '6 Months',
-                    stock: 30, category: 'Fashion' }
-            ];
-        }
-
-        // ========================================
-        // RENDER PRODUCTS (Customer View)
-        // ========================================
-        function renderProducts(productsList) {
-            if (!productsList || productsList.length === 0) {
-                productGrid.innerHTML = `
-                    <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-light);">
-                        <i class="fas fa-box-open" style="font-size:48px;display:block;margin-bottom:12px;"></i>
-                        No products found. Check back later!
+            <!-- ===== BILLING TAB ===== -->
+            <section id="tab-billing" class="tab-content">
+                <div class="bg-white p-5 rounded-xl shadow-sm">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-lg font-bold text-[#1e3a5f]">📝 Create Tax Invoice (<span id="invoiceNumberDisplay">G-001</span>)</h3>
+                        <button onclick="clearBillForm()" class="text-sm bg-gray-100 px-3 py-1 rounded-lg hover:bg-gray-200">🗑️ Clear</button>
                     </div>
-                `;
-                return;
-            }
-
-            productGrid.innerHTML = productsList.map(p => `
-                <div class="product-card" onclick="openProductDetail(${p.id})">
-                    <div class="product-img">${p.icon || '📦'}</div>
-                    <div class="product-name">${p.name}</div>
-                    <div class="product-rating">⭐ ${p.rating || 4.5}</div>
-                    <div class="product-price">NPR ${(p.price || 0).toLocaleString()} ${p.old_price ? `<small>NPR ${p.old_price.toLocaleString()}</small>` : ''}</div>
-                    <div class="product-stock">
-                        ${p.stock > 0 ? `<span class="in-stock">✓ In Stock (${p.stock})</span>` : `<span class="out-of-stock">✗ Out of Stock</span>`}
-                    </div>
-                    <div class="product-actions" onclick="event.stopPropagation();">
-                        <button class="btn-cart" onclick="addToCart(${p.id})" ${p.stock < 1 ? 'disabled' : ''}>
-                            <i class="fas fa-plus"></i> Add
-                        </button>
-                        <button class="btn-whatsapp" onclick="whatsappOrder(${p.id})"><i class="fab fa-whatsapp"></i></button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // ========================================
-        // FILTER PRODUCTS
-        // ========================================
-        function filterProducts() {
-            const q = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allProducts.filter(p => p.name.toLowerCase().includes(q));
-            renderProducts(filtered);
-        }
-
-        function filterCategory(category) {
-            if (category === 'All') {
-                renderProducts(allProducts);
-            } else {
-                const filtered = allProducts.filter(p => p.category === category);
-                renderProducts(filtered);
-            }
-            document.getElementById('searchInput').value = '';
-        }
-
-        // ========================================
-        // PRODUCT DETAIL MODAL
-        // ========================================
-        function openProductDetail(id) {
-            currentProduct = allProducts.find(p => p.id === id);
-            if (!currentProduct) return;
-
-            const modal = document.getElementById('productModal');
-            const container = document.getElementById('modalProduct');
-
-            const specs = [
-                { label: 'Brand', value: currentProduct.brand },
-                { label: 'Model', value: currentProduct.model },
-                { label: 'RAM', value: currentProduct.ram },
-                { label: 'ROM/Storage', value: currentProduct.rom },
-                { label: 'Color', value: currentProduct.color },
-                { label: 'Battery', value: currentProduct.battery },
-                { label: 'Camera', value: currentProduct.camera },
-                { label: 'Processor', value: currentProduct.processor },
-                { label: 'Display', value: currentProduct.display },
-                { label: 'OS', value: currentProduct.os },
-                { label: 'Network', value: currentProduct.network },
-                { label: 'Warranty', value: currentProduct.warranty }
-            ].filter(s => s.value && s.value !== '-' && s.value !== '');
-
-            container.innerHTML = `
-                <div>
-                    <div class="product-img" style="height:280px;font-size:100px;">${currentProduct.icon || '📦'}</div>
-                    <div style="margin-top:12px;font-size:13px;color:var(--text-light);">
-                        <span class="${currentProduct.stock > 0 ? 'in-stock' : 'out-of-stock'}">
-                            ${currentProduct.stock > 0 ? `✅ ${currentProduct.stock} in stock` : '❌ Out of stock'}
-                        </span>
-                    </div>
-                </div>
-                <div>
-                    <div class="product-name">${currentProduct.name}</div>
-                    <div class="product-rating">⭐ ${currentProduct.rating || 4.5}</div>
-                    <div class="product-price">NPR ${(currentProduct.price || 0).toLocaleString()} ${currentProduct.old_price ? `<small>NPR ${currentProduct.old_price.toLocaleString()}</small>` : ''}</div>
-                    <div class="product-desc">${currentProduct.description || 'No description available.'}</div>
-                    ${specs.length ? `
-                        <div class="product-specs">
-                            ${specs.map(s => `
-                                <div><span class="spec-label">${s.label}:</span> <span class="spec-value">${s.value}</span></div>
-                            `).join('')}
-                        </div>
-                    ` : ''}
-                    <button class="btn-cart" onclick="addToCart(${currentProduct.id}); closeModal();" style="width:100%;padding:14px;margin-top:12px;" ${currentProduct.stock < 1 ? 'disabled' : ''}>
-                        <i class="fas fa-shopping-bag"></i> ${currentProduct.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
-                    </button>
-                    <button class="btn-whatsapp" onclick="whatsappOrder(${currentProduct.id}); closeModal();" style="width:100%;padding:12px;margin-top:8px;background:#25D366;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">
-                        <i class="fab fa-whatsapp"></i> Order via WhatsApp
-                    </button>
-                </div>
-            `;
-
-            // Load saved address
-            const saved = JSON.parse(localStorage.getItem('shippingAddress') || '{}');
-            document.getElementById('fullName').value = saved.fullName || '';
-            document.getElementById('phoneNumber').value = saved.phone || '';
-            document.getElementById('city').value = saved.city || '';
-            document.getElementById('ward').value = saved.ward || '';
-            document.getElementById('landmark').value = saved.landmark || '';
-            document.getElementById('address').value = saved.address || '';
-
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            document.getElementById('productModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        // ========================================
-        // CART FUNCTIONS
-        // ========================================
-        function addToCart(id) {
-            const product = allProducts.find(p => p.id === id);
-            if (!product) return;
-            if (product.stock < 1) {
-                showToast('❌ Product is out of stock!', true);
-                return;
-            }
-            const existing = cart.find(c => c.id === id);
-            if (existing) {
-                if (existing.qty >= product.stock) {
-                    showToast(`❌ Only ${product.stock} available in stock.`, true);
-                    return;
-                }
-                existing.qty += 1;
-            } else {
-                cart.push({ ...product, qty: 1 });
-            }
-            updateCartUI();
-            showToast(`✅ ${product.name} added to cart!`);
-        }
-
-        function removeFromCart(id) {
-            cart = cart.filter(c => c.id !== id);
-            updateCartUI();
-        }
-
-        function updateQty(id, delta) {
-            const item = cart.find(c => c.id === id);
-            if (!item) return;
-            const product = allProducts.find(p => p.id === id);
-            if (delta > 0 && product && item.qty >= product.stock) {
-                showToast(`❌ Only ${product.stock} available.`, true);
-                return;
-            }
-            item.qty += delta;
-            if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
-            updateCartUI();
-        }
-
-        function updateCartUI() {
-            const count = cart.reduce((s, c) => s + c.qty, 0);
-            cartBadge.textContent = count;
-
-            if (cart.length === 0) {
-                cartItems.innerHTML = '<p style="color:var(--text-light);text-align:center;padding:30px 0;">Cart is empty 😢</p>';
-            } else {
-                cartItems.innerHTML = cart.map(c => `
-                    <div class="cart-item">
-                        <div class="cart-item-info">
-                            <span>${c.icon || '📦'}</span>
-                            <div><div style="font-weight:600;">${c.name}</div><div style="font-size:13px;color:var(--text-light);">NPR ${(c.price || 0).toLocaleString()}</div></div>
-                        </div>
-                        <div class="cart-item-qty">
-                            <button onclick="updateQty(${c.id}, -1)">−</button>
-                            <span style="font-weight:700;min-width:20px;text-align:center;">${c.qty}</span>
-                            <button onclick="updateQty(${c.id}, 1)">+</button>
-                            <i class="fas fa-trash" style="color:var(--secondary);cursor:pointer;margin-left:6px;" onclick="removeFromCart(${c.id})"></i>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                        <div><label class="text-xs font-semibold">Trans. Date</label><input type="date" id="transDate" class="w-full border rounded-lg p-2 text-sm" /></div>
+                        <div><label class="text-xs font-semibold">Bill Date</label><input type="date" id="billDate" class="w-full border rounded-lg p-2 text-sm" /></div>
+                        <div><label class="text-xs font-semibold">Payment Mode</label>
+                            <select id="paymentMode" class="w-full border rounded-lg p-2 text-sm">
+                                <option value="Cash">Cash (नगद)</option><option value="Credit">Credit (उधारो)</option>
+                                <option value="Cheque">Cheque</option><option value="Other">Other (QR/Online)</option>
+                            </select>
                         </div>
                     </div>
-                `).join('');
-            }
-
-            const total = cart.reduce((s, c) => s + (c.price || 0) * c.qty, 0);
-            cartTotal.textContent = `Total: NPR ${total.toLocaleString()}`;
-        }
-
-        function toggleCart() {
-            document.getElementById('cartSidebar').classList.toggle('open');
-            document.getElementById('cartOverlay').style.display =
-                document.getElementById('cartSidebar').classList.contains('open') ? 'block' : 'none';
-        }
-
-        function openCheckout() {
-            if (cart.length === 0) { showToast('Cart is empty!', true); return; }
-            toggleCart();
-            if (allProducts.length) openProductDetail(allProducts[0].id);
-            document.getElementById('orderForm').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // ========================================
-        // PAYMENT SELECTION
-        // ========================================
-        function selectPayment(el) {
-            document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
-            el.classList.add('selected');
-            selectedPayment = el.dataset.method;
-        }
-
-        // ========================================
-        // GENERATE TRACKING
-        // ========================================
-        function generateTracking() {
-            const year = new Date().getFullYear();
-            const rand = Math.floor(10000 + Math.random() * 90000);
-            return `NP-${year}-${rand}`;
-        }
-
-        // ========================================
-        // PLACE ORDER (with stock deduction)
-        // ========================================
-        async function placeOrder() {
-            const btn = document.getElementById('placeOrderBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Placing...';
-
-            try {
-                // Validate
-                const name = document.getElementById('fullName').value.trim();
-                const phone = document.getElementById('phoneNumber').value.trim();
-                const city = document.getElementById('city').value.trim();
-                const address = document.getElementById('address').value.trim();
-
-                if (!name || !phone || !city || !address) {
-                    showToast('Please fill all required fields.', true);
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
-                    return;
-                }
-
-                if (cart.length === 0) {
-                    showToast('Cart is empty!', true);
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
-                    return;
-                }
-
-                // Check stock for each item
-                for (const item of cart) {
-                    const product = allProducts.find(p => p.id === item.id);
-                    if (!product || product.stock < item.qty) {
-                        showToast(`❌ Not enough stock for ${item.name}. Only ${product?.stock || 0} available.`, true);
-                        btn.disabled = false;
-                        btn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
-                        return;
-                    }
-                }
-
-                // Calculate total
-                const total = cart.reduce((s, c) => s + (c.price || 0) * c.qty, 0);
-                const tracking = generateTracking();
-
-                // Prepare order data
-                const orderData = {
-                    tracking: tracking,
-                    items: cart.map(c => ({ id: c.id, name: c.name, qty: c.qty, price: c.price })),
-                    total: total,
-                    payment: selectedPayment,
-                    status: 'Pending',
-                    customer_name: name,
-                    customer_phone: phone,
-                    customer_address: address,
-                    city: city,
-                    province: document.getElementById('province').value,
-                    shipping: {
-                        fullName: name,
-                        phone: phone,
-                        province: document.getElementById('province').value,
-                        city: city,
-                        ward: document.getElementById('ward').value || '',
-                        landmark: document.getElementById('landmark').value || '',
-                        address: address
-                    },
-                    created_at: new Date().toISOString()
-                };
-
-                // Save order to Supabase
-                const { data: orderResult, error: orderError } = await supabase
-                    .from('orders')
-                    .insert([{
-                        tracking: tracking,
-                        items: cart.map(c => ({ id: c.id, name: c.name, qty: c.qty, price: c.price })),
-                        total: total,
-                        payment: selectedPayment,
-                        status: 'Pending',
-                        customer_name: name,
-                        customer_phone: phone,
-                        customer_address: address,
-                        city: city,
-                        province: document.getElementById('province').value,
-                        shipping: {
-                            fullName: name,
-                            phone: phone,
-                            province: document.getElementById('province').value,
-                            city: city,
-                            ward: document.getElementById('ward').value || '',
-                            landmark: document.getElementById('landmark').value || '',
-                            address: address
-                        }
-                    }])
-                    .select();
-
-                if (orderError) throw orderError;
-
-                // DEDUCT STOCK from each product
-                for (const item of cart) {
-                    const product = allProducts.find(p => p.id === item.id);
-                    if (product) {
-                        const newStock = product.stock - item.qty;
-                        const { error: stockError } = await supabase
-                            .from('products')
-                            .update({ stock: newStock })
-                            .eq('id', item.id);
-
-                        if (stockError) console.error('Stock update error:', stockError);
-
-                        // Update local product
-                        product.stock = newStock;
-                    }
-                }
-
-                // Create notification
-                const { error: notifError } = await supabase
-                    .from('notifications')
-                    .insert([{
-                        type: 'new_order',
-                        message: `New order #${tracking} from ${name} - NPR ${total.toLocaleString()}`,
-                        order_id: orderResult?.[0]?.id || null,
-                        read: false
-                    }]);
-
-                if (notifError) console.error('Notification error:', notifError);
-
-                // Save shipping address
-                localStorage.setItem('shippingAddress', JSON.stringify({
-                    fullName: name,
-                    phone: phone,
-                    province: document.getElementById('province').value,
-                    city: city,
-                    ward: document.getElementById('ward').value || '',
-                    landmark: document.getElementById('landmark').value || '',
-                    address: address
-                }));
-
-                // Clear cart
-                cart = [];
-                updateCartUI();
-                closeModal();
-
-                showToast(`🎉 Order placed successfully! Tracking: ${tracking}`);
-
-                // Refresh products to show updated stock
-                await loadProducts();
-
-                // Display tracking
-                displayTracking(tracking);
-
-            } catch (err) {
-                console.error('Order error:', err);
-                showToast('❌ Failed to place order: ' + err.message, true);
-            }
-
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
-        }
-
-        // ========================================
-        // QUICK COD ORDER (without modal)
-        // ========================================
-        async function quickCOD() {
-            if (cart.length === 0) { showToast('Cart is empty!', true); return; }
-
-            // Check stock
-            for (const item of cart) {
-                const product = allProducts.find(p => p.id === item.id);
-                if (!product || product.stock < item.qty) {
-                    showToast(`❌ Not enough stock for ${item.name}.`, true);
-                    return;
-                }
-            }
-
-            try {
-                const total = cart.reduce((s, c) => s + (c.price || 0) * c.qty, 0);
-                const tracking = generateTracking();
-
-                // Save order
-                const { error: orderError } = await supabase
-                    .from('orders')
-                    .insert([{
-                        tracking: tracking,
-                        items: cart.map(c => ({ id: c.id, name: c.name, qty: c.qty, price: c.price })),
-                        total: total,
-                        payment: 'COD',
-                        status: 'Pending',
-                        customer_name: 'COD Customer',
-                        customer_phone: 'N/A',
-                        customer_address: 'COD Order',
-                        city: 'Kathmandu',
-                        province: 'Bagmati',
-                        shipping: {}
-                    }]);
-
-                if (orderError) throw orderError;
-
-                // Deduct stock
-                for (const item of cart) {
-                    const product = allProducts.find(p => p.id === item.id);
-                    if (product) {
-                        const newStock = product.stock - item.qty;
-                        await supabase
-                            .from('products')
-                            .update({ stock: newStock })
-                            .eq('id', item.id);
-                        product.stock = newStock;
-                    }
-                }
-
-                // Notification
-                await supabase
-                    .from('notifications')
-                    .insert([{
-                        type: 'new_order',
-                        message: `New COD order #${tracking} - NPR ${total.toLocaleString()}`,
-                        read: false
-                    }]);
-
-                showToast(`✅ COD Order placed! Tracking: ${tracking}`);
-                cart = [];
-                updateCartUI();
-                toggleCart();
-                await loadProducts();
-                displayTracking(tracking);
-
-            } catch (err) {
-                console.error('COD error:', err);
-                showToast('❌ Failed to place COD order.', true);
-            }
-        }
-
-        // ========================================
-        // TRACK ORDER
-        // ========================================
-        async function trackOrder() {
-            const code = document.getElementById('trackingInput').value.trim().toUpperCase();
-            if (!code) { showToast('Enter tracking code.', true); return; }
-            displayTracking(code);
-        }
-
-        async function displayTracking(code) {
-            const { data, error } = await supabase
-                .from('orders')
-                .select('*')
-                .eq('tracking', code)
-                .maybeSingle();
-
-            const result = document.getElementById('trackingResult');
-            const steps = document.querySelectorAll('.tracking-step');
-            const statusMap = { 'Pending': 0, 'Processing': 1, 'Dispatched': 2, 'Delivered': 3 };
-
-            if (data && !error) {
-                const idx = statusMap[data.status] || 0;
-                steps.forEach((s, i) => s.classList.toggle('active', i <= idx));
-                document.getElementById('trackingDetail').textContent =
-                    `📦 ${data.tracking} | Status: ${data.status} | Items: ${data.items?.length || 0} | Total: NPR ${(data.total || 0).toLocaleString()} | ${data.customer_name || 'Customer'}`;
-                result.classList.add('show');
-            } else {
-                // Try local fallback
-                const localOrders = JSON.parse(localStorage.getItem('orders_fallback') || '[]');
-                const localOrder = localOrders.find(o => o.tracking === code);
-                if (localOrder) {
-                    const idx = statusMap[localOrder.status] || 0;
-                    steps.forEach((s, i) => s.classList.toggle('active', i <= idx));
-                    document.getElementById('trackingDetail').textContent =
-                        `📦 ${localOrder.tracking} | Status: ${localOrder.status} (Local)`;
-                    result.classList.add('show');
-                } else {
-                    showToast('❌ Order not found. Please check the tracking code.', true);
-                    result.classList.remove('show');
-                }
-            }
-        }
-
-        // ========================================
-        // WHATSAPP ORDER
-        // ========================================
-        function whatsappOrder(id) {
-            const p = allProducts.find(pr => pr.id === id);
-            if (!p) return;
-            const msg = `I want to order: ${p.name} (NPR ${(p.price || 0).toLocaleString()})`;
-            window.open(`https://wa.me/9779841234567?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        // ========================================
-        // ADMIN PANEL
-        // ========================================
-        function openAdmin() {
-            document.getElementById('adminPanel').classList.add('active');
-            document.body.style.overflow = 'hidden';
-            if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-                document.getElementById('adminLogin').style.display = 'none';
-                document.getElementById('adminDashboard').classList.add('active');
-                isAdminLoggedIn = true;
-                renderAdmin();
-            } else {
-                document.getElementById('adminLogin').style.display = 'block';
-                document.getElementById('adminDashboard').classList.remove('active');
-                isAdminLoggedIn = false;
-            }
-            setInterval(() => {
-                document.getElementById('adminTime').textContent = new Date().toLocaleString();
-            }, 1000);
-        }
-
-        function adminLogin() {
-            const user = document.getElementById('adminUser').value;
-            const pass = document.getElementById('adminPass').value;
-            if (user === 'admin' && pass === 'admin123') {
-                sessionStorage.setItem('adminLoggedIn', 'true');
-                document.getElementById('adminLogin').style.display = 'none';
-                document.getElementById('adminDashboard').classList.add('active');
-                isAdminLoggedIn = true;
-                document.getElementById('adminError').textContent = '';
-                renderAdmin();
-            } else {
-                document.getElementById('adminError').textContent = '❌ Invalid username or password.';
-            }
-        }
-
-        function adminLogout() {
-            sessionStorage.removeItem('adminLoggedIn');
-            document.getElementById('adminLogin').style.display = 'block';
-            document.getElementById('adminDashboard').classList.remove('active');
-            isAdminLoggedIn = false;
-            document.getElementById('adminError').textContent = '';
-        }
-
-        // ========================================
-        // ADMIN RENDER FUNCTIONS
-        // ========================================
-        async function renderAdmin() {
-            await renderAdminProducts();
-            await renderAdminInventory();
-            await renderAdminOrders();
-            await renderAdminFinance();
-            await renderAdminNotifications();
-
-            // Stats
-            const { data: products } = await supabase.from('products').select('id');
-            const { data: orders } = await supabase.from('orders').select('id,total');
-            const { data: lowStock } = await supabase.from('products').select('id').lt('stock', 5);
-            const { data: notifs } = await supabase.from('notifications').select('id').eq('read', false);
-
-            document.getElementById('statProducts').textContent = products?.length || 0;
-            document.getElementById('statOrders').textContent = orders?.length || 0;
-            const revenue = orders?.reduce((s, o) => s + (o.total || 0), 0) || 0;
-            document.getElementById('statRevenue').textContent = `NPR ${revenue.toLocaleString()}`;
-            document.getElementById('statLowStock').textContent = lowStock?.length || 0;
-            document.getElementById('statNotifications').textContent = notifs?.length || 0;
-
-            // Notification badges
-            if (notifs?.length > 0) {
-                document.getElementById('notifBadge').style.display = 'inline';
-                document.getElementById('notifBadge').textContent = notifs.length;
-            } else {
-                document.getElementById('notifBadge').style.display = 'none';
-            }
-        }
-
-        // Admin Products
-        async function renderAdminProducts() {
-            const { data, error } = await supabase
-                .from('products')
-                .select('*')
-                .order('id', { ascending: false });
-
-            if (error) { console.error('Products load error:', error); return; }
-
-            const tbody = document.getElementById('adminProductBody');
-            if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#6c757d;">No products.</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = data.map(p => `
-                <tr>
-                    <td>${p.icon || '📦'}</td>
-                    <td>${p.name}</td>
-                    <td>NPR ${(p.price || 0).toLocaleString()}</td>
-                    <td>${p.stock || 0}</td>
-                    <td>
-                        <button class="btn-sm btn-edit" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i></button>
-                        <button class="btn-sm btn-delete" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Add Product
-        async function addProduct() {
-            const name = document.getElementById('prodName').value.trim();
-            const price = parseFloat(document.getElementById('prodPrice').value);
-            const stock = parseInt(document.getElementById('prodStock').value) || 0;
-
-            if (!name || !price) {
-                showToast('❌ Name and Price are required.', true);
-                return;
-            }
-
-            const product = {
-                name: name,
-                icon: document.getElementById('prodIcon').value.trim() || '📦',
-                price: price,
-                old_price: parseFloat(document.getElementById('prodOldPrice').value) || 0,
-                stock: stock,
-                category: document.getElementById('prodCategory').value.trim() || 'General',
-                brand: document.getElementById('prodBrand').value.trim() || '',
-                model: document.getElementById('prodModel').value.trim() || '',
-                ram: document.getElementById('prodRam').value.trim() || '',
-                rom: document.getElementById('prodRom').value.trim() || '',
-                color: document.getElementById('prodColor').value.trim() || '',
-                battery: document.getElementById('prodBattery').value.trim() || '',
-                camera: document.getElementById('prodCamera').value.trim() || '',
-                processor: document.getElementById('prodProcessor').value.trim() || '',
-                display: document.getElementById('prodDisplay').value.trim() || '',
-                os: document.getElementById('prodOs').value.trim() || '',
-                network: document.getElementById('prodNetwork').value.trim() || '',
-                warranty: document.getElementById('prodWarranty').value.trim() || '',
-                rating: parseFloat(document.getElementById('prodRating').value) || 4.5,
-                description: document.getElementById('prodDesc').value.trim() || ''
-            };
-
-            const { error } = await supabase
-                .from('products')
-                .insert([product]);
-
-            if (error) {
-                showToast('❌ Failed to add product: ' + error.message, true);
-                return;
-            }
-
-            showToast('✅ Product added successfully!');
-            await loadProducts();
-            await renderAdmin();
-            // Clear form
-            document.getElementById('prodName').value = '';
-            document.getElementById('prodPrice').value = '';
-            document.getElementById('prodStock').value = '';
-            document.getElementById('prodDesc').value = '';
-        }
-
-        // Edit Product
-        async function editProduct(id) {
-            const p = allProducts.find(pr => pr.id === id);
-            if (!p) return;
-
-            const newName = prompt('Product Name:', p.name);
-            if (newName && newName.trim()) p.name = newName.trim();
-
-            const newPrice = parseFloat(prompt('Price (NPR):', p.price));
-            if (newPrice) p.price = newPrice;
-
-            const newStock = parseInt(prompt('Stock Quantity:', p.stock));
-            if (!isNaN(newStock)) p.stock = newStock;
-
-            const { error } = await supabase
-                .from('products')
-                .update({ name: p.name, price: p.price, stock: p.stock })
-                .eq('id', id);
-
-            if (error) {
-                showToast('❌ Failed to update: ' + error.message, true);
-                return;
-            }
-
-            showToast('✅ Product updated!');
-            await loadProducts();
-            await renderAdmin();
-        }
-
-        // Delete Product
-        async function deleteProduct(id) {
-            if (!confirm('Delete this product permanently?')) return;
-
-            const { error } = await supabase
-                .from('products')
-                .delete()
-                .eq('id', id);
-
-            if (error) {
-                showToast('❌ Failed to delete: ' + error.message, true);
-                return;
-            }
-
-            showToast('🗑️ Product deleted.');
-            await loadProducts();
-            await renderAdmin();
-        }
-
-        // Admin Inventory
-        async function renderAdminInventory() {
-            const { data, error } = await supabase
-                .from('products')
-                .select('id, name, stock')
-                .order('stock', { ascending: true });
-
-            if (error) { console.error('Inventory error:', error); return; }
-
-            const tbody = document.getElementById('adminInventoryBody');
-            if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6c757d;">No products.</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = data.map(p => `
-                <tr>
-                    <td>${p.name}</td>
-                    <td><strong>${p.stock}</strong></td>
-                    <td>
-                        <span style="color:${p.stock < 5 ? 'var(--red)' : p.stock < 20 ? 'var(--orange)' : 'var(--green)'};">
-                            ${p.stock < 5 ? '🔴 Low' : p.stock < 20 ? '🟡 Medium' : '🟢 High'}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="btn-sm btn-edit" onclick="updateStock(${p.id})"><i class="fas fa-edit"></i> Update</button>
-                    </td>
-                </tr>
-            `).join('');
-
-            // Low stock alert
-            const lowStockItems = data.filter(p => p.stock < 5);
-            const lowStockDiv = document.getElementById('lowStockList');
-            if (lowStockItems.length === 0) {
-                lowStockDiv.innerHTML = '✅ All products have sufficient stock.';
-            } else {
-                lowStockDiv.innerHTML = lowStockItems.map(p =>
-                    `<div style="padding:4px 0;">⚠️ <strong>${p.name}</strong> — Only <span style="color:var(--red);">${p.stock}</span> left!</div>`
-                ).join('');
-            }
-        }
-
-        // Update Stock
-        async function updateStock(id) {
-            const p = allProducts.find(pr => pr.id === id);
-            if (!p) return;
-            const newStock = parseInt(prompt(`Update stock for "${p.name}" (Current: ${p.stock}):`, p.stock));
-            if (isNaN(newStock) || newStock < 0) return;
-
-            const { error } = await supabase
-                .from('products')
-                .update({ stock: newStock })
-                .eq('id', id);
-
-            if (error) {
-                showToast('❌ Failed to update stock: ' + error.message, true);
-                return;
-            }
-
-            p.stock = newStock;
-            showToast(`✅ Stock updated to ${newStock}`);
-            await loadProducts();
-            await renderAdminInventory();
-        }
-
-        // Admin Orders
-        async function renderAdminOrders() {
-            const { data, error } = await supabase
-                .from('orders')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (error) { console.error('Orders error:', error); return; }
-
-            const tbody = document.getElementById('adminOrderBody');
-            if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#6c757d;">No orders.</td></tr>';
-                return;
-            }
-
-            // Check for new orders (notifications)
-            const newOrders = data.filter(o => o.status === 'Pending');
-            if (newOrders.length > 0) {
-                document.getElementById('orderNotifBadge').style.display = 'inline';
-                document.getElementById('orderNotifBadge').textContent = newOrders.length;
-            } else {
-                document.getElementById('orderNotifBadge').style.display = 'none';
-            }
-
-            tbody.innerHTML = data.map((o, idx) => `
-                <tr>
-                    <td><strong>${o.tracking}</strong></td>
-                    <td>${o.customer_name || 'N/A'}<br><small>${o.customer_phone || ''}</small></td>
-                    <td>${o.items?.map(i => `${i.name} x${i.qty}`).join(', ') || 'N/A'}</td>
-                    <td>NPR ${(o.total || 0).toLocaleString()}</td>
-                    <td>
-                        <select onchange="updateOrderStatus(${o.id}, this.value)" style="background:#2a2a3e;color:#fff;border:2px solid #333;padding:4px 8px;border-radius:4px;">
-                            <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                            <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
-                            <option value="Dispatched" ${o.status === 'Dispatched' ? 'selected' : ''}>Dispatched</option>
-                            <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                        <div><label class="text-xs font-semibold">Buyer Name *</label><input type="text" id="buyerName" class="w-full border rounded-lg p-2 text-sm" /></div>
+                        <div><label class="text-xs font-semibold">Address</label><input type="text" id="buyerAddress" class="w-full border rounded-lg p-2 text-sm" /></div>
+                        <div><label class="text-xs font-semibold">PAN</label><input type="text" id="buyerPan" class="w-full border rounded-lg p-2 text-sm" /></div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm border">
+                            <thead class="bg-gray-50"><tr>
+                                <th class="p-2 border">S.N.</th><th class="p-2 border">H.S.</th>
+                                <th class="p-2 border">Particulars</th><th class="p-2 border">Qty</th>
+                                <th class="p-2 border">Rate</th><th class="p-2 border">VAT?</th>
+                                <th class="p-2 border">Total</th><th class="p-2 border">✕</th>
+                            </tr></thead>
+                            <tbody id="itemsBody">
+                                <tr>
+                                    <td class="p-1 border text-center">1</td>
+                                    <td class="p-1 border"><input type="text" class="hs-code w-14 border rounded p-1 text-xs" /></td>
+                                    <td class="p-1 border"><input type="text" class="particulars w-full border rounded p-1 text-xs" placeholder="Item" /></td>
+                                    <td class="p-1 border"><input type="number" class="qty w-12 border rounded p-1 text-xs" value="1" min="1" onchange="calcRow(this)" /></td>
+                                    <td class="p-1 border"><input type="number" class="rate w-16 border rounded p-1 text-xs" value="0" onchange="calcRow(this)" /></td>
+                                    <td class="p-1 border"><select class="is-vat border rounded p-1 text-xs" onchange="calcSummary()"><option value="Yes">Yes</option><option value="No">No</option></select></td>
+                                    <td class="p-1 border"><input type="text" class="row-total w-20 border rounded p-1 text-xs font-semibold" readonly /></td>
+                                    <td class="p-1 border text-center"><button onclick="removeRow(this)" class="text-red-500 text-xs">✕</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button onclick="addRow()" class="mt-2 text-sm bg-indigo-50 px-3 py-1 rounded-lg border border-indigo-200 hover:bg-indigo-100">➕ Add Item</button>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3 bg-gray-50 p-3 rounded-lg">
+                        <div><label class="text-xs font-semibold">Taxable Value</label><input id="taxableValue" class="w-full border rounded p-1.5 text-sm" readonly /></div>
+                        <div><label class="text-xs font-semibold">VAT (13%)</label><input id="vatAmount" class="w-full border rounded p-1.5 text-sm" readonly /></div>
+                        <div><label class="text-xs font-semibold">Discount %</label><input type="number" id="discountPercent" value="0" min="0" onchange="calcSummary()" class="w-full border rounded p-1.5 text-sm" /></div>
+                        <div><label class="text-xs font-semibold">Total Amount</label><input id="totalAmount" class="w-full border rounded p-1.5 text-sm font-bold text-green-700" readonly /></div>
+                    </div>
+                    <div class="mt-2"><label class="text-xs font-semibold">Amount in Words</label><input id="amountWords" class="w-full border rounded p-1.5 text-sm bg-gray-50" readonly /></div>
+
+                    <button onclick="generateBill()" class="mt-3 bg-[#1e3a5f] text-white px-5 py-2 rounded-lg font-semibold hover:bg-[#15324f]">🧾 Generate & Save Invoice</button>
+                </div>
+            </section>
+
+            <!-- ===== CREDIT TAB ===== -->
+            <section id="tab-credit" class="tab-content">
+                <div class="bg-white p-5 rounded-xl shadow-sm">
+                    <h3 class="text-lg font-bold text-red-600">🔴 Credit (उधारो) बाँकी रहेका ग्राहकहरू</h3>
+                    <div class="overflow-x-auto mt-3">
+                        <table class="w-full text-sm border">
+                            <thead class="bg-gray-50"><tr>
+                                <th class="p-2 border">Inv #</th><th class="p-2 border">Date</th>
+                                <th class="p-2 border">Buyer</th><th class="p-2 border">Amount</th>
+                                <th class="p-2 border">Status</th><th class="p-2 border">Action</th>
+                            </tr></thead>
+                            <tbody id="creditTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== PRODUCTS TAB (E-Commerce) ===== -->
+            <section id="tab-products" class="tab-content">
+                <div class="bg-white p-5 rounded-xl shadow-sm">
+                    <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+                        <h3 class="text-lg font-bold text-[#1e3a5f]">🛍️ Product Management</h3>
+                        <button onclick="openProductModal()" class="bg-[#1e3a5f] text-white px-4 py-1.5 rounded-lg text-sm">➕ Add Product</button>
+                    </div>
+
+                    <!-- Product Stats -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                        <div class="bg-blue-50 p-3 rounded-lg text-center"><span class="text-xs text-gray-600">Total Products</span><div class="font-bold text-xl" id="prodTotal">0</div></div>
+                        <div class="bg-green-50 p-3 rounded-lg text-center"><span class="text-xs text-gray-600">In Stock</span><div class="font-bold text-xl text-green-600" id="prodInStock">0</div></div>
+                        <div class="bg-red-50 p-3 rounded-lg text-center"><span class="text-xs text-gray-600">Low Stock</span><div class="font-bold text-xl text-red-600" id="prodLowStock">0</div></div>
+                        <div class="bg-purple-50 p-3 rounded-lg text-center"><span class="text-xs text-gray-600">Total Sold</span><div class="font-bold text-xl text-purple-600" id="prodSold">0</div></div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <input type="text" id="productSearch" placeholder="🔍 Search products..." onkeyup="renderProducts()" class="border rounded-lg p-2 text-sm flex-1 min-w-[150px]" />
+                        <select id="categoryFilter" onchange="renderProducts()" class="border rounded-lg p-2 text-sm">
+                            <option value="ALL">All Categories</option>
                         </select>
-                    </td>
-                    <td>
-                        <button class="btn-sm btn-supply" onclick="supplyOrder(${o.id})"><i class="fas fa-truck"></i> Supply</button>
-                        <button class="btn-sm btn-delete" onclick="deleteOrder(${o.id})"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Update Order Status
-        async function updateOrderStatus(id, status) {
-            const { error } = await supabase
-                .from('orders')
-                .update({ status: status, updated_at: new Date().toISOString() })
-                .eq('id', id);
-
-            if (error) {
-                showToast('❌ Failed to update: ' + error.message, true);
-                return;
-            }
-
-            // Create notification for status change
-            if (status === 'Delivered' || status === 'Dispatched') {
-                await supabase
-                    .from('notifications')
-                    .insert([{
-                        type: 'order_update',
-                        message: `Order #${id} status changed to ${status}`,
-                        order_id: id,
-                        read: false
-                    }]);
-            }
-
-            showToast(`✅ Order status updated to ${status}`);
-            await renderAdminOrders();
-        }
-
-        // Supply Order
-        async function supplyOrder(id) {
-            const { error } = await supabase
-                .from('orders')
-                .update({ status: 'Dispatched', updated_at: new Date().toISOString() })
-                .eq('id', id);
-
-            if (error) {
-                showToast('❌ Failed: ' + error.message, true);
-                return;
-            }
-
-            await supabase
-                .from('notifications')
-                .insert([{
-                    type: 'order_update',
-                    message: `Order #${id} has been dispatched for delivery 🚚`,
-                    order_id: id,
-                    read: false
-                }]);
-
-            showToast('🚚 Order dispatched for delivery!');
-            await renderAdminOrders();
-        }
-
-        // Delete Order
-        async function deleteOrder(id) {
-            if (!confirm('Delete this order?')) return;
-
-            const { error } = await supabase
-                .from('orders')
-                .delete()
-                .eq('id', id);
-
-            if (error) {
-                showToast('❌ Failed to delete: ' + error.message, true);
-                return;
-            }
-
-            showToast('🗑️ Order deleted.');
-            await renderAdminOrders();
-        }
-
-        // Admin Finance
-        async function renderAdminFinance() {
-            const { data: orders } = await supabase.from('orders').select('total');
-            const { data: expenses } = await supabase.from('expenses').select('amount, description, date');
-
-            const totalRev = orders?.reduce((s, o) => s + (o.total || 0), 0) || 0;
-            const totalExp = expenses?.reduce((s, e) => s + (e.amount || 0), 0) || 0;
-
-            document.getElementById('finTotalRevenue').textContent = `NPR ${totalRev.toLocaleString()}`;
-            document.getElementById('finTotalExpense').textContent = `NPR ${totalExp.toLocaleString()}`;
-            document.getElementById('finProfit').textContent = `NPR ${(totalRev - totalExp).toLocaleString()}`;
-            document.getElementById('finTotalOrders').textContent = orders?.length || 0;
-
-            const expenseList = document.getElementById('expenseList');
-            if (!expenses || expenses.length === 0) {
-                expenseList.innerHTML = '<li style="color:#6c757d;">No expenses recorded.</li>';
-            } else {
-                expenseList.innerHTML = expenses.slice(0, 20).map(e =>
-                    `<li>💰 ${e.description}: NPR ${(e.amount || 0).toLocaleString()} (${new Date(e.date).toLocaleString()})</li>`
-                ).join('');
-            }
-        }
-
-        // Add Expense
-        async function addExpense() {
-            const desc = document.getElementById('expenseDesc').value.trim();
-            const amount = parseFloat(document.getElementById('expenseAmount').value);
-
-            if (!desc || !amount) {
-                showToast('❌ Enter description and amount.', true);
-                return;
-            }
-
-            const { error } = await supabase
-                .from('expenses')
-                .insert([{ description: desc, amount: amount, date: new Date().toISOString() }]);
-
-            if (error) {
-                showToast('❌ Failed to add expense: ' + error.message, true);
-                return;
-            }
-
-            showToast('💰 Expense added.');
-            document.getElementById('expenseDesc').value = '';
-            document.getElementById('expenseAmount').value = '';
-            await renderAdminFinance();
-        }
-
-        // Admin Notifications
-        async function renderAdminNotifications() {
-            const { data, error } = await supabase
-                .from('notifications')
-                .select('*')
-                .order('created_at', { ascending: false })
-                .limit(50);
-
-            if (error) { console.error('Notifications error:', error); return; }
-
-            const container = document.getElementById('notificationList');
-            if (!data || data.length === 0) {
-                container.innerHTML = '<p style="color:#6c757d;">No notifications.</p>';
-                return;
-            }
-
-            container.innerHTML = data.map(n => `
-                <div style="background:${n.read ? '#1e1e2e' : '#2a2a3e'};padding:12px 16px;border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;border-left:4px solid ${n.type === 'new_order' ? 'var(--orange)' : 'var(--primary)'};">
-                    <div>
-                        <span style="font-weight:600;color:#fff;">${n.type === 'new_order' ? '🆕 New Order' : '📢 Update'}</span>
-                        <span style="color:#e9ecef;margin-left:8px;">${n.message}</span>
-                        <small style="color:#6c757d;display:block;font-size:11px;">${new Date(n.created_at).toLocaleString()}</small>
                     </div>
-                    <div>
-                        ${!n.read ? `<button class="btn-sm btn-view" onclick="markNotificationRead(${n.id})">Mark Read</button>` : '<span style="color:var(--green);font-size:12px;">✓ Read</span>'}
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="productGrid"></div>
+                </div>
+            </section>
+
+            <!-- ===== ACCOUNTING TAB ===== -->
+            <section id="tab-accounting" class="tab-content">
+                <div class="bg-white p-5 rounded-xl shadow-sm">
+                    <h3 class="text-lg font-bold text-[#1e3a5f]">💰 Accounting System</h3>
+                    <div class="flex flex-wrap gap-2 my-3 border-b pb-2">
+                        <button onclick="switchAccTab('journal-form')" class="acc-nav-btn active text-sm px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 font-medium">📝 New Entry</button>
+                        <button onclick="switchAccTab('journal-register')" class="acc-nav-btn text-sm px-3 py-1.5 rounded-lg hover:bg-gray-50">📖 Journal</button>
+                        <button onclick="switchAccTab('ledger')" class="acc-nav-btn text-sm px-3 py-1.5 rounded-lg hover:bg-gray-50">📑 Ledger</button>
+                        <button onclick="switchAccTab('trial')" class="acc-nav-btn text-sm px-3 py-1.5 rounded-lg hover:bg-gray-50">⚖️ Trial</button>
+                        <button onclick="switchAccTab('pl')" class="acc-nav-btn text-sm px-3 py-1.5 rounded-lg hover:bg-gray-50">📈 P&L</button>
+                        <button onclick="switchAccTab('bs')" class="acc-nav-btn text-sm px-3 py-1.5 rounded-lg hover:bg-gray-50">📊 BS</button>
+                    </div>
+
+                    <div id="acc-journal-form" class="acc-tab-content space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div><label class="text-xs font-semibold">Date</label><input type="date" id="accDate" class="w-full border rounded-lg p-2 text-sm" /></div>
+                            <div><label class="text-xs font-semibold">Amount (Rs.)</label><input type="number" id="accAmount" class="w-full border rounded-lg p-2 text-sm" /></div>
+                            <div><label class="text-xs font-semibold">Debit Account</label>
+                                <select id="accDebit" class="w-full border rounded-lg p-2 text-sm coa-select"></select>
+                            </div>
+                            <div><label class="text-xs font-semibold">Credit Account</label>
+                                <select id="accCredit" class="w-full border rounded-lg p-2 text-sm coa-select"></select>
+                            </div>
+                        </div>
+                        <div><label class="text-xs font-semibold">Narration</label><textarea id="accNarration" rows="2" class="w-full border rounded-lg p-2 text-sm"></textarea></div>
+                        <button onclick="saveAccountingEntry()" class="bg-[#1e3a5f] text-white px-5 py-2 rounded-lg font-semibold hover:bg-[#15324f]">💾 Save Entry</button>
+                    </div>
+
+                    <div id="acc-journal-register" class="acc-tab-content hidden overflow-x-auto">
+                        <table class="w-full text-sm border mt-2">
+                            <thead class="bg-gray-50"><tr>
+                                <th class="p-2 border">Date</th><th class="p-2 border">V.No</th>
+                                <th class="p-2 border">Particulars</th><th class="p-2 border text-right">Debit</th>
+                                <th class="p-2 border text-right">Credit</th>
+                            </tr></thead>
+                            <tbody id="journalRegisterBody"></tbody>
+                            <tfoot class="bg-gray-100 font-bold"><tr>
+                                <td colspan="3" class="p-2 border text-right">Total</td>
+                                <td class="p-2 border text-right" id="journalTotalDr">0</td>
+                                <td class="p-2 border text-right" id="journalTotalCr">0</td>
+                            </tr></tfoot>
+                        </table>
+                    </div>
+
+                    <div id="acc-ledger" class="acc-tab-content hidden">
+                        <div class="flex items-center gap-3 my-2">
+                            <label class="text-sm font-medium">Select Account:</label>
+                            <select id="ledgerSelect" onchange="renderLedger()" class="border rounded-lg p-2 text-sm coa-select"></select>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm border">
+                                <thead class="bg-gray-50"><tr>
+                                    <th class="p-2 border">Date</th><th class="p-2 border">Particulars</th>
+                                    <th class="p-2 border text-right">Debit</th><th class="p-2 border text-right">Credit</th>
+                                    <th class="p-2 border text-right">Balance</th>
+                                </tr></thead>
+                                <tbody id="ledgerBody"></tbody>
+                                <tfoot class="bg-gray-100 font-bold"><tr>
+                                    <td colspan="4" class="p-2 border text-right">Closing Balance</td>
+                                    <td class="p-2 border text-right" id="ledgerBalance">0</td>
+                                </tr></tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="acc-trial" class="acc-tab-content hidden overflow-x-auto">
+                        <table class="w-full text-sm border mt-2">
+                            <thead class="bg-gray-50"><tr>
+                                <th class="p-2 border">Account</th><th class="p-2 border text-right">Debit</th><th class="p-2 border text-right">Credit</th>
+                            </tr></thead>
+                            <tbody id="trialBody"></tbody>
+                            <tfoot class="bg-gray-100 font-bold"><tr>
+                                <td class="p-2 border text-right">Total</td>
+                                <td class="p-2 border text-right" id="trialDr">0</td>
+                                <td class="p-2 border text-right" id="trialCr">0</td>
+                            </tr></tfoot>
+                        </table>
+                    </div>
+
+                    <div id="acc-pl" class="acc-tab-content hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                            <div class="border rounded-lg p-3"><h4 class="font-bold text-red-600">Expenses</h4><div id="plExpenses"></div><div class="font-bold border-t pt-2 mt-2">Total: <span id="plTotalExp">0</span></div></div>
+                            <div class="border rounded-lg p-3"><h4 class="font-bold text-green-600">Revenue</h4><div id="plRevenue"></div><div class="font-bold border-t pt-2 mt-2">Total: <span id="plTotalRev">0</span></div></div>
+                        </div>
+                        <div class="bg-indigo-50 p-3 rounded-lg mt-3 font-bold text-lg flex justify-between">
+                            <span>Net Profit / (Loss)</span>
+                            <span id="plNetResult">Rs. 0</span>
+                        </div>
+                    </div>
+
+                    <div id="acc-bs" class="acc-tab-content hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                            <div class="border rounded-lg p-3"><h4 class="font-bold text-[#1e3a5f]">Liabilities & Equity</h4><div id="bsLiab"></div><div class="font-bold border-t pt-2 mt-2">Total: <span id="bsTotalLiab">0</span></div></div>
+                            <div class="border rounded-lg p-3"><h4 class="font-bold text-[#1e3a5f]">Assets</h4><div id="bsAssets"></div><div class="font-bold border-t pt-2 mt-2">Total: <span id="bsTotalAssets">0</span></div></div>
+                        </div>
                     </div>
                 </div>
-            `).join('');
+            </section>
+
+            <!-- ===== INVOICE PREVIEW ===== -->
+            <section id="invoicePreview" class="tab-content hidden">
+                <div id="invoicePrintArea" class="invoice-box"></div>
+                <div class="flex gap-3 mt-3 no-print">
+                    <button onclick="window.print()" class="bg-[#1e3a5f] text-white px-4 py-2 rounded-lg">🖨️ Print</button>
+                    <button onclick="downloadPDF()" class="bg-blue-600 text-white px-4 py-2 rounded-lg">📄 PDF</button>
+                    <button onclick="switchTab('billing')" class="bg-gray-200 px-4 py-2 rounded-lg">🔙 Back</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+<!-- ===== PRODUCT MODAL ===== -->
+<div id="productModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-6 w-full max-w-lg">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-[#1e3a5f]">➕ Add New Product</h3>
+            <button onclick="closeProductModal()" class="text-gray-500 text-2xl">&times;</button>
+        </div>
+        <form id="productForm" onsubmit="saveProduct(event)">
+            <div class="space-y-3">
+                <div><label class="text-sm font-medium">Product Name *</label><input type="text" id="prodName" required class="w-full border rounded-lg p-2" /></div>
+                <div><label class="text-sm font-medium">Category *</label><input type="text" id="prodCategory" required class="w-full border rounded-lg p-2" /></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="text-sm font-medium">Price (Rs.) *</label><input type="number" id="prodPrice" required class="w-full border rounded-lg p-2" /></div>
+                    <div><label class="text-sm font-medium">Stock *</label><input type="number" id="prodStock" required class="w-full border rounded-lg p-2" /></div>
+                </div>
+                <div><label class="text-sm font-medium">Description</label><textarea id="prodDesc" rows="2" class="w-full border rounded-lg p-2"></textarea></div>
+                <div><label class="text-sm font-medium">Image URL</label><input type="text" id="prodImage" placeholder="https://example.com/image.jpg" class="w-full border rounded-lg p-2" /></div>
+            </div>
+            <div class="flex gap-3 mt-4">
+                <button type="submit" class="bg-[#1e3a5f] text-white px-6 py-2 rounded-lg font-semibold flex-1">💾 Save Product</button>
+                <button type="button" onclick="closeProductModal()" class="bg-gray-200 px-6 py-2 rounded-lg">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<script>
+    // ====== SUPABASE ======
+    const SUPABASE_URL = 'https://sxlbfwzvwapzlmmaockk.supabase.co';
+    const SUPABASE_ANON_KEY = 'ewDTGvssJMFMpRoiwwm5Mg_xWwaSDQI';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ====== GLOBAL STATE ======
+    let currentUser = null;
+    let billingInvoices = [];
+    let accountingEntries = [];
+    let orders = [];
+    let products = [];
+
+    // Chart of Accounts
+    const COA = [
+        { code: 1001, name: "Cash in Hand", type: "Asset" },
+        { code: 1002, name: "Nabil Bank A/c", type: "Asset" },
+        { code: 1003, name: "Accounts Receivable", type: "Asset" },
+        { code: 1004, name: "Office Furniture", type: "Asset" },
+        { code: 2001, name: "Accounts Payable", type: "Liability" },
+        { code: 2002, name: "Salary Payable", type: "Liability" },
+        { code: 3001, name: "Owner Capital", type: "Equity" },
+        { code: 3002, name: "Owner Drawing", type: "Equity" },
+        { code: 4001, name: "Sales Revenue", type: "Revenue" },
+        { code: 4002, name: "Service Income", type: "Revenue" },
+        { code: 5001, name: "Purchases", type: "Expense" },
+        { code: 6001, name: "Salary Expense", type: "Expense" },
+        { code: 6002, name: "Rent Expense", type: "Expense" },
+        { code: 6003, name: "Stationery Expense", type: "Expense" }
+    ];
+
+    // ====== LOGIN ======
+    function handleLogin(e) {
+        e.preventDefault();
+        const user = document.getElementById('loginUser').value.trim();
+        const pass = document.getElementById('loginPass').value.trim();
+        if (user === 'admin' && pass === 'admin123') {
+            currentUser = { username: 'admin' };
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+            loadAllData();
+            showToast('✅ Login successful!');
+        } else {
+            showToast('❌ Invalid credentials', 'error');
         }
+    }
 
-        // Mark Notification Read
-        async function markNotificationRead(id) {
-            const { error } = await supabase
-                .from('notifications')
-                .update({ read: true })
-                .eq('id', id);
+    function logout() {
+        currentUser = null;
+        document.getElementById('loginOverlay').classList.remove('hidden');
+        document.getElementById('app').classList.add('hidden');
+        showToast('🔒 Logged out');
+    }
 
-            if (error) {
-                showToast('❌ Failed to update.', true);
-                return;
+    // ====== LOAD DATA ======
+    async function loadAllData() {
+        try {
+            // Load invoices
+            const { data: invData } = await supabase.from('invoices').select('*');
+            billingInvoices = invData || [];
+
+            // Load accounting entries
+            const { data: accData } = await supabase.from('accounting_entries').select('*');
+            accountingEntries = accData || [];
+
+            // Load orders
+            const { data: orderData } = await supabase.from('orders').select('*');
+            orders = orderData || [];
+
+            // Load products
+            const { data: prodData } = await supabase.from('products').select('*');
+            products = prodData || [];
+
+            // Seed sample data if empty
+            if (orders.length === 0) {
+                const sampleOrders = [
+                    { order_no: 'ORD-001', tracking: 'NE-2026-001', customer: 'Ram Sharma', phone: '980-1234567', items: [{name: 'Samsung S24', qty: 1, price: 95000}], total: 95000, payment: 'COD', status: 'Pending', date: '2026-08-18' },
+                    { order_no: 'ORD-002', tracking: 'NE-2026-002', customer: 'Sita Poudel', phone: '980-7654321', items: [{name: 'Pashmina Shawl', qty: 2, price: 3800}], total: 7600, payment: 'Prepaid', status: 'Shipped', date: '2026-08-19' }
+                ];
+                for (let o of sampleOrders) {
+                    await supabase.from('orders').insert(o);
+                }
+                orders = sampleOrders;
             }
 
-            await renderAdminNotifications();
-            await renderAdmin();
+            if (products.length === 0) {
+                const sampleProducts = [
+                    { name: 'Samsung Galaxy S24', category: 'Electronics', price: 95000, stock: 10, sold: 3, description: 'Latest flagship phone', image: '' },
+                    { name: 'Pashmina Shawl', category: 'Fashion', price: 3800, stock: 20, sold: 5, description: '100% pure pashmina', image: '' },
+                    { name: 'Organic Honey', category: 'Food', price: 850, stock: 30, sold: 12, description: 'Pure mountain honey', image: '' },
+                    { name: 'Nepali Handicraft', category: 'Home Decor', price: 2500, stock: 45, sold: 8, description: 'Handmade wooden craft', image: '' }
+                ];
+                for (let p of sampleProducts) {
+                    await supabase.from('products').insert(p);
+                }
+                products = sampleProducts;
+            }
+
+            refreshAllUI();
+            setDefaultDates();
+            updateInvoiceNumber();
+            populateDropdowns();
+
+        } catch (err) {
+            console.error('Load error:', err);
+            showToast('⚠️ Error loading data', 'error');
+        }
+    }
+
+    // ====== UI REFRESH ======
+    function refreshAllUI() {
+        updateDashboard();
+        renderOrders();
+        renderProducts();
+        renderCreditList();
+        renderAccountingUI();
+        populateDropdowns();
+        renderLedger();
+        updateSidebarStats();
+    }
+
+    function updateSidebarStats() {
+        const totalRev = billingInvoices.reduce((s, i) => s + (i.amount || 0), 0);
+        const creditAmt = billingInvoices.filter(i => i.mode === 'Credit' && i.status !== 'paid').reduce((s, i) => s + (i.amount || 0), 0);
+        const pendingOrders = orders.filter(o => o.status !== 'Delivered' && o.status !== 'Cancelled').length;
+        document.getElementById('sideRevenue').textContent = 'Rs. ' + totalRev.toFixed(2);
+        document.getElementById('sideCredit').textContent = 'Rs. ' + creditAmt.toFixed(2);
+        document.getElementById('sideOrders').textContent = pendingOrders;
+    }
+
+    function updateDashboard() {
+        const totalRev = billingInvoices.reduce((s, i) => s + (i.amount || 0), 0);
+        const creditAmt = billingInvoices.filter(i => i.mode === 'Credit' && i.status !== 'paid').reduce((s, i) => s + (i.amount || 0), 0);
+        const pendingOrders = orders.filter(o => o.status !== 'Delivered' && o.status !== 'Cancelled').length;
+        
+        document.getElementById('dashRevenue').textContent = 'Rs. ' + totalRev.toFixed(2);
+        document.getElementById('dashCredit').textContent = 'Rs. ' + creditAmt.toFixed(2);
+        document.getElementById('dashOrders').textContent = pendingOrders;
+        document.getElementById('dashProducts').textContent = products.length;
+
+        // Recent orders
+        const recentOrdersDiv = document.getElementById('recentOrders');
+        recentOrdersDiv.innerHTML = orders.slice(-5).reverse().map(o => `
+            <div class="flex justify-between items-center border-b py-2">
+                <div><span class="font-medium">${o.customer}</span> <span class="text-xs text-gray-500">${o.tracking}</span></div>
+                <div><span class="badge-${o.status === 'Delivered' ? 'delivered' : o.status === 'Shipped' ? 'shipped' : o.status === 'Pending' ? 'pending' : 'credit'}">${o.status}</span> Rs. ${(o.total||0).toFixed(2)}</div>
+            </div>
+        `).join('') || '<div class="text-gray-500">No orders yet</div>';
+
+        // Recent activity
+        const recentActivity = document.getElementById('recentActivity');
+        const allActivity = [
+            ...billingInvoices.slice(-3).map(i => ({ type: 'invoice', text: `💰 Invoice ${i.invoice_no} - ${i.buyer}`, time: i.date })),
+            ...orders.slice(-3).map(o => ({ type: 'order', text: `📦 Order ${o.order_no} - ${o.customer} (${o.status})`, time: o.date }))
+        ].sort((a, b) => (a.time < b.time ? 1 : -1)).slice(0, 5);
+        recentActivity.innerHTML = allActivity.map(a => `<div>${a.text}</div>`).join('') || '<div class="text-gray-500">No recent activity</div>';
+    }
+
+    // ====== ORDERS ======
+    function renderOrders() {
+        const tbody = document.getElementById('ordersTableBody');
+        const filtered = getFilteredOrders();
+        
+        if (filtered.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center text-gray-500 py-4">No orders found</td></tr>';
+            return;
         }
 
-        // ========================================
-        // ADMIN TABS
-        // ========================================
-        document.querySelectorAll('.admin-tabs button').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
-                document.getElementById(this.dataset.tab).classList.add('active');
+        tbody.innerHTML = filtered.map(o => `
+            <tr>
+                <td class="p-2 border font-medium">#${o.order_no}</td>
+                <td class="p-2 border text-xs">${o.tracking || '-'}</td>
+                <td class="p-2 border">${o.customer}<br><span class="text-xs text-gray-500">${o.phone || ''}</span></td>
+                <td class="p-2 border text-xs">${(o.items || []).map(i => `${i.name} x${i.qty}`).join('<br>')}</td>
+                <td class="p-2 border text-right font-bold">Rs. ${(o.total||0).toFixed(2)}</td>
+                <td class="p-2 border"><span class="badge-${o.payment === 'Prepaid' ? 'paid' : 'pending'}">${o.payment}</span></td>
+                <td class="p-2 border"><span class="badge-${o.status === 'Delivered' ? 'delivered' : o.status === 'Shipped' ? 'shipped' : o.status === 'Pending' ? 'pending' : 'credit'}">${o.status}</span></td>
+                <td class="p-2 border">
+                    <select onchange="updateOrderStatus('${o.order_no}', this.value)" class="border rounded p-1 text-xs">
+                        <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                        <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
+                        <option value="Shipped" ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                        <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                        <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                    </select>
+                </td>
+            </tr>
+        `).join('');
+
+        // Update stats
+        const total = orders.length;
+        const pending = orders.filter(o => o.status === 'Pending' || o.status === 'Processing').length;
+        const shipped = orders.filter(o => o.status === 'Shipped').length;
+        const delivered = orders.filter(o => o.status === 'Delivered').length;
+        document.getElementById('orderTotal').textContent = total;
+        document.getElementById('orderPending').textContent = pending;
+        document.getElementById('orderShipped').textContent = shipped;
+        document.getElementById('orderDelivered').textContent = delivered;
+    }
+
+    function getFilteredOrders() {
+        const search = document.getElementById('orderSearch').value.toLowerCase().trim();
+        const status = document.getElementById('orderStatusFilter').value;
+        const payment = document.getElementById('orderPaymentFilter').value;
+
+        return orders.filter(o => {
+            const matchSearch = o.customer.toLowerCase().includes(search) || (o.tracking || '').toLowerCase().includes(search) || o.order_no.toLowerCase().includes(search);
+            const matchStatus = status === 'ALL' || o.status === status;
+            const matchPayment = payment === 'ALL' || o.payment === payment;
+            return matchSearch && matchStatus && matchPayment;
+        });
+    }
+
+    function filterOrders() { renderOrders(); }
+
+    async function updateOrderStatus(orderNo, newStatus) {
+        const order = orders.find(o => o.order_no === orderNo);
+        if (!order) return;
+        order.status = newStatus;
+        
+        const { error } = await supabase.from('orders').update({ status: newStatus }).eq('order_no', orderNo);
+        if (error) { showToast('❌ Error updating order', 'error'); return; }
+        
+        refreshAllUI();
+        showToast(`✅ Order ${orderNo} updated to ${newStatus}`);
+    }
+
+    function exportOrdersCSV() {
+        if (orders.length === 0) { showToast('⚠️ No orders to export', 'error'); return; }
+        let csv = 'Order No,Tracking,Customer,Phone,Items,Total,Payment,Status,Date\n';
+        orders.forEach(o => {
+            const items = (o.items || []).map(i => `${i.name}(${i.qty})`).join(';');
+            csv += `${o.order_no},${o.tracking||''},"${o.customer}",${o.phone||''},"${items}",${(o.total||0).toFixed(2)},${o.payment},${o.status},${o.date}\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'Orders_Export.csv';
+        a.click();
+        showToast('📥 Orders exported');
+    }
+
+    // ====== PRODUCTS ======
+    function renderProducts() {
+        const grid = document.getElementById('productGrid');
+        const search = document.getElementById('productSearch').value.toLowerCase().trim();
+        const category = document.getElementById('categoryFilter').value;
+
+        let filtered = products.filter(p => {
+            const matchSearch = p.name.toLowerCase().includes(search) || p.category.toLowerCase().includes(search);
+            const matchCat = category === 'ALL' || p.category === category;
+            return matchSearch && matchCat;
+        });
+
+        // Update categories dropdown
+        const cats = [...new Set(products.map(p => p.category))];
+        const catSelect = document.getElementById('categoryFilter');
+        const currentVal = catSelect.value;
+        catSelect.innerHTML = '<option value="ALL">All Categories</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+        catSelect.value = currentVal;
+
+        if (filtered.length === 0) {
+            grid.innerHTML = '<div class="col-span-full text-center text-gray-500 py-8">No products found</div>';
+            return;
+        }
+
+        grid.innerHTML = filtered.map(p => `
+            <div class="product-card">
+                ${p.image ? `<img src="${p.image}" alt="${p.name}" class="w-full h-32 object-cover rounded-lg mb-2" />` : `<div class="w-full h-32 bg-gray-100 rounded-lg mb-2 flex items-center justify-center text-4xl">📦</div>`}
+                <div class="font-semibold text-[#1e3a5f]">${p.name}</div>
+                <div class="text-xs text-gray-500">${p.category}</div>
+                <div class="price mt-1">Rs. ${p.price.toLocaleString()}</div>
+                <div class="flex justify-between items-center mt-2">
+                    <span class="text-sm ${p.stock < 5 ? 'text-red-600 font-bold' : 'text-green-600'}">${p.stock} in stock</span>
+                    <span class="text-xs text-gray-500">Sold: ${p.sold || 0}</span>
+                </div>
+                <div class="flex gap-2 mt-2">
+                    <button onclick="editProduct('${p.id}')" class="text-xs bg-blue-100 px-2 py-1 rounded">✏️</button>
+                    <button onclick="deleteProduct('${p.id}')" class="text-xs bg-red-100 px-2 py-1 rounded">🗑️</button>
+                </div>
+            </div>
+        `).join('');
+
+        // Stats
+        document.getElementById('prodTotal').textContent = products.length;
+        document.getElementById('prodInStock').textContent = products.reduce((s, p) => s + p.stock, 0);
+        document.getElementById('prodLowStock').textContent = products.filter(p => p.stock < 5).length;
+        document.getElementById('prodSold').textContent = products.reduce((s, p) => s + (p.sold || 0), 0);
+    }
+
+    function openProductModal() {
+        document.getElementById('productModal').classList.remove('hidden');
+        document.getElementById('productModal').style.display = 'flex';
+        document.getElementById('productForm').reset();
+        document.getElementById('productForm').onsubmit = saveProduct;
+    }
+
+    function closeProductModal() {
+        document.getElementById('productModal').style.display = 'none';
+        document.getElementById('productModal').classList.add('hidden');
+    }
+
+    async function saveProduct(e) {
+        e.preventDefault();
+        const product = {
+            name: document.getElementById('prodName').value.trim(),
+            category: document.getElementById('prodCategory').value.trim(),
+            price: parseFloat(document.getElementById('prodPrice').value),
+            stock: parseInt(document.getElementById('prodStock').value),
+            description: document.getElementById('prodDesc').value.trim(),
+            image: document.getElementById('prodImage').value.trim(),
+            sold: 0
+        };
+
+        if (!product.name || !product.category || !product.price || isNaN(product.stock)) {
+            showToast('⚠️ Fill all required fields', 'error');
+            return;
+        }
+
+        const { data, error } = await supabase.from('products').insert(product);
+        if (error) { showToast('❌ Error saving product', 'error'); return; }
+        
+        products.push(product);
+        closeProductModal();
+        renderProducts();
+        showToast('✅ Product added successfully!');
+    }
+
+    async function deleteProduct(id) {
+        if (!confirm('Delete this product?')) return;
+        const { error } = await supabase.from('products').delete().eq('id', id);
+        if (error) { showToast('❌ Error deleting', 'error'); return; }
+        products = products.filter(p => p.id !== id);
+        renderProducts();
+        showToast('🗑️ Product deleted');
+    }
+
+    function editProduct(id) {
+        const p = products.find(pr => pr.id === id);
+        if (!p) return;
+        document.getElementById('prodName').value = p.name;
+        document.getElementById('prodCategory').value = p.category;
+        document.getElementById('prodPrice').value = p.price;
+        document.getElementById('prodStock').value = p.stock;
+        document.getElementById('prodDesc').value = p.description || '';
+        document.getElementById('prodImage').value = p.image || '';
+        document.getElementById('productForm').onsubmit = (e) => updateProduct(e, id);
+        openProductModal();
+    }
+
+    async function updateProduct(e, id) {
+        e.preventDefault();
+        const product = {
+            name: document.getElementById('prodName').value.trim(),
+            category: document.getElementById('prodCategory').value.trim(),
+            price: parseFloat(document.getElementById('prodPrice').value),
+            stock: parseInt(document.getElementById('prodStock').value),
+            description: document.getElementById('prodDesc').value.trim(),
+            image: document.getElementById('prodImage').value.trim()
+        };
+
+        const { error } = await supabase.from('products').update(product).eq('id', id);
+        if (error) { showToast('❌ Error updating', 'error'); return; }
+        
+        const index = products.findIndex(p => p.id === id);
+        if (index !== -1) products[index] = { ...products[index], ...product };
+        closeProductModal();
+        renderProducts();
+        showToast('✅ Product updated!');
+    }
+
+    // ====== BILLING FUNCTIONS ======
+    let rowCounter = 1;
+    function addRow() {
+        rowCounter++;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="p-1 border text-center">${rowCounter}</td>
+            <td class="p-1 border"><input type="text" class="hs-code w-14 border rounded p-1 text-xs" /></td>
+            <td class="p-1 border"><input type="text" class="particulars w-full border rounded p-1 text-xs" placeholder="Item" /></td>
+            <td class="p-1 border"><input type="number" class="qty w-12 border rounded p-1 text-xs" value="1" min="1" onchange="calcRow(this)" /></td>
+            <td class="p-1 border"><input type="number" class="rate w-16 border rounded p-1 text-xs" value="0" onchange="calcRow(this)" /></td>
+            <td class="p-1 border"><select class="is-vat border rounded p-1 text-xs" onchange="calcSummary()"><option value="Yes">Yes</option><option value="No">No</option></select></td>
+            <td class="p-1 border"><input type="text" class="row-total w-20 border rounded p-1 text-xs font-semibold" readonly /></td>
+            <td class="p-1 border text-center"><button onclick="removeRow(this)" class="text-red-500 text-xs">✕</button></td>
+        `;
+        document.getElementById('itemsBody').appendChild(tr);
+    }
+
+    function removeRow(btn) { btn.closest('tr').remove(); calcSummary(); }
+
+    function calcRow(input) {
+        const tr = input.closest('tr');
+        const qty = parseFloat(tr.querySelector('.qty').value) || 0;
+        const rate = parseFloat(tr.querySelector('.rate').value) || 0;
+        tr.querySelector('.row-total').value = (qty * rate).toFixed(2);
+        calcSummary();
+    }
+
+    function calcSummary() {
+        const rows = document.querySelectorAll('#itemsBody tr');
+        let taxable = 0, nonTaxable = 0;
+        rows.forEach(row => {
+            const total = parseFloat(row.querySelector('.row-total').value) || 0;
+            if (row.querySelector('.is-vat').value === 'Yes') taxable += total;
+            else nonTaxable += total;
+        });
+        const disc = parseFloat(document.getElementById('discountPercent').value) || 0;
+        const discTax = taxable - (taxable * disc / 100);
+        const discNon = nonTaxable - (nonTaxable * disc / 100);
+        const vat = discTax * 0.13;
+        const grand = discTax + discNon + vat;
+        document.getElementById('taxableValue').value = discTax.toFixed(2);
+        document.getElementById('vatAmount').value = vat.toFixed(2);
+        document.getElementById('totalAmount').value = grand.toFixed(2);
+        document.getElementById('amountWords').value = numberToWords(grand);
+    }
+
+    function numberToWords(amount) {
+        if (isNaN(amount) || amount === 0) return 'Zero Only';
+        const parts = amount.toFixed(2).split('.');
+        let rupees = parseInt(parts[0]);
+        let paisa = parseInt(parts[1]);
+        const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+        function convert(n) {
+            if (n < 20) return ones[n];
+            if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '');
+            if (n < 1000) return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' ' + convert(n % 100) : '');
+            if (n < 100000) return convert(Math.floor(n / 1000)) + ' Thousand' + (n % 1000 ? ' ' + convert(n % 1000) : '');
+            if (n < 10000000) return convert(Math.floor(n / 100000)) + ' Lakh' + (n % 100000 ? ' ' + convert(n % 100000) : '');
+            return convert(Math.floor(n / 10000000)) + ' Crore' + (n % 10000000 ? ' ' + convert(n % 10000000) : '');
+        }
+        let result = '';
+        if (rupees > 0) result += convert(rupees) + ' Rupees';
+        if (paisa > 0) { if (result) result += ' And '; result += convert(paisa) + ' Paisa'; }
+        return result + ' Only';
+    }
+
+    async function generateBill() {
+        const buyer = document.getElementById('buyerName').value.trim();
+        if (!buyer) { showToast('⚠️ Buyer Name required!', 'error'); return; }
+
+        const rows = document.querySelectorAll('#itemsBody tr');
+        let items = [];
+        rows.forEach((row, i) => {
+            const part = row.querySelector('.particulars').value.trim();
+            const qty = parseFloat(row.querySelector('.qty').value) || 0;
+            const rate = parseFloat(row.querySelector('.rate').value) || 0;
+            if (part && qty > 0) {
+                items.push({ sn: i + 1, hs: row.querySelector('.hs-code').value || '-', particulars: part, qty, rate, isVat: row.querySelector('.is-vat').value, total: qty * rate });
+            }
+        });
+        if (items.length === 0) { showToast('⚠️ Add at least 1 item!', 'error'); return; }
+
+        const invoiceNo = 'G-' + String(billingInvoices.length + 1).padStart(3, '0');
+        const invoice = {
+            invoice_no: invoiceNo,
+            date: document.getElementById('billDate').value,
+            buyer: buyer,
+            address: document.getElementById('buyerAddress').value.trim(),
+            pan: document.getElementById('buyerPan').value.trim(),
+            mode: document.getElementById('paymentMode').value,
+            amount: parseFloat(document.getElementById('totalAmount').value) || 0,
+            status: document.getElementById('paymentMode').value === 'Credit' ? 'unpaid' : 'paid',
+            items: JSON.stringify(items),
+            taxable: parseFloat(document.getElementById('taxableValue').value) || 0,
+            vat: parseFloat(document.getElementById('vatAmount').value) || 0,
+            words: document.getElementById('amountWords').value
+        };
+
+        const { error } = await supabase.from('invoices').insert(invoice);
+        if (error) { showToast('❌ Error saving invoice', 'error'); return; }
+
+        billingInvoices.push(invoice);
+        refreshAllUI();
+        updateInvoiceNumber();
+        renderInvoice(invoice);
+        switchTab('invoicePreview');
+        showToast('✅ Invoice generated!');
+    }
+
+    function renderInvoice(inv) {
+        let items = [];
+        try { items = JSON.parse(inv.items); } catch (e) { items = []; }
+        let itemsHtml = items.map(item => `
+            <tr><td class="border p-1 text-center">${item.sn}</td><td class="border p-1">${item.particulars}</td>
+            <td class="border p-1 text-center">${item.qty}</td><td class="border p-1 text-right">${item.rate.toFixed(2)}</td>
+            <td class="border p-1 text-right">${item.total.toFixed(2)}</td></tr>
+        `).join('');
+
+        document.getElementById('invoicePrintArea').innerHTML = `
+            <div style="padding:20px;">
+                <h2 style="color:#1e3a5f;">ABC Pvt. Ltd.</h2>
+                <p>Kathmandu, Nepal | Tel: 04111111</p>
+                <h3 style="border:2px solid #1e3a5f;display:inline-block;padding:4px 16px;margin:10px 0;">TAX INVOICE</h3>
+                <div><strong>Invoice:</strong> ${inv.invoice_no} | <strong>Date:</strong> ${inv.date}</div>
+                <div><strong>Buyer:</strong> ${inv.buyer} | PAN: ${inv.pan || '-'}</div>
+                <table border="1" style="width:100%;margin:10px 0;border-collapse:collapse;">
+                    <thead><tr><th class="border p-1">S.N.</th><th class="border p-1">Particulars</th><th class="border p-1">Qty</th><th class="border p-1">Rate</th><th class="border p-1">Total</th></tr></thead>
+                    <tbody>${itemsHtml}</tbody>
+                </table>
+                <div style="text-align:right;"><strong>Total: Rs. ${(inv.amount||0).toFixed(2)}</strong></div>
+                <div><strong>In Words:</strong> ${inv.words || ''}</div>
+                <div style="margin-top:40px;display:flex;justify-content:space-between;">
+                    <span style="border-top:1px solid #999;padding-top:4px;width:160px;text-align:center;">Received By</span>
+                    <span style="border-top:1px solid #999;padding-top:4px;width:160px;text-align:center;">Authorized Sign</span>
+                </div>
+            </div>
+        `;
+    }
+
+    function updateInvoiceNumber() {
+        const num = String(billingInvoices.length + 1).padStart(3, '0');
+        document.getElementById('invoiceNumberDisplay').textContent = 'G-' + num;
+    }
+
+    function clearBillForm() {
+        document.getElementById('buyerName').value = '';
+        document.getElementById('buyerAddress').value = '';
+        document.getElementById('buyerPan').value = '';
+        document.getElementById('discountPercent').value = '0';
+        document.querySelectorAll('#itemsBody tr').forEach((tr, idx) => { if (idx > 0) tr.remove(); });
+        calcSummary();
+        document.getElementById('itemsBody').innerHTML = `
+            <tr>
+                <td class="p-1 border text-center">1</td>
+                <td class="p-1 border"><input type="text" class="hs-code w-14 border rounded p-1 text-xs" /></td>
+                <td class="p-1 border"><input type="text" class="particulars w-full border rounded p-1 text-xs" placeholder="Item" /></td>
+                <td class="p-1 border"><input type="number" class="qty w-12 border rounded p-1 text-xs" value="1" min="1" onchange="calcRow(this)" /></td>
+                <td class="p-1 border"><input type="number" class="rate w-16 border rounded p-1 text-xs" value="0" onchange="calcRow(this)" /></td>
+                <td class="p-1 border"><select class="is-vat border rounded p-1 text-xs" onchange="calcSummary()"><option value="Yes">Yes</option><option value="No">No</option></select></td>
+                <td class="p-1 border"><input type="text" class="row-total w-20 border rounded p-1 text-xs font-semibold" readonly /></td>
+                <td class="p-1 border text-center"><button onclick="removeRow(this)" class="text-red-500 text-xs">✕</button></td>
+            </tr>
+        `;
+        rowCounter = 1;
+        calcSummary();
+    }
+
+    // ====== CREDIT LIST ======
+    function renderCreditList() {
+        const tbody = document.getElementById('creditTableBody');
+        const credits = billingInvoices.filter(i => i.mode === 'Credit' && i.status !== 'paid');
+        if (credits.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500">✅ No pending credit</td></tr>';
+            return;
+        }
+        tbody.innerHTML = credits.map(inv => `
+            <tr>
+                <td class="p-2 border">${inv.invoice_no}</td>
+                <td class="p-2 border">${inv.date}</td>
+                <td class="p-2 border">${inv.buyer}</td>
+                <td class="p-2 border font-bold text-red-600">Rs. ${(inv.amount||0).toFixed(2)}</td>
+                <td class="p-2 border"><span class="badge-credit">UNPAID</span></td>
+                <td class="p-2 border"><button onclick="payCredit('${inv.invoice_no}')" class="bg-green-600 text-white px-3 py-1 rounded-lg text-xs">💳 Receive</button></td>
+            </tr>
+        `).join('');
+    }
+
+    async function payCredit(invNo) {
+        const mode = prompt('Receive payment via: Cash, Cheque, or Other', 'Cash');
+        if (!mode || !['Cash', 'Cheque', 'Other'].includes(mode)) { showToast('❌ Invalid mode', 'error'); return; }
+
+        const { error } = await supabase.from('invoices').update({ mode: mode, status: 'paid' }).eq('invoice_no', invNo);
+        if (error) { showToast('❌ Error updating', 'error'); return; }
+
+        const inv = billingInvoices.find(i => i.invoice_no === invNo);
+        if (inv) { inv.mode = mode; inv.status = 'paid'; }
+        refreshAllUI();
+        showToast(`✅ Credit paid via ${mode}`);
+    }
+
+    // ====== ACCOUNTING ======
+    function populateDropdowns() {
+        const selects = document.querySelectorAll('.coa-select');
+        selects.forEach(select => {
+            select.innerHTML = '<option value="">-- Select --</option>';
+            COA.forEach(acc => {
+                select.innerHTML += `<option value="${acc.name}">${acc.name}</option>`;
             });
         });
-
-        // ========================================
-        // KEYBOARD SHORTCUTS
-        // ========================================
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeModal();
-                if (document.getElementById('cartSidebar').classList.contains('open')) toggleCart();
-            }
-            if (e.ctrlKey && e.key === 'a') { e.preventDefault();
-                openAdmin(); }
-        });
-
-        // ========================================
-        // INIT
-        // ========================================
-        async function init() {
-            await loadProducts();
-            updateCartUI();
-
-            // Load orders for tracking
-            const { data: orders } = await supabase.from('orders').select('tracking');
-            if (orders && orders.length > 0) {
-                console.log(`📦 ${orders.length} orders loaded from Supabase`);
-            }
-
-            // Check URL for tracking
-            const params = new URLSearchParams(window.location.search);
-            const track = params.get('track');
-            if (track) {
-                document.getElementById('trackingInput').value = track;
-                setTimeout(() => displayTracking(track), 500);
-            }
-
-            console.log('🚀 NepalCart with Supabase loaded!');
-            console.log('🔐 Admin: admin / admin123');
+        const ledgerSelect = document.getElementById('ledgerSelect');
+        if (ledgerSelect) {
+            ledgerSelect.innerHTML = '<option value="">-- Select --</option>';
+            COA.forEach(acc => {
+                ledgerSelect.innerHTML += `<option value="${acc.name}">${acc.name}</option>`;
+            });
         }
+    }
 
-        init();
+    async function saveAccountingEntry() {
+        const date = document.getElementById('accDate').value;
+        const amount = parseFloat(document.getElementById('accAmount').value);
+        const debit = document.getElementById('accDebit').value;
+        const credit = document.getElementById('accCredit').value;
+        const narration = document.getElementById('accNarration').value.trim();
 
-        // Close modal on overlay click
-        document.getElementById('productModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
+        if (!date || !amount || !debit || !credit) { showToast('⚠️ Fill all fields', 'error'); return; }
+        if (debit === credit) { showToast('⚠️ Debit & Credit cannot be same', 'error'); return; }
+
+        const entry = { date, debit, credit, amount, narration };
+        const { error } = await supabase.from('accounting_entries').insert(entry);
+        if (error) { showToast('❌ Error saving entry', 'error'); return; }
+
+        accountingEntries.push(entry);
+        renderAccountingUI();
+        showToast('✅ Accounting entry saved!');
+        document.getElementById('accAmount').value = '';
+        document.getElementById('accNarration').value = '';
+    }
+
+    function renderAccountingUI() {
+        renderJournalRegister();
+        renderTrialBalance();
+        renderPL();
+        renderBS();
+        if (document.getElementById('ledgerSelect').value) renderLedger();
+    }
+
+    function renderJournalRegister() {
+        const tbody = document.getElementById('journalRegisterBody');
+        let totalDr = 0, totalCr = 0;
+        tbody.innerHTML = accountingEntries.map(e => {
+            totalDr += e.amount;
+            totalCr += e.amount;
+            return `<tr>
+                <td class="p-2 border">${e.date}</td>
+                <td class="p-2 border">#${e.id || 'V'}</td>
+                <td class="p-2 border">${e.debit} Dr / ${e.credit} Cr<br><span class="text-xs text-gray-500">${e.narration || ''}</span></td>
+                <td class="p-2 border text-right">${e.amount.toFixed(2)}</td>
+                <td class="p-2 border text-right">${e.amount.toFixed(2)}</td>
+            </tr>`;
+        }).join('');
+        document.getElementById('journalTotalDr').textContent = totalDr.toFixed(2);
+        document.getElementById('journalTotalCr').textContent = totalCr.toFixed(2);
+    }
+
+    function renderLedger() {
+        const account = document.getElementById('ledgerSelect').value;
+        if (!account) return;
+        const tbody = document.getElementById('ledgerBody');
+        let balance = 0;
+        let html = '';
+        accountingEntries.forEach(e => {
+            let dr = 0, cr = 0;
+            if (e.debit === account) { dr = e.amount; balance += e.amount; }
+            if (e.credit === account) { cr = e.amount; balance -= e.amount; }
+            if (dr || cr) {
+                html += `<tr>
+                    <td class="p-2 border">${e.date}</td>
+                    <td class="p-2 border">${e.debit === account ? 'To ' + e.credit : 'By ' + e.debit}</td>
+                    <td class="p-2 border text-right">${dr || '-'}</td>
+                    <td class="p-2 border text-right">${cr || '-'}</td>
+                    <td class="p-2 border text-right">${balance.toFixed(2)}</td>
+                </tr>`;
+            }
         });
+        tbody.innerHTML = html || '<tr><td colspan="5" class="text-center text-gray-500">No entries for this account</td></tr>';
+        document.getElementById('ledgerBalance').textContent = balance.toFixed(2);
+    }
 
-        // ========================================
-        // FALLBACK for local storage (if Supabase fails)
-        // ========================================
-        // We keep a local backup for orders if Supabase is down
-        // This is used in tracking fallback
-        if (!localStorage.getItem('orders_fallback')) {
-            localStorage.setItem('orders_fallback', JSON.stringify([]));
+    function renderTrialBalance() {
+        const tbody = document.getElementById('trialBody');
+        let balances = {};
+        COA.forEach(a => balances[a.name] = 0);
+        accountingEntries.forEach(e => {
+            if (balances[e.debit] !== undefined) balances[e.debit] += e.amount;
+            if (balances[e.credit] !== undefined) balances[e.credit] -= e.amount;
+        });
+        let totalDr = 0, totalCr = 0;
+        let html = '';
+        COA.forEach(acc => {
+            let bal = balances[acc.name] || 0;
+            let dr = 0, cr = 0;
+            if (acc.type === 'Asset' || acc.type === 'Expense') {
+                if (bal >= 0) dr = bal;
+                else cr = Math.abs(bal);
+            } else {
+                if (bal <= 0) cr = Math.abs(bal);
+                else dr = bal;
+            }
+            if (dr || cr) {
+                totalDr += dr;
+                totalCr += cr;
+                html += `<tr><td class="p-2 border">${acc.name}</td><td class="p-2 border text-right">${dr.toFixed(2)}</td><td class="p-2 border text-right">${cr.toFixed(2)}</td></tr>`;
+            }
+        });
+        tbody.innerHTML = html;
+        document.getElementById('trialDr').textContent = totalDr.toFixed(2);
+        document.getElementById('trialCr').textContent = totalCr.toFixed(2);
+    }
+
+    function renderPL() {
+        let balances = {};
+        COA.forEach(a => balances[a.name] = 0);
+        accountingEntries.forEach(e => {
+            if (balances[e.debit] !== undefined) balances[e.debit] += e.amount;
+            if (balances[e.credit] !== undefined) balances[e.credit] -= e.amount;
+        });
+        let expHtml = '', revHtml = '';
+        let totalExp = 0, totalRev = 0;
+        COA.forEach(acc => {
+            let bal = balances[acc.name] || 0;
+            if (acc.type === 'Expense' && bal !== 0) {
+                totalExp += bal;
+                expHtml += `<div class="flex justify-between"><span>${acc.name}</span><span>${bal.toFixed(2)}</span></div>`;
+            }
+            if (acc.type === 'Revenue' && bal !== 0) {
+                let revAmt = Math.abs(bal);
+                totalRev += revAmt;
+                revHtml += `<div class="flex justify-between"><span>${acc.name}</span><span>${revAmt.toFixed(2)}</span></div>`;
+            }
+        });
+        document.getElementById('plExpenses').innerHTML = expHtml || '<div class="text-gray-500">No expenses</div>';
+        document.getElementById('plRevenue').innerHTML = revHtml || '<div class="text-gray-500">No revenue</div>';
+        document.getElementById('plTotalExp').textContent = totalExp.toFixed(2);
+        document.getElementById('plTotalRev').textContent = totalRev.toFixed(2);
+        document.getElementById('plNetResult').textContent = 'Rs. ' + (totalRev - totalExp).toFixed(2);
+    }
+
+    function renderBS() {
+        let balances = {};
+        COA.forEach(a => balances[a.name] = 0);
+        accountingEntries.forEach(e => {
+            if (balances[e.debit] !== undefined) balances[e.debit] += e.amount;
+            if (balances[e.credit] !== undefined) balances[e.credit] -= e.amount;
+        });
+        let assetHtml = '', liabHtml = '';
+        let totalAssets = 0, totalLiab = 0;
+        COA.forEach(acc => {
+            let bal = balances[acc.name] || 0;
+            if (acc.type === 'Asset' && bal !== 0) {
+                totalAssets += bal;
+                assetHtml += `<div class="flex justify-between"><span>${acc.name}</span><span>${bal.toFixed(2)}</span></div>`;
+            }
+            if ((acc.type === 'Liability' || acc.type === 'Equity') && bal !== 0) {
+                let liabAmt = Math.abs(bal);
+                totalLiab += liabAmt;
+                liabHtml += `<div class="flex justify-between"><span>${acc.name}</span><span>${liabAmt.toFixed(2)}</span></div>`;
+            }
+        });
+        document.getElementById('bsAssets').innerHTML = assetHtml || '<div class="text-gray-500">No assets</div>';
+        document.getElementById('bsLiab').innerHTML = liabHtml || '<div class="text-gray-500">No liabilities</div>';
+        document.getElementById('bsTotalAssets').textContent = totalAssets.toFixed(2);
+        document.getElementById('bsTotalLiab').textContent = totalLiab.toFixed(2);
+    }
+
+    // ====== TAB SWITCHING ======
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        const target = document.getElementById('tab-' + tabId);
+        if (target) target.classList.add('active');
+        if (tabId === 'accounting') renderAccountingUI();
+        if (tabId === 'orders') renderOrders();
+        if (tabId === 'products') renderProducts();
+        if (tabId === 'credit') renderCreditList();
+        if (tabId === 'dashboard') updateDashboard();
+        if (tabId !== 'invoicePreview') {
+            document.getElementById('invoicePreview').classList.remove('active');
         }
-    </script>
+    }
+
+    function switchAccTab(tabId) {
+        document.querySelectorAll('.acc-tab-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.acc-nav-btn').forEach(el => {
+            el.classList.remove('bg-indigo-50', 'text-indigo-700');
+            el.classList.add('hover:bg-gray-50');
+        });
+        const target = document.getElementById('acc-' + tabId);
+        if (target) target.classList.remove('hidden');
+        const btn = document.querySelector(`[onclick="switchAccTab('${tabId}')"]`);
+        if (btn) { btn.classList.add('bg-indigo-50', 'text-indigo-700'); }
+        if (tabId === 'ledger') renderLedger();
+        if (tabId === 'journal-register') renderJournalRegister();
+        if (tabId === 'trial') renderTrialBalance();
+        if (tabId === 'pl') renderPL();
+        if (tabId === 'bs') renderBS();
+    }
+
+    // ====== UTILITIES ======
+    function setDefaultDates() {
+        const today = new Date().toISOString().slice(0, 10);
+        document.getElementById('transDate').value = today;
+        document.getElementById('billDate').value = today;
+        document.getElementById('accDate').value = today;
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('invoicePrintArea');
+        html2pdf().from(element).save('Tax_Invoice.pdf');
+    }
+
+    function showToast(msg, type = '') {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        if (type === 'error') toast.style.background = '#b91c1c';
+        else toast.style.background = '#1e3a5f';
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => { toast.style.display = 'none'; }, 3500);
+    }
+
+    // ====== INIT ======
+    window.onload = function() {
+        const today = new Date().toISOString().slice(0, 10);
+        document.getElementById('transDate').value = today;
+        document.getElementById('billDate').value = today;
+        document.getElementById('accDate').value = today;
+    };
+</script>
+
 </body>
 </html>
