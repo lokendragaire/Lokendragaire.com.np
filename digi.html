@@ -1,0 +1,3675 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NepalECom - Online Store</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: #1a3a5c;
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .navbar .brand {
+            font-size: 22px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .navbar .brand span {
+            color: #ffc107;
+        }
+        .navbar .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .navbar .nav-links a {
+            color: white;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .navbar .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .navbar .nav-links .cart-btn {
+            background: #ffc107;
+            color: #1a3a5c;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+        }
+        .navbar .nav-links .cart-btn:hover {
+            background: #ffb300;
+        }
+        .navbar .nav-links .admin-btn {
+            background: #4caf50;
+            color: white;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+        }
+        .navbar .nav-links .admin-btn:hover {
+            background: #388e3c;
+        }
+        .navbar .nav-links .admin-btn.logged-in {
+            background: #ff5722;
+        }
+        .cart-count {
+            background: #d32f2f;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* ===== NOTIFICATION BELL ===== */
+        .notif-wrapper {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            z-index: 150;
+        }
+        .notif-wrapper .notif-btn {
+            background: #1a3a5c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        .notif-wrapper .notif-btn .badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #d32f2f;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .notif-list {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            width: 340px;
+            max-height: 350px;
+            overflow-y: auto;
+            display: none;
+            padding: 8px 0;
+        }
+        .notif-list.open {
+            display: block;
+        }
+        .notif-list .notif-item {
+            padding: 10px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+        }
+        .notif-list .notif-item:hover {
+            background: #f8faff;
+        }
+        .notif-list .notif-item .notif-time {
+            color: #999;
+            font-size: 11px;
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 16px 20px;
+        }
+
+        /* ===== PUBLIC ===== */
+        .public-page {
+            display: block;
+        }
+        .public-page.hidden {
+            display: none;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #1a3a5c, #2d6a9f);
+            color: white;
+            padding: 40px 36px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+        .hero p {
+            font-size: 17px;
+            opacity: 0.9;
+        }
+
+        /* ===== FILTER BAR ===== */
+        .filter-bar {
+            background: white;
+            padding: 14px 18px;
+            border-radius: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        .filter-bar input[type="text"] {
+            flex: 1;
+            min-width: 160px;
+            padding: 10px 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .filter-bar input[type="text"]:focus {
+            border-color: #2d6a9f;
+            outline: none;
+        }
+        .filter-bar select {
+            padding: 10px 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+        .filter-bar select:focus {
+            border-color: #2d6a9f;
+            outline: none;
+        }
+
+        /* ===== PRODUCT GRID ===== */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 20px;
+        }
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #eee;
+            cursor: pointer;
+            position: relative;
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+        }
+        .product-card .p-img {
+            width: 100%;
+            height: 150px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5f7fa;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .product-card .p-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .product-card .p-img .no-photo {
+            font-size: 48px;
+            color: #ccc;
+        }
+        .product-card .p-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a3a5c;
+        }
+        .product-card .p-category {
+            font-size: 12px;
+            color: #777;
+        }
+        .product-card .p-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2d6a9f;
+            margin: 4px 0;
+        }
+        .product-card .p-price .old-price {
+            text-decoration: line-through;
+            font-size: 14px;
+            color: #999;
+            font-weight: 400;
+        }
+        .product-card .p-stock {
+            font-size: 13px;
+            color: #555;
+        }
+        .product-card .btn-add {
+            width: 100%;
+            padding: 10px;
+            background: #2d6a9f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        .product-card .btn-add:hover {
+            background: #1a3a5c;
+        }
+        .product-card .btn-add:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .discount-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #d32f2f;
+            color: white;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* ===== PRODUCT DETAIL MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 650px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalIn 0.3s ease;
+            position: relative;
+        }
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        .modal-box .close-modal {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+        }
+        .modal-box .close-modal:hover {
+            color: #333;
+        }
+        .modal-box .detail-img {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        /* ===== CART SIDEBAR ===== */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 400px;
+            height: 100%;
+            background: white;
+            box-shadow: -4px 0 30px rgba(0, 0, 0, 0.15);
+            z-index: 300;
+            transition: right 0.4s ease;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        .cart-sidebar.open {
+            right: 0;
+        }
+        .cart-sidebar .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #eee;
+        }
+        .cart-sidebar .cart-header h2 {
+            color: #1a3a5c;
+        }
+        .cart-sidebar .cart-header button {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            align-items: center;
+        }
+        .cart-item .ci-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            object-fit: cover;
+            background: #f5f7fa;
+        }
+        .cart-item .ci-qty {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .cart-item .ci-qty button {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .cart-item .ci-qty button:hover {
+            background: #e8f0fe;
+        }
+        .cart-total {
+            font-size: 20px;
+            font-weight: 700;
+            text-align: right;
+            padding: 14px 0;
+            border-top: 2px solid #eee;
+            margin-top: 10px;
+        }
+
+        /* ===== CHECKOUT FORM ===== */
+        .checkout-form {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 2px solid #eee;
+        }
+        .checkout-form .form-group {
+            margin-bottom: 10px;
+        }
+        .checkout-form .form-group label {
+            font-weight: 600;
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 3px;
+        }
+        .checkout-form .form-group input,
+        .checkout-form .form-group select,
+        .checkout-form .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .checkout-form .form-group input:focus {
+            border-color: #2d6a9f;
+            outline: none;
+        }
+        .checkout-form .qr-section {
+            background: #f8faff;
+            padding: 14px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .checkout-form .qr-section .qr-code {
+            font-size: 70px;
+            margin: 6px 0;
+        }
+        .checkout-form .btn-place-order {
+            width: 100%;
+            padding: 14px;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 17px;
+            cursor: pointer;
+        }
+        .checkout-form .btn-place-order:hover {
+            background: #1b5e20;
+        }
+
+        /* ===== TRACK SECTION ===== */
+        .track-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        .track-section input {
+            padding: 10px 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 260px;
+        }
+        .track-section input:focus {
+            border-color: #2d6a9f;
+            outline: none;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: #1a3a5c;
+            color: white;
+            padding: 30px 20px 20px;
+            margin-top: 30px;
+            border-radius: 12px 12px 0 0;
+        }
+        .footer .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            max-width: 1320px;
+            margin: 0 auto;
+        }
+        .footer .footer-grid h4 {
+            color: #ffc107;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .footer .footer-grid p,
+        .footer .footer-grid a {
+            color: #ddd;
+            font-size: 14px;
+            line-height: 1.8;
+            display: block;
+        }
+        .footer .footer-grid a:hover {
+            color: #ffc107;
+        }
+        .footer .footer-bottom {
+            text-align: center;
+            padding-top: 16px;
+            margin-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 13px;
+            color: #aaa;
+            max-width: 1320px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ========================================================
+                   ADMIN PANEL - NO DUPLICATE CONTENT
+                   ======================================================== */
+        #adminPanel {
+            display: none;
+            background: transparent;
+        }
+        #adminPanel.active {
+            display: block;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .admin-header h2 {
+            color: #1a3a5c;
+            font-size: 24px;
+        }
+        .admin-header .admin-user {
+            background: #e8f0fe;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #1a3a5c;
+        }
+
+        /* Admin Quick Links */
+        .admin-quick-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .admin-quick-links a {
+            padding: 8px 20px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #1a3a5c;
+            text-decoration: none;
+            transition: background 0.3s;
+            display: inline-block;
+        }
+        .admin-quick-links a:hover {
+            background: #d4e0f0;
+        }
+
+        /* Admin Tabs */
+        .admin-tabs {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            background: white;
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        .admin-tabs button {
+            padding: 10px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #555;
+            font-size: 13px;
+        }
+        .admin-tabs button:hover {
+            background: #f0f4f9;
+        }
+        .admin-tabs button.active {
+            background: #1a3a5c;
+            color: white;
+        }
+
+        .admin-section {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        .admin-section.active {
+            display: block;
+        }
+
+        /* ===== TABLES ===== */
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 12px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        table th {
+            background: #e8f0fe;
+            padding: 10px 8px;
+            text-align: left;
+            font-weight: 600;
+            color: #1a3a5c;
+            white-space: nowrap;
+        }
+        table td {
+            padding: 8px 8px;
+            border-bottom: 1px solid #eee;
+        }
+        table tr:hover td {
+            background: #f8faff;
+        }
+
+        /* ===== BADGES ===== */
+        .badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .badge-success {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+        .badge-warning {
+            background: #ffecb3;
+            color: #e65100;
+        }
+        .badge-danger {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+        .badge-info {
+            background: #bbdefb;
+            color: #0d47a1;
+        }
+        .badge-purple {
+            background: #e1bee7;
+            color: #6a1b9a;
+        }
+
+        /* ===== FORMS ===== */
+        .form-group {
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            font-weight: 600;
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 3px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #2d6a9f;
+            outline: none;
+        }
+        .form-group .photo-preview {
+            max-width: 120px;
+            max-height: 120px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-top: 6px;
+            display: none;
+        }
+        .form-group .photo-preview.show {
+            display: block;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: opacity 0.2s;
+        }
+        .btn:hover {
+            opacity: 0.85;
+        }
+        .btn-primary {
+            background: #2d6a9f;
+            color: white;
+        }
+        .btn-success {
+            background: #2e7d32;
+            color: white;
+        }
+        .btn-danger {
+            background: #c62828;
+            color: white;
+        }
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 12px;
+        }
+        .btn-logout {
+            background: #c62828;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* ===== STATS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #f8faff;
+            padding: 16px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e8f0fe;
+        }
+        .stat-card .num {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1a3a5c;
+        }
+        .stat-card .label {
+            font-size: 12px;
+            color: #777;
+            margin-top: 4px;
+        }
+        .stat-card.green .num {
+            color: #2e7d32;
+        }
+        .stat-card.orange .num {
+            color: #e65100;
+        }
+        .stat-card.red .num {
+            color: #c62828;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1a3a5c;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 999;
+            font-weight: 500;
+            max-width: 380px;
+        }
+        .toast.show {
+            display: block;
+            animation: slideUp 0.4s ease;
+        }
+        .toast.success {
+            background: #2e7d32;
+        }
+        .toast.error {
+            background: #c62828;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 10px 14px;
+            }
+            .navbar .brand {
+                font-size: 18px;
+            }
+            .hero {
+                padding: 24px 16px;
+            }
+            .hero h1 {
+                font-size: 24px;
+            }
+            .container {
+                padding: 10px 12px;
+            }
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-bar input[type="text"] {
+                min-width: auto;
+            }
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 14px;
+            }
+            .product-card .p-img {
+                height: 120px;
+            }
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .admin-tabs button {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            .modal-box {
+                padding: 20px 16px;
+            }
+            .track-section input {
+                width: 100%;
+            }
+            .footer .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .product-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .product-card .p-img {
+                height: 100px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== TRACK RESULT ===== */
+        .track-result {
+            margin-top: 14px;
+        }
+        .track-result .track-card {
+            background: #f8faff;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e8f0fe;
+        }
+        .track-result .track-card .status-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 0;
+        }
+        .track-result .track-card .status-line .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+        }
+        .track-result .track-card .status-line .dot.active {
+            background: #2e7d32;
+            border-color: #2e7d32;
+        }
+        .track-result .track-card .status-line .dot.done {
+            background: #4caf50;
+            border-color: #4caf50;
+        }
+        .track-result .track-card .status-line .dot.pending {
+            background: #ffc107;
+            border-color: #ffc107;
+        }
+
+        .stock-low {
+            color: #c62828;
+            font-weight: 700;
+        }
+        .stock-ok {
+            color: #2e7d32;
+        }
+
+        /* Admin panel - No duplicate */
+        .admin-only {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        .admin-only h3 {
+            color: #1a3a5c;
+            margin-bottom: 8px;
+        }
+        .admin-only p {
+            color: #555;
+            font-size: 14px;
+        }
+
+        /* ============ BILLING TAB STYLES (scoped) ============ */
+#tab-billing .navbar { background: #1a3a5c; color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+#tab-billing .navbar .brand { font-size: 22px; font-weight: 700; }
+#tab-billing .navbar .brand span { color: #ffc107; }
+#tab-billing .navbar .nav-links { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+#tab-billing .navbar .nav-links button { padding: 8px 16px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; }
+#tab-billing .btn-bill { background: #ffc107; color: #1a3a5c; }
+#tab-billing .btn-credit { background: #d32f2f; color: white; }
+#tab-billing .btn-history { background: #2e7d32; color: white; }
+#tab-billing .btn-logout { background: #666; color: white; }
+#tab-billing .container { max-width: 1350px; margin: 0 auto; padding: 20px; }
+#tab-billing /* LOGIN */
+        #loginPage { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #1a3a5c, #2d6a9f); }
+#tab-billing .login-box { background: white; padding: 40px; border-radius: 16px; width: 380px; max-width: 92%; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); }
+#tab-billing .login-box h2 { text-align: center; color: #1a3a5c; margin-bottom: 6px; }
+#tab-billing .login-box label { font-weight: 600; display: block; margin-top: 12px; margin-bottom: 4px; }
+#tab-billing .login-box input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; }
+#tab-billing .login-box button { width: 100%; padding: 14px; background: #1a3a5c; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 18px; }
+#tab-billing /* DASHBOARD SUMMARY */
+        .payment-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 20px; }
+#tab-billing .summary-card { background: white; padding: 16px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 5px solid #1a3a5c; }
+#tab-billing .summary-card.cash { border-left-color: #2e7d32; }
+#tab-billing .summary-card.credit { border-left-color: #d32f2f; }
+#tab-billing .summary-card.cheque { border-left-color: #0288d1; }
+#tab-billing .summary-card.other { border-left-color: #ed6c02; }
+#tab-billing .summary-card.total { border-left-color: #673ab7; }
+#tab-billing .summary-card h4 { font-size: 12px; color: #666; text-transform: uppercase; margin-bottom: 6px; }
+#tab-billing .summary-card .amount { font-size: 18px; font-weight: 700; color: #222; }
+#tab-billing /* BILL FORM & SECTIONS */
+        .bill-form, #tab-billing .section-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); margin-bottom: 24px; }
+#tab-billing .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 14px; }
+#tab-billing .form-group label { font-weight: 600; display: block; font-size: 13px; color: #333; margin-bottom: 3px; }
+#tab-billing .form-group input, #tab-billing .form-group select { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; }
+#tab-billing /* TABLES */
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+#tab-billing th { background: #1a3a5c; color: white; padding: 10px; text-align: left; }
+#tab-billing td { padding: 10px; border-bottom: 1px solid #eee; }
+#tab-billing input, #tab-billing select { padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
+#tab-billing .btn-add-row { padding: 8px 16px; background: #2d6a9f; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+#tab-billing .btn-remove-row { background: #d32f2f; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; }
+#tab-billing .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 16px 0; background: #f8faff; padding: 16px; border-radius: 8px; }
+#tab-billing /* BUTTONS */
+        .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+#tab-billing .action-buttons button { padding: 10px 20px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+#tab-billing .btn-generate { background: #2e7d32; color: white; }
+#tab-billing .btn-export { background: #1976d2; color: white; }
+#tab-billing .btn-print { background: #1a3a5c; color: white; }
+#tab-billing .btn-clear { background: #ff9800; color: white; }
+#tab-billing .filter-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; background: #eef2f6; padding: 14px; border-radius: 8px; margin-bottom: 15px; }
+#tab-billing .status-badge { padding: 4px 10px; border-radius: 12px; font-weight: 600; font-size: 11px; display: inline-block; }
+#tab-billing .badge-credit { background: #ffebee; color: #c62828; }
+#tab-billing .badge-paid { background: #e8f5e9; color: #2e7d32; }
+@media print {
+            body * { visibility: hidden; }
+            #bill-invoicePrintArea, #bill-invoicePrintArea * { visibility: visible; }
+            #bill-invoicePrintArea { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; }
+        }
+
+        /* ============ ACCOUNTING TAB STYLES (scoped) ============ */
+#tab-accounting .tab-content { display: none; }
+#tab-accounting .tab-content.active { display: block; }
+@media print {
+    #tab-accounting aside, #tab-accounting .no-print { display: none !important; }
+    #tab-accounting main { width: 100% !important; margin: 0 !important; }
+}
+
+        .billing-subnav { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
+        .billing-subnav .bs-btn { padding:8px 16px; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:13px; }
+        .billing-subnav .bs-bill { background:#ffc107; color:#1a3a5c; }
+        .billing-subnav .bs-credit { background:#d32f2f; color:white; }
+        .billing-subnav .bs-history { background:#2e7d32; color:white; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { corePlugins: { preflight: false } };
+    </script>
+</head>
+<body>
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar">
+        <div class="brand" onclick="showPublic()">🛒 Nepal<span>ECom</span></div>
+        <div class="nav-links">
+            <a onclick="showPublic()">🏠 Home</a>
+            <a onclick="showPublic()">🛍️ Products</a>
+            <a onclick="document.getElementById('trackSection').scrollIntoView({behavior:'smooth'})">📦 Track</a>
+            <button class="cart-btn" onclick="toggleCart()">🛒 Cart <span class="cart-count" id="cartCount">0</span></button>
+            <button class="admin-btn" id="adminToggleBtn" onclick="toggleAdmin()">🔐 Admin</button>
+        </div>
+    </nav>
+
+    <!-- ========== PUBLIC CONTENT ========== -->
+    <div id="publicContent">
+        <div class="container">
+            <div class="hero">
+                <h1>🇳🇵 Welcome to NepalECom</h1>
+                <p>Quality products delivered to your doorstep.</p>
+                <p style="font-size:14px;opacity:0.8;margin-top:6px;">📍 Kathmandu | 📞 04111111 | ✉️ info@nepalcom.com</p>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <input type="text" id="searchInput" placeholder="🔍 Search products..." oninput="renderProducts()">
+                <select id="sortSelect" onchange="renderProducts()">
+                    <option value="default">Sort: Default</option>
+                    <option value="price-low">Price: Low → High</option>
+                    <option value="price-high">Price: High → Low</option>
+                </select>
+                <select id="categoryFilter" onchange="renderProducts()">
+                    <option value="all">All Categories</option>
+                </select>
+            </div>
+
+            <!-- Products -->
+            <div class="product-grid" id="productGrid"></div>
+
+            <!-- Track Order -->
+            <div class="track-section" id="trackSection">
+                <h3>📦 Track Your Order</h3>
+                <p style="color:#777;font-size:14px;margin-bottom:8px;">Enter your tracking code (e.g., NE-2026-001)</p>
+                <div style="display:flex;flex-wrap:wrap;gap:10px;">
+                    <input type="text" id="trackInput" placeholder="e.g. NE-2026-001">
+                    <button class="btn btn-primary" onclick="trackOrder()">🔍 Track</button>
+                </div>
+                <div class="track-result" id="trackResult"></div>
+            </div>
+        </div>
+
+        <!-- ========== FOOTER ========== -->
+        <div class="footer">
+            <div class="footer-grid">
+                <div>
+                    <h4>🏢 NepalECom</h4>
+                    <p>Your trusted online store in Nepal.</p>
+                    <p>Quality products at best prices.</p>
+                </div>
+                <div>
+                    <h4>📍 Contact Us</h4>
+                    <p>📌 New Baneshwor, Kathmandu</p>
+                    <p>📞 04111111</p>
+                    <p>📱 980-1234567</p>
+                    <p>✉️ info@nepalcom.com</p>
+                </div>
+                <div>
+                    <h4>🔗 Quick Links</h4>
+                    <a href="#" onclick="showPublic()">🏠 Home</a>
+                    <a href="#" onclick="showPublic()">🛍️ Products</a>
+                    <a href="#" onclick="document.getElementById('trackSection').scrollIntoView({behavior:'smooth'})">📦 Track Order</a>
+                    <a href="#" onclick="toggleCart()">🛒 Cart</a>
+                </div>
+                <div>
+                    <h4>🕐 Business Hours</h4>
+                    <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                    <p>Saturday: 10:00 AM - 4:00 PM</p>
+                    <p>Sunday: Closed</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2026 NepalECom Pvt. Ltd. All rights reserved. | Made with ❤️ in Nepal
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== CART SIDEBAR ========== -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2>🛒 Your Cart</h2>
+            <button onclick="toggleCart()">✕</button>
+        </div>
+        <div id="cartItems"></div>
+        <div class="cart-total" id="cartTotal">Total: Rs. 0</div>
+
+        <div class="checkout-form">
+            <h4>📋 Order Details</h4>
+            <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" id="custName" placeholder="e.g. Ram Sharma">
+            </div>
+            <div class="form-group">
+                <label>Phone *</label>
+                <input type="text" id="custPhone" placeholder="e.g. 980-1234567">
+            </div>
+            <div class="form-group">
+                <label>Address *</label>
+                <textarea id="custAddress" rows="2" placeholder="e.g. New Baneshwor, Kathmandu"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Payment Method</label>
+                <select id="paymentMethod" onchange="toggleQR()">
+                    <option value="cod">Cash on Delivery (COD)</option>
+                    <option value="prepaid">Prepaid (eSewa / Khalti)</option>
+                </select>
+            </div>
+            <div class="qr-section" id="qrSection" style="display:none;">
+                <p style="font-weight:600;">Scan to Pay</p>
+                <div class="qr-code">📱</div>
+                <p style="font-size:14px;color:#555;">eSewa: 980-1234567</p>
+                <p style="font-size:14px;color:#555;">Bank: NIBL A/C 1234567890</p>
+                <div class="form-group" style="margin-top:10px;">
+                    <label>Upload Payment Screenshot</label>
+                    <input type="file" id="screenshotUpload" accept="image/*">
+                </div>
+            </div>
+            <button class="btn-place-order" onclick="placeOrder()">✅ Place Order</button>
+        </div>
+    </div>
+
+    <!-- ========== PRODUCT DETAIL MODAL ========== -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-box">
+            <button class="close-modal" onclick="closeDetail()">✕</button>
+            <div id="detailContent"></div>
+        </div>
+    </div>
+
+    <!-- ========== LOGIN MODAL ========== -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box" style="max-width:400px;">
+            <button class="close-modal" onclick="closeLoginModal()">✕</button>
+            <h2 style="text-align:center;">🔐 Admin Login</h2>
+            <p style="text-align:center;color:#777;margin-bottom:16px;">Login to manage orders, inventory & more</p>
+            <form id="loginForm" onsubmit="return handleLogin(event)">
+                <div class="form-group"><label>Username</label><input type="text" id="loginUser" value="admin"></div>
+                <div class="form-group"><label>Password</label><input type="password" id="loginPass" value="admin123"></div>
+                <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;">Login</button>
+                <div id="loginError" style="color:#c62828;text-align:center;margin-top:10px;display:none;">Invalid credentials</div>
+            </form>
+            <p style="text-align:center;font-size:13px;color:#999;margin-top:12px;">Demo: admin / admin123</p>
+        </div>
+    </div>
+
+    <!-- ============================================================
+               ADMIN PANEL - ONLY ADMIN CONTENT (NO DUPLICATE)
+               ============================================================ -->
+    <div class="container" id="adminPanel">
+        <div class="admin-header">
+            <h2>⚙️ Admin Dashboard</h2>
+            <div>
+                <span class="admin-user">👤 <span id="adminUser">admin</span></span>
+                <button class="btn-logout" onclick="logout()">🚪 Logout</button>
+            </div>
+        </div>
+
+        <!-- Admin Quick Links -->
+        <div class="admin-quick-links">
+            <a onclick="switchTab('billing')">🧾 Billing System</a>
+            <a onclick="switchTab('accounting')">💰 Accounting System</a>
+        </div>
+
+        <!-- Admin Tabs -->
+        <div class="admin-tabs">
+            <button class="active" data-tab="dashboard" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button data-tab="orders" onclick="switchTab('orders')">📋 Orders</button>
+            <button data-tab="inventory" onclick="switchTab('inventory')">📦 Inventory</button>
+            <button data-tab="payments" onclick="switchTab('payments')">💳 Payments</button>
+            <button data-tab="offers" onclick="switchTab('offers')">🏷️ Offers</button>
+            <button data-tab="billing" onclick="switchTab('billing')">🧾 Billing</button>
+            <button data-tab="accounting" onclick="switchTab('accounting')">💰 Accounting</button>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div id="tab-dashboard" class="admin-section active">
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card"><div class="num" id="statProducts">0</div><div class="label">Products</div></div>
+                <div class="stat-card green"><div class="num" id="statOrders">0</div><div class="label">Total Orders</div></div>
+                <div class="stat-card orange"><div class="num" id="statRevenue">Rs. 0</div><div class="label">Revenue</div></div>
+                <div class="stat-card red"><div class="num" id="statPendingPayments">0</div><div class="label">Pending Payments</div></div>
+            </div>
+            <div class="table-wrap">
+                <h3>📌 Recent Orders</h3>
+                <table><thead><tr><th>#Order</th><th>Customer</th><th>Total</th><th>Status</th><th>Payment</th></tr></thead>
+                    <tbody id="recentOrdersTable"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ORDERS -->
+        <div id="tab-orders" class="admin-section">
+            <h3>📋 All Orders</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#Order / Tracking</th>
+                            <th>Customer</th>
+                            <th>Phone</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Payment</th>
+                            <th>Status</th>
+                            <th>Update Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- INVENTORY -->
+        <div id="tab-inventory" class="admin-section">
+            <h3>➕ Add Product</h3>
+            <form id="productForm" onsubmit="return addProduct(event)">
+                <div class="form-row">
+                    <div class="form-group"><label>Product Name *</label><input type="text" id="prodName" required></div>
+                    <div class="form-group"><label>Category *</label><input type="text" id="prodCategory" required></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Price (Rs.) *</label><input type="number" id="prodPrice" required></div>
+                    <div class="form-group"><label>Stock *</label><input type="number" id="prodStock" required></div>
+                </div>
+                <div class="form-group"><label>Description</label><textarea id="prodDesc" rows="2"></textarea></div>
+                <div class="form-group">
+                    <label>📸 Product Photo</label>
+                    <input type="file" id="prodPhoto" accept="image/*" onchange="previewProductPhoto(event)">
+                    <img id="prodPhotoPreview" class="photo-preview" alt="Product Photo">
+                </div>
+                <button type="submit" class="btn btn-primary">➕ Add Product</button>
+            </form>
+
+            <div class="table-wrap" style="margin-top:16px;">
+                <h3>📋 Product List</h3>
+                <table>
+                    <thead><tr><th>ID</th><th>Photo</th><th>Name</th><th>Price</th><th>Stock</th><th>Sold</th><th>Actions</th></tr></thead>
+                    <tbody id="inventoryTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PAYMENTS -->
+        <div id="tab-payments" class="admin-section">
+            <h3>💳 Payment Verification</h3>
+            <p style="color:#777;margin-bottom:12px;">Prepaid orders — <strong>View screenshot & verify</strong></p>
+            <div class="table-wrap">
+                <table><thead><tr><th>Order #</th><th>Customer</th><th>Amount</th><th>Screenshot</th><th>Status</th><th>Action</th></tr></thead>
+                    <tbody id="paymentTable"></tbody></table>
+            </div>
+        </div>
+
+        <!-- OFFERS -->
+        <div id="tab-offers" class="admin-section">
+            <h3>🏷️ Offers & Discounts</h3>
+            <div class="form-row">
+                <div class="form-group"><label>Product</label>
+                    <select id="offerProduct"><option value="">Select</option></select>
+                </div>
+                <div class="form-group"><label>Discount %</label><input type="number" id="offerDiscount" placeholder="10" min="1" max="100"></div>
+            </div>
+            <button class="btn btn-primary" onclick="addOffer()">🏷️ Apply Offer</button>
+            <div class="table-wrap" style="margin-top:16px;">
+                <table><thead><tr><th>Product</th><th>Discount</th><th>Action</th></tr></thead>
+                    <tbody id="offersTable"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ================= BILLING (from latest1.html) ================= -->
+        <div id="tab-billing" class="admin-section">
+<div class="billing-subnav">
+    <button class="bs-btn bs-bill" onclick="bill_showSection('billForm')">📝 New Bill</button>
+    <button class="bs-btn bs-credit" onclick="bill_showSection('creditSection')">🔴 Pending Credit List</button>
+    <button class="bs-btn bs-history" onclick="bill_showSection('historySection')">📋 All History &amp; Search</button>
+</div>
+<div class="billing-container">
+
+            <!-- DASHBOARD SUMMARY -->
+            <div class="payment-summary-grid">
+                <div class="summary-card cash">
+                    <h4>💵 Total Cash</h4>
+                    <div class="amount" id="bill-dashCash">Rs. 0.00</div>
+                </div>
+                <div class="summary-card credit">
+                    <h4>🔴 Pending Credit (उधारो)</h4>
+                    <div class="amount" id="bill-dashCredit">Rs. 0.00</div>
+                </div>
+                <div class="summary-card cheque">
+                    <h4>🏦 Total Cheque</h4>
+                    <div class="amount" id="bill-dashCheque">Rs. 0.00</div>
+                </div>
+                <div class="summary-card other">
+                    <h4>📱 Total QR/Online</h4>
+                    <div class="amount" id="bill-dashOther">Rs. 0.00</div>
+                </div>
+                <div class="summary-card total">
+                    <h4>💰 Grand Total</h4>
+                    <div class="amount" id="bill-dashTotal">Rs. 0.00</div>
+                </div>
+            </div>
+
+            <!-- NEW BILL FORM -->
+            <div id="bill-billForm" class="bill-form">
+                <h2 style="color:#1a3a5c;margin-bottom:15px;">📝 Create Tax Invoice (<span id="bill-invoiceNumberDisplay">G-001</span>)</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Transaction Date</label>
+                        <input type="date" id="bill-transDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Bill Date</label>
+                        <input type="date" id="bill-billDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Mode</label>
+                        <select id="bill-paymentMode">
+                            <option value="Cash">Cash (नगद)</option>
+                            <option value="Credit">Credit (उधारो)</option>
+                            <option value="Cheque">Cheque (चेक)</option>
+                            <option value="Other">Other (QR/Online)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Buyer's Name</label>
+                        <input type="text" id="bill-buyerName" placeholder="Customer Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" id="bill-buyerAddress" placeholder="Address">
+                    </div>
+                    <div class="form-group">
+                        <label>PAN No.</label>
+                        <input type="text" id="bill-buyerPan" placeholder="PAN Number">
+                    </div>
+                </div>
+
+                <!-- Items Table -->
+                <div style="margin-top:15px;">
+                    <h4>📦 Items Details</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>S.N.</th>
+                                <th>H.S.</th>
+                                <th>Particulars</th>
+                                <th>Qty</th>
+                                <th>Rate</th>
+                                <th>VAT?</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bill-itemsBody">
+                            <tr>
+                                <td>1</td>
+                                <td><input type="text" class="hs-code" style="width:60px;"></td>
+                                <td><input type="text" class="particulars" placeholder="Item name"></td>
+                                <td><input type="number" class="qty" value="1" min="1" onchange="bill_calcRow(this)"></td>
+                                <td><input type="number" class="rate" value="0" min="0" onchange="bill_calcRow(this)"></td>
+                                <td>
+                                    <select class="is-vat" onchange="bill_calcSummary()">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" class="row-total" readonly></td>
+                                <td><button class="btn-remove-row" onclick="bill_removeRow(this)">✕</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button class="btn-add-row" onclick="bill_addRow()">➕ Add Item</button>
+                </div>
+
+                <div class="summary-grid">
+                    <div><label>Taxable Value</label><input type="text" id="bill-taxableValue" readonly></div>
+                    <div><label>VAT (13%) Amount</label><input type="text" id="bill-vatAmount" readonly></div>
+                    <div><label>Discount %</label><input type="number" id="bill-discountPercent" value="0" min="0" onchange="bill_calcSummary()"></div>
+                    <div><label>Total Amount (Rs.)</label><input type="text" id="bill-totalAmount" readonly style="color:#2e7d32;font-weight:bold;"></div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="font-weight:600;font-size:13px;">Amount In Words:</label>
+                    <input type="text" id="bill-amountWords" readonly style="width:100%;padding:10px;font-weight:bold;color:#1a3a5c;background:#f0f4f8;">
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-generate" onclick="bill_generateBill()">🧾 Generate & Save Invoice</button>
+                    <button class="btn-clear" onclick="bill_clearForm()">🗑️ Clear</button>
+                </div>
+            </div>
+
+            <!-- PENDING CREDIT LIST SECTION -->
+            <div id="bill-creditSection" class="section-card" style="display:none;">
+                <h3 style="color:#d32f2f;margin-bottom:15px;">🔴 Credit (उधारो) बाँकी रहेका ग्राहकहरूको सूची</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Inv #</th>
+                            <th>Bill Date</th>
+                            <th>Buyer Name</th>
+                            <th>Address / PAN</th>
+                            <th>Credit Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bill-creditTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- ALL HISTORY & SEARCH SECTION -->
+            <div id="bill-historySection" class="section-card" style="display:none;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;flex-wrap:wrap;gap:10px;">
+                    <h3>📋 Billing History & Advanced Search</h3>
+                    <button class="btn-export" onclick="bill_exportToCSV()">📥 Export Filtered Data to Excel (CSV)</button>
+                </div>
+
+                <div class="filter-bar">
+                    <div>
+                        <label style="font-size:12px;font-weight:bold;">🔍 Search Customer / Inv #</label>
+                        <input type="text" id="bill-searchKeyword" placeholder="Type name or Inv No..." onkeyup="bill_filterHistory()">
+                    </div>
+                    <div>
+                        <label style="font-size:12px;font-weight:bold;">💳 Payment Mode</label>
+                        <select id="bill-filterMode" onchange="bill_filterHistory()">
+                            <option value="ALL">All Modes</option>
+                            <option value="Cash">Cash (नगद)</option>
+                            <option value="Credit">Credit (उधारो)</option>
+                            <option value="Cheque">Cheque (चेक)</option>
+                            <option value="Other">Other (QR/Online)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size:12px;font-weight:bold;">📅 Date From</label>
+                        <input type="date" id="bill-filterDateFrom" onchange="bill_filterHistory()">
+                    </div>
+                    <div>
+                        <label style="font-size:12px;font-weight:bold;">📅 Date To</label>
+                        <input type="date" id="bill-filterDateTo" onchange="bill_filterHistory()">
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Inv #</th>
+                            <th>Date</th>
+                            <th>Buyer Name</th>
+                            <th>Total Amount</th>
+                            <th>Payment Mode</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bill-historyTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- INVOICE PREVIEW -->
+            <div id="bill-invoicePreview" class="section-card" style="display:none;">
+                <div id="bill-invoicePrintArea"></div>
+                <div class="action-buttons">
+                    <button class="btn-print" onclick="window.print()">🖨️ Print</button>
+                    <button class="btn-export" onclick="bill_downloadPDF()">📄 Save PDF</button>
+                    <button class="btn-clear" onclick="bill_showSection('billForm')">🔙 Back</button>
+                </div>
+            </div>
+
+        </div>
+
+<div id="bill-toast" class="toast"></div>
+
+        </div>
+
+        <!-- ================= ACCOUNTING (from gemini-code file) ================= -->
+        <div id="tab-accounting" class="admin-section">
+<div class="acc-app-wrap" style="display:flex;gap:24px;flex-wrap:wrap;">
+<!-- Sidebar Menu Navigation -->
+        <aside class="w-full md:w-64 bg-white rounded-xl shadow-sm p-4 h-fit no-print">
+            <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">मुख्य मेनु (Main Menu)</h2>
+            <nav class="space-y-1">
+                <button onclick="acc_switchTab('dashboard')" id="acc-btn-dashboard" class="nav-btn active w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-50 text-indigo-700">
+                    <i class="fa-solid fa-chart-pie w-5"></i>
+                    <span>Dashboard (ड्यासबोर्ड)</span>
+                </button>
+                <button onclick="acc_switchTab('journal-form')" id="acc-btn-journal-form" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">
+                    <i class="fa-solid fa-pen-to-square w-5"></i>
+                    <span>New Entry (कारोबार प्रविष्टि)</span>
+                </button>
+                <button onclick="acc_switchTab('journal-book')" id="acc-btn-journal-book" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">
+                    <i class="fa-solid fa-book-journal-whills w-5"></i>
+                    <span>Journal Register (गोश्वारा भौचर)</span>
+                </button>
+                <button onclick="acc_switchTab('ledger-book')" id="acc-btn-ledger-book" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">
+                    <i class="fa-solid fa-file-invoice w-5"></i>
+                    <span>Ledger Accounts (खाता पाना)</span>
+                </button>
+                <button onclick="acc_switchTab('entries')" id="acc-btn-entries" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">
+                    <i class="fa-solid fa-list-check w-5"></i>
+                    <span>Manage Entries (सम्पादन/मेटाउने)</span>
+                </button>
+                <button onclick="acc_switchTab('trial')" id="acc-btn-trial" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">
+                    <i class="fa-solid fa-scale-balanced w-5"></i>
+                    <span>Trial Balance (सन्तुलन)</span>
+                </button>
+                <button onclick="acc_switchTab('pl')" id="acc-btn-pl" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">
+                    <i class="fa-solid fa-file-invoice-dollar w-5"></i>
+                    <span>Profit & Loss (नाफा/नोक्सान)</span>
+                </button>
+                <button onclick="acc_switchTab('bs')" id="acc-btn-bs" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">
+                    <i class="fa-solid fa-building-columns w-5"></i>
+                    <span>Balance Sheet (वासलात)</span>
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Dynamic Main Content Area -->
+        <main class="flex-1">
+
+            <!-- TAB 1: DASHBOARD -->
+            <section id="acc-tab-dashboard" class="tab-content active space-y-6">
+                <!-- Summary Cards Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 border-l-4 border-l-emerald-500">
+                        <p class="text-xs font-semibold text-slate-400 uppercase">कुल आम्दानी (Total Revenue)</p>
+                        <h3 class="text-2xl font-bold text-slate-800 mt-1" id="acc-dash-revenue">रू 0.00</h3>
+                        <p class="text-xs text-emerald-600 mt-2"><i class="fa-solid fa-arrow-up"></i> Direct & Indirect Sales</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 border-l-4 border-l-rose-500">
+                        <p class="text-xs font-semibold text-slate-400 uppercase">कुल खर्च (Total Expense)</p>
+                        <h3 class="text-2xl font-bold text-slate-800 mt-1" id="acc-dash-expense">रू 0.00</h3>
+                        <p class="text-xs text-rose-600 mt-2"><i class="fa-solid fa-arrow-down"></i> Operating & Direct Costs</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 border-l-4 border-l-indigo-500">
+                        <p class="text-xs font-semibold text-slate-400 uppercase">खुद नाफा (Net Profit)</p>
+                        <h3 class="text-2xl font-bold text-slate-800 mt-1" id="acc-dash-netprofit">रू 0.00</h3>
+                        <p class="text-xs text-indigo-600 mt-2"><i class="fa-solid fa-chart-line"></i> Revenue minus Expense</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 border-l-4 border-l-amber-500">
+                        <p class="text-xs font-semibold text-slate-400 uppercase">कुल सम्पत्ति (Total Assets)</p>
+                        <h3 class="text-2xl font-bold text-slate-800 mt-1" id="acc-dash-assets">रू 0.00</h3>
+                        <p class="text-xs text-amber-600 mt-2"><i class="fa-solid fa-vault"></i> Cash, Bank & Fixed Assets</p>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions Panel -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-slate-800">हालैका कारोबारहरु (Recent Journal Entries)</h3>
+                        <button onclick="acc_switchTab('journal-form')" class="text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg">
+                            + नयाँ इन्ट्री गर्नुस
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 text-slate-500 font-semibold border-b">
+                                <tr>
+                                    <th class="p-3">VNo</th>
+                                    <th class="p-3">मिति</th>
+                                    <th class="p-3">Debit Account</th>
+                                    <th class="p-3">Credit Account</th>
+                                    <th class="p-3 text-right">रकम (रू)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="acc-dash-recent-table" class="divide-y text-slate-600">
+                                <!-- Dynamic Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: JOURNAL ENTRY FORM -->
+            <section id="acc-tab-journal-form" class="tab-content bg-white p-6 rounded-xl shadow-sm space-y-6">
+                <h3 class="text-lg font-bold text-slate-800 border-b pb-3">नयाँ कारोबार दर्ता (Add New Journal Entry)</h3>
+                <form id="acc-journal-form" onsubmit="acc_saveEntry(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">मिति (Date)</label>
+                            <input type="date" id="acc-entry-date" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">रकम (Amount रू)</label>
+                            <input type="number" step="0.01" id="acc-entry-amount" required placeholder="0.00" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">डेबिट खाता (Debit Account - Dr)</label>
+                            <select id="acc-entry-debit" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500 coa-select">
+                                <!-- Options dynamically loaded -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">क्रेडिट खाता (Credit Account - Cr)</label>
+                            <select id="acc-entry-credit" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500 coa-select">
+                                <!-- Options dynamically loaded -->
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">विवरण / Narration</label>
+                        <textarea id="acc-entry-narration" rows="2" placeholder="उदाहरण: नगदमा सामान बिक्री गरेको..." class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500"></textarea>
+                    </div>
+                    <div class="flex justify-end space-x-3 pt-2">
+                        <button type="reset" class="px-4 py-2 border rounded-lg text-sm text-slate-600 hover:bg-slate-50">Reset</button>
+                        <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">
+                            <i class="fa-solid fa-floppy-disk mr-2"></i>सेभ गर्नुस (Save Entry)
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- TAB 3: STANDARD JOURNAL REGISTER (गोश्वारा भौचर) -->
+            <section id="acc-tab-journal-book" class="tab-content bg-white p-6 rounded-xl shadow-sm space-y-4">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800">गोश्वारा भौचर रजिस्टर (Standard Journal Register)</h3>
+                        <p class="text-xs text-slate-500">Standard Double Entry Bookkeeping Format</p>
+                    </div>
+                    <button onclick="window.print()" class="no-print bg-slate-800 text-white text-xs px-3 py-1.5 rounded hover:bg-slate-700">
+                        <i class="fa-solid fa-print mr-1"></i> Print Journal
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm border-collapse border border-slate-300">
+                        <thead class="bg-slate-100 text-slate-700 font-bold border-b border-slate-300">
+                            <tr>
+                                <th class="p-2.5 border border-slate-300 w-24">मिति (Date)</th>
+                                <th class="p-2.5 border border-slate-300 w-20 text-center">V. No.</th>
+                                <th class="p-2.5 border border-slate-300">विवरण (Particulars)</th>
+                                <th class="p-2.5 border border-slate-300 w-16 text-center">Ref</th>
+                                <th class="p-2.5 border border-slate-300 w-32 text-right">Debit Amt (रू)</th>
+                                <th class="p-2.5 border border-slate-300 w-32 text-right">Credit Amt (रू)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="acc-journal-register-body" class="divide-y text-slate-700">
+                            <!-- Injected Dynamically -->
+                        </tbody>
+                        <tfoot class="bg-slate-50 font-bold text-slate-800">
+                            <tr>
+                                <td colspan="4" class="p-2.5 border border-slate-300 text-right">कुल जम्मा (Total):</td>
+                                <td class="p-2.5 border border-slate-300 text-right font-mono" id="acc-journal-total-dr">0.00</td>
+                                <td class="p-2.5 border border-slate-300 text-right font-mono" id="acc-journal-total-cr">0.00</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </section>
+
+            <!-- TAB 4: STANDARD LEDGER ACCOUNTS (खाता पाना) -->
+            <section id="acc-tab-ledger-book" class="tab-content bg-white p-6 rounded-xl shadow-sm space-y-4">
+                <div class="flex flex-col md:flex-row justify-between md:items-center border-b pb-3 gap-3">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800">खाता पाना (Ledger Account Viewer)</h3>
+                        <p class="text-xs text-slate-500">Individual Account Statement & Running Balance</p>
+                    </div>
+                    <div class="flex items-center space-x-2 no-print">
+                        <label class="text-sm font-medium text-slate-600">खाता छान्नुहोस्:</label>
+                        <select id="acc-ledger-select-acc" onchange="acc_renderSelectedLedger()" class="border rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 coa-select">
+                            <!-- COA List Loaded Dynamically -->
+                        </select>
+                        <button onclick="window.print()" class="bg-slate-800 text-white text-xs px-3 py-2 rounded hover:bg-slate-700">
+                            <i class="fa-solid fa-print"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="border p-4 rounded-lg bg-slate-50">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="text-md font-bold text-indigo-900" id="acc-ledger-title-name">Account: Cash in Hand</h4>
+                        <span class="text-xs bg-indigo-100 text-indigo-800 px-2.5 py-1 rounded font-semibold" id="acc-ledger-account-type">Type: Asset</span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm border-collapse border border-slate-300 bg-white">
+                            <thead class="bg-slate-200 text-slate-700 font-bold border-b border-slate-300">
+                                <tr>
+                                    <th class="p-2.5 border border-slate-300 w-28">मिति (Date)</th>
+                                    <th class="p-2.5 border border-slate-300">विपरीत खाता / विवरण (Particulars)</th>
+                                    <th class="p-2.5 border border-slate-300 w-16 text-center">Ref</th>
+                                    <th class="p-2.5 border border-slate-300 w-28 text-right">Debit (Dr) रू</th>
+                                    <th class="p-2.5 border border-slate-300 w-28 text-right">Credit (Cr) रू</th>
+                                    <th class="p-2.5 border border-slate-300 w-36 text-right">Balance (मौज्दात) रू</th>
+                                </tr>
+                            </thead>
+                            <tbody id="acc-ledger-account-body" class="divide-y text-slate-700">
+                                <!-- Dynamic Ledger Rows -->
+                            </tbody>
+                            <tfoot class="bg-indigo-50 font-bold text-indigo-950">
+                                <tr>
+                                    <td colspan="3" class="p-2.5 border border-slate-300 text-right">अन्तिम मौज्दात (Closing Balance):</td>
+                                    <td class="p-2.5 border border-slate-300 text-right font-mono" id="acc-ledger-total-dr">0.00</td>
+                                    <td class="p-2.5 border border-slate-300 text-right font-mono" id="acc-ledger-total-cr">0.00</td>
+                                    <td class="p-2.5 border border-slate-300 text-right font-mono text-indigo-700" id="acc-ledger-final-balance">0.00 Dr</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: ENTRY DATA REGISTER (EDIT & DELETE) -->
+            <section id="acc-tab-entries" class="tab-content bg-white p-6 rounded-xl shadow-sm space-y-4">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <h3 class="text-lg font-bold text-slate-800">सबै प्रविष्टि व्यवस्थापन (Manage & Delete Entries)</h3>
+                    <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded">Auto-Sync Enabled</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm border-collapse">
+                        <thead class="bg-slate-100 text-slate-700 font-semibold">
+                            <tr>
+                                <th class="p-3 border">V.No</th>
+                                <th class="p-3 border">मिति</th>
+                                <th class="p-3 border">Debit Account</th>
+                                <th class="p-3 border">Credit Account</th>
+                                <th class="p-3 border">विवरण</th>
+                                <th class="p-3 border text-right">रकम (रू)</th>
+                                <th class="p-3 border text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="acc-entries-table-body" class="divide-y text-slate-600">
+                            <!-- Rows injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- TAB 6: TRIAL BALANCE -->
+            <section id="acc-tab-trial" class="tab-content bg-white p-6 rounded-xl shadow-sm space-y-4">
+                <h3 class="text-lg font-bold text-slate-800 border-b pb-3">सन्तुलन परीक्षण (Trial Balance Sheet)</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm border border-slate-300">
+                        <thead class="bg-slate-800 text-white">
+                            <tr>
+                                <th class="p-3 border border-slate-300">Code</th>
+                                <th class="p-3 border border-slate-300">खाताको विवरण (Account Particulars)</th>
+                                <th class="p-3 border border-slate-300 text-right">Debit Balance (रू)</th>
+                                <th class="p-3 border border-slate-300 text-right">Credit Balance (रू)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="acc-tb-body">
+                            <!-- Dynamic Trial Balance -->
+                        </tbody>
+                        <tfoot class="bg-yellow-100 font-bold">
+                            <tr>
+                                <td colspan="2" class="p-3 border border-slate-300 text-right">कुल जम्मा (Total):</td>
+                                <td class="p-3 border border-slate-300 text-right font-mono" id="acc-tb-total-dr">0.00</td>
+                                <td class="p-3 border border-slate-300 text-right font-mono" id="acc-tb-total-cr">0.00</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </section>
+
+            <!-- TAB 7: PROFIT & LOSS ACCOUNT -->
+            <section id="acc-tab-pl" class="tab-content bg-white p-6 rounded-xl shadow-sm space-y-4">
+                <h3 class="text-lg font-bold text-slate-800 border-b pb-3">नाफा नोक्सान हिसाब (Profit & Loss Account)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Expenses Side -->
+                    <div class="border rounded-lg p-4">
+                        <h4 class="font-bold text-rose-700 border-b pb-2 mb-3">खर्च तर्फ (Expenses & Losses - Dr)</h4>
+                        <div id="acc-pl-expenses-list" class="space-y-2 text-sm"></div>
+                        <div class="border-t pt-2 mt-4 font-bold flex justify-between">
+                            <span>Total Expense:</span>
+                            <span id="acc-pl-total-exp">0.00</span>
+                        </div>
+                    </div>
+                    <!-- Income Side -->
+                    <div class="border rounded-lg p-4">
+                        <h4 class="font-bold text-emerald-700 border-b pb-2 mb-3">आम्दानी तर्फ (Revenues & Incomes - Cr)</h4>
+                        <div id="acc-pl-incomes-list" class="space-y-2 text-sm"></div>
+                        <div class="border-t pt-2 mt-4 font-bold flex justify-between">
+                            <span>Total Revenue:</span>
+                            <span id="acc-pl-total-inc">0.00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-lg flex justify-between items-center font-bold text-indigo-900">
+                    <span>खुद नाफा / (नोक्सान) [Net Profit / Loss]:</span>
+                    <span id="acc-pl-net-result" class="text-xl">रू 0.00</span>
+                </div>
+            </section>
+
+            <!-- TAB 8: BALANCE SHEET -->
+            <section id="acc-tab-bs" class="tab-content bg-white p-6 rounded-xl shadow-sm space-y-4">
+                <h3 class="text-lg font-bold text-slate-800 border-b pb-3">वासलात विवरण (Balance Sheet)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Liabilities Side -->
+                    <div class="border rounded-lg p-4">
+                        <h4 class="font-bold text-slate-800 border-b pb-2 mb-3">दायित्व तथा पुँजी (Capital & Liabilities)</h4>
+                        <div id="acc-bs-liab-list" class="space-y-2 text-sm"></div>
+                        <div class="border-t pt-2 mt-4 font-bold flex justify-between bg-amber-50 p-2">
+                            <span>Total Liabilities & Equity:</span>
+                            <span id="acc-bs-total-liab">0.00</span>
+                        </div>
+                    </div>
+                    <!-- Assets Side -->
+                    <div class="border rounded-lg p-4">
+                        <h4 class="font-bold text-slate-800 border-b pb-2 mb-3">सम्पत्तिहरु (Assets & Properties)</h4>
+                        <div id="acc-bs-assets-list" class="space-y-2 text-sm"></div>
+                        <div class="border-t pt-2 mt-4 font-bold flex justify-between bg-amber-50 p-2">
+                            <span>Total Assets:</span>
+                            <span id="acc-bs-total-assets">0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+</div>
+        </div>
+    </div>
+
+    <!-- ========== NOTIFICATION ========== -->
+    <div class="notif-wrapper">
+        <button class="notif-btn" onclick="toggleNotif()">
+            🔔 <span class="badge" id="notifBadge">0</span>
+        </button>
+        <div class="notif-list" id="notifList"></div>
+    </div>
+
+    <!-- ========== TOAST ========== -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // ====================================================
+        //  SUPABASE CLIENT (shared by store, billing & accounting)
+        // ====================================================
+        const SUPABASE_URL = 'https://sxlbfwzvwapzlmmaockk.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_ewDTGvssJMFMpRoiwwm5Mg_xWwaSDQI';
+        window.sb = null;
+        try {
+            window.sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        } catch (e) {
+            console.error('Supabase client failed to initialize — falling back to localStorage only.', e);
+        }
+
+        // ====================================================
+        //  DATA STORE
+        // ====================================================
+        let data = {
+            products: [],
+            orders: [],
+            payments: [],
+            offers: [],
+            cart: [],
+            notifications: [],
+            isLoggedIn: false,
+            nextOrderId: 1001
+        };
+
+        // ---- row <-> local object mappers ----
+        function productToRow(p) {
+            return { id: p.id, name: p.name, category: p.category, price: p.price, stock: p.stock, sold: p.sold || 0, description: p.desc || '', photo: p.photo || '' };
+        }
+        function rowToProduct(r) {
+            return { id: r.id, name: r.name, category: r.category, price: Number(r.price) || 0, stock: r.stock || 0, sold: r.sold || 0, desc: r.description || '', photo: r.photo || '' };
+        }
+        function orderToRow(o) {
+            return { id: o.id, customer: o.customer, phone: o.phone, address: o.address, items: o.items || [], total: o.total, payment: o.payment, status: o.status, tracking_code: o.trackingCode, screenshot: o.screenshot, order_date: o.orderDate };
+        }
+        function rowToOrder(r) {
+            return { id: r.id, customer: r.customer, phone: r.phone, address: r.address, items: r.items || [], total: Number(r.total) || 0, payment: r.payment, status: r.status, trackingCode: r.tracking_code, screenshot: r.screenshot, orderDate: r.order_date };
+        }
+        function paymentToRow(p) {
+            return { order_id: p.orderId, customer: p.customer, amount: p.amount, screenshot: p.screenshot, verified: !!p.verified };
+        }
+        function rowToPayment(r) {
+            return { orderId: r.order_id, customer: r.customer, amount: Number(r.amount) || 0, screenshot: r.screenshot, verified: !!r.verified };
+        }
+        function offerToRow(o) {
+            return { product_id: o.productId, discount: o.discount };
+        }
+        function rowToOffer(r) {
+            return { productId: r.product_id, discount: Number(r.discount) || 0 };
+        }
+        function notifToRow(n) {
+            return { msg: n.msg, time: n.time, read: !!n.read };
+        }
+        function rowToNotif(r) {
+            return { msg: r.msg, time: r.time, read: !!r.read };
+        }
+
+        const DEFAULT_PRODUCTS = [
+            { id: 1, name: 'Samsung Galaxy S24', category: 'Electronics', price: 95000, stock: 15, sold: 3,
+                desc: 'Latest flagship phone', photo: '' },
+            { id: 2, name: 'Nepali Handicraft', category: 'Home Decor', price: 2500, stock: 45, sold: 8,
+                desc: 'Handmade wooden craft', photo: '' },
+            { id: 3, name: 'Pashmina Shawl', category: 'Fashion', price: 3800, stock: 20, sold: 5,
+                desc: '100% pure pashmina', photo: '' },
+            { id: 4, name: 'Organic Honey', category: 'Food', price: 850, stock: 30, sold: 12,
+                desc: 'Pure mountain honey', photo: '' },
+        ];
+        const DEFAULT_ORDERS = [
+            { id: 1001, customer: 'Ram Sharma', phone: '980-1234567', address: 'Kathmandu',
+                items: [{ name: 'Samsung Galaxy S24', qty: 1, price: 95000 }], total: 95000,
+                payment: 'Prepaid', status: 'Delivered', trackingCode: 'NE-2026-001', screenshot: '📸',
+                orderDate: '2026-08-15' },
+        ];
+        const DEFAULT_PAYMENTS = [
+            { orderId: 1001, customer: 'Ram Sharma', amount: 95000, screenshot: '📸 verified.png', verified: true },
+        ];
+        const DEFAULT_OFFERS = [ { productId: 4, discount: 15 } ];
+        const DEFAULT_NOTIFS = [ { msg: '📦 Welcome to NepalECom!', time: new Date().toLocaleString(), read: false } ];
+
+        async function loadData() {
+            // 1) local cache instantly, so the storefront never looks empty
+            const saved = localStorage.getItem('ecomFullData');
+            if (saved) {
+                try { data = JSON.parse(saved); } catch (e) {}
+            }
+            const isLoggedIn = data.isLoggedIn, cart = data.cart || [];
+
+            // 2) pull the real data from Supabase, if reachable
+            let loadedFromSupabase = false;
+            if (window.sb) {
+                try {
+                    const [prod, ord, pay, off, notif] = await Promise.all([
+                        sb.from('products').select('*'),
+                        sb.from('orders').select('*'),
+                        sb.from('payments').select('*'),
+                        sb.from('offers').select('*'),
+                        sb.from('notifications').select('*').order('created_at', { ascending: true })
+                    ]);
+                    if (!prod.error && !ord.error && !pay.error && !off.error && !notif.error) {
+                        data.products = (prod.data || []).map(rowToProduct);
+                        data.orders = (ord.data || []).map(rowToOrder);
+                        data.payments = (pay.data || []).map(rowToPayment);
+                        data.offers = (off.data || []).map(rowToOffer);
+                        data.notifications = (notif.data || []).map(rowToNotif);
+                        loadedFromSupabase = true;
+                    }
+                } catch (e) { console.error('Supabase load failed, using local cache/defaults', e); }
+            }
+
+            data.isLoggedIn = isLoggedIn || false;
+            data.cart = cart || [];
+            data.products = data.products && data.products.length ? data.products : DEFAULT_PRODUCTS;
+            data.orders = data.orders && data.orders.length ? data.orders : DEFAULT_ORDERS;
+            data.payments = data.payments && data.payments.length ? data.payments : DEFAULT_PAYMENTS;
+            data.offers = data.offers && data.offers.length ? data.offers : DEFAULT_OFFERS;
+            data.notifications = data.notifications && data.notifications.length ? data.notifications : DEFAULT_NOTIFS;
+            data.nextOrderId = data.orders.length > 0 ? Math.max(...data.orders.map(o => o.id)) + 1 : 1001;
+
+            localStorage.setItem('ecomFullData', JSON.stringify(data));
+
+            // if Supabase was empty (brand-new project), seed it once with these defaults
+            if (window.sb && loadedFromSupabase) {
+                // nothing to seed, Supabase already had the real data
+            } else if (window.sb) {
+                syncToSupabase();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('ecomFullData', JSON.stringify(data));
+            syncToSupabase();
+        }
+
+        async function syncToSupabase() {
+            if (!window.sb) return;
+            try {
+                await Promise.all([
+                    (async () => {
+                        await sb.from('products').delete().neq('id', -1);
+                        if (data.products.length) await sb.from('products').insert(data.products.map(productToRow));
+                    })(),
+                    (async () => {
+                        await sb.from('orders').delete().neq('id', -1);
+                        if (data.orders.length) await sb.from('orders').insert(data.orders.map(orderToRow));
+                    })(),
+                    (async () => {
+                        await sb.from('offers').delete().neq('product_id', -1);
+                        if (data.offers.length) await sb.from('offers').insert(data.offers.map(offerToRow));
+                    })(),
+                    (async () => {
+                        await sb.from('notifications').delete().neq('id', -1);
+                        if (data.notifications.length) await sb.from('notifications').insert(data.notifications.map(notifToRow));
+                    })()
+                ]);
+                // payments reference orders, so write them after orders are back in place
+                await sb.from('payments').delete().neq('order_id', -1);
+                if (data.payments.length) await sb.from('payments').insert(data.payments.map(paymentToRow));
+            } catch (e) { console.error('Supabase sync failed (changes kept locally only)', e); }
+        }
+
+        // ====================================================
+        //  PUBLIC - RENDER PRODUCTS
+        // ====================================================
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            let products = [...data.products];
+            const search = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (search) products = products.filter(p => p.name.toLowerCase().includes(search) || p.category.toLowerCase()
+                .includes(search));
+
+            const catFilter = document.getElementById('categoryFilter').value;
+            if (catFilter !== 'all') products = products.filter(p => p.category === catFilter);
+
+            const sort = document.getElementById('sortSelect').value;
+            if (sort === 'price-low') products.sort((a, b) => a.price - b.price);
+            else if (sort === 'price-high') products.sort((a, b) => b.price - a.price);
+
+            if (products.length === 0) {
+                grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#999;padding:30px;">No products found.</p>';
+                return;
+            }
+
+            grid.innerHTML = products.map(p => {
+                const offer = data.offers.find(o => o.productId === p.id);
+                const discPrice = offer ? Math.round(p.price * (1 - offer.discount / 100)) : p.price;
+                const photoHtml = p.photo ? `<img src="${p.photo}" alt="${p.name}">` :
+                    `<div class="no-photo">📦</div>`;
+
+                return `
+                    <div class="product-card" onclick="showDetail(${p.id})">
+                        ${offer ? `<div class="discount-badge">-${offer.discount}%</div>` : ''}
+                        <div class="p-img">${photoHtml}</div>
+                        <div class="p-name">${p.name}</div>
+                        <div class="p-category">${p.category}</div>
+                        ${offer ? `<div class="p-price"><span class="old-price">Rs. ${p.price.toLocaleString()}</span> Rs. ${discPrice.toLocaleString()}</div>` :
+                        `<div class="p-price">Rs. ${p.price.toLocaleString()}</div>`}
+                        <div class="p-stock">${p.stock > 0 ? '✅ In Stock ('+p.stock+')' : '❌ Out of Stock'}</div>
+                        <button class="btn-add" ${p.stock <= 0 ? 'disabled' : ''} onclick="event.stopPropagation();addToCart(${p.id})">
+                            ${p.stock > 0 ? '🛒 Add to Cart' : 'Sold Out'}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+
+            const cats = [...new Set(data.products.map(p => p.category))];
+            const catSelect = document.getElementById('categoryFilter');
+            const currentVal = catSelect.value;
+            catSelect.innerHTML = '<option value="all">All Categories</option>' +
+                cats.map(c => `<option value="${c}">${c}</option>`).join('');
+            catSelect.value = currentVal;
+        }
+
+        // ====================================================
+        //  PRODUCT DETAIL
+        // ====================================================
+        function showDetail(id) {
+            const p = data.products.find(pr => pr.id === id);
+            if (!p) return;
+            const offer = data.offers.find(o => o.productId === p.id);
+            const discPrice = offer ? Math.round(p.price * (1 - offer.discount / 100)) : p.price;
+            const photoHtml = p.photo ? `<img src="${p.photo}" class="detail-img" alt="${p.name}">` :
+                `<div style="font-size:60px;text-align:center;padding:20px;background:#f5f7fa;border-radius:8px;">📦</div>`;
+
+            document.getElementById('detailContent').innerHTML = `
+                ${photoHtml}
+                <h2 style="color:#1a3a5c;">${p.name}</h2>
+                <div style="color:#777;">${p.category}</div>
+                ${offer ? `<div style="font-size:24px;font-weight:700;color:#2d6a9f;"><span style="text-decoration:line-through;font-size:18px;color:#999;">Rs. ${p.price.toLocaleString()}</span> Rs. ${discPrice.toLocaleString()} <span class="discount-badge" style="position:static;display:inline-block;">-${offer.discount}%</span></div>` :
+                `<div style="font-size:24px;font-weight:700;color:#2d6a9f;">Rs. ${p.price.toLocaleString()}</div>`}
+                <p style="margin:10px 0;color:#555;">${p.desc || 'No description.'}</p>
+                <div style="color:#555;">📦 Stock: ${p.stock > 0 ? p.stock + ' available' : 'Out of stock'}</div>
+                <button class="btn-add" style="width:100%;padding:12px;margin-top:12px;background:#2d6a9f;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;" ${p.stock <= 0 ? 'disabled' : ''} onclick="closeDetail();addToCart(${p.id});">
+                    ${p.stock > 0 ? '🛒 Add to Cart' : 'Sold Out'}
+                </button>
+            `;
+            document.getElementById('detailModal').classList.add('active');
+        }
+
+        function closeDetail() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        // ====================================================
+        //  PHOTO PREVIEW
+        // ====================================================
+        function previewProductPhoto(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('prodPhotoPreview');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.add('show');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.classList.remove('show');
+            }
+        }
+
+        // ====================================================
+        //  CART
+        // ====================================================
+        function toggleCart() {
+            document.getElementById('cartSidebar').classList.toggle('open');
+            renderCart();
+        }
+
+        function addToCart(id) {
+            const p = data.products.find(pr => pr.id === id);
+            if (!p || p.stock <= 0) { showToast('❌ Out of stock!', 'error'); return; }
+            const existing = data.cart.find(c => c.id === id);
+            if (existing) {
+                if (existing.qty < p.stock) existing.qty++;
+                else { showToast('⚠️ Not enough stock!', 'error'); return; }
+            } else {
+                data.cart.push({ id: p.id, name: p.name, price: p.price, qty: 1, photo: p.photo || '' });
+            }
+            saveData();
+            renderCart();
+            updateCartCount();
+            showToast(`✅ "${p.name}" added to cart!`, 'success');
+            document.getElementById('cartSidebar').classList.add('open');
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartItems');
+            if (data.cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:#999;padding:20px;">Cart is empty.</p>';
+                document.getElementById('cartTotal').textContent = 'Total: Rs. 0';
+                return;
+            }
+            container.innerHTML = data.cart.map(item => {
+                const offer = data.offers.find(o => o.productId === item.id);
+                const price = offer ? Math.round(item.price * (1 - offer.discount / 100)) : item.price;
+                const imgHtml = item.photo ? `<img src="${item.photo}" class="ci-img">` :
+                    `<div style="width:40px;height:40px;background:#f5f7fa;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:20px;">📦</div>`;
+                return `
+                    <div class="cart-item">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            ${imgHtml}
+                            <span style="font-weight:500;">${item.name}</span>
+                        </div>
+                        <div>
+                            <div class="ci-qty">
+                                <button onclick="updateQty(${item.id}, -1)">−</button>
+                                <span>${item.qty}</span>
+                                <button onclick="updateQty(${item.id}, 1)">+</button>
+                            </div>
+                            <div style="font-weight:600;color:#2d6a9f;">Rs. ${(price * item.qty).toLocaleString()}</div>
+                            <button onclick="removeFromCart(${item.id})" style="background:none;border:none;color:#c62828;cursor:pointer;">✕</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            const total = data.cart.reduce((sum, item) => {
+                const offer = data.offers.find(o => o.productId === item.id);
+                const price = offer ? Math.round(item.price * (1 - offer.discount / 100)) : item.price;
+                return sum + price * item.qty;
+            }, 0);
+            document.getElementById('cartTotal').textContent = 'Total: Rs. ' + total.toLocaleString();
+        }
+
+        function updateQty(id, delta) {
+            const item = data.cart.find(c => c.id === id);
+            if (!item) return;
+            const p = data.products.find(pr => pr.id === id);
+            const newQty = item.qty + delta;
+            if (newQty <= 0) { removeFromCart(id); return; }
+            if (p && newQty > p.stock) { showToast('⚠️ Not enough stock!', 'error'); return; }
+            item.qty = newQty;
+            saveData();
+            renderCart();
+            updateCartCount();
+        }
+
+        function removeFromCart(id) {
+            data.cart = data.cart.filter(c => c.id !== id);
+            saveData();
+            renderCart();
+            updateCartCount();
+        }
+
+        function updateCartCount() {
+            document.getElementById('cartCount').textContent = data.cart.reduce((s, c) => s + c.qty, 0);
+        }
+
+        function toggleQR() {
+            document.getElementById('qrSection').style.display = document.getElementById('paymentMethod').value === 'prepaid' ?
+                'block' : 'none';
+        }
+
+        // ====================================================
+        //  PLACE ORDER
+        // ====================================================
+        function placeOrder() {
+            if (data.cart.length === 0) {
+                showToast('⚠️ Cart is empty!', 'error');
+                return;
+            }
+
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const address = document.getElementById('custAddress').value.trim();
+
+            if (!name || !phone || !address) {
+                showToast('⚠️ Please fill all customer details!', 'error');
+                return;
+            }
+
+            const method = document.getElementById('paymentMethod').value;
+            let screenshot = '';
+            if (method === 'prepaid') {
+                const fileInput = document.getElementById('screenshotUpload');
+                if (fileInput.files.length > 0) {
+                    screenshot = '📸 ' + fileInput.files[0].name;
+                } else {
+                    screenshot = '📸 payment_uploaded_' + Date.now() + '.png';
+                }
+            }
+
+            const orderId = data.nextOrderId++;
+            const trackingCode = 'NE-2026-' + String(orderId).padStart(3, '0');
+
+            const items = data.cart.map(c => ({ name: c.name, qty: c.qty, price: c.price }));
+            const total = data.cart.reduce((sum, item) => {
+                const offer = data.offers.find(o => o.productId === item.id);
+                const price = offer ? Math.round(item.price * (1 - offer.discount / 100)) : item.price;
+                return sum + price * item.qty;
+            }, 0);
+
+            const order = {
+                id: orderId,
+                customer: name,
+                phone: phone,
+                address: address,
+                items: items,
+                total: total,
+                payment: method === 'prepaid' ? 'Prepaid' : 'COD',
+                status: method === 'prepaid' ? 'Payment Pending' : 'Processing',
+                trackingCode: trackingCode,
+                screenshot: screenshot,
+                orderDate: new Date().toISOString().slice(0, 10)
+            };
+            data.orders.push(order);
+
+            if (method === 'prepaid') {
+                data.payments.push({
+                    orderId: orderId,
+                    customer: name,
+                    amount: total,
+                    screenshot: screenshot,
+                    verified: false
+                });
+            }
+
+            data.cart.forEach(c => {
+                const p = data.products.find(pr => pr.id === c.id);
+                if (p) { p.stock -= c.qty;
+                    p.sold = (p.sold || 0) + c.qty; }
+            });
+
+            data.notifications.push({
+                msg: `📦 NEW ORDER #${orderId} from ${name}`,
+                time: new Date().toLocaleString(),
+                read: false
+            });
+
+            data.cart = [];
+            saveData();
+            renderAll();
+            renderProducts();
+            updateCartCount();
+            document.getElementById('cartSidebar').classList.remove('open');
+
+            showToast(`✅ Order #${orderId} placed! Tracking: ${trackingCode}`, 'success');
+            document.getElementById('custName').value = '';
+            document.getElementById('custPhone').value = '';
+            document.getElementById('custAddress').value = '';
+            document.getElementById('screenshotUpload').value = '';
+        }
+
+        // ====================================================
+        //  TRACK ORDER
+        // ====================================================
+        function trackOrder() {
+            const code = document.getElementById('trackInput').value.trim();
+            const result = document.getElementById('trackResult');
+            if (!code) {
+                result.innerHTML = '<p style="color:#c62828;">⚠️ Please enter a tracking code.</p>';
+                return;
+            }
+            const order = data.orders.find(o => o.trackingCode === code);
+            if (!order) {
+                result.innerHTML = `<p style="color:#c62828;">❌ Order "${code}" not found.</p>`;
+                return;
+            }
+
+            const statusSteps = ['Payment Pending', 'Processing', 'Shipped', 'Delivered'];
+            const currentIndex = statusSteps.indexOf(order.status);
+            const statusMap = {
+                'Payment Pending': '⏳ Waiting for Payment',
+                'Processing': '📦 Processing Order',
+                'Shipped': '🚚 On the Way',
+                'Delivered': '✅ Delivered',
+                'Cancelled': '❌ Cancelled'
+            };
+
+            let stepsHtml = statusSteps.map((step, idx) => {
+                let dotClass = 'dot';
+                if (idx < currentIndex) dotClass += ' done';
+                else if (idx === currentIndex) dotClass += ' active';
+                else dotClass += ' pending';
+                return `
+                    <div class="status-line">
+                        <div class="${dotClass}"></div>
+                        <span>${step} ${idx < currentIndex ? '✅' : idx === currentIndex ? '🔄' : '⏳'}</span>
+                    </div>
+                `;
+            }).join('');
+
+            result.innerHTML = `
+                <div class="track-card">
+                    <p><strong>Order #${order.id}</strong> - ${order.customer}</p>
+                    <p>📦 ${order.items.map(i => `${i.name} x${i.qty}`).join(', ')}</p>
+                    <p>💰 Total: Rs. ${order.total.toLocaleString()}</p>
+                    <p>📅 Ordered: ${order.orderDate}</p>
+                    <div style="margin-top:12px;padding:10px;background:white;border-radius:6px;">
+                        <strong>Tracking Status:</strong>
+                        ${stepsHtml}
+                        <p style="margin-top:8px;font-weight:600;color:#1a3a5c;">Current: ${statusMap[order.status] || order.status}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ====================================================
+        //  ADMIN - LOGIN / LOGOUT
+        // ====================================================
+        function toggleAdmin() {
+            if (data.isLoggedIn) { showAdmin(); } else { document.getElementById('loginModal').classList.add('active'); }
+        }
+
+        function closeLoginModal() { document.getElementById('loginModal').classList.remove('active'); }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+            if (user === 'admin' && pass === 'admin123') {
+                data.isLoggedIn = true;
+                saveData();
+                closeLoginModal();
+                document.getElementById('adminToggleBtn').textContent = '👤 Admin';
+                document.getElementById('adminToggleBtn').classList.add('logged-in');
+                document.getElementById('adminUser').textContent = user;
+                showAdmin();
+                showToast('✅ Login successful!', 'success');
+                return false;
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                return false;
+            }
+        }
+
+        function logout() {
+            data.isLoggedIn = false;
+            saveData();
+            document.getElementById('adminToggleBtn').textContent = '🔐 Admin';
+            document.getElementById('adminToggleBtn').classList.remove('logged-in');
+            document.getElementById('adminPanel').classList.remove('active');
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('publicContent').style.display = 'block';
+            showToast('🔒 Logged out.', '');
+        }
+
+        function showAdmin() {
+            if (!data.isLoggedIn) return;
+            document.getElementById('publicContent').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            document.getElementById('adminPanel').classList.add('active');
+            renderAll();
+        }
+
+        function showPublic() {
+            document.getElementById('publicContent').style.display = 'block';
+            document.getElementById('adminPanel').classList.remove('active');
+            document.getElementById('adminPanel').style.display = 'none';
+            closeDetail();
+            renderProducts();
+        }
+
+        // ====================================================
+        //  ADMIN - TABS
+        // ====================================================
+        function switchTab(tabId) {
+            document.querySelectorAll('.admin-tabs button').forEach(el => el.classList.remove('active'));
+            document.querySelector(`.admin-tabs button[data-tab="${tabId}"]`)?.classList.add('active');
+            document.querySelectorAll('.admin-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId)?.classList.add('active');
+            renderAll();
+            if (tabId === 'offers') populateOfferProducts();
+        }
+
+        // ====================================================
+        //  ADMIN - RENDER ALL
+        // ====================================================
+        function renderAll() {
+            if (!data.isLoggedIn) return;
+            renderDashboard();
+            renderOrders();
+            renderInventory();
+            renderPayments();
+            renderOffers();
+            renderNotifications();
+        }
+
+        // ----- DASHBOARD -----
+        function renderDashboard() {
+            document.getElementById('statProducts').textContent = data.products.length;
+            document.getElementById('statOrders').textContent = data.orders.length;
+            const revenue = data.orders.reduce((s, o) => s + o.total, 0);
+            document.getElementById('statRevenue').textContent = 'Rs. ' + revenue.toLocaleString();
+            document.getElementById('statPendingPayments').textContent = data.payments.filter(p => !p.verified).length;
+
+            const recent = data.orders.slice(-5).reverse();
+            const tbody = document.getElementById('recentOrdersTable');
+            if (recent.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#999;">No orders yet.</td></tr>';
+            } else {
+                tbody.innerHTML = recent.map(o => `
+                    <tr>
+                        <td><strong>#${o.id}</strong><br><span style="font-size:11px;color:#999;">${o.trackingCode}</span></td>
+                        <td>${o.customer}</td>
+                        <td>Rs. ${o.total.toLocaleString()}</td>
+                        <td><span class="badge ${o.status === 'Delivered' ? 'badge-success' : o.status === 'Shipped' ? 'badge-info' : o.status === 'Processing' ? 'badge-warning' : 'badge-danger'}">${o.status}</span></td>
+                        <td>${o.payment}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // ----- ORDERS -----
+        function renderOrders() {
+            const tbody = document.getElementById('ordersTable');
+            if (data.orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#999;">No orders received yet.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.orders.map(o => `
+                <tr>
+                    <td>
+                        <strong>#${o.id}</strong><br>
+                        <span style="font-size:11px;color:#999;">🔑 ${o.trackingCode}</span>
+                    </td>
+                    <td>${o.customer}</td>
+                    <td>${o.phone || '-'}</td>
+                    <td style="font-size:12px;">${o.items.map(i => `${i.name} x${i.qty}`).join('<br>')}</td>
+                    <td>Rs. ${o.total.toLocaleString()}</td>
+                    <td><span class="badge ${o.payment === 'Prepaid' ? 'badge-info' : 'badge-warning'}">${o.payment}</span></td>
+                    <td><span class="badge ${o.status === 'Delivered' ? 'badge-success' : o.status === 'Shipped' ? 'badge-info' : o.status === 'Processing' ? 'badge-warning' : 'badge-danger'}">${o.status}</span></td>
+                    <td>
+                        <select onchange="updateOrderStatus(${o.id}, this.value)" style="padding:4px 6px;border-radius:6px;border:1px solid #ddd;font-size:12px;">
+                            <option value="Payment Pending" ${o.status === 'Payment Pending' ? 'selected' : ''}>⏳ Pending</option>
+                            <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>📦 Processing</option>
+                            <option value="Shipped" ${o.status === 'Shipped' ? 'selected' : ''}>🚚 Shipped</option>
+                            <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>✅ Delivered</option>
+                            <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>❌ Cancelled</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const order = data.orders.find(o => o.id === orderId);
+            if (!order) return;
+            const oldStatus = order.status;
+            order.status = newStatus;
+
+            data.notifications.push({
+                msg: `📦 Order #${orderId}: ${oldStatus} → ${newStatus}`,
+                time: new Date().toLocaleString(),
+                read: false
+            });
+
+            if (newStatus === 'Delivered' && oldStatus !== 'Delivered') {
+                data.accounting.push({
+                    date: new Date().toISOString().slice(0, 10),
+                    type: 'income',
+                    desc: `Order #${orderId} - ${order.customer}`,
+                    amount: order.total
+                });
+                showToast(`✅ Order #${orderId} delivered!`, 'success');
+            }
+
+            saveData();
+            renderAll();
+            renderProducts();
+        }
+
+        // ----- INVENTORY -----
+        function renderInventory() {
+            const tbody = document.getElementById('inventoryTable');
+            if (data.products.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;">No products.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.products.map(p => `
+                <tr>
+                    <td>${p.id}</td>
+                    <td>
+                        ${p.photo ? `<img src="${p.photo}" style="width:40px;height:40px;border-radius:4px;object-fit:cover;">` : '📦'}
+                    </td>
+                    <td><strong>${p.name}</strong><br><span style="font-size:11px;color:#999;">${p.category}</span></td>
+                    <td>Rs. ${p.price.toLocaleString()}</td>
+                    <td class="${p.stock < 5 ? 'stock-low' : 'stock-ok'}">${p.stock}</td>
+                    <td>${p.sold || 0}</td>
+                    <td>
+                        <button class="btn btn-success btn-sm" onclick="editStock(${p.id})">✏️</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addProduct(e) {
+            e.preventDefault();
+            const name = document.getElementById('prodName').value.trim();
+            const category = document.getElementById('prodCategory').value.trim();
+            const price = parseFloat(document.getElementById('prodPrice').value);
+            const stock = parseInt(document.getElementById('prodStock').value);
+            const desc = document.getElementById('prodDesc').value.trim();
+            const photoFile = document.getElementById('prodPhoto').files[0];
+
+            if (!name || !category || isNaN(price) || isNaN(stock)) {
+                showToast('⚠️ Fill all required fields!', 'error');
+                return false;
+            }
+
+            const newId = data.products.length > 0 ? Math.max(...data.products.map(p => p.id)) + 1 : 1;
+
+            if (photoFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const photoData = e.target.result;
+                    data.products.push({ id: newId, name, category, price, stock, sold: 0, desc, photo: photoData });
+                    saveData();
+                    renderAll();
+                    renderProducts();
+                    document.getElementById('productForm').reset();
+                    document.getElementById('prodPhotoPreview').classList.remove('show');
+                    showToast(`✅ "${name}" added with photo!`, 'success');
+                };
+                reader.readAsDataURL(photoFile);
+                return false;
+            } else {
+                data.products.push({ id: newId, name, category, price, stock, sold: 0, desc, photo: '' });
+                saveData();
+                renderAll();
+                renderProducts();
+                document.getElementById('productForm').reset();
+                showToast(`✅ "${name}" added!`, 'success');
+                return false;
+            }
+        }
+
+        function editStock(id) {
+            const p = data.products.find(pr => pr.id === id);
+            if (!p) return;
+            const newStock = prompt(`Stock for "${p.name}" (Current: ${p.stock}):`, p.stock);
+            if (newStock !== null && !isNaN(newStock) && parseInt(newStock) >= 0) {
+                p.stock = parseInt(newStock);
+                saveData();
+                renderAll();
+                renderProducts();
+                showToast(`📦 Stock updated to ${p.stock}`, 'success');
+            }
+        }
+
+        function deleteProduct(id) {
+            if (!confirm('Delete this product?')) return;
+            data.products = data.products.filter(p => p.id !== id);
+            saveData();
+            renderAll();
+            renderProducts();
+            showToast('🗑️ Product deleted.', '');
+        }
+
+        // ----- PAYMENTS -----
+        function renderPayments() {
+            const tbody = document.getElementById('paymentTable');
+            const pending = data.payments.filter(p => !p.verified);
+            if (pending.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#999;">✅ No pending verifications.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = pending.map(p => `
+                <tr>
+                    <td><strong>#${p.orderId}</strong></td>
+                    <td>${p.customer}</td>
+                    <td>Rs. ${p.amount.toLocaleString()}</td>
+                    <td>${p.screenshot || '❌ No screenshot'}</td>
+                    <td><span class="badge badge-warning">⏳ Pending</span></td>
+                    <td>
+                        <button class="btn btn-success btn-sm" onclick="verifyPayment(${p.orderId})">✅ Verify</button>
+                        <button class="btn btn-danger btn-sm" onclick="rejectPayment(${p.orderId})">❌ Reject</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function verifyPayment(orderId) {
+            const payment = data.payments.find(p => p.orderId === orderId);
+            if (!payment) return;
+            payment.verified = true;
+
+            const order = data.orders.find(o => o.id === orderId);
+            if (order && order.status === 'Payment Pending') {
+                order.status = 'Processing';
+            }
+
+            data.notifications.push({
+                msg: `✅ Payment verified for Order #${orderId}`,
+                time: new Date().toLocaleString(),
+                read: false
+            });
+
+            saveData();
+            renderAll();
+            showToast(`✅ Payment #${orderId} verified!`, 'success');
+        }
+
+        function rejectPayment(orderId) {
+            if (!confirm(`Reject payment for Order #${orderId}?`)) return;
+            data.payments = data.payments.filter(p => p.orderId !== orderId);
+
+            const order = data.orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = 'Cancelled';
+                order.items.forEach(item => {
+                    const p = data.products.find(pr => pr.name === item.name);
+                    if (p) { p.stock += item.qty;
+                        p.sold = Math.max(0, (p.sold || 0) - item.qty); }
+                });
+            }
+
+            saveData();
+            renderAll();
+            renderProducts();
+            showToast(`❌ Payment #${orderId} rejected.`, 'error');
+        }
+
+        // ----- OFFERS -----
+        function renderOffers() {
+            const tbody = document.getElementById('offersTable');
+            if (data.offers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#999;">No offers.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.offers.map(o => {
+                const p = data.products.find(pr => pr.id === o.productId);
+                return `
+                    <tr>
+                        <td>${p ? p.name : 'Deleted'}</td>
+                        <td><span class="badge badge-danger">${o.discount}%</span></td>
+                        <td><button class="btn btn-danger btn-sm" onclick="removeOffer(${o.productId})">🗑️</button></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function populateOfferProducts() {
+            const select = document.getElementById('offerProduct');
+            select.innerHTML = '<option value="">Select</option>' +
+                data.products.map(p => `<option value="${p.id}">${p.name} (Rs. ${p.price})</option>`).join('');
+        }
+
+        function addOffer() {
+            const productId = parseInt(document.getElementById('offerProduct').value);
+            const discount = parseFloat(document.getElementById('offerDiscount').value);
+            if (!productId || isNaN(discount) || discount <= 0 || discount > 100) {
+                showToast('⚠️ Select product & valid discount (1-100%).', 'error');
+                return;
+            }
+            if (data.offers.find(o => o.productId === productId)) {
+                showToast('⚠️ Offer already exists.', 'error');
+                return;
+            }
+            data.offers.push({ productId, discount });
+            saveData();
+            renderAll();
+            renderProducts();
+            document.getElementById('offerDiscount').value = '';
+            showToast(`🏷️ ${discount}% offer applied!`, 'success');
+        }
+
+        function removeOffer(productId) {
+            data.offers = data.offers.filter(o => o.productId !== productId);
+            saveData();
+            renderAll();
+            renderProducts();
+            showToast('🗑️ Offer removed.', '');
+        }
+
+        // ====================================================
+        //  NOTIFICATIONS
+        // ====================================================
+        function renderNotifications() {
+            const unread = data.notifications.filter(n => !n.read).length;
+            document.getElementById('notifBadge').textContent = unread;
+
+            const list = document.getElementById('notifList');
+            list.innerHTML = data.notifications.slice(-10).reverse().map(n => `
+                <div class="notif-item" style="${n.read ? 'opacity:0.6;' : ''}">
+                    ${n.msg}
+                    <div class="notif-time">${n.time}</div>
+                </div>
+            `).join('');
+        }
+
+        function toggleNotif() {
+            const list = document.getElementById('notifList');
+            list.classList.toggle('open');
+            if (list.classList.contains('open')) {
+                data.notifications.forEach(n => n.read = true);
+                saveData();
+                renderNotifications();
+            }
+        }
+
+        // ====================================================
+        //  TOAST
+        // ====================================================
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show';
+            if (type === 'success') toast.classList.add('success');
+            if (type === 'error') toast.classList.add('error');
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        // ====================================================
+        //  INIT
+        // ====================================================
+        async function initStore() {
+            await loadData();
+            renderProducts();
+            updateCartCount();
+
+            if (data.isLoggedIn) {
+                document.getElementById('adminToggleBtn').textContent = '👤 Admin';
+                document.getElementById('adminToggleBtn').classList.add('logged-in');
+                document.getElementById('adminUser').textContent = 'admin';
+                showAdmin();
+            }
+        }
+        initStore();
+
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDetail();
+        });
+        document.getElementById('loginModal').addEventListener('click', function(e) {
+            if (e.target === this) closeLoginModal();
+        });
+
+        console.log('🛒 NepalECom - Complete E-Commerce System (Supabase-backed)');
+        console.log('🔐 Admin: admin / admin123');
+        console.log('📸 Product Photo Upload Available');
+        console.log('🏷️ Offer Management Available');
+        console.log('📄 Billing & 💰 Accounting are now tabs inside the Admin panel.');
+    </script>
+
+    <!-- ================= BILLING SCRIPT (from latest1.html) ================= -->
+    <script>
+
+        let billingData = { invoices: [], currentInvoiceNo: 1 };
+
+        function bill_invoiceToRow(inv) {
+            return {
+                invoice_no: inv.invoiceNo, trans_date: inv.transDate || null, bill_date: inv.billDate || null,
+                payment_mode: inv.paymentMode, buyer_name: inv.buyerName, buyer_address: inv.buyerAddress,
+                buyer_pan: inv.buyerPan, items: inv.items, taxable_value: inv.taxableValue,
+                vat_amount: inv.vatAmount, total_amount: inv.totalAmount, amount_words: inv.amountWords
+            };
+        }
+        function bill_rowToInvoice(r) {
+            return {
+                invoiceNo: r.invoice_no, transDate: r.trans_date, billDate: r.bill_date,
+                paymentMode: r.payment_mode, buyerName: r.buyer_name, buyerAddress: r.buyer_address,
+                buyerPan: r.buyer_pan, items: r.items || [], taxableValue: Number(r.taxable_value) || 0,
+                vatAmount: Number(r.vat_amount) || 0, totalAmount: Number(r.total_amount) || 0,
+                amountWords: r.amount_words
+            };
+        }
+
+        async function bill_loadBillingData() {
+            // local cache first so the UI has something instantly
+            const saved = localStorage.getItem('billingSystemFullLedger');
+            if (saved) {
+                try { billingData = JSON.parse(saved); } catch (e) {}
+            }
+            bill_updateDashboard();
+
+            if (window.sb) {
+                try {
+                    const [{ data: invRows, error: e1 }, { data: metaRows, error: e2 }] = await Promise.all([
+                        sb.from('invoices').select('*').order('created_at', { ascending: true }),
+                        sb.from('billing_meta').select('*').eq('id', 1)
+                    ]);
+                    if (!e1 && invRows) billingData.invoices = invRows.map(bill_rowToInvoice);
+                    if (!e2 && metaRows && metaRows[0]) billingData.currentInvoiceNo = metaRows[0].current_invoice_no;
+                    localStorage.setItem('billingSystemFullLedger', JSON.stringify(billingData));
+                } catch (e) { console.error('Supabase billing load failed, using local cache', e); }
+            }
+            bill_updateDashboard();
+        }
+
+        async function bill_saveBillingData() {
+            localStorage.setItem('billingSystemFullLedger', JSON.stringify(billingData));
+            bill_updateDashboard();
+            if (window.sb) {
+                try {
+                    await sb.from('invoices').delete().neq('invoice_no', '__none__');
+                    if (billingData.invoices.length) {
+                        await sb.from('invoices').insert(billingData.invoices.map(bill_invoiceToRow));
+                    }
+                    await sb.from('billing_meta').upsert({ id: 1, current_invoice_no: billingData.currentInvoiceNo });
+                } catch (e) { console.error('Supabase billing save failed (kept locally)', e); }
+            }
+        }
+
+        function bill_updateDashboard() {
+            let cash = 0, credit = 0, cheque = 0, other = 0, grandTotal = 0;
+
+            billingData.invoices.forEach(inv => {
+                let amt = inv.totalAmount || 0;
+                grandTotal += amt;
+                if (inv.paymentMode === 'Cash') cash += amt;
+                else if (inv.paymentMode === 'Credit') credit += amt;
+                else if (inv.paymentMode === 'Cheque') cheque += amt;
+                else if (inv.paymentMode === 'Other') other += amt;
+            });
+
+            document.getElementById('bill-dashCash').textContent = 'Rs. ' + cash.toFixed(2);
+            document.getElementById('bill-dashCredit').textContent = 'Rs. ' + credit.toFixed(2);
+            document.getElementById('bill-dashCheque').textContent = 'Rs. ' + cheque.toFixed(2);
+            document.getElementById('bill-dashOther').textContent = 'Rs. ' + other.toFixed(2);
+            document.getElementById('bill-dashTotal').textContent = 'Rs. ' + grandTotal.toFixed(2);
+        }
+
+                        function bill_showSection(sectionId) {
+            document.getElementById('bill-billForm').style.display = 'none';
+            document.getElementById('bill-creditSection').style.display = 'none';
+            document.getElementById('bill-historySection').style.display = 'none';
+            document.getElementById('bill-invoicePreview').style.display = 'none';
+
+            document.getElementById('bill-' + sectionId).style.display = 'block';
+
+            if (sectionId === 'creditSection') bill_renderCreditList();
+            if (sectionId === 'historySection') bill_filterHistory();
+        }
+
+        function bill_setDefaultDates() {
+            const today = new Date().toISOString().slice(0, 10);
+            document.getElementById('bill-transDate').value = today;
+            document.getElementById('bill-billDate').value = today;
+        }
+
+        function bill_updateInvoiceNumber() {
+            const num = String(billingData.currentInvoiceNo).padStart(3, '0');
+            document.getElementById('bill-invoiceNumberDisplay').textContent = 'G-' + num;
+        }
+
+        let rowCounter = 1;
+        function bill_addRow() {
+            rowCounter++;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${rowCounter}</td>
+                <td><input type="text" class="hs-code" style="width:60px;"></td>
+                <td><input type="text" class="particulars" placeholder="Item name"></td>
+                <td><input type="number" class="qty" value="1" min="1" onchange="bill_calcRow(this)"></td>
+                <td><input type="number" class="rate" value="0" min="0" onchange="bill_calcRow(this)"></td>
+                <td>
+                    <select class="is-vat" onchange="bill_calcSummary()">
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </td>
+                <td><input type="text" class="row-total" readonly></td>
+                <td><button class="btn-remove-row" onclick="bill_removeRow(this)">✕</button></td>
+            `;
+            document.getElementById('bill-itemsBody').appendChild(tr);
+        }
+
+        function bill_removeRow(btn) {
+            btn.closest('tr').remove();
+            bill_calcSummary();
+        }
+
+        function bill_calcRow(input) {
+            const tr = input.closest('tr');
+            const qty = parseFloat(tr.querySelector('.qty').value) || 0;
+            const rate = parseFloat(tr.querySelector('.rate').value) || 0;
+            tr.querySelector('.row-total').value = (qty * rate).toFixed(2);
+            bill_calcSummary();
+        }
+
+        function bill_calcSummary() {
+            const rows = document.getElementById('bill-itemsBody').querySelectorAll('tr');
+            let taxable = 0;
+            let nonTaxable = 0;
+
+            rows.forEach(row => {
+                const total = parseFloat(row.querySelector('.row-total').value) || 0;
+                const isVat = row.querySelector('.is-vat').value;
+                if (isVat === 'Yes') taxable += total;
+                else nonTaxable += total;
+            });
+
+            const discount = parseFloat(document.getElementById('bill-discountPercent').value) || 0;
+            const discountedTaxable = taxable - (taxable * discount / 100);
+            const discountedNonTaxable = nonTaxable - (nonTaxable * discount / 100);
+
+            const vat = discountedTaxable * 0.13;
+            const grandTotal = discountedTaxable + discountedNonTaxable + vat;
+
+            document.getElementById('bill-taxableValue').value = discountedTaxable.toFixed(2);
+            document.getElementById('bill-vatAmount').value = vat.toFixed(2);
+            document.getElementById('bill-totalAmount').value = grandTotal.toFixed(2);
+            document.getElementById('bill-amountWords').value = bill_numberToWords(grandTotal);
+        }
+
+        // NUMBER TO WORDS WITH PAISA SUPPORT
+        function bill_numberToWords(amount) {
+            if (isNaN(amount) || amount === 0) return 'Zero Only';
+            
+            const parts = amount.toFixed(2).split('.');
+            let rupees = parseInt(parts[0]);
+            let paisa = parseInt(parts[1]);
+
+            const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+            const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+            function convert(n) {
+                if (n < 20) return ones[n];
+                if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '');
+                if (n < 1000) return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' ' + convert(n % 100) : '');
+                if (n < 100000) return convert(Math.floor(n / 1000)) + ' Thousand' + (n % 1000 ? ' ' + convert(n % 1000) : '');
+                if (n < 10000000) return convert(Math.floor(n / 100000)) + ' Lakh' + (n % 100000 ? ' ' + convert(n % 100000) : '');
+                return convert(Math.floor(n / 10000000)) + ' Crore' + (n % 10000000 ? ' ' + convert(n % 10000000) : '');
+            }
+
+            let result = '';
+            if (rupees > 0) {
+                result += convert(rupees) + ' Rupees';
+            }
+            if (paisa > 0) {
+                if (result !== '') result += ' And ';
+                result += convert(paisa) + ' Paisa';
+            }
+            return result + ' Only';
+        }
+
+        function bill_generateBill() {
+            const buyer = document.getElementById('bill-buyerName').value.trim();
+            if (!buyer) { bill_showToast('⚠️ Buyer Name is required!'); return; }
+
+            const rows = document.getElementById('bill-itemsBody').querySelectorAll('tr');
+            const items = [];
+            rows.forEach((row, i) => {
+                const part = row.querySelector('.particulars').value.trim();
+                const qty = parseFloat(row.querySelector('.qty').value) || 0;
+                const rate = parseFloat(row.querySelector('.rate').value) || 0;
+                if (part && qty > 0) {
+                    items.push({ 
+                        sn: i + 1, 
+                        hs: row.querySelector('.hs-code').value || '-',
+                        particulars: part, 
+                        qty, 
+                        rate, 
+                        isVat: row.querySelector('.is-vat').value, 
+                        total: qty * rate 
+                    });
+                }
+            });
+
+            if (items.length === 0) { bill_showToast('⚠️ Add at least 1 valid item!'); return; }
+
+            const invoice = {
+                invoiceNo: 'G-' + String(billingData.currentInvoiceNo).padStart(3, '0'),
+                transDate: document.getElementById('bill-transDate').value,
+                billDate: document.getElementById('bill-billDate').value,
+                paymentMode: document.getElementById('bill-paymentMode').value,
+                buyerName: buyer,
+                buyerAddress: document.getElementById('bill-buyerAddress').value.trim(),
+                buyerPan: document.getElementById('bill-buyerPan').value.trim(),
+                items: items,
+                taxableValue: parseFloat(document.getElementById('bill-taxableValue').value) || 0,
+                vatAmount: parseFloat(document.getElementById('bill-vatAmount').value) || 0,
+                totalAmount: parseFloat(document.getElementById('bill-totalAmount').value) || 0,
+                amountWords: document.getElementById('bill-amountWords').value
+            };
+
+            billingData.invoices.push(invoice);
+            billingData.currentInvoiceNo++;
+            bill_saveBillingData();
+            bill_updateInvoiceNumber();
+
+            bill_renderInvoice(invoice);
+            bill_showSection('invoicePreview');
+            bill_showToast('✅ Invoice Generated!');
+        }
+
+        function bill_renderInvoice(invoice) {
+            let itemsHtml = invoice.items.map(item => `
+                <tr>
+                    <td style="text-align:center;">${item.sn}</td>
+                    <td style="text-align:center;">${item.hs}</td>
+                    <td>${item.particulars}</td>
+                    <td style="text-align:center;">${item.qty}</td>
+                    <td style="text-align:right;">${item.rate.toFixed(2)}</td>
+                    <td style="text-align:center;">${item.isVat}</td>
+                    <td style="text-align:right;">${item.total.toFixed(2)}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('bill-invoicePrintArea').innerHTML = `
+                <div style="padding:25px;background:white;font-family:Arial, sans-serif;">
+                    <div style="text-align:center;border-bottom:2px solid #1a3a5c;padding-bottom:10px;">
+                        <h2 style="color:#1a3a5c;margin:0;font-size:22px;">ABC Pvt. Ltd.</h2>
+                        <p style="font-size:12px;color:#555;margin-top:4px;">Kathmandu, Nepal | Tel: 04111111 | PAN: 123456789</p>
+                    </div>
+                    <div style="text-align:center;margin:12px 0;">
+                        <span style="font-size:14px;font-weight:bold;border:2px solid #1a3a5c;padding:4px 18px;display:inline-block;color:#1a3a5c;">TAX INVOICE</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:13px;margin-bottom:15px;line-height:1.6;">
+                        <div><strong>Invoice No:</strong> ${invoice.invoiceNo}</div>
+                        <div><strong>Date:</strong> ${invoice.billDate}</div>
+                        <div><strong>Payment Mode:</strong> <span style="font-weight:bold;color:${invoice.paymentMode === 'Credit' ? '#c62828' : '#2e7d32'}">${invoice.paymentMode}</span></div>
+                        <div><strong>Buyer Name:</strong> ${invoice.buyerName}</div>
+                        <div><strong>Buyer PAN:</strong> ${invoice.buyerPan || '-'}</div>
+                    </div>
+                    <table border="1" style="width:100%;border-collapse:collapse;font-size:12px;" cellpadding="6">
+                        <thead>
+                            <tr style="background:#f0f4f8;">
+                                <th style="width:30px;">S.N.</th>
+                                <th style="width:60px;">H.S.</th>
+                                <th>Particulars</th>
+                                <th style="width:40px;">Qty</th>
+                                <th style="width:80px;text-align:right;">Rate</th>
+                                <th style="width:50px;">VAT?</th>
+                                <th style="width:90px;text-align:right;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>${itemsHtml}</tbody>
+                    </table>
+
+                    <div style="text-align:right;margin-top:12px;font-size:13px;line-height:1.6;">
+                        <p><strong>Taxable Value:</strong> Rs. ${invoice.taxableValue.toFixed(2)}</p>
+                        <p><strong>VAT (13%):</strong> Rs. ${invoice.vatAmount.toFixed(2)}</p>
+                        <p style="font-size:16px;color:#2e7d32;margin-top:4px;"><strong>Total Amount:</strong> Rs. ${invoice.totalAmount.toFixed(2)}</p>
+                        <p style="margin-top:4px;"><strong>In Words:</strong> ${invoice.amountWords}</p>
+                    </div>
+
+                    <!-- SIGNATURE BLOCK -->
+                    <div style="margin-top:60px;display:flex;justify-content:space-between;align-items:flex-end;">
+                        <div style="text-align:center;">
+                            <p style="border-top:1px dashed #777;width:180px;padding-top:5px;font-size:12px;font-weight:bold;color:#555;">Received By (ग्राहकको सही)</p>
+                        </div>
+                        <div style="text-align:center;">
+                            <p style="border-top:1px dashed #777;width:180px;padding-top:5px;font-size:12px;font-weight:bold;color:#555;">Prepared / Authorized Signature</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function bill_renderCreditList() {
+            const tbody = document.getElementById('bill-creditTableBody');
+            const creditInvoices = billingData.invoices.filter(i => i.paymentMode === 'Credit');
+
+            if (creditInvoices.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#777;">कुनै पनि ग्राहकको उधारो बाँकी छैन।</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = creditInvoices.map(inv => `
+                <tr>
+                    <td><strong>${inv.invoiceNo}</strong></td>
+                    <td>${inv.billDate}</td>
+                    <td><strong>${inv.buyerName}</strong></td>
+                    <td>${inv.buyerAddress || '-'} / ${inv.buyerPan || '-'}</td>
+                    <td style="color:#d32f2f;font-weight:bold;">Rs. ${inv.totalAmount.toFixed(2)}</td>
+                    <td><span class="status-badge badge-credit">UNPAID (उधारो)</span></td>
+                    <td>
+                        <button style="background:#2e7d32;color:white;border:none;padding:5px 10px;border-radius:4px;cursor:pointer;" onclick="bill_payCredit('${inv.invoiceNo}')">💳 Receive Payment</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function bill_payCredit(invNo) {
+            const index = billingData.invoices.findIndex(i => i.invoiceNo === invNo);
+            if (index !== -1) {
+                const mode = prompt(`Receive payment for ${billingData.invoices[index].buyerName} (${invNo}).\nChoose Mode: Cash, Cheque, or Other`, 'Cash');
+                if (mode && ['Cash', 'Cheque', 'Other'].includes(mode)) {
+                    billingData.invoices[index].paymentMode = mode;
+                    bill_saveBillingData();
+                    bill_renderCreditList();
+                    bill_showToast(`✅ Credit paid via ${mode}!`);
+                } else if(mode) {
+                    alert('Invalid Mode! Use Cash, Cheque, or Other');
+                }
+            }
+        }
+
+        let filteredInvoices = [];
+        function bill_filterHistory() {
+            const keyword = document.getElementById('bill-searchKeyword').value.toLowerCase().trim();
+            const mode = document.getElementById('bill-filterMode').value;
+            const dateFrom = document.getElementById('bill-filterDateFrom').value;
+            const dateTo = document.getElementById('bill-filterDateTo').value;
+
+            filteredInvoices = billingData.invoices.filter(inv => {
+                const matchKeyword = inv.buyerName.toLowerCase().includes(keyword) || inv.invoiceNo.toLowerCase().includes(keyword);
+                const matchMode = (mode === 'ALL') || (inv.paymentMode === mode);
+                const matchDateFrom = !dateFrom || (inv.billDate >= dateFrom);
+                const matchDateTo = !dateTo || (inv.billDate <= dateTo);
+
+                return matchKeyword && matchMode && matchDateFrom && matchDateTo;
+            });
+
+            bill_renderHistoryTable(filteredInvoices);
+        }
+
+        function bill_renderHistoryTable(list) {
+            const tbody = document.getElementById('bill-historyTableBody');
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No records found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map(inv => `
+                <tr>
+                    <td><strong>${inv.invoiceNo}</strong></td>
+                    <td>${inv.billDate}</td>
+                    <td>${inv.buyerName}</td>
+                    <td>Rs. ${inv.totalAmount.toFixed(2)}</td>
+                    <td><strong>${inv.paymentMode}</strong></td>
+                    <td>
+                        <span class="status-badge ${inv.paymentMode === 'Credit' ? 'badge-credit' : 'badge-paid'}">
+                            ${inv.paymentMode === 'Credit' ? 'UNPAID' : 'PAID'}
+                        </span>
+                    </td>
+                    <td>
+                        <button style="background:#1976d2;color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;" onclick="bill_viewSingleInvoice('${inv.invoiceNo}')">👁️ View</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function bill_viewSingleInvoice(invNo) {
+            const inv = billingData.invoices.find(i => i.invoiceNo === invNo);
+            if (inv) {
+                bill_renderInvoice(inv);
+                bill_showSection('invoicePreview');
+            }
+        }
+
+        function bill_exportToCSV() {
+            if (filteredInvoices.length === 0) {
+                alert('No data to export!');
+                return;
+            }
+
+            let csv = 'Invoice No,Bill Date,Buyer Name,Payment Mode,Total Amount,Status\n';
+            filteredInvoices.forEach(inv => {
+                const status = inv.paymentMode === 'Credit' ? 'UNPAID' : 'PAID';
+                csv += `"${inv.invoiceNo}","${inv.billDate}","${inv.buyerName}","${inv.paymentMode}","${inv.totalAmount}","${status}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `Billing_Report_${new Date().toISOString().slice(0,10)}.csv`);
+            a.click();
+            bill_showToast('📥 Data Exported to CSV!');
+        }
+
+        function bill_downloadPDF() {
+            const element = document.getElementById('bill-invoicePrintArea');
+            html2pdf().from(element).save('Tax_Invoice.pdf');
+        }
+
+        function bill_clearForm() {
+            document.getElementById('bill-buyerName').value = '';
+            document.getElementById('bill-buyerAddress').value = '';
+            document.getElementById('bill-buyerPan').value = '';
+            document.getElementById('bill-discountPercent').value = '0';
+            bill_calcSummary();
+        }
+
+        function bill_showToast(msg) {
+            const toast = document.getElementById('bill-toast');
+            toast.textContent = msg;
+            toast.className = 'toast show';
+            setTimeout(() => toast.className = 'toast', 3000);
+        }
+
+        async function bill_init() {
+            await bill_loadBillingData();
+            bill_setDefaultDates();
+            bill_updateInvoiceNumber();
+            bill_showSection('billForm');
+        }
+        bill_init();
+    
+    </script>
+
+    <!-- ================= ACCOUNTING SCRIPT (from gemini-code file) ================= -->
+    <script>
+
+        // MASTER CHART OF ACCOUNTS (COA)
+        const COA = [
+            { code: 1001, name: "Cash in Hand (नगद मौज्दात)", group: "Current Assets", type: "Asset" },
+            { code: 1002, name: "Nabil Bank Current A/c", group: "Current Assets", type: "Asset" },
+            { code: 1003, name: "Nepal Bank Savings A/c", group: "Current Assets", type: "Asset" },
+            { code: 1004, name: "Petty Cash Fund", group: "Current Assets", type: "Asset" },
+            { code: 1005, name: "Accounts Receivable / Debtors", group: "Current Assets", type: "Asset" },
+            { code: 1007, name: "Office Furniture & Fixtures", group: "Fixed Assets", type: "Asset" },
+            { code: 1008, name: "Computer & IT Equipment", group: "Fixed Assets", type: "Asset" },
+            
+            { code: 2001, name: "Accounts Payable / Creditors", group: "Current Liabilities", type: "Liability" },
+            { code: 2002, name: "Outstanding Salary Payable", group: "Current Liabilities", type: "Liability" },
+            { code: 2005, name: "Long Term Bank Loan", group: "Long Term Liabilities", type: "Liability" },
+
+            { code: 3001, name: "Owner Capital A/c (पुँजी खाता)", group: "Equity", type: "Equity" },
+            { code: 3002, name: "Owner Drawing A/c", group: "Equity", type: "Equity" },
+
+            { code: 4001, name: "Sales Revenue (सामान बिक्री आम्दानी)", group: "Direct Income", type: "Revenue" },
+            { code: 4002, name: "Service Income / Consultancy Fee", group: "Indirect Income", type: "Revenue" },
+
+            { code: 5001, name: "Purchase A/c (सामान खरिद)", group: "Direct Expense", type: "Expense" },
+            { code: 6001, name: "Office Staff Salary", group: "Indirect Expense", type: "Expense" },
+            { code: 6002, name: "Office Rent Expense", group: "Indirect Expense", type: "Expense" },
+            { code: 6003, name: "Printing & Stationery Expense", group: "Indirect Expense", type: "Expense" }
+        ];
+
+        // SAMPLE TRANSACTIONS (used only the very first time, before Supabase has any rows)
+        let journalEntries = JSON.parse(localStorage.getItem('web_acc_entries_v2')) || [
+            { id: '101', date: "2026-01-01", debit: "Cash in Hand (नगद मौज्दात)", credit: "Owner Capital A/c (पुँजी खाता)", narration: "Being capital introduced in business", amount: 500000 },
+            { id: '102', date: "2026-01-02", debit: "Nabil Bank Current A/c", credit: "Cash in Hand (नगद मौज्दात)", narration: "Being cash deposited into bank", amount: 200000 },
+            { id: '103', date: "2026-01-05", debit: "Purchase A/c (सामान खरिद)", credit: "Accounts Payable / Creditors", narration: "Being goods purchased on credit", amount: 120000 },
+            { id: '104', date: "2026-01-10", debit: "Cash in Hand (नगद मौज्दात)", credit: "Sales Revenue (सामान बिक्री आम्दानी)", narration: "Being goods sold for cash", amount: 180000 },
+            { id: '105', date: "2026-01-15", debit: "Office Rent Expense", credit: "Nabil Bank Current A/c", narration: "Being rent paid via cheque", amount: 25000 },
+            { id: '106', date: "2026-01-20", debit: "Office Staff Salary", credit: "Nabil Bank Current A/c", narration: "Being salary paid to staff", amount: 45000 }
+        ];
+
+        function acc_entryToRow(e) {
+            return { id: String(e.id), entry_date: e.date || null, debit: e.debit, credit: e.credit, narration: e.narration, amount: e.amount };
+        }
+        function acc_rowToEntry(r) {
+            return { id: r.id, date: r.entry_date, debit: r.debit, credit: r.credit, narration: r.narration, amount: Number(r.amount) || 0 };
+        }
+
+        async function acc_loadFromSupabase() {
+            if (!window.sb) return;
+            try {
+                const { data: rows, error } = await sb.from('journal_entries').select('*').order('entry_date', { ascending: true });
+                if (!error && rows && rows.length) {
+                    journalEntries = rows.map(acc_rowToEntry);
+                } else if (!error && rows && rows.length === 0) {
+                    // table empty -> push the starter demo entries once so Supabase has data too
+                    await sb.from('journal_entries').insert(journalEntries.map(acc_entryToRow));
+                }
+                localStorage.setItem('web_acc_entries_v2', JSON.stringify(journalEntries));
+            } catch (e) { console.error('Supabase accounting load failed, using local cache', e); }
+        }
+
+        async function acc_saveAndRefresh() {
+            localStorage.setItem('web_acc_entries_v2', JSON.stringify(journalEntries));
+            acc_recalculateSystem();
+            if (window.sb) {
+                try {
+                    await sb.from('journal_entries').delete().neq('id', '__none__');
+                    if (journalEntries.length) {
+                        await sb.from('journal_entries').insert(journalEntries.map(acc_entryToRow));
+                    }
+                } catch (e) { console.error('Supabase accounting save failed (kept locally)', e); }
+            }
+        }
+
+        async function acc_init() {
+            acc_populateDropdowns();
+            document.getElementById('acc-entry-date').valueAsDate = new Date();
+            await acc_loadFromSupabase();
+            acc_recalculateSystem();
+        }
+        acc_init();
+
+        function acc_switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('bg-indigo-50', 'text-indigo-700');
+                el.classList.add('text-slate-600');
+            });
+
+            document.getElementById(`acc-tab-${tabName}`).classList.add('active');
+            const activeBtn = document.getElementById(`acc-btn-${tabName}`);
+            if(activeBtn) {
+                activeBtn.classList.add('bg-indigo-50', 'text-indigo-700');
+            }
+        }
+
+        function acc_populateDropdowns() {
+            const selects = document.querySelectorAll('.coa-select');
+            selects.forEach(select => {
+                select.innerHTML = '<option value="">-- खाता छान्नुहोस् --</option>';
+                COA.forEach(acc => {
+                    select.innerHTML += `<option value="${acc.name}">${acc.name}</option>`;
+                });
+            });
+        }
+
+        function acc_saveEntry(e) {
+            e.preventDefault();
+            const id = Date.now().toString().slice(-4);
+            const date = document.getElementById('acc-entry-date').value;
+            const amount = parseFloat(document.getElementById('acc-entry-amount').value);
+            const debit = document.getElementById('acc-entry-debit').value;
+            const credit = document.getElementById('acc-entry-credit').value;
+            const narration = document.getElementById('acc-entry-narration').value;
+
+            if(debit === credit) {
+                alert("Debit र Credit एउटै खाता हुनुहुँदैन!");
+                return;
+            }
+
+            journalEntries.push({ id, date, debit, credit, narration, amount });
+            acc_saveAndRefresh();
+            document.getElementById('acc-journal-form').reset();
+            document.getElementById('acc-entry-date').valueAsDate = new Date();
+            alert("भौचर सफलतापुर्वक दर्ता भयो!");
+            acc_switchTab('journal-book');
+        }
+
+        function acc_deleteEntry(id) {
+            if(confirm("के तपाईं यो इन्ट्री मेटाउन चाहनुहुन्छ?")) {
+                journalEntries = journalEntries.filter(item => item.id != id);
+                acc_saveAndRefresh();
+            }
+        }
+
+        // RECALCULATE SYSTEM
+        function acc_recalculateSystem() {
+            acc_renderJournalRegister();
+            acc_renderSelectedLedger();
+            acc_renderManageEntries();
+            acc_calculateFinancialStatements();
+        }
+
+        // 1. RENDER STANDARD JOURNAL REGISTER
+        function acc_renderJournalRegister() {
+            const jBody = document.getElementById('acc-journal-register-body');
+            jBody.innerHTML = '';
+            let totalDr = 0, totalCr = 0;
+
+            journalEntries.forEach(item => {
+                totalDr += parseFloat(item.amount);
+                totalCr += parseFloat(item.amount);
+
+                jBody.innerHTML += `
+                    <!-- Debit Line -->
+                    <tr class="bg-white">
+                        <td class="p-2.5 border border-slate-300 font-mono text-xs">${item.date}</td>
+                        <td class="p-2.5 border border-slate-300 font-mono text-xs text-center">#${item.id}</td>
+                        <td class="p-2.5 border-x border-slate-300 font-semibold text-slate-800">${item.debit} <span class="float-right text-xs text-slate-500">Dr.</span></td>
+                        <td class="p-2.5 border border-slate-300 text-center font-mono text-xs">J1</td>
+                        <td class="p-2.5 border border-slate-300 text-right font-mono font-medium">रू ${item.amount.toLocaleString()}</td>
+                        <td class="p-2.5 border border-slate-300 text-right font-mono text-slate-300">-</td>
+                    </tr>
+                    <!-- Credit Line -->
+                    <tr class="bg-white">
+                        <td class="p-2 border-x border-slate-300"></td>
+                        <td class="p-2 border-x border-slate-300"></td>
+                        <td class="p-2 border-x border-slate-300 pl-8 font-semibold text-slate-700">To ${item.credit} <span class="float-right text-xs text-slate-500">Cr.</span></td>
+                        <td class="p-2 border-x border-slate-300"></td>
+                        <td class="p-2 border border-slate-300 text-right font-mono text-slate-300">-</td>
+                        <td class="p-2 border border-slate-300 text-right font-mono font-medium">रू ${item.amount.toLocaleString()}</td>
+                    </tr>
+                    <!-- Narration Line -->
+                    <tr class="bg-slate-50/50 border-b border-slate-300 text-xs italic text-slate-500">
+                        <td class="p-1.5 border-x border-slate-300"></td>
+                        <td class="p-1.5 border-x border-slate-300"></td>
+                        <td colspan="4" class="p-1.5 border-x border-slate-300 pl-4">(${item.narration || 'Being transaction recorded'})</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('acc-journal-total-dr').innerText = 'रू ' + totalDr.toLocaleString();
+            document.getElementById('acc-journal-total-cr').innerText = 'रू ' + totalCr.toLocaleString();
+
+            // Dashboard recent entries
+            const recentBody = document.getElementById('acc-dash-recent-table');
+            recentBody.innerHTML = '';
+            journalEntries.slice(-5).reverse().forEach(item => {
+                recentBody.innerHTML += `
+                    <tr>
+                        <td class="p-3 border-b font-mono text-xs">#${item.id}</td>
+                        <td class="p-3 border-b">${item.date}</td>
+                        <td class="p-3 border-b font-medium text-emerald-700">${item.debit}</td>
+                        <td class="p-3 border-b font-medium text-rose-700">${item.credit}</td>
+                        <td class="p-3 border-b text-right font-bold">रू ${item.amount.toLocaleString()}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // 2. RENDER SELECTED LEDGER ACCOUNT (Standard Ledger Format)
+        function acc_renderSelectedLedger() {
+            const selectedAcc = document.getElementById('acc-ledger-select-acc').value || "Cash in Hand (नगद मौज्दात)";
+            const coaMatch = COA.find(c => c.name === selectedAcc) || { type: "Asset" };
+
+            document.getElementById('acc-ledger-title-name').innerText = `Ledger Account: ${selectedAcc}`;
+            document.getElementById('acc-ledger-account-type').innerText = `Type: ${coaMatch.type}`;
+
+            const lBody = document.getElementById('acc-ledger-account-body');
+            lBody.innerHTML = '';
+
+            let runningBalance = 0;
+            let sumDr = 0;
+            let sumCr = 0;
+
+            journalEntries.forEach(item => {
+                let dr = 0, cr = 0, particulars = "";
+
+                if(item.debit === selectedAcc) {
+                    dr = parseFloat(item.amount);
+                    particulars = `To ${item.credit}`;
+                    sumDr += dr;
+                } else if(item.credit === selectedAcc) {
+                    cr = parseFloat(item.amount);
+                    particulars = `By ${item.debit}`;
+                    sumCr += cr;
+                } else {
+                    return; // Skip if account is not involved
+                }
+
+                if (coaMatch.type === 'Asset' || coaMatch.type === 'Expense') {
+                    runningBalance += (dr - cr);
+                } else {
+                    runningBalance += (cr - dr);
+                }
+
+                let balType = runningBalance >= 0 ? "Dr" : "Cr";
+
+                lBody.innerHTML += `
+                    <tr>
+                        <td class="p-2.5 border border-slate-300 font-mono text-xs">${item.date}</td>
+                        <td class="p-2.5 border border-slate-300 font-medium">${particulars}</td>
+                        <td class="p-2.5 border border-slate-300 text-center font-mono text-xs">#${item.id}</td>
+                        <td class="p-2.5 border border-slate-300 text-right font-mono">${dr ? 'रू ' + dr.toLocaleString() : '-'}</td>
+                        <td class="p-2.5 border border-slate-300 text-right font-mono">${cr ? 'रू ' + cr.toLocaleString() : '-'}</td>
+                        <td class="p-2.5 border border-slate-300 text-right font-mono font-bold">रू ${Math.abs(runningBalance).toLocaleString()} ${balType}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('acc-ledger-total-dr').innerText = 'रू ' + sumDr.toLocaleString();
+            document.getElementById('acc-ledger-total-cr').innerText = 'रू ' + sumCr.toLocaleString();
+            let finalBalType = runningBalance >= 0 ? "Dr" : "Cr";
+            document.getElementById('acc-ledger-final-balance').innerText = `रू ${Math.abs(runningBalance).toLocaleString()} ${finalBalType}`;
+        }
+
+        // 3. RENDER MANAGE ENTRIES
+        function acc_renderManageEntries() {
+            const entriesBody = document.getElementById('acc-entries-table-body');
+            entriesBody.innerHTML = '';
+            journalEntries.forEach(item => {
+                entriesBody.innerHTML += `
+                    <tr>
+                        <td class="p-3 border font-mono text-xs">#${item.id}</td>
+                        <td class="p-3 border">${item.date}</td>
+                        <td class="p-3 border text-emerald-700 font-medium">${item.debit}</td>
+                        <td class="p-3 border text-rose-700 font-medium">${item.credit}</td>
+                        <td class="p-3 border text-slate-500">${item.narration || '-'}</td>
+                        <td class="p-3 border text-right font-bold">रू ${item.amount.toLocaleString()}</td>
+                        <td class="p-3 border text-center">
+                            <button onclick="acc_deleteEntry(${item.id})" class="text-rose-600 hover:text-rose-800 text-xs px-2 py-1 bg-rose-50 rounded border border-rose-200">
+                                <i class="fa-solid fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // 4. FINANCIAL STATEMENTS & TRIAL BALANCE CALCULATOR
+        function acc_calculateFinancialStatements() {
+            let balances = {};
+            COA.forEach(acc => balances[acc.name] = 0);
+
+            journalEntries.forEach(entry => {
+                const amt = parseFloat(entry.amount);
+                if(balances[entry.debit] !== undefined) balances[entry.debit] += amt;
+                if(balances[entry.credit] !== undefined) balances[entry.credit] -= amt;
+            });
+
+            // Trial Balance
+            const tbBody = document.getElementById('acc-tb-body');
+            tbBody.innerHTML = '';
+            let totalDr = 0, totalCr = 0;
+
+            COA.forEach(acc => {
+                let bal = balances[acc.name] || 0;
+                let dr = 0, cr = 0;
+
+                if (acc.type === 'Asset' || acc.type === 'Expense') {
+                    if (bal >= 0) dr = bal; else cr = Math.abs(bal);
+                } else {
+                    if (bal <= 0) cr = Math.abs(bal); else dr = bal;
+                }
+
+                if(dr > 0 || cr > 0) {
+                    totalDr += dr;
+                    totalCr += cr;
+                    tbBody.innerHTML += `
+                        <tr>
+                            <td class="p-2.5 border border-slate-300 font-mono">${acc.code}</td>
+                            <td class="p-2.5 border border-slate-300 font-medium">${acc.name}</td>
+                            <td class="p-2.5 border border-slate-300 text-right font-mono">${dr ? 'रू ' + dr.toLocaleString() : '-'}</td>
+                            <td class="p-2.5 border border-slate-300 text-right font-mono">${cr ? 'रू ' + cr.toLocaleString() : '-'}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            document.getElementById('acc-tb-total-dr').innerText = 'रू ' + totalDr.toLocaleString();
+            document.getElementById('acc-tb-total-cr').innerText = 'रू ' + totalCr.toLocaleString();
+
+            // P&L and Balance Sheet
+            const plExpList = document.getElementById('acc-pl-expenses-list');
+            const plIncList = document.getElementById('acc-pl-incomes-list');
+            plExpList.innerHTML = ''; plIncList.innerHTML = '';
+
+            let totalPLInc = 0, totalPLExp = 0;
+
+            const bsAssetsList = document.getElementById('acc-bs-assets-list');
+            const bsLiabList = document.getElementById('acc-bs-liab-list');
+            bsAssetsList.innerHTML = ''; bsLiabList.innerHTML = '';
+
+            let totalAssets = 0, totalLiabEquity = 0;
+
+            COA.forEach(acc => {
+                let bal = balances[acc.name] || 0;
+                
+                if(acc.type === 'Expense' && bal !== 0) {
+                    totalPLExp += bal;
+                    plExpList.innerHTML += `<div class="flex justify-between"><span>${acc.name}:</span> <span class="font-mono">रू ${bal.toLocaleString()}</span></div>`;
+                }
+                if(acc.type === 'Revenue' && bal !== 0) {
+                    let revAmt = Math.abs(bal);
+                    totalPLInc += revAmt;
+                    plIncList.innerHTML += `<div class="flex justify-between"><span>${acc.name}:</span> <span class="font-mono">रू ${revAmt.toLocaleString()}</span></div>`;
+                }
+
+                if(acc.type === 'Asset' && bal !== 0) {
+                    totalAssets += bal;
+                    bsAssetsList.innerHTML += `<div class="flex justify-between"><span>${acc.name}:</span> <span class="font-mono">रू ${bal.toLocaleString()}</span></div>`;
+                }
+                if((acc.type === 'Liability' || acc.type === 'Equity') && bal !== 0) {
+                    let liabAmt = Math.abs(bal);
+                    totalLiabEquity += liabAmt;
+                    bsLiabList.innerHTML += `<div class="flex justify-between"><span>${acc.name}:</span> <span class="font-mono">रू ${liabAmt.toLocaleString()}</span></div>`;
+                }
+            });
+
+            let netProfit = totalPLInc - totalPLExp;
+            totalLiabEquity += netProfit;
+
+            document.getElementById('acc-pl-total-exp').innerText = 'रू ' + totalPLExp.toLocaleString();
+            document.getElementById('acc-pl-total-inc').innerText = 'रू ' + totalPLInc.toLocaleString();
+            document.getElementById('acc-pl-net-result').innerText = 'रू ' + netProfit.toLocaleString();
+
+            document.getElementById('acc-bs-total-assets').innerText = 'रू ' + totalAssets.toLocaleString();
+            document.getElementById('acc-bs-total-liab').innerText = 'रू ' + totalLiabEquity.toLocaleString();
+
+            document.getElementById('acc-dash-revenue').innerText = 'रू ' + totalPLInc.toLocaleString();
+            document.getElementById('acc-dash-expense').innerText = 'रू ' + totalPLExp.toLocaleString();
+            document.getElementById('acc-dash-netprofit').innerText = 'रू ' + netProfit.toLocaleString();
+            document.getElementById('acc-dash-assets').innerText = 'रू ' + totalAssets.toLocaleString();
+        }
+    
+    </script>
+</body>
+</html>
