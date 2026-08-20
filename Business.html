@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ABC Pvt. Ltd. – Complete System with E-Commerce</title>
+    <title>ABC Pvt. Ltd. – Complete Business System</title>
 
     <!-- Tailwind + FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,6 +18,7 @@
     <style>
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        
         .stat-card {
             background: white;
             border-radius: 12px;
@@ -25,14 +26,15 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.04);
             border-left: 5px solid #1e3a5f;
         }
-        .stat-card .label { font-size: 12px; color: #666; text-transform: uppercase; }
+        .stat-card .label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.3px; }
         .stat-card .value { font-size: 22px; font-weight: 700; color: #1e3a5f; }
+
         .badge-credit { background: #fee2e2; color: #b91c1c; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
         .badge-paid { background: #dcfce7; color: #166534; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
         .badge-pending { background: #fef3c7; color: #92400e; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
         .badge-delivered { background: #dbeafe; color: #1e40af; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
         .badge-shipped { background: #e0e7ff; color: #3730a3; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
-        
+
         .nav-btn {
             cursor: pointer;
             transition: all 0.2s;
@@ -120,30 +122,20 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.08);
             transform: translateY(-2px);
         }
-        .product-card .price {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1e3a5f;
-        }
-        .product-card .old-price {
-            text-decoration: line-through;
-            color: #999;
-            font-size: 14px;
-            font-weight: 400;
-        }
-        .discount-badge {
-            background: #dc2626;
-            color: white;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-        }
+        .product-card .price { font-size: 20px; font-weight: 700; color: #1e3a5f; }
+        .product-card .old-price { text-decoration: line-through; color: #999; font-size: 14px; font-weight: 400; }
+        .discount-badge { background: #dc2626; color: white; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
 
         @media print {
             .no-print { display: none !important; }
             .invoice-box { padding: 20px; }
         }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #15324f; }
     </style>
 </head>
 <body>
@@ -214,7 +206,7 @@
         <!-- ====== MAIN CONTENT ====== -->
         <main class="md:col-span-5 space-y-4">
 
-            <!-- ===== DASHBOARD TAB ===== -->
+            <!-- ===== DASHBOARD ===== -->
             <section id="tab-dashboard" class="tab-content active">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <div class="stat-card"><div class="label">💰 Total Revenue</div><div class="value" id="dashRevenue">Rs. 0</div></div>
@@ -223,20 +215,18 @@
                     <div class="stat-card" style="border-left-color:#059669;"><div class="label">🛍️ Total Products</div><div class="value" id="dashProducts">0</div></div>
                 </div>
 
-                <!-- Recent Orders -->
                 <div class="bg-white p-4 rounded-xl shadow-sm">
                     <h4 class="font-semibold text-[#1e3a5f] mb-2">📦 Recent Online Orders</h4>
                     <div id="recentOrders" class="text-sm"></div>
                 </div>
 
-                <!-- Recent Activity -->
                 <div class="bg-white p-4 rounded-xl shadow-sm">
                     <h4 class="font-semibold text-[#1e3a5f] mb-2">📌 Recent Activity</h4>
                     <div id="recentActivity" class="text-sm text-gray-600 space-y-1"></div>
                 </div>
             </section>
 
-            <!-- ===== ORDERS TAB (Online Orders) ===== -->
+            <!-- ===== ORDERS ===== -->
             <section id="tab-orders" class="tab-content">
                 <div class="bg-white p-5 rounded-xl shadow-sm">
                     <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
@@ -244,7 +234,6 @@
                         <button onclick="exportOrdersCSV()" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm">📥 Export CSV</button>
                     </div>
 
-                    <!-- Order Stats -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                         <div class="bg-blue-50 p-3 rounded-lg text-center"><span class="text-xs text-gray-600">Total</span><div class="font-bold text-xl" id="orderTotal">0</div></div>
                         <div class="bg-yellow-50 p-3 rounded-lg text-center"><span class="text-xs text-gray-600">Pending</span><div class="font-bold text-xl text-orange-600" id="orderPending">0</div></div>
@@ -252,7 +241,6 @@
                         <div class="bg-green-50 p-3 rounded-lg text-center"><span class="text-xs text-gray-600">Delivered</span><div class="font-bold text-xl text-green-600" id="orderDelivered">0</div></div>
                     </div>
 
-                    <!-- Filter -->
                     <div class="flex flex-wrap gap-2 mb-3">
                         <input type="text" id="orderSearch" placeholder="🔍 Search by customer/tracking" onkeyup="filterOrders()" class="border rounded-lg p-2 text-sm flex-1 min-w-[150px]" />
                         <select id="orderStatusFilter" onchange="filterOrders()" class="border rounded-lg p-2 text-sm">
@@ -270,7 +258,6 @@
                         </select>
                     </div>
 
-                    <!-- Orders Table -->
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm border">
                             <thead class="bg-gray-50"><tr>
@@ -289,7 +276,7 @@
                 </div>
             </section>
 
-            <!-- ===== BILLING TAB ===== -->
+            <!-- ===== BILLING ===== -->
             <section id="tab-billing" class="tab-content">
                 <div class="bg-white p-5 rounded-xl shadow-sm">
                     <div class="flex justify-between items-center mb-3">
@@ -348,7 +335,7 @@
                 </div>
             </section>
 
-            <!-- ===== CREDIT TAB ===== -->
+            <!-- ===== CREDIT ===== -->
             <section id="tab-credit" class="tab-content">
                 <div class="bg-white p-5 rounded-xl shadow-sm">
                     <h3 class="text-lg font-bold text-red-600">🔴 Credit (उधारो) बाँकी रहेका ग्राहकहरू</h3>
@@ -365,7 +352,7 @@
                 </div>
             </section>
 
-            <!-- ===== PRODUCTS TAB (E-Commerce) ===== -->
+            <!-- ===== PRODUCTS ===== -->
             <section id="tab-products" class="tab-content">
                 <div class="bg-white p-5 rounded-xl shadow-sm">
                     <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
@@ -373,7 +360,6 @@
                         <button onclick="openProductModal()" class="bg-[#1e3a5f] text-white px-4 py-1.5 rounded-lg text-sm">➕ Add Product</button>
                     </div>
 
-                    <!-- Product Stats -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                         <div class="bg-blue-50 p-3 rounded-lg text-center"><span class="text-xs text-gray-600">Total Products</span><div class="font-bold text-xl" id="prodTotal">0</div></div>
                         <div class="bg-green-50 p-3 rounded-lg text-center"><span class="text-xs text-gray-600">In Stock</span><div class="font-bold text-xl text-green-600" id="prodInStock">0</div></div>
@@ -392,7 +378,7 @@
                 </div>
             </section>
 
-            <!-- ===== ACCOUNTING TAB ===== -->
+            <!-- ===== ACCOUNTING ===== -->
             <section id="tab-accounting" class="tab-content">
                 <div class="bg-white p-5 rounded-xl shadow-sm">
                     <h3 class="text-lg font-bold text-[#1e3a5f]">💰 Accounting System</h3>
@@ -544,6 +530,7 @@
     let accountingEntries = [];
     let orders = [];
     let products = [];
+    let rowCounter = 1;
 
     // Chart of Accounts
     const COA = [
@@ -568,6 +555,7 @@
         e.preventDefault();
         const user = document.getElementById('loginUser').value.trim();
         const pass = document.getElementById('loginPass').value.trim();
+        
         if (user === 'admin' && pass === 'admin123') {
             currentUser = { username: 'admin' };
             document.getElementById('loginOverlay').classList.add('hidden');
@@ -575,8 +563,9 @@
             loadAllData();
             showToast('✅ Login successful!');
         } else {
-            showToast('❌ Invalid credentials', 'error');
+            showToast('❌ Invalid credentials! Use admin/admin123', 'error');
         }
+        return false;
     }
 
     function logout() {
@@ -586,9 +575,11 @@
         showToast('🔒 Logged out');
     }
 
-    // ====== LOAD DATA ======
+    // ====== DATA LOAD ======
     async function loadAllData() {
         try {
+            showToast('🔄 Loading data...');
+
             // Load invoices
             const { data: invData } = await supabase.from('invoices').select('*');
             billingInvoices = invData || [];
@@ -605,39 +596,77 @@
             const { data: prodData } = await supabase.from('products').select('*');
             products = prodData || [];
 
-            // Seed sample data if empty
-            if (orders.length === 0) {
-                const sampleOrders = [
-                    { order_no: 'ORD-001', tracking: 'NE-2026-001', customer: 'Ram Sharma', phone: '980-1234567', items: [{name: 'Samsung S24', qty: 1, price: 95000}], total: 95000, payment: 'COD', status: 'Pending', date: '2026-08-18' },
-                    { order_no: 'ORD-002', tracking: 'NE-2026-002', customer: 'Sita Poudel', phone: '980-7654321', items: [{name: 'Pashmina Shawl', qty: 2, price: 3800}], total: 7600, payment: 'Prepaid', status: 'Shipped', date: '2026-08-19' }
-                ];
-                for (let o of sampleOrders) {
-                    await supabase.from('orders').insert(o);
-                }
-                orders = sampleOrders;
-            }
-
-            if (products.length === 0) {
-                const sampleProducts = [
-                    { name: 'Samsung Galaxy S24', category: 'Electronics', price: 95000, stock: 10, sold: 3, description: 'Latest flagship phone', image: '' },
-                    { name: 'Pashmina Shawl', category: 'Fashion', price: 3800, stock: 20, sold: 5, description: '100% pure pashmina', image: '' },
-                    { name: 'Organic Honey', category: 'Food', price: 850, stock: 30, sold: 12, description: 'Pure mountain honey', image: '' },
-                    { name: 'Nepali Handicraft', category: 'Home Decor', price: 2500, stock: 45, sold: 8, description: 'Handmade wooden craft', image: '' }
-                ];
-                for (let p of sampleProducts) {
-                    await supabase.from('products').insert(p);
-                }
-                products = sampleProducts;
+            // Seed if empty
+            if (billingInvoices.length === 0 || orders.length === 0 || products.length === 0) {
+                await seedSampleData();
             }
 
             refreshAllUI();
             setDefaultDates();
             updateInvoiceNumber();
             populateDropdowns();
+            showToast('✅ Data loaded successfully!');
 
         } catch (err) {
             console.error('Load error:', err);
             showToast('⚠️ Error loading data', 'error');
+        }
+    }
+
+    // ====== SEED DATA ======
+    async function seedSampleData() {
+        try {
+            // Sample invoices
+            if (billingInvoices.length === 0) {
+                const sampleInvoices = [
+                    { invoice_no: 'G-001', date: '2026-08-18', buyer: 'Ram Sharma', address: 'Kathmandu', pan: '123456789', mode: 'Cash', amount: 25000, status: 'paid', items: JSON.stringify([{sn:1, particulars:'Product A', qty:2, rate:12500, total:25000}]), taxable: 22123.89, vat: 2876.11, words: 'Twenty Five Thousand Only' },
+                    { invoice_no: 'G-002', date: '2026-08-19', buyer: 'Sita Poudel', address: 'Lalitpur', pan: '987654321', mode: 'Credit', amount: 12000, status: 'unpaid', items: JSON.stringify([{sn:1, particulars:'Product B', qty:3, rate:4000, total:12000}]), taxable: 10619.47, vat: 1380.53, words: 'Twelve Thousand Only' }
+                ];
+                for (let inv of sampleInvoices) {
+                    await supabase.from('invoices').insert(inv);
+                }
+                billingInvoices = sampleInvoices;
+            }
+
+            // Sample orders
+            if (orders.length === 0) {
+                const sampleOrders = [
+                    { order_no: 'ORD-001', tracking: 'NE-2026-001', customer: 'Ram Sharma', phone: '980-1234567', items: JSON.stringify([{name: 'Samsung S24', qty: 1, price: 95000}]), total: 95000, payment: 'COD', status: 'Pending', date: '2026-08-18' },
+                    { order_no: 'ORD-002', tracking: 'NE-2026-002', customer: 'Sita Poudel', phone: '980-7654321', items: JSON.stringify([{name: 'Pashmina Shawl', qty: 2, price: 3800}]), total: 7600, payment: 'Prepaid', status: 'Shipped', date: '2026-08-19' }
+                ];
+                for (let ord of sampleOrders) {
+                    await supabase.from('orders').insert(ord);
+                }
+                orders = sampleOrders;
+            }
+
+            // Sample products
+            if (products.length === 0) {
+                const sampleProducts = [
+                    { name: 'Samsung Galaxy S24', category: 'Electronics', price: 95000, stock: 10, sold: 3, description: 'Latest flagship phone', image: '' },
+                    { name: 'Pashmina Shawl', category: 'Fashion', price: 3800, stock: 20, sold: 5, description: '100% pure pashmina', image: '' },
+                    { name: 'Organic Honey', category: 'Food', price: 850, stock: 30, sold: 12, description: 'Pure mountain honey', image: '' }
+                ];
+                for (let prod of sampleProducts) {
+                    await supabase.from('products').insert(prod);
+                }
+                products = sampleProducts;
+            }
+
+            // Sample accounting
+            if (accountingEntries.length === 0) {
+                const sampleAcc = [
+                    { date: '2026-08-18', debit: 'Cash in Hand', credit: 'Sales Revenue', amount: 25000, narration: 'Cash sale' },
+                    { date: '2026-08-19', debit: 'Purchases', credit: 'Accounts Payable', amount: 12000, narration: 'Credit purchase' }
+                ];
+                for (let acc of sampleAcc) {
+                    await supabase.from('accounting_entries').insert(acc);
+                }
+                accountingEntries = sampleAcc;
+            }
+
+        } catch (err) {
+            console.error('Seed error:', err);
         }
     }
 
@@ -672,7 +701,6 @@
         document.getElementById('dashOrders').textContent = pendingOrders;
         document.getElementById('dashProducts').textContent = products.length;
 
-        // Recent orders
         const recentOrdersDiv = document.getElementById('recentOrders');
         recentOrdersDiv.innerHTML = orders.slice(-5).reverse().map(o => `
             <div class="flex justify-between items-center border-b py-2">
@@ -681,7 +709,6 @@
             </div>
         `).join('') || '<div class="text-gray-500">No orders yet</div>';
 
-        // Recent activity
         const recentActivity = document.getElementById('recentActivity');
         const allActivity = [
             ...billingInvoices.slice(-3).map(i => ({ type: 'invoice', text: `💰 Invoice ${i.invoice_no} - ${i.buyer}`, time: i.date })),
@@ -721,15 +748,10 @@
             </tr>
         `).join('');
 
-        // Update stats
-        const total = orders.length;
-        const pending = orders.filter(o => o.status === 'Pending' || o.status === 'Processing').length;
-        const shipped = orders.filter(o => o.status === 'Shipped').length;
-        const delivered = orders.filter(o => o.status === 'Delivered').length;
-        document.getElementById('orderTotal').textContent = total;
-        document.getElementById('orderPending').textContent = pending;
-        document.getElementById('orderShipped').textContent = shipped;
-        document.getElementById('orderDelivered').textContent = delivered;
+        document.getElementById('orderTotal').textContent = orders.length;
+        document.getElementById('orderPending').textContent = orders.filter(o => o.status === 'Pending' || o.status === 'Processing').length;
+        document.getElementById('orderShipped').textContent = orders.filter(o => o.status === 'Shipped').length;
+        document.getElementById('orderDelivered').textContent = orders.filter(o => o.status === 'Delivered').length;
     }
 
     function getFilteredOrders() {
@@ -752,9 +774,7 @@
         if (!order) return;
         order.status = newStatus;
         
-        const { error } = await supabase.from('orders').update({ status: newStatus }).eq('order_no', orderNo);
-        if (error) { showToast('❌ Error updating order', 'error'); return; }
-        
+        await supabase.from('orders').update({ status: newStatus }).eq('order_no', orderNo);
         refreshAllUI();
         showToast(`✅ Order ${orderNo} updated to ${newStatus}`);
     }
@@ -786,7 +806,6 @@
             return matchSearch && matchCat;
         });
 
-        // Update categories dropdown
         const cats = [...new Set(products.map(p => p.category))];
         const catSelect = document.getElementById('categoryFilter');
         const currentVal = catSelect.value;
@@ -815,7 +834,6 @@
             </div>
         `).join('');
 
-        // Stats
         document.getElementById('prodTotal').textContent = products.length;
         document.getElementById('prodInStock').textContent = products.reduce((s, p) => s + p.stock, 0);
         document.getElementById('prodLowStock').textContent = products.filter(p => p.stock < 5).length;
@@ -862,8 +880,7 @@
 
     async function deleteProduct(id) {
         if (!confirm('Delete this product?')) return;
-        const { error } = await supabase.from('products').delete().eq('id', id);
-        if (error) { showToast('❌ Error deleting', 'error'); return; }
+        await supabase.from('products').delete().eq('id', id);
         products = products.filter(p => p.id !== id);
         renderProducts();
         showToast('🗑️ Product deleted');
@@ -893,9 +910,7 @@
             image: document.getElementById('prodImage').value.trim()
         };
 
-        const { error } = await supabase.from('products').update(product).eq('id', id);
-        if (error) { showToast('❌ Error updating', 'error'); return; }
-        
+        await supabase.from('products').update(product).eq('id', id);
         const index = products.findIndex(p => p.id === id);
         if (index !== -1) products[index] = { ...products[index], ...product };
         closeProductModal();
@@ -903,8 +918,7 @@
         showToast('✅ Product updated!');
     }
 
-    // ====== BILLING FUNCTIONS ======
-    let rowCounter = 1;
+    // ====== BILLING ======
     function addRow() {
         rowCounter++;
         const tr = document.createElement('tr');
@@ -1072,7 +1086,7 @@
         calcSummary();
     }
 
-    // ====== CREDIT LIST ======
+    // ====== CREDIT ======
     function renderCreditList() {
         const tbody = document.getElementById('creditTableBody');
         const credits = billingInvoices.filter(i => i.mode === 'Credit' && i.status !== 'paid');
@@ -1096,8 +1110,7 @@
         const mode = prompt('Receive payment via: Cash, Cheque, or Other', 'Cash');
         if (!mode || !['Cash', 'Cheque', 'Other'].includes(mode)) { showToast('❌ Invalid mode', 'error'); return; }
 
-        const { error } = await supabase.from('invoices').update({ mode: mode, status: 'paid' }).eq('invoice_no', invNo);
-        if (error) { showToast('❌ Error updating', 'error'); return; }
+        await supabase.from('invoices').update({ mode: mode, status: 'paid' }).eq('invoice_no', invNo);
 
         const inv = billingInvoices.find(i => i.invoice_no === invNo);
         if (inv) { inv.mode = mode; inv.status = 'paid'; }
