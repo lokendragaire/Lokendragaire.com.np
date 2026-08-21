@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2019,7 +2020,11 @@
                         sb.from('offers').select('*'),
                         sb.from('notifications').select('*').order('created_at', { ascending: true })
                     ]);
-                    if (!prod.error && !ord.error && !pay.error && !off.error && !notif.error) {
+                    const results = { products: prod, orders: ord, payments: pay, offers: off, notifications: notif };
+                    const failedTables = Object.entries(results).filter(([, r]) => r.error).map(([name]) => name);
+                    if (failedTables.length) {
+                        failedTables.forEach(name => console.error(`Supabase load failed for "${name}":`, results[name].error));
+                    } else {
                         data.products = (prod.data || []).map(rowToProduct);
                         data.orders = (ord.data || []).map(rowToOrder);
                         data.payments = (pay.data || []).map(rowToPayment);
@@ -2054,31 +2059,56 @@
             syncToSupabase();
         }
 
+        // Supabase-js resolves { data, error } instead of throwing for normal
+        // database errors (RLS denial, permission denied, bad column, etc.) —
+        // only network failures reject the promise. Throwing here ourselves
+        // when `.error` is set is what makes those failures visible instead
+        // of silently vanishing while the UI still says "saved".
+        function checkSbResult(result, label) {
+            if (result && result.error) {
+                const err = new Error(`[${label}] ${result.error.message || result.error}`);
+                err.table = label;
+                err.original = result.error;
+                throw err;
+            }
+            return result;
+        }
+
+        let _syncFailNotified = false;
+
         async function syncToSupabase() {
             if (!window.sb) return;
-            try {
-                await Promise.all([
-                    (async () => {
-                        await sb.from('products').delete().neq('id', -1);
-                        if (data.products.length) await sb.from('products').insert(data.products.map(productToRow));
-                    })(),
-                    (async () => {
-                        await sb.from('orders').delete().neq('id', -1);
-                        if (data.orders.length) await sb.from('orders').insert(data.orders.map(orderToRow));
-                    })(),
-                    (async () => {
-                        await sb.from('offers').delete().neq('product_id', -1);
-                        if (data.offers.length) await sb.from('offers').insert(data.offers.map(offerToRow));
-                    })(),
-                    (async () => {
-                        await sb.from('notifications').delete().neq('id', -1);
-                        if (data.notifications.length) await sb.from('notifications').insert(data.notifications.map(notifToRow));
-                    })()
-                ]);
-                // payments reference orders, so write them after orders are back in place
-                await sb.from('payments').delete().neq('order_id', -1);
-                if (data.payments.length) await sb.from('payments').insert(data.payments.map(paymentToRow));
-            } catch (e) { console.error('Supabase sync failed (changes kept locally only)', e); }
+            const failures = [];
+
+            async function syncTable(label, idCol, idVal, rows, toRow) {
+                try {
+                    checkSbResult(await sb.from(label).delete().neq(idCol, idVal), label);
+                    if (rows.length) {
+                        checkSbResult(await sb.from(label).insert(rows.map(toRow)), label);
+                    }
+                } catch (e) {
+                    console.error(`Supabase sync failed for "${label}":`, e.original || e);
+                    failures.push(label);
+                }
+            }
+
+            await Promise.all([
+                syncTable('products', 'id', -1, data.products, productToRow),
+                syncTable('orders', 'id', -1, data.orders, orderToRow),
+                syncTable('offers', 'product_id', -1, data.offers, offerToRow),
+                syncTable('notifications', 'id', -1, data.notifications, notifToRow),
+            ]);
+            // payments reference orders, so write them after orders are back in place
+            await syncTable('payments', 'order_id', -1, data.payments, paymentToRow);
+
+            if (failures.length) {
+                console.error('Supabase sync incomplete — changes for these tables stayed local only:', failures.join(', '));
+                if (!_syncFailNotified) {
+                    _syncFailNotified = true;
+                    showToast(`⚠️ Couldn't save ${failures.join(', ')} to the cloud — open the browser console for the exact error (often a Supabase RLS/permission issue).`, 'error');
+                    setTimeout(() => { _syncFailNotified = false; }, 8000);
+                }
+            }
         }
 
         // ====================================================
