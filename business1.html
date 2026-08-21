@@ -2086,20 +2086,39 @@
                     if (rows.length) {
                         checkSbResult(await sb.from(label).insert(rows.map(toRow)), label);
                     }
+                    return true;
                 } catch (e) {
                     console.error(`Supabase sync failed for "${label}":`, e.original || e);
                     failures.push(label);
+                    return false;
                 }
             }
 
-            await Promise.all([
+            // offers.product_id -> products.id and payments.order_id -> orders.id
+            // are real foreign keys, so each dependent table must wait for its
+            // parent's insert to fully land first — running them in parallel
+            // left a window where the parent's old rows were already deleted
+            // but the new ones weren't back yet, and the FK check failed.
+            // notifications has no such dependency and can run alongside.
+            const [productsOk, ordersOk] = await Promise.all([
                 syncTable('products', 'id', -1, data.products, productToRow),
                 syncTable('orders', 'id', -1, data.orders, orderToRow),
-                syncTable('offers', 'product_id', -1, data.offers, offerToRow),
                 syncTable('notifications', 'id', -1, data.notifications, notifToRow),
             ]);
-            // payments reference orders, so write them after orders are back in place
-            await syncTable('payments', 'order_id', -1, data.payments, paymentToRow);
+
+            if (productsOk) {
+                await syncTable('offers', 'product_id', -1, data.offers, offerToRow);
+            } else {
+                console.warn('Skipping "offers" sync — "products" failed to sync first.');
+                failures.push('offers (skipped, products failed)');
+            }
+
+            if (ordersOk) {
+                await syncTable('payments', 'order_id', -1, data.payments, paymentToRow);
+            } else {
+                console.warn('Skipping "payments" sync — "orders" failed to sync first.');
+                failures.push('payments (skipped, orders failed)');
+            }
 
             if (failures.length) {
                 console.error('Supabase sync incomplete — changes for these tables stayed local only:', failures.join(', '));
