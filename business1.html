@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KhusIECom - Online Store</title>
+    <title>NepalECom - Online Store</title>
     <style>
         /* ===== RESET & BASE ===== */
         * {
@@ -1087,7 +1087,7 @@
     <div id="publicContent">
         <div class="container">
             <div class="hero">
-                <h1>🇳🇵 Welcome to KhusIECom</h1>
+                <h1>🇳🇵 Welcome to NepalECom</h1>
                 <p>Quality products delivered to your doorstep.</p>
                 <p style="font-size:14px;opacity:0.8;margin-top:6px;">📍 Kathmandu | 📞 04111111 | ✉️ info@nepalcom.com</p>
             </div>
@@ -1124,7 +1124,7 @@
         <div class="footer">
             <div class="footer-grid">
                 <div>
-                    <h4>🏢 KhusIECom</h4>
+                    <h4>🏢 NepalECom</h4>
                     <p>Your trusted online store in Nepal.</p>
                     <p>Quality products at best prices.</p>
                 </div>
@@ -1150,7 +1150,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                &copy; 2026 KhusIECom Pvt. Ltd. All rights reserved. | Made with ❤️ in Nepal
+                &copy; 2026 NepalECom Pvt. Ltd. All rights reserved. | Made with ❤️ in Nepal
             </div>
         </div>
     </div>
@@ -1214,12 +1214,12 @@
             <h2 style="text-align:center;">🔐 Admin Login</h2>
             <p style="text-align:center;color:#777;margin-bottom:16px;">Login to manage orders, inventory & more</p>
             <form id="loginForm" onsubmit="return handleLogin(event)">
-                <div class="form-group"><label>Username</label><input type="text" id="loginUser" value="admin"></div>
-                <div class="form-group"><label>Password</label><input type="password" id="loginPass" value="admin123"></div>
+                <div class="form-group"><label>Email</label><input type="email" id="loginUser" placeholder="admin@yourstore.com" autocomplete="username"></div>
+                <div class="form-group"><label>Password</label><input type="password" id="loginPass" autocomplete="current-password"></div>
                 <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;">Login</button>
                 <div id="loginError" style="color:#c62828;text-align:center;margin-top:10px;display:none;">Invalid credentials</div>
             </form>
-            <p style="text-align:center;font-size:13px;color:#999;margin-top:12px;">Checked against the admin_users table in Supabase. Default seed: admin / admin123.</p>
+            <p style="text-align:center;font-size:13px;color:#999;margin-top:12px;">Signs in with Supabase Auth. Create your admin user in Supabase → Authentication → Users.</p>
         </div>
     </div>
 
@@ -1998,7 +1998,7 @@
             { orderId: 1001, customer: 'Ram Sharma', amount: 95000, screenshot: '📸 verified.png', verified: true },
         ];
         const DEFAULT_OFFERS = [ { productId: 4, discount: 15 } ];
-        const DEFAULT_NOTIFS = [ { msg: '📦 Welcome to KhusIECom!', time: new Date().toLocaleString(), read: false, orderId: null, type: null } ];
+        const DEFAULT_NOTIFS = [ { msg: '📦 Welcome to NepalECom!', time: new Date().toLocaleString(), read: false, orderId: null, type: null } ];
 
         async function loadData() {
             // 1) local cache instantly, so the storefront never looks empty
@@ -2465,52 +2465,44 @@
 
         async function handleLogin(e) {
             e.preventDefault();
-            const user = document.getElementById('loginUser').value.trim();
+            const email = document.getElementById('loginUser').value.trim();
             const pass = document.getElementById('loginPass').value.trim();
             const errorBox = document.getElementById('loginError');
             const submitBtn = document.querySelector('#loginForm button[type="submit"]');
             errorBox.style.display = 'none';
 
-            if (!user || !pass) {
-                errorBox.textContent = 'Please enter username and password.';
+            if (!email || !pass) {
+                errorBox.textContent = 'Please enter email and password.';
                 errorBox.style.display = 'block';
                 return false;
             }
             if (!window.sb) {
-                errorBox.textContent = "Can't reach the login server right now. Check your connection and try again.";
+                errorBox.textContent = "Can't reach Supabase right now. Check your connection and try again.";
                 errorBox.style.display = 'block';
                 return false;
             }
 
             if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Checking...'; }
             try {
-                const { data: rows, error } = await sb
-                    .from('admin_users')
-                    .select('username, password, full_name')
-                    .eq('username', user)
-                    .limit(1);
-
+                // Real Supabase Auth check — the account must exist under
+                // Supabase → Authentication → Users (see supabase_schema.sql for setup notes).
+                const { data: authData, error } = await sb.auth.signInWithPassword({ email, password: pass });
                 if (error) throw error;
 
-                const match = (rows && rows[0] && rows[0].password === pass) ? rows[0] : null;
-
-                if (match) {
-                    data.isLoggedIn = true;
-                    data.adminUser = match.full_name || match.username;
-                    saveData();
-                    closeLoginModal();
-                    document.getElementById('adminToggleBtn').textContent = '👤 Admin';
-                    document.getElementById('adminToggleBtn').classList.add('logged-in');
-                    document.getElementById('adminUser').textContent = data.adminUser;
-                    showAdmin();
-                    showToast('✅ Login successful!', 'success');
-                } else {
-                    errorBox.textContent = 'Invalid credentials.';
-                    errorBox.style.display = 'block';
-                }
+                data.isLoggedIn = true;
+                data.adminUser = authData.user?.email || email;
+                saveData();
+                closeLoginModal();
+                document.getElementById('adminToggleBtn').textContent = '👤 Admin';
+                document.getElementById('adminToggleBtn').classList.add('logged-in');
+                document.getElementById('adminUser').textContent = data.adminUser;
+                showAdmin();
+                showToast('✅ Login successful!', 'success');
             } catch (err) {
-                console.error('Login check failed:', err);
-                errorBox.textContent = 'Login failed — could not verify credentials. Try again.';
+                console.error('Login failed:', err);
+                errorBox.textContent = err?.message === 'Email not confirmed'
+                    ? 'This account is not confirmed yet — confirm it in Supabase → Authentication → Users.'
+                    : 'Invalid email or password.';
                 errorBox.style.display = 'block';
             } finally {
                 if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Login'; }
@@ -2518,7 +2510,10 @@
             return false;
         }
 
-        function logout() {
+        async function logout() {
+            if (window.sb) {
+                try { await sb.auth.signOut(); } catch (e) { console.error('Sign-out error:', e); }
+            }
             data.isLoggedIn = false;
             saveData();
             document.getElementById('adminToggleBtn').textContent = '🔐 Admin';
@@ -2952,6 +2947,32 @@
             renderProducts();
             updateCartCount();
 
+            // Trust the real Supabase Auth session over the locally cached flag —
+            // a stale/faked localStorage value should never grant admin access.
+            if (window.sb) {
+                try {
+                    const { data: sessionData } = await sb.auth.getSession();
+                    data.isLoggedIn = !!sessionData.session;
+                    data.adminUser = sessionData.session?.user?.email || data.adminUser || 'admin';
+                } catch (e) {
+                    console.error('Session check failed:', e);
+                    data.isLoggedIn = false;
+                }
+
+                sb.auth.onAuthStateChange((_event, session) => {
+                    data.isLoggedIn = !!session;
+                    if (!session) {
+                        document.getElementById('adminToggleBtn').textContent = '🔐 Admin';
+                        document.getElementById('adminToggleBtn').classList.remove('logged-in');
+                        document.getElementById('adminPanel').classList.remove('active');
+                        document.getElementById('adminPanel').style.display = 'none';
+                        document.getElementById('publicContent').style.display = 'block';
+                    }
+                });
+            } else {
+                data.isLoggedIn = false;
+            }
+
             if (data.isLoggedIn) {
                 document.getElementById('adminToggleBtn').textContent = '👤 Admin';
                 document.getElementById('adminToggleBtn').classList.add('logged-in');
@@ -2968,8 +2989,8 @@
             if (e.target === this) closeLoginModal();
         });
 
-        console.log('🛒 KhusIECom - Complete E-Commerce System (Supabase-backed)');
-        console.log('🔐 Admin login is verified against the admin_users table in Supabase (seed: admin / admin123).');
+        console.log('🛒 NepalECom - Complete E-Commerce System (Supabase-backed)');
+        console.log('🔐 Admin login uses Supabase Auth — create the account under Authentication → Users in your Supabase project.');
         console.log('📸 Product Photo Upload Available');
         console.log('🏷️ Offer Management Available');
         console.log('📄 Billing & 💰 Accounting are now tabs inside the Admin panel.');
