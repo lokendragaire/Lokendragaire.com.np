@@ -652,9 +652,11 @@ body { font-family: 'Inter', system-ui, sans-serif; }
       <button onclick="showPage('roomService')" class="px-4 py-2 border border-primary-600 text-primary-700 rounded-lg text-sm">Room Service</button>
       <button onclick="showPage('book')" class="px-4 py-2 border border-slate-300 rounded-lg text-sm">New Booking</button>
       <button onclick="showPage('order')" class="px-4 py-2 border border-slate-300 rounded-lg text-sm">Order Food</button>
+      <button onclick="refreshAdminRole()" class="px-4 py-2 border border-amber-500 text-amber-700 rounded-lg text-sm font-semibold"><i class="fas fa-sync mr-1"></i> Refresh Role</button>
       <div id="adminQuickBtn" class="hidden">
         <button onclick="enterAdmin()" class="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-semibold"><i class="fas fa-shield-alt mr-1"></i> Go to Admin Panel</button>
       </div>
+      <p id="roleDebugLine" class="w-full text-xs text-slate-500 mt-2"></p>
     </div>
   </div>
 </section>
@@ -860,16 +862,17 @@ body { font-family: 'Inter', system-ui, sans-serif; }
         <div class="pt-2 pb-1 px-3 text-xs uppercase text-primary-400 font-semibold">Management</div>
         <a href="#" onclick="showAdminSection('customers')" class="sidebar-link flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="customers"><i class="fas fa-users w-5"></i> Customers</a>
         <a href="#" onclick="showAdminSection('staff')" class="sidebar-link flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="staff"><i class="fas fa-user-tie w-5"></i> Staff</a>
+        <a href="#" onclick="showAdminSection('users')" class="sidebar-link super-only flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="users" data-super="1"><i class="fas fa-user-shield w-5"></i> Users / Roles</a>
         <a href="#" onclick="showAdminSection('inventory')" class="sidebar-link flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="inventory"><i class="fas fa-boxes w-5"></i> Inventory</a>
-        <a href="#" onclick="showAdminSection('accounting')" class="sidebar-link flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="accounting"><i class="fas fa-chart-line w-5"></i> Accounting</a>
-        <a href="#" onclick="showAdminSection('billing')" class="sidebar-link flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="billing"><i class="fas fa-file-invoice-dollar w-5"></i> Billing / Invoices</a>
+        <a href="#" onclick="showAdminSection('accounting')" class="sidebar-link finance-only flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="accounting" data-finance="1"><i class="fas fa-chart-line w-5"></i> Accounting</a>
+        <a href="#" onclick="showAdminSection('billing')" class="sidebar-link finance-only flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="billing" data-finance="1"><i class="fas fa-file-invoice-dollar w-5"></i> Billing / Invoices</a>
         <a href="#" onclick="showAdminSection('housekeeping')" class="sidebar-link flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="housekeeping"><i class="fas fa-broom w-5"></i> Housekeeping</a>
         <a href="#" onclick="showAdminSection('offersAdmin')" class="sidebar-link flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="offersAdmin"><i class="fas fa-tags w-5"></i> Offers</a>
         <a href="#" onclick="showAdminSection('reviews')" class="sidebar-link flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="reviews"><i class="fas fa-star w-5"></i> Reviews</a>
         <a href="#" onclick="showAdminSection('inquiries')" class="sidebar-link flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="inquiries"><i class="fas fa-envelope w-5"></i> Inquiries</a>
-        <a href="#" onclick="showAdminSection('reports')" class="sidebar-link flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="reports"><i class="fas fa-chart-bar w-5"></i> Reports</a>
-        <a href="#" onclick="showAdminSection('settings')" class="sidebar-link flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="settings"><i class="fas fa-cog w-5"></i> Settings</a>
-        <a href="#" onclick="showAdminSection('emailLogs')" class="sidebar-link flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="emailLogs"><i class="fas fa-mail-bulk w-5"></i> Email Logs</a>
+        <a href="#" onclick="showAdminSection('reports')" class="sidebar-link finance-only flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="reports" data-finance="1"><i class="fas fa-chart-bar w-5"></i> Reports</a>
+        <a href="#" onclick="showAdminSection('settings')" class="sidebar-link finance-only flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="settings" data-finance="1"><i class="fas fa-cog w-5"></i> Settings</a>
+        <a href="#" onclick="showAdminSection('emailLogs')" class="sidebar-link finance-only flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-800" data-section="emailLogs" data-finance="1"><i class="fas fa-mail-bulk w-5"></i> Email Logs</a>
       </nav>
       <div class="p-3 border-t border-primary-800 mt-auto">
         <button onclick="exitAdmin()" class="w-full py-2 text-sm bg-primary-800 hover:bg-primary-700 rounded-lg"><i class="fas fa-arrow-left mr-1"></i> Back to Website</button>
@@ -1062,6 +1065,34 @@ body { font-family: 'Inter', system-ui, sans-serif; }
         <div id="admin-staff" class="admin-section hidden">
           <div class="flex justify-between mb-4"><h3 class="font-semibold">Staff</h3><button onclick="toast('Staff add form - demo mode')" class="px-3 py-1.5 bg-primary-600 text-white rounded-lg text-sm">+ Add Staff</button></div>
           <div id="staffList" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+
+        <!-- USERS / ROLES (Super Admin only) -->
+        <div id="admin-users" class="admin-section hidden">
+          <div class="flex flex-wrap justify-between gap-2 mb-4">
+            <div>
+              <h3 class="font-semibold">Users & Roles</h3>
+              <p class="text-xs text-slate-500">Super Admin only — set display name and role (SUPER ADMIN / ADMIN / CUSTOMER)</p>
+            </div>
+            <button onclick="loadAdminUsers()" class="px-3 py-1.5 border rounded-lg text-sm"><i class="fas fa-sync mr-1"></i> Reload</button>
+          </div>
+          <div class="bg-white rounded-xl shadow-sm border overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-slate-50 text-left"><tr>
+                <th class="p-3">Display Name</th><th class="p-3">Email</th><th class="p-3">Phone</th><th class="p-3">Role / Type</th><th class="p-3">Actions</th>
+              </tr></thead>
+              <tbody id="adminUsersTable"></tbody>
+            </table>
+          </div>
+          <div class="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900">
+            <strong>Roles:</strong>
+            <ul class="list-disc ml-5 mt-1 space-y-1">
+              <li><b>SUPER ADMIN</b> — full access (orders + finance + settings + user roles)</li>
+              <li><b>ADMIN</b> — hotel/restaurant operations (orders, rooms, kitchen, inventory) — <b>no</b> accounting / billing / reports / settings</li>
+              <li><b>CUSTOMER</b> — public booking & food ordering only</li>
+            </ul>
+            <p class="mt-2">New login accounts are created in <b>Supabase → Authentication → Users</b>, then set role here.</p>
+          </div>
         </div>
 
         <!-- INVENTORY -->
@@ -1750,11 +1781,12 @@ async function doLogin(e) {
     };
     save('currentUser', currentUser);
     updateAuthUI();
-    toast('Welcome, ' + currentUser.name + ' (' + currentUser.role + ')', 'success');
+    toast('Welcome, ' + currentUser.name + ' | Role: ' + currentUser.role, isAdminRole(currentUser.role) ? 'success' : 'warn');
     if (isAdminRole(currentUser.role)) {
       enterAdmin();
     } else {
       showPage('customerDashboard');
+      setTimeout(() => toast('Admin panel needs role SUPER ADMIN in profiles table. Click Refresh Role on dashboard.', 'warn'), 800);
     }
     return;
   } catch (err) {
@@ -1763,45 +1795,75 @@ async function doLogin(e) {
   }
 }
 
+function normalizeRole(role) {
+  return String(role || 'CUSTOMER').toUpperCase().replace(/[_-]+/g, ' ').trim();
+}
 function isAdminRole(role) {
-  if (!role) return false;
-  const r = String(role).toUpperCase().replace(/[_-]/g, ' ').trim();
-  return r === 'SUPER ADMIN' || r === 'MANAGER' || r === 'ADMIN' || r === 'SUPERADMIN';
+  const r = normalizeRole(role);
+  return r === 'SUPER ADMIN' || r === 'ADMIN' || r === 'MANAGER' || r.includes('ADMIN');
+}
+function isSuperAdmin(role) {
+  const r = normalizeRole(role);
+  return r === 'SUPER ADMIN' || r === 'SUPERADMIN' || r.startsWith('SUPER');
+}
+function canAccessFinance() {
+  return currentUser && isSuperAdmin(currentUser.role);
 }
 
 async function fetchUserRole(user) {
   let profile = null;
-  // 1) by id
+  let lastErr = null;
+  // 1) by auth user id
   try {
     const { data: p, error } = await supabaseClient.from('profiles').select('*').eq('id', user.id).maybeSingle();
-    if (!error && p) profile = p;
-  } catch(_){}
-  // 2) by email if id miss
+    if (error) lastErr = error.message;
+    if (p) profile = p;
+  } catch (e) { lastErr = e.message; }
+  // 2) by email
   if (!profile && user.email) {
     try {
-      const { data: p2 } = await supabaseClient.from('profiles').select('*').eq('email', user.email).maybeSingle();
+      const { data: p2, error } = await supabaseClient.from('profiles').select('*').eq('email', user.email).maybeSingle();
+      if (error) lastErr = error.message;
       if (p2) profile = p2;
-    } catch(_){}
+    } catch (e) { lastErr = e.message; }
   }
-  // 3) ensure profile row exists
+  // 3) create profile ONLY if missing — never overwrite role to CUSTOMER
   if (!profile) {
     try {
-      await supabaseClient.from('profiles').upsert({
+      const { error: insErr } = await supabaseClient.from('profiles').insert({
         id: user.id,
-        full_name: user.user_metadata?.full_name || user.email.split('@')[0],
+        full_name: (user.user_metadata && user.user_metadata.full_name) || (user.email || '').split('@')[0],
         email: user.email,
         role: 'CUSTOMER',
-        phone: user.user_metadata?.phone || null
+        phone: (user.user_metadata && user.user_metadata.phone) || null
       });
+      // ignore duplicate key
       const { data: p3 } = await supabaseClient.from('profiles').select('*').eq('id', user.id).maybeSingle();
       profile = p3;
-    } catch(err) { console.warn('profile upsert', err); }
+      if (insErr) lastErr = insErr.message;
+    } catch (err) { lastErr = err.message; console.warn('profile insert', err); }
   }
+  const role = (profile && profile.role) ? String(profile.role).trim() : 'CUSTOMER';
+  console.log('[auth] profile', profile, 'role', role, 'err', lastErr);
   return {
-    name: profile?.full_name || user.user_metadata?.full_name || (user.email || '').split('@')[0],
-    phone: profile?.phone || '',
-    role: profile?.role || 'CUSTOMER'
+    name: (profile && profile.full_name) || (user.user_metadata && user.user_metadata.full_name) || (user.email || '').split('@')[0],
+    phone: (profile && profile.phone) || '',
+    role: role,
+    profileId: profile && profile.id,
+    debug: lastErr
   };
+}
+
+async function refreshAdminRole() {
+  if (!currentUser || !currentUser.id) { toast('Login first', 'error'); return; }
+  toast('Checking role from database...', 'info');
+  const info = await fetchUserRole({ id: currentUser.id, email: currentUser.email, user_metadata: {} });
+  currentUser.role = info.role;
+  currentUser.name = info.name || currentUser.name;
+  save('currentUser', currentUser);
+  updateAuthUI();
+  toast('Role from DB: ' + info.role + (info.debug ? ' (err: ' + info.debug + ')' : ''), isAdminRole(info.role) ? 'success' : 'warn');
+  if (isAdminRole(info.role)) enterAdmin();
 }
 
 async function doRegister(e) {
@@ -1872,10 +1934,22 @@ function enterAdmin() {
   document.getElementById('publicFooter').classList.add('hidden');
   document.getElementById('mainContent').classList.add('hidden');
   document.getElementById('adminPanel').classList.remove('hidden');
-  document.getElementById('adminUserLabel').textContent = currentUser.name;
-  // Show enable sound button if needed
+  const roleLabel = normalizeRole(currentUser.role);
+  document.getElementById('adminUserLabel').textContent = currentUser.name + ' (' + roleLabel + ')';
+  applyRoleMenuVisibility();
   if (!soundEnabled) document.getElementById('enableNotifBtn').classList.remove('hidden');
   showAdminSection('dashboard');
+}
+
+function applyRoleMenuVisibility() {
+  const financeOk = canAccessFinance();
+  const superOk = isSuperAdmin(currentUser && currentUser.role);
+  document.querySelectorAll('.finance-only').forEach(el => {
+    el.style.display = financeOk ? '' : 'none';
+  });
+  document.querySelectorAll('.super-only').forEach(el => {
+    el.style.display = superOk ? '' : 'none';
+  });
 }
 
 function exitAdmin() {
@@ -1891,6 +1965,15 @@ function toggleAdminSidebar() {
 }
 
 function showAdminSection(section) {
+  const financeSections = ['accounting','billing','reports','settings','emailLogs'];
+  if (financeSections.includes(section) && !canAccessFinance()) {
+    toast('Financial module — Super Admin only', 'error');
+    section = 'dashboard';
+  }
+  if (section === 'users' && !isSuperAdmin(currentUser && currentUser.role)) {
+    toast('User role management — Super Admin only', 'error');
+    section = 'dashboard';
+  }
   document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
   const el = document.getElementById('admin-' + section);
   if (el) el.classList.remove('hidden');
@@ -1900,7 +1983,7 @@ function showAdminSection(section) {
   const titles = {
     dashboard: 'Dashboard', notifications: 'Notifications', rooms: 'Room Management', bookings: 'Reservations',
     checkin: 'Check-in / Check-out', menuManage: 'Menu Management', orders: 'Food Orders', pos: 'Restaurant POS',
-    kitchen: 'Kitchen Display', roomServiceAdmin: 'Room Service', customers: 'Customers', staff: 'Staff',
+    kitchen: 'Kitchen Display', roomServiceAdmin: 'Room Service', customers: 'Customers', staff: 'Staff', users: 'Users / Roles',
     inventory: 'Inventory', accounting: 'Accounting', billing: 'Billing / Invoices', housekeeping: 'Housekeeping', offersAdmin: 'Offers & Coupons',
     reviews: 'Reviews', inquiries: 'Inquiries', reports: 'Reports', settings: 'Settings', emailLogs: 'Email Logs'
   };
@@ -1918,6 +2001,7 @@ function showAdminSection(section) {
   if (section === 'roomServiceAdmin') renderRoomServiceAdmin();
   if (section === 'customers') renderCustomers();
   if (section === 'staff') renderStaff();
+  if (section === 'users') loadAdminUsers();
   if (section === 'inventory') renderInventory();
   if (section === 'accounting') renderAccounting();
   if (section === 'billing') renderBilling();
@@ -2465,6 +2549,8 @@ function submitRoomService(e) {
 // ==================== CUSTOMER VIEWS ====================
 function renderCustomerDashboard() {
   if (!currentUser) { showPage('login'); return; }
+  const rd = document.getElementById('roleDebugLine');
+  if (rd) rd.textContent = 'Logged in: ' + currentUser.email + ' | Role: ' + (currentUser.role || '?') + ' | ID: ' + (currentUser.id || '').toString().slice(0,8) + '...';
   const myBookings = bookings.filter(b => b.userId === currentUser.id || b.email === currentUser.email);
   const myOrders = orders.filter(o => o.userId === currentUser.id || o.email === currentUser.email);
   const spent = [...myBookings, ...myOrders].reduce((s, x) => s + (x.total || 0), 0);
@@ -3398,6 +3484,78 @@ function submitAdminOrder(e) {
 }
 
 // Also enhance placeOrder to offer VAT + auto invoice
+
+
+// ==================== USERS / ROLES (Super Admin) ====================
+async function loadAdminUsers() {
+  const tbody = document.getElementById('adminUsersTable');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400">Loading...</td></tr>';
+  try {
+    const { data, error } = await supabaseClient.from('profiles').select('id, full_name, email, phone, role').order('full_name');
+    if (error) throw error;
+    const rows = data || [];
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400">No profiles. Create user in Supabase Auth first.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(u => {
+      const role = normalizeRole(u.role);
+      const safeName = (u.full_name || '').replace(/"/g, '&quot;');
+      const safePhone = (u.phone || '').replace(/"/g, '&quot;');
+      return '<tr class="border-t">' +
+        '<td class="p-3"><input class="w-full px-2 py-1 border rounded text-sm" id="un_' + u.id + '" value="' + safeName + '"></td>' +
+        '<td class="p-3 text-xs">' + (u.email || '—') + '</td>' +
+        '<td class="p-3"><input class="w-28 px-2 py-1 border rounded text-sm" id="up_' + u.id + '" value="' + safePhone + '"></td>' +
+        '<td class="p-3"><select id="ur_' + u.id + '" class="px-2 py-1 border rounded text-sm">' +
+          '<option value="CUSTOMER"' + (role === 'CUSTOMER' ? ' selected' : '') + '>CUSTOMER</option>' +
+          '<option value="ADMIN"' + (role === 'ADMIN' ? ' selected' : '') + '>ADMIN</option>' +
+          '<option value="SUPER ADMIN"' + (role === 'SUPER ADMIN' || role.indexOf('SUPER') >= 0 ? ' selected' : '') + '>SUPER ADMIN</option>' +
+          '<option value="MANAGER"' + (role === 'MANAGER' ? ' selected' : '') + '>MANAGER</option>' +
+        '</select></td>' +
+        '<td class="p-3"><button onclick="saveAdminUser(\'' + u.id + '\')" class="text-xs px-3 py-1.5 bg-primary-600 text-white rounded-lg">Save</button></td>' +
+      '</tr>';
+    }).join('');
+  } catch (err) {
+    tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-red-500">' + (err.message || err) + '</td></tr>';
+  }
+}
+
+async function saveAdminUser(id) {
+  if (!isSuperAdmin(currentUser && currentUser.role)) {
+    toast('Only Super Admin can change roles', 'error');
+    return;
+  }
+  const nameEl = document.getElementById('un_' + id);
+  const phoneEl = document.getElementById('up_' + id);
+  const roleEl = document.getElementById('ur_' + id);
+  const name = (nameEl && nameEl.value.trim()) || '';
+  const phone = (phoneEl && phoneEl.value.trim()) || '';
+  const role = (roleEl && roleEl.value) || 'CUSTOMER';
+  try {
+    const { error } = await supabaseClient.from('profiles').update({
+      full_name: name,
+      phone: phone,
+      role: role,
+      updated_at: new Date().toISOString()
+    }).eq('id', id);
+    if (error) throw error;
+    toast('Saved: ' + name + ' → ' + role, 'success');
+    if (currentUser && currentUser.id === id) {
+      currentUser.name = name;
+      currentUser.role = role;
+      currentUser.phone = phone;
+      save('currentUser', currentUser);
+      updateAuthUI();
+      applyRoleMenuVisibility();
+      const lbl = document.getElementById('adminUserLabel');
+      if (lbl) lbl.textContent = name + ' (' + normalizeRole(role) + ')';
+    }
+    loadAdminUsers();
+  } catch (err) {
+    toast('Save failed: ' + (err.message || err), 'error');
+  }
+}
 
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
