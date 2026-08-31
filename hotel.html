@@ -1732,34 +1732,76 @@ async function doLogin(e) {
   e.preventDefault();
   const email = document.getElementById('loginEmail').value.trim();
   const pass = document.getElementById('loginPassword').value;
-  // Try Supabase Auth
+  if (!email || !pass) { toast('Email and password required', 'error'); return; }
   try {
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
-    if (!error && data?.user) {
-      let profile = null;
-      try {
-        const { data: p } = await supabaseClient.from('profiles').select('*').eq('id', data.user.id).single();
-        profile = p;
-      } catch(_){}
-      currentUser = {
-        id: data.user.id,
-        name: profile?.full_name || data.user.email.split('@')[0],
-        email: data.user.email,
-        phone: profile?.phone || '',
-        role: profile?.role || 'CUSTOMER',
-        supabase: true
-      };
-      save('currentUser', currentUser);
-      updateAuthUI();
-      toast('Welcome, ' + currentUser.name + '!', 'success');
-      showPage('customerDashboard');
+    if (error || !data?.user) {
+      toast(error?.message || 'Invalid email or password', 'error');
       return;
     }
+    const role = await fetchUserRole(data.user);
+    currentUser = {
+      id: data.user.id,
+      name: role.name,
+      email: data.user.email,
+      phone: role.phone || '',
+      role: role.role,
+      supabase: true
+    };
+    save('currentUser', currentUser);
+    updateAuthUI();
+    toast('Welcome, ' + currentUser.name + ' (' + currentUser.role + ')', 'success');
+    if (isAdminRole(currentUser.role)) {
+      enterAdmin();
+    } else {
+      showPage('customerDashboard');
+    }
+    return;
   } catch (err) {
     console.warn('Supabase auth:', err);
+    toast('Login failed: ' + (err.message || 'network error'), 'error');
   }
-  // NO local password fallback — only Supabase Auth
-  toast('Invalid email or password. Use the account created in Supabase Authentication.', 'error');
+}
+
+function isAdminRole(role) {
+  if (!role) return false;
+  const r = String(role).toUpperCase().replace(/[_-]/g, ' ').trim();
+  return r === 'SUPER ADMIN' || r === 'MANAGER' || r === 'ADMIN' || r === 'SUPERADMIN';
+}
+
+async function fetchUserRole(user) {
+  let profile = null;
+  // 1) by id
+  try {
+    const { data: p, error } = await supabaseClient.from('profiles').select('*').eq('id', user.id).maybeSingle();
+    if (!error && p) profile = p;
+  } catch(_){}
+  // 2) by email if id miss
+  if (!profile && user.email) {
+    try {
+      const { data: p2 } = await supabaseClient.from('profiles').select('*').eq('email', user.email).maybeSingle();
+      if (p2) profile = p2;
+    } catch(_){}
+  }
+  // 3) ensure profile row exists
+  if (!profile) {
+    try {
+      await supabaseClient.from('profiles').upsert({
+        id: user.id,
+        full_name: user.user_metadata?.full_name || user.email.split('@')[0],
+        email: user.email,
+        role: 'CUSTOMER',
+        phone: user.user_metadata?.phone || null
+      });
+      const { data: p3 } = await supabaseClient.from('profiles').select('*').eq('id', user.id).maybeSingle();
+      profile = p3;
+    } catch(err) { console.warn('profile upsert', err); }
+  }
+  return {
+    name: profile?.full_name || user.user_metadata?.full_name || (user.email || '').split('@')[0],
+    phone: profile?.phone || '',
+    role: profile?.role || 'CUSTOMER'
+  };
 }
 
 async function doRegister(e) {
@@ -1808,7 +1850,7 @@ function updateAuthUI() {
     userMenu.classList.remove('hidden');
     document.getElementById('userNameDisplay').textContent = currentUser.name;
     document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
-    if (currentUser.role === 'SUPER ADMIN' || currentUser.role === 'MANAGER') {
+    if (isAdminRole(currentUser.role)) {
       adminItem.classList.remove('hidden');
       if (adminQuick) adminQuick.classList.remove('hidden');
     } else {
@@ -1822,8 +1864,8 @@ function updateAuthUI() {
 }
 
 function enterAdmin() {
-  if (!currentUser || (currentUser.role !== 'SUPER ADMIN' && currentUser.role !== 'MANAGER')) {
-    toast('Admin access required', 'error');
+  if (!currentUser || !isAdminRole(currentUser.role)) {
+    toast('Admin access required. Your role: ' + (currentUser?.role || 'none'), 'error');
     return;
   }
   document.getElementById('publicNav').classList.add('hidden');
@@ -3360,6 +3402,15 @@ function submitAdminOrder(e) {
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
   currentUser = load('currentUser', null);
+  // Re-validate role from Supabase if logged in
+  if (currentUser && currentUser.supabase && currentUser.id) {
+    fetchUserRole({ id: currentUser.id, email: currentUser.email, user_metadata: {} }).then(info => {
+      currentUser.role = info.role;
+      currentUser.name = info.name || currentUser.name;
+      save('currentUser', currentUser);
+      updateAuthUI();
+    }).catch(()=>{});
+  }
   const savedSettings = load('settings', null);
   if (savedSettings) {
     Object.assign(HOTEL, savedSettings.HOTEL || {});
@@ -3389,10 +3440,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   // Restore Supabase session if any
-  supabaseClient.auth.getSession().then(({ data }) => {
-    if (data?.session?.user && !currentUser) {
+  supabaseClient.auth.getSession().then(async ({ data }) => {
+    if (data?.session?.user) {
       const u = data.session.user;
-      currentUser = { id: u.id, name: u.email.split('@')[0], email: u.email, role: 'CUSTOMER', supabase: true };
+      const roleInfo = await fetchUserRole(u);
+      currentUser = {
+        id: u.id,
+        name: roleInfo.name,
+        email: u.email,
+        phone: roleInfo.phone,
+        role: roleInfo.role,
+        supabase: true
+      };
       save('currentUser', currentUser);
       updateAuthUI();
     }
