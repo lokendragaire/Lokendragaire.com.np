@@ -52,7 +52,7 @@ body { font-family: 'Inter', system-ui, sans-serif; }
 .status-preparing { background:#dbeafe; color:#1e40af; }
 .status-ready { background:#e0e7ff; color:#3730a3; }
 .status-completed { background:#d1fae5; color:#065f46; }
-.status-cancelled { background:#fee2e2; color:#991b1b; }
+.status-cancelled, .status-rejected { background:#fee2e2; color:#991b1b; }
 .status-checkedin { background:#cffafe; color:#155e75; }
 .scrollbar-thin::-webkit-scrollbar { width:6px; }
 .scrollbar-thin::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:3px; }
@@ -1436,13 +1436,150 @@ async function sbSelect(table, opts = {}) {
 }
 async function sbRealtime(table, callback) {
   try {
-    return supabaseClient.channel('public:' + table)
-      .on('postgres_changes', { event: '*', schema: 'public', table }, payload => callback(payload))
-      .subscribe();
+    const ch = supabaseClient.channel('lp_' + table + '_' + Math.random().toString(36).slice(2))
+      .on('postgres_changes', { event: '*', schema: 'public', table: table }, payload => {
+        try { callback(payload); } catch (err) { console.warn(err); }
+      })
+      .subscribe((status) => console.log('[realtime]', table, status));
+    return ch;
   } catch (e) {
     console.warn('Realtime subscribe failed', e);
     return null;
   }
+}
+
+function mapDbOrder(r) {
+  if (!r) return null;
+  let items = [];
+  let instructions = r.special_instructions || '';
+  try {
+    if (typeof r.special_instructions === 'string' && r.special_instructions.trim().startsWith('{')) {
+      const parsed = JSON.parse(r.special_instructions);
+      if (parsed && parsed.items) items = parsed.items;
+      if (parsed && parsed.note != null) instructions = parsed.note;
+    }
+  } catch (_) {}
+  return {
+    orderId: r.order_id || r.orderId,
+    customerName: r.customer_name || r.customerName || '',
+    phone: r.phone || '',
+    email: r.email || '',
+    orderType: r.order_type || r.orderType || 'Dine-in',
+    tableNumber: r.table_number || r.tableNumber || '',
+    roomNumber: r.room_number || r.roomNumber || '',
+    instructions: instructions,
+    paymentMethod: r.payment_method || 'Cash',
+    items: items,
+    subtotal: Number(r.subtotal || 0),
+    service: Number(r.service_charge || 0),
+    tax: Number(r.vat_amount || 0),
+    total: Number(r.total_amount || r.total || 0),
+    status: r.status || 'New Order',
+    coupon: r.coupon_code || '',
+    createdAt: r.created_at || r.createdAt || new Date().toISOString(),
+    userId: r.user_id || null,
+    _fromDb: true
+  };
+}
+
+function mapDbBooking(r) {
+  if (!r) return null;
+  return {
+    bookingId: r.booking_id || r.bookingId,
+    fullName: r.full_name || r.fullName || '',
+    phone: r.phone || '',
+    email: r.email || '',
+    address: r.address || '',
+    idNumber: r.id_number || '',
+    roomName: r.room_name || r.roomName || '',
+    roomType: r.room_type || '',
+    roomId: r.room_id || null,
+    checkIn: r.check_in || r.checkIn,
+    checkOut: r.check_out || r.checkOut,
+    nights: r.nights || 1,
+    adults: r.adults || 2,
+    children: r.children || 0,
+    numRooms: r.num_rooms || 1,
+    specialRequest: r.special_request || '',
+    paymentMethod: r.payment_method || '',
+    total: Number(r.total_amount || r.total || 0),
+    status: r.status || 'Pending',
+    createdAt: r.created_at || new Date().toISOString(),
+    userId: r.user_id || null,
+    _fromDb: true
+  };
+}
+
+function mergeById(localArr, remoteArr, idKey) {
+  const map = new Map();
+  (localArr || []).forEach(x => { if (x && x[idKey]) map.set(String(x[idKey]), x); });
+  (remoteArr || []).forEach(x => {
+    if (!x || !x[idKey]) return;
+    const k = String(x[idKey]);
+    map.set(k, Object.assign({}, map.get(k) || {}, x));
+  });
+  return Array.from(map.values()).sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+}
+
+async function syncFromSupabase() {
+  try {
+    const [dbOrders, dbBookings, dbNotifs] = await Promise.all([
+      sbSelect('orders', { order: { col: 'created_at', asc: false }, limit: 200 }),
+      sbSelect('bookings', { order: { col: 'created_at', asc: false }, limit: 200 }),
+      sbSelect('notifications', { order: { col: 'created_at', asc: false }, limit: 100 })
+    ]);
+    if (dbOrders && dbOrders.length) {
+      orders = mergeById(orders, dbOrders.map(mapDbOrder).filter(Boolean), 'orderId');
+      save('orders', orders);
+    }
+    if (dbBookings && dbBookings.length) {
+      bookings = mergeById(bookings, dbBookings.map(mapDbBooking).filter(Boolean), 'bookingId');
+      save('bookings', bookings);
+    }
+    if (dbNotifs && dbNotifs.length) {
+      const mapped = dbNotifs.map(n => ({
+        id: n.id,
+        type: n.type,
+        icon: n.type === 'order' ? '🟠' : n.type === 'booking' ? '🔴' : n.type === 'roomservice' ? '🛎️' : '🔔',
+        title: n.title,
+        data: n.body || {},
+        read: !!n.is_read,
+        createdAt: n.created_at || new Date().toISOString()
+      }));
+      const seen = new Set(notifications.map(x => String(x.id)));
+      mapped.forEach(m => { if (!seen.has(String(m.id))) notifications.push(m); });
+      notifications.sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+      save('notifications', notifications);
+      if (typeof updateNotifBadges === 'function') updateNotifBadges();
+    }
+    console.log('[sync] orders', orders.length, 'bookings', bookings.length, 'notifs', notifications.length);
+    return true;
+  } catch (e) {
+    console.warn('syncFromSupabase', e);
+    return false;
+  }
+}
+
+function refreshAdminIfOpen() {
+  const panel = document.getElementById('adminPanel');
+  if (!panel || panel.classList.contains('hidden')) return;
+  try {
+    if (typeof renderAdminDashboard === 'function') renderAdminDashboard();
+    if (typeof renderAdminOrders === 'function') renderAdminOrders();
+    if (typeof renderAdminBookings === 'function') renderAdminBookings();
+    if (typeof renderNotifications === 'function') renderNotifications();
+    if (typeof renderKitchen === 'function') renderKitchen();
+    if (typeof updateNotifBadges === 'function') updateNotifBadges();
+  } catch (e) { console.warn(e); }
+}
+
+let _syncTimer = null;
+function startAdminSyncLoop() {
+  if (_syncTimer) return;
+  _syncTimer = setInterval(async () => {
+    await syncFromSupabase();
+    refreshAdminIfOpen();
+  }, 10000);
 }
 
 
@@ -1939,6 +2076,8 @@ function enterAdmin() {
   applyRoleMenuVisibility();
   if (!soundEnabled) document.getElementById('enableNotifBtn').classList.remove('hidden');
   showAdminSection('dashboard');
+  syncFromSupabase().then(() => { refreshAdminIfOpen(); toast('Synced from database', 'info'); });
+  startAdminSyncLoop();
 }
 
 function applyRoleMenuVisibility() {
@@ -2338,7 +2477,7 @@ function placeOrder(e) {
     order_type: order.orderType,
     table_number: order.tableNumber,
     room_number: order.roomNumber,
-    special_instructions: order.instructions,
+    special_instructions: JSON.stringify({ note: order.instructions || '', items: order.items || [] }),
     subtotal: order.subtotal,
     service_charge: order.service,
     vat_amount: order.tax,
@@ -2811,10 +2950,11 @@ function renderAdminOrders() {
       <td class="p-3">${formatRs(o.total)}</td>
       <td class="p-3"><span class="status-pending px-2 py-0.5 rounded text-xs">${o.status}</span></td>
       <td class="p-3 space-x-1">
-        ${o.status === 'New Order' ? `<button onclick="updateOrderStatus('${o.orderId}','Accepted')" class="text-xs text-blue-600">Accept</button>` : ''}
-        ${o.status === 'Accepted' ? `<button onclick="updateOrderStatus('${o.orderId}','Preparing')" class="text-xs text-amber-600">Preparing</button>` : ''}
+        ${o.status === 'New Order' ? `<button onclick="updateOrderStatus('${o.orderId}','Accepted')" class="text-xs text-blue-600">Accept</button> <button onclick="rejectOrder('${o.orderId}')" class="text-xs text-red-600">Reject</button>` : ''}
+        ${o.status === 'Accepted' ? `<button onclick="updateOrderStatus('${o.orderId}','Preparing')" class="text-xs text-amber-600">Preparing</button> <button onclick="rejectOrder('${o.orderId}')" class="text-xs text-red-600">Reject</button>` : ''}
         ${o.status === 'Preparing' ? `<button onclick="updateOrderStatus('${o.orderId}','Ready')" class="text-xs text-green-600">Ready</button>` : ''}
         ${o.status === 'Ready' ? `<button onclick="updateOrderStatus('${o.orderId}','Completed')" class="text-xs text-slate-600">Complete</button>` : ''}
+        ${['Rejected','Cancelled','Completed'].includes(o.status) ? '' : ''}
         <button onclick="viewOrderDetail('${o.orderId}')" class="text-xs text-primary-600">View</button>
       </td>
     </tr>
@@ -2826,9 +2966,20 @@ function updateOrderStatus(id, status) {
   if (!o) return;
   o.status = status;
   save('orders', orders);
+  // Live sync status to Supabase so other devices see it
+  sbUpdate('orders', { order_id: id }, { status: status, updated_at: new Date().toISOString() });
+  if (status === 'Rejected' || status === 'Cancelled') {
+    createNotification('order', 'Order ' + id + ' ' + status, o);
+    sbInsert('notifications', { type: 'order', title: 'Order ' + id + ' ' + status, body: o, is_read: false });
+  }
   renderAdminOrders();
   renderKitchen();
-  toast(`Order ${id} → ${status}`, 'success');
+  toast('Order ' + id + ' → ' + status, status === 'Rejected' ? 'warn' : 'success');
+}
+
+function rejectOrder(id) {
+  if (!confirm('Reject order ' + id + '?')) return;
+  updateOrderStatus(id, 'Rejected');
 }
 
 function viewOrderDetail(id) {
@@ -2851,8 +3002,8 @@ function renderKitchen() {
       <div class="text-xs text-slate-500 mb-2">${o.orderType} ${o.tableNumber ? '• Table ' + o.tableNumber : ''} ${o.roomNumber ? '• Room ' + o.roomNumber : ''}</div>
       <ul class="text-sm space-y-1 mb-3">${o.items.map(i => `<li>• ${i.name} × ${i.qty}</li>`).join('')}</ul>
       <div class="flex flex-wrap gap-1">
-        ${o.status === 'New Order' ? `<button onclick="updateOrderStatus('${o.orderId}','Accepted')" class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">ACCEPT</button>` : ''}
-        ${o.status === 'Accepted' ? `<button onclick="updateOrderStatus('${o.orderId}','Preparing')" class="px-2 py-1 bg-amber-100 text-amber-700 text-xs rounded">PREPARING</button>` : ''}
+        ${o.status === 'New Order' ? `<button onclick="updateOrderStatus('${o.orderId}','Accepted')" class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">ACCEPT</button> <button onclick="rejectOrder('${o.orderId}')" class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">REJECT</button>` : ''}
+        ${o.status === 'Accepted' ? `<button onclick="updateOrderStatus('${o.orderId}','Preparing')" class="px-2 py-1 bg-amber-100 text-amber-700 text-xs rounded">PREPARING</button> <button onclick="rejectOrder('${o.orderId}')" class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">REJECT</button>` : ''}
         ${o.status === 'Preparing' ? `<button onclick="updateOrderStatus('${o.orderId}','Ready')" class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded">READY</button>` : ''}
         ${o.status === 'Ready' ? `<button onclick="updateOrderStatus('${o.orderId}','Completed')" class="px-2 py-1 bg-slate-100 text-xs rounded">SERVED</button>` : ''}
       </div>
@@ -2929,7 +3080,16 @@ function posPlaceOrder() {
   createNotification('order', `New POS Order ${orderId}`, order);
   posCart = [];
   updatePOSCart();
-  toast(`Order ${orderId} placed! Coupon: ${coupon}`, 'success');
+  sbInsert('orders', {
+    order_id: order.orderId, customer_name: order.customerName, phone: order.phone, email: '',
+    order_type: order.orderType, table_number: order.tableNumber, room_number: '',
+    special_instructions: JSON.stringify({ note: '', items: order.items }),
+    subtotal: order.subtotal, service_charge: order.service, vat_amount: order.tax,
+    total_amount: order.total, payment_method: order.paymentMethod, status: order.status,
+    coupon_code: order.coupon
+  });
+  sbInsert('notifications', { type: 'order', title: 'New POS Order ' + orderId, body: order, is_read: false });
+  toast('Order ' + orderId + ' placed! Coupon: ' + coupon, 'success');
   renderKitchen();
 }
 
@@ -3577,14 +3737,18 @@ document.addEventListener('DOMContentLoaded', () => {
   updateAuthUI();
   updateNotifBadges();
   showPage('home');
-  // Supabase Realtime — new bookings/orders/notifications
+  // Cross-device: load existing DB data
+  syncFromSupabase();
+  startAdminSyncLoop();
+
+  // Realtime notifications → ALL admin devices
   sbRealtime('notifications', (payload) => {
     if (payload.eventType === 'INSERT' && payload.new) {
       const n = payload.new;
       notifications.unshift({
-        id: Date.now(),
+        id: n.id || Date.now(),
         type: n.type,
-        icon: n.type === 'order' ? '🟠' : n.type === 'booking' ? '🔴' : '🔔',
+        icon: n.type === 'order' ? '🟠' : n.type === 'booking' ? '🔴' : n.type === 'roomservice' ? '🛎️' : '🔔',
         title: n.title,
         data: n.body || {},
         read: false,
@@ -3594,7 +3758,57 @@ document.addEventListener('DOMContentLoaded', () => {
       updateNotifBadges();
       if (n.type === 'order') playNotificationSound('New food order received');
       else if (n.type === 'booking') playNotificationSound('New room booking received');
-      toast((n.type === 'order' ? '🟠' : '🔴') + ' ' + n.title, 'warn');
+      else playNotificationSound('New notification');
+      toast((n.type === 'order' ? '🟠' : n.type === 'booking' ? '🔴' : '🔔') + ' ' + n.title, 'warn');
+      refreshAdminIfOpen();
+    }
+  });
+  // Realtime ORDERS → admin dashboard + sound
+  sbRealtime('orders', (payload) => {
+    if (payload.eventType === 'INSERT' && payload.new) {
+      const o = mapDbOrder(payload.new);
+      if (o && o.orderId) {
+        orders = mergeById(orders, [o], 'orderId');
+        save('orders', orders);
+        playNotificationSound('New food order received');
+        toast('🟠 New order ' + o.orderId + ' — ' + (o.customerName || ''), 'warn');
+        notifications.unshift({
+          id: 'ord_' + o.orderId,
+          type: 'order', icon: '🟠',
+          title: 'New Food Order ' + o.orderId,
+          data: o, read: false, createdAt: o.createdAt
+        });
+        save('notifications', notifications);
+        updateNotifBadges();
+        refreshAdminIfOpen();
+      }
+    } else if (payload.eventType === 'UPDATE' && payload.new) {
+      const o = mapDbOrder(payload.new);
+      if (o) { orders = mergeById(orders, [o], 'orderId'); save('orders', orders); refreshAdminIfOpen(); }
+    }
+  });
+  // Realtime BOOKINGS
+  sbRealtime('bookings', (payload) => {
+    if (payload.eventType === 'INSERT' && payload.new) {
+      const b = mapDbBooking(payload.new);
+      if (b && b.bookingId) {
+        bookings = mergeById(bookings, [b], 'bookingId');
+        save('bookings', bookings);
+        playNotificationSound('New room booking received');
+        toast('🔴 New booking ' + b.bookingId + ' — ' + (b.fullName || ''), 'warn');
+        notifications.unshift({
+          id: 'bk_' + b.bookingId,
+          type: 'booking', icon: '🔴',
+          title: 'New Room Booking ' + b.bookingId,
+          data: b, read: false, createdAt: b.createdAt
+        });
+        save('notifications', notifications);
+        updateNotifBadges();
+        refreshAdminIfOpen();
+      }
+    } else if (payload.eventType === 'UPDATE' && payload.new) {
+      const b = mapDbBooking(payload.new);
+      if (b) { bookings = mergeById(bookings, [b], 'bookingId'); save('bookings', bookings); refreshAdminIfOpen(); }
     }
   });
   // Restore Supabase session if any
