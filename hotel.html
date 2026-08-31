@@ -67,6 +67,13 @@ body { font-family: 'Inter', system-ui, sans-serif; }
 .pos-table.available { border-color:#10b981; }
 .pos-table.occupied { border-color:#ef4444; background:#fef2f2; }
 .pos-table.reserved { border-color:#f59e0b; background:#fffbeb; }
+@media print {
+  body * { visibility: hidden !important; }
+  #bookingReceiptPrint, #bookingReceiptPrint * { visibility: visible !important; }
+  #bookingReceiptModal { position: static !important; background: white !important; }
+  #bookingReceiptPrint { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none !important; }
+  .print\:hidden { display: none !important; }
+}
 </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
@@ -1566,6 +1573,29 @@ async function syncFromSupabase() {
       save('notifications', notifications);
       if (typeof updateNotifBadges === 'function') updateNotifBadges();
     }
+    // Detect brand-new orders/bookings since last sync → sound for staff
+    if (!window._lastOrderIds) window._lastOrderIds = new Set(orders.map(o => o.orderId));
+    if (!window._lastBookingIds) window._lastBookingIds = new Set(bookings.map(b => b.bookingId));
+    const staff = currentUser && isAdminRole(currentUser.role);
+    orders.forEach(o => {
+      if (o.orderId && !window._lastOrderIds.has(o.orderId)) {
+        window._lastOrderIds.add(o.orderId);
+        if (staff) {
+          playNotificationSound('New food order received');
+          toast('🟠 New order ' + o.orderId + ' — ' + (o.customerName || ''), 'warn');
+        }
+      }
+    });
+    bookings.forEach(b => {
+      if (b.bookingId && !window._lastBookingIds.has(b.bookingId)) {
+        window._lastBookingIds.add(b.bookingId);
+        if (staff) {
+          playNotificationSound('New room booking received');
+          toast('🔴 New booking ' + b.bookingId, 'warn');
+        }
+      }
+    });
+    purgeOldNotifications();
     console.log('[sync] orders', orders.length, 'bookings', bookings.length, 'notifs', notifications.length);
     return true;
   } catch (e) {
@@ -1741,6 +1771,7 @@ function createNotification(type, title, data) {
   save('notifications', notifications);
   updateNotifBadges();
   // Sound — always attempt for operational events
+  unlockAudio(); soundEnabled = true;
   if (type === 'order' || type === 'order_status') playNotificationSound(type === 'order_status' ? 'Order status updated' : 'New food order received');
   else if (type === 'booking') playNotificationSound('New room booking received');
   else if (type === 'inquiry') playNotificationSound('New inquiry received');
@@ -1799,6 +1830,25 @@ function updateNotifBadges() {
       el.classList.remove('hidden');
     } else el.classList.add('hidden');
   });
+}
+
+
+function purgeOldNotifications() {
+  const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const before = notifications.length;
+  notifications = notifications.filter(n => {
+    const t = new Date(n.createdAt || 0).getTime();
+    return !t || t >= cutoff;
+  });
+  if (notifications.length !== before) {
+    save('notifications', notifications);
+    updateNotifBadges();
+  }
+  // Also try delete old rows in Supabase (best-effort)
+  try {
+    const iso = new Date(cutoff).toISOString();
+    supabaseClient.from('notifications').delete().lt('created_at', iso).then(()=>{});
+  } catch(_){}
 }
 
 function markAllNotifRead() {
@@ -2800,13 +2850,16 @@ function renderMyBookings() {
         <span class="status-pending px-2 py-0.5 rounded text-xs">${b.status}</span>
       </div>
       <div class="text-sm text-slate-600 grid sm:grid-cols-2 gap-1">
-        <div>Room: ${b.roomName}</div>
+        <div>Room: ${b.roomName}${b.roomNumber ? ' (#' + b.roomNumber + ')' : ''}</div>
         <div>Guests: ${b.adults}A ${b.children}C</div>
         <div>Check-in: ${b.checkIn}</div>
         <div>Check-out: ${b.checkOut}</div>
         <div>Amount: ${formatRs(b.total)}</div>
         <div>Payment: ${b.paymentMethod}</div>
       </div>
+      ${['Confirmed','Checked In','Checked Out'].includes(b.status) ? `<button onclick="showBookingReceipt('${b.bookingId}')" class="mt-3 w-full py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold"><i class="fas fa-receipt mr-1"></i> View / Print Hotel Receipt</button>` : ''}
+      ${b.status === 'Rejected' ? '<p class="mt-2 text-xs text-red-600">This booking was rejected by the hotel.</p>' : ''}
+      ${b.status === 'Pending' ? '<p class="mt-2 text-xs text-amber-600">Waiting for hotel confirmation. You will get a receipt after confirm.</p>' : ''}
     </div>
   `).join('') : '<p class="text-slate-400 text-center py-10">No bookings yet. <a href="#" onclick="showPage(\'book\')" class="text-primary-600">Book a room</a></p>';
 }
@@ -2950,6 +3003,7 @@ function openAddRoomModal(room) {
       <h3 class="font-bold text-lg mb-4">${isEdit ? 'Edit Room' : 'Add Room'}</h3>
       <form onsubmit="saveRoom(event, ${isEdit ? room.id : 'null'})" class="space-y-3 text-sm">
         <div><label class="text-xs">Room Name *</label><input name="name" required value="${(r.name||'').replace(/"/g,'&quot;')}" class="w-full px-3 py-2 border rounded-lg"></div>
+        <div><label class="text-xs">Room Number</label><input name="roomNumber" value="${(r.roomNumber||'').replace(/"/g,'&quot;')}" placeholder="e.g. 101" class="w-full px-3 py-2 border rounded-lg"></div>
         <div class="grid grid-cols-2 gap-2">
           <div><label class="text-xs">Type</label><select name="type" class="w-full px-3 py-2 border rounded-lg"><option ${r.type==='Standard'?'selected':''}>Standard</option><option ${r.type==='Deluxe'?'selected':''}>Deluxe</option><option ${r.type==='Suite'?'selected':''}>Suite</option><option ${r.type==='Family'?'selected':''}>Family</option></select></div>
           <div><label class="text-xs">Price / night (Rs)</label><input type="number" name="price" value="${r.price||0}" class="w-full px-3 py-2 border rounded-lg"></div>
@@ -2981,7 +3035,7 @@ function saveRoom(e, id) {
   e.preventDefault();
   const fd = new FormData(e.target);
   const data = {
-    name: fd.get('name'), type: fd.get('type'), price: Number(fd.get('price'))||0,
+    name: fd.get('name'), roomNumber: fd.get('roomNumber') || '', type: fd.get('type'), price: Number(fd.get('price'))||0,
     capacity: Number(fd.get('capacity'))||2, bed: fd.get('bed'), bathroom: fd.get('bathroom'),
     status: fd.get('status'), image: fd.get('image') || 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600',
     desc: fd.get('desc')||'', wifi: fd.get('wifi')==='on', tv: fd.get('tv')==='on',
@@ -3020,14 +3074,15 @@ function renderAdminBookings(filter = 'all') {
     <tr class="border-t">
       <td class="p-3 font-mono text-xs">${b.bookingId}</td>
       <td class="p-3">${b.fullName}<br><span class="text-xs text-slate-500">${b.phone}</span></td>
-      <td class="p-3">${b.roomName}</td>
+      <td class="p-3">${b.roomName}${b.roomNumber ? '<br><span class="text-xs font-mono text-primary-600">#' + b.roomNumber + '</span>' : ''}</td>
       <td class="p-3 text-xs">${b.checkIn} → ${b.checkOut}</td>
       <td class="p-3">${formatRs(b.total)}</td>
       <td class="p-3"><span class="status-pending px-2 py-0.5 rounded text-xs">${b.status}</span></td>
       <td class="p-3 space-x-1">
-        ${b.status === 'Pending' ? `<button onclick="updateBookingStatus('${b.bookingId}','Confirmed')" class="text-xs text-green-600 hover:underline">Confirm</button>` : ''}
-        ${b.status === 'Confirmed' ? `<button onclick="updateBookingStatus('${b.bookingId}','Checked In')" class="text-xs text-blue-600 hover:underline">Check-in</button>` : ''}
-        ${b.status === 'Checked In' ? `<button onclick="updateBookingStatus('${b.bookingId}','Checked Out')" class="text-xs text-slate-600 hover:underline">Check-out</button>` : ''}
+        ${b.status === 'Pending' ? `<button onclick="updateBookingStatus('${b.bookingId}','Confirmed')" class="text-xs text-green-600 hover:underline">Confirm</button> <button onclick="rejectBooking('${b.bookingId}')" class="text-xs text-red-600 hover:underline">Reject</button>` : ''}
+        ${b.status === 'Confirmed' ? `<button onclick="showBookingReceipt('${b.bookingId}')" class="text-xs text-emerald-700 hover:underline font-semibold">Receipt</button> <button onclick="updateBookingStatus('${b.bookingId}','Checked In')" class="text-xs text-blue-600 hover:underline">Check-in</button> <button onclick="rejectBooking('${b.bookingId}')" class="text-xs text-red-600 hover:underline">Reject</button>` : ''}
+        ${b.status === 'Checked In' ? `<button onclick="showBookingReceipt('${b.bookingId}')" class="text-xs text-emerald-700 hover:underline">Receipt</button> <button onclick="updateBookingStatus('${b.bookingId}','Checked Out')" class="text-xs text-slate-600 hover:underline">Check-out</button>` : ''}
+        ${b.status === 'Rejected' || b.status === 'Cancelled' ? '<span class="text-xs text-red-500">Rejected</span>' : ''}
         <button onclick="viewBookingDetail('${b.bookingId}')" class="text-xs text-primary-600 hover:underline">View</button>
       </td>
     </tr>
@@ -3039,25 +3094,153 @@ function filterAdminBookings(f) { renderAdminBookings(f); }
 function updateBookingStatus(id, status) {
   const b = bookings.find(x => x.bookingId === id);
   if (!b) return;
+
+  // Confirm → assign room number
+  if (status === 'Confirmed') {
+    const currentRoom = b.roomNumber || b.roomName || '';
+    const rn = prompt('Assign Room Number for this booking:', currentRoom);
+    if (rn === null) return; // cancelled
+    b.roomNumber = rn.trim();
+    if (rn.trim()) b.roomName = b.roomName || ('Room ' + rn.trim());
+  }
+
   b.status = status;
   if (status === 'Checked In') {
-    const room = rooms.find(r => r.id === b.roomId);
-    if (room) room.status = 'Occupied';
+    const room = rooms.find(r => r.id === b.roomId) || rooms.find(r => String(r.roomNumber) === String(b.roomNumber) || r.name === b.roomName);
+    if (room) { room.status = 'Occupied'; if (b.roomNumber) room.roomNumber = b.roomNumber; }
   }
-  if (status === 'Checked Out') {
-    const room = rooms.find(r => r.id === b.roomId);
+  if (status === 'Checked Out' || status === 'Rejected' || status === 'Cancelled') {
+    const room = rooms.find(r => r.id === b.roomId) || rooms.find(r => String(r.roomNumber) === String(b.roomNumber) || r.name === b.roomName);
     if (room) room.status = 'Available';
   }
   save('bookings', bookings);
   save('rooms', rooms);
+  sbUpdate('bookings', { booking_id: id }, {
+    status: status,
+    room_name: b.roomName,
+    updated_at: new Date().toISOString()
+  });
+  const title = 'Booking ' + id + ' → ' + status + (b.roomNumber ? ' (Room ' + b.roomNumber + ')' : '');
+  createNotification('booking', title, b);
+  sbInsert('notifications', {
+    type: 'booking',
+    title: title,
+    body: { ...b, customerEmail: b.email, status },
+    is_read: false
+  });
+  try {
+    if (window._lpBC) window._lpBC.postMessage({ type: 'booking_status', bookingId: id, status, booking: b });
+  } catch(_){}
+
+  // After confirm → show printable receipt for guest
+  if (status === 'Confirmed') {
+    setTimeout(() => showBookingReceipt(id), 200);
+  }
+  // After checkout → purge related local notifs older cleanup
+  if (status === 'Checked Out') {
+    notifications = notifications.filter(n => {
+      const d = n.data || {};
+      if (d.bookingId === id || (n.title && n.title.includes(id))) return false;
+      return true;
+    });
+    save('notifications', notifications);
+    updateNotifBadges();
+    purgeOldNotifications();
+  }
   renderAdminBookings();
-  toast(`Booking ${id} → ${status}`, 'success');
+  renderCheckin();
+  toast(title, status === 'Rejected' ? 'warn' : 'success');
+}
+
+
+function rejectBooking(id) {
+  if (!confirm('Reject booking ' + id + '?')) return;
+  updateBookingStatus(id, 'Rejected');
+}
+
+function showBookingReceipt(id) {
+  const b = bookings.find(x => x.bookingId === id);
+  if (!b) { toast('Booking not found', 'error'); return; }
+  document.getElementById('bookingReceiptModal')?.remove();
+  const qrText = [
+    'BOOKING RECEIPT',
+    'Hotel: ' + (HOTEL.name || 'Miracle Hotel'),
+    'Booking ID: ' + b.bookingId,
+    'Guest: ' + b.fullName,
+    'Phone: ' + (b.phone || ''),
+    'Room: ' + (b.roomName || ''),
+    'Check-in: ' + b.checkIn,
+    'Check-out: ' + b.checkOut,
+    'Nights: ' + (b.nights || 1),
+    'Total: NPR ' + (b.total || 0),
+    'Status: ' + b.status
+  ].join('\n');
+  const html = `<div class="fixed inset-0 z-[90] flex items-center justify-center p-4 modal-overlay" id="bookingReceiptModal">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[95vh] overflow-y-auto" id="bookingReceiptPrint">
+      <div class="p-6 border-b flex justify-between items-start">
+        <div>
+          <h3 class="font-display text-xl font-bold text-primary-800">Booking Receipt</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Show this at hotel reception</p>
+        </div>
+        <button onclick="document.getElementById('bookingReceiptModal').remove()" class="p-2 hover:bg-slate-100 rounded-lg print:hidden"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="p-6 text-sm space-y-3">
+        <div class="text-center mb-4">
+          <div class="text-2xl">🏨</div>
+          <div class="font-display font-bold text-lg">${HOTEL.name || 'Miracle Hotel'}</div>
+          <div class="text-xs text-slate-500">${HOTEL.address || 'Lakeside, Pokhara'}</div>
+          <div class="text-xs text-slate-500">${HOTEL.phone || ''} • ${HOTEL.email || ''}</div>
+        </div>
+        <div class="bg-primary-50 rounded-xl p-3 text-center border border-primary-100">
+          <div class="text-xs text-slate-500 uppercase tracking-wide">Booking ID</div>
+          <div class="font-mono font-bold text-lg text-primary-800">${b.bookingId}</div>
+          <div class="mt-1"><span class="px-2 py-0.5 rounded text-xs font-semibold ${b.status==='Confirmed'||b.status==='Checked In'?'bg-green-100 text-green-700':b.status==='Rejected'?'bg-red-100 text-red-700':'bg-amber-100 text-amber-800'}">${b.status}</span></div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 border rounded-xl p-3">
+          <div><div class="text-xs text-slate-400">Guest</div><div class="font-semibold">${b.fullName}</div></div>
+          <div><div class="text-xs text-slate-400">Phone</div><div class="font-semibold">${b.phone||'—'}</div></div>
+          <div><div class="text-xs text-slate-400">Email</div><div class="text-xs break-all">${b.email||'—'}</div></div>
+          <div><div class="text-xs text-slate-400">ID / Passport</div><div class="font-semibold">${b.idNumber||'—'}</div></div>
+        </div>
+        <div class="border rounded-xl p-3 space-y-1">
+          <div class="flex justify-between"><span class="text-slate-500">Room</span><strong>${b.roomName||'—'}</strong></div>
+          <div class="flex justify-between"><span class="text-slate-500">Check-in</span><strong>${b.checkIn}</strong></div>
+          <div class="flex justify-between"><span class="text-slate-500">Check-out</span><strong>${b.checkOut}</strong></div>
+          <div class="flex justify-between"><span class="text-slate-500">Nights</span><strong>${b.nights||1}</strong></div>
+          <div class="flex justify-between"><span class="text-slate-500">Guests</span><strong>${b.adults||2} Adults, ${b.children||0} Children</strong></div>
+          <div class="flex justify-between border-t pt-2 mt-1"><span class="font-semibold">Total</span><strong class="text-primary-700">${formatRs(b.total||0)}</strong></div>
+          <div class="flex justify-between"><span class="text-slate-500">Payment</span><span>${b.paymentMethod||'Pay at hotel'}</span></div>
+        </div>
+        <div class="text-center">
+          <div id="bookingReceiptQr" class="inline-block bg-white p-2"></div>
+          <p class="text-xs text-slate-400 mt-1">Scan / show Booking ID at reception</p>
+        </div>
+        <p class="text-xs text-slate-500 text-center">Please arrive after check-in time. Bring a valid ID matching this booking.</p>
+      </div>
+      <div class="p-4 border-t flex gap-2 print:hidden">
+        <button onclick="window.print()" class="flex-1 py-2.5 bg-primary-600 text-white rounded-xl font-semibold text-sm"><i class="fas fa-print mr-1"></i> Print Receipt</button>
+        <button onclick="document.getElementById('bookingReceiptModal').remove()" class="px-4 py-2.5 border rounded-xl text-sm">Close</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+  try {
+    const box = document.getElementById('bookingReceiptQr');
+    if (box && typeof QRCode !== 'undefined') {
+      box.innerHTML = '';
+      new QRCode(box, { text: qrText.replace(/\\n/g, '\n'), width: 120, height: 120 });
+    }
+  } catch(e) {}
 }
 
 function viewBookingDetail(id) {
   const b = bookings.find(x => x.bookingId === id);
   if (!b) return;
-  createNotification('booking', `Booking Detail ${id}`, b); // reuse detail view
+  if (b.status === 'Confirmed' || b.status === 'Checked In') {
+    showBookingReceipt(id);
+    return;
+  }
+  createNotification('booking', 'Booking Detail ' + id, b);
   openNotifDetail(notifications[0].id);
 }
 
@@ -4105,6 +4288,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   // Cross-device: load existing DB data
+  purgeOldNotifications();
   syncFromSupabase();
   startAdminSyncLoop();
 
@@ -4149,8 +4333,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (o && o.orderId) {
         orders = mergeById(orders, [o], 'orderId');
         save('orders', orders);
+        unlockAudio();
+        soundEnabled = true;
         playNotificationSound('New food order received');
-        toast('🟠 New order ' + o.orderId + ' — ' + (o.customerName || ''), 'warn');
+        toast('🟠 New order ' + o.orderId + ' — ' + (o.customerName || '') + (o.roomNumber ? ' Room ' + o.roomNumber : ''), 'warn');
         notifications.unshift({
           id: 'ord_' + o.orderId,
           type: 'order', icon: '🟠',
