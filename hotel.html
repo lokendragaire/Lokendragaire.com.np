@@ -1,3 +1,8 @@
+
+
+index.html
+
+Files
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -592,7 +597,7 @@ body { font-family: 'Inter', system-ui, sans-serif; }
         </div>
         <button type="submit" class="w-full py-3 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700">Login</button>
       </form>
-      <p class="text-center text-sm text-slate-500 mt-4">Login with the email & password you created in Supabase Authentication.<br>Admin role is set in profiles table.</p>
+      <p class="text-center text-sm text-slate-500 mt-4">Use email & password from <strong>Supabase Authentication</strong> only.<br>No demo passwords in this site. Admin role is set in profiles table.</p>
       <p class="text-center text-sm mt-3">No account? <a href="#" onclick="showPage('register')" class="text-primary-600 font-medium">Register</a></p>
     </div>
   </div>
@@ -1420,10 +1425,8 @@ let menu = load('menu', DEFAULT_MENU);
 let bookings = load('bookings', []);
 let orders = load('orders', []);
 let notifications = load('notifications', []);
-let users = load('users', [
-  { id: 1, name: 'Admin', email: 'hello@gmail.com', password: 'Hello@23', role: 'SUPER ADMIN', phone: '9800000000' },
-  { id: 2, name: 'Demo Customer', email: 'customer@demo.com', password: 'customer123', role: 'CUSTOMER', phone: '9811111111' }
-]);
+// Users come ONLY from Supabase Auth — no passwords stored in HTML
+let users = load('users', []);
 let roomServiceReqs = load('roomService', []);
 let contactMsgs = load('contacts', []);
 let emailLogs = load('emailLogs', []);
@@ -1760,14 +1763,8 @@ async function doLogin(e) {
   } catch (err) {
     console.warn('Supabase auth:', err);
   }
-  // Fallback local demo users
-  const user = users.find(u => u.email === email && u.password === pass);
-  if (!user) { toast('Invalid email or password', 'error'); return; }
-  currentUser = user;
-  save('currentUser', user);
-  updateAuthUI();
-  toast('Welcome, ' + user.name + '!', 'success');
-  showPage('customerDashboard');
+  // NO local password fallback — only Supabase Auth
+  toast('Invalid email or password. Use the account created in Supabase Authentication.', 'error');
 }
 
 async function doRegister(e) {
@@ -1793,16 +1790,8 @@ async function doRegister(e) {
   } catch (err) {
     console.warn(err);
   }
-  // Local fallback
-  if (users.find(u => u.email === email)) { toast('Email already registered', 'error'); return; }
-  const user = { id: Date.now(), name, email, phone, password, role: 'CUSTOMER' };
-  users.push(user);
-  save('users', users);
-  currentUser = user;
-  save('currentUser', user);
-  updateAuthUI();
-  toast('Account created (local)! Welcome ' + name, 'success');
-  showPage('customerDashboard');
+  // Registration must succeed via Supabase Auth (no password stored in HTML)
+  toast('Registration failed. Check Supabase Auth settings (email confirm may be required).', 'error');
 }
 
 async function logout() {
