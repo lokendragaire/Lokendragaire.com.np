@@ -15,6 +15,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script>
 tailwind.config = {
@@ -583,15 +584,15 @@ body { font-family: 'Inter', system-ui, sans-serif; }
       <form onsubmit="doLogin(event)" class="space-y-4">
         <div>
           <label class="block text-sm font-medium mb-1">Email</label>
-          <input type="email" id="loginEmail" required class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary-500" value="admin@hotel.com">
+          <input type="email" id="loginEmail" required class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary-500" value="" placeholder="your@email.com">
         </div>
         <div>
           <label class="block text-sm font-medium mb-1">Password</label>
-          <input type="password" id="loginPassword" required class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary-500" value="admin123">
+          <input type="password" id="loginPassword" required class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary-500" value="" placeholder="••••••••">
         </div>
         <button type="submit" class="w-full py-3 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700">Login</button>
       </form>
-      <p class="text-center text-sm text-slate-500 mt-4">Demo: admin@hotel.com / admin123 (Admin)<br>customer@demo.com / customer123 (Customer)</p>
+      <p class="text-center text-sm text-slate-500 mt-4">Login with the email & password you created in Supabase Authentication.<br>Admin role is set in profiles table.</p>
       <p class="text-center text-sm mt-3">No account? <a href="#" onclick="showPage('register')" class="text-primary-600 font-medium">Register</a></p>
     </div>
   </div>
@@ -1102,7 +1103,7 @@ body { font-family: 'Inter', system-ui, sans-serif; }
           </div>
           <div class="mt-4 bg-white rounded-xl p-4 shadow-sm border">
             <h4 class="font-medium mb-2">Bank Payment Details (shown on bills & QR)</h4>
-            <p class="text-sm"><strong>Global IME Bank</strong> • A/C: <code class="bg-slate-100 px-2 py-0.5 rounded">09408010000520</code> • Holder: <strong>hotel</strong></p>
+            <p class="text-sm"><strong>Global IME Bank</strong> • A/C: <code class="bg-slate-100 px-2 py-0.5 rounded">09408010000520</code> • Holder: <strong>Lokendra Gaire</strong></p>
           </div>
         </div>
 
@@ -1183,11 +1184,11 @@ body { font-family: 'Inter', system-ui, sans-serif; }
               <div class="space-y-3 text-sm">
                 <div><label class="block text-slate-500 mb-1">Hotel Name</label><input type="text" id="setHotelName" value="Lakeside Paradise Hotel & Restaurant" class="w-full px-3 py-2 border rounded-lg"></div>
                 <div><label class="block text-slate-500 mb-1">Email (Notifications sent here)</label><input type="email" id="setHotelEmail" value="info@lakesideparadise.com.np" class="w-full px-3 py-2 border rounded-lg"></div>
-                <div><label class="block text-slate-500 mb-1">Phone</label><input type="text" id="setHotelPhone" value="+977-61-XXXXXX" class="w-full px-3 py-2 border rounded-lg"></div>
+                <div><label class="block text-slate-500 mb-1">Phone</label><input type="text" id="setHotelPhone" value="+977-9869065252" class="w-full px-3 py-2 border rounded-lg"></div>
                 <div><label class="block text-slate-500 mb-1">Address</label><input type="text" id="setHotelAddress" value="Lakeside Road, Pokhara 33700, Nepal" class="w-full px-3 py-2 border rounded-lg"></div>
                 <div><label class="block text-slate-500 mb-1">Bank Name</label><input type="text" id="setBankName" value="Global IME Bank" class="w-full px-3 py-2 border rounded-lg"></div>
-                <div><label class="block text-slate-500 mb-1">Bank Account No.</label><input type="text" id="setBankAccount" value="121451215" class="w-full px-3 py-2 border rounded-lg"></div>
-                <div><label class="block text-slate-500 mb-1">Account Holder</label><input type="text" id="setBankHolder" value="hotel" class="w-full px-3 py-2 border rounded-lg"></div>
+                <div><label class="block text-slate-500 mb-1">Bank Account No.</label><input type="text" id="setBankAccount" value="09408010000520" class="w-full px-3 py-2 border rounded-lg"></div>
+                <div><label class="block text-slate-500 mb-1">Account Holder</label><input type="text" id="setBankHolder" value="Lokendra Gaire" class="w-full px-3 py-2 border rounded-lg"></div>
               </div>
             </div>
             <div class="bg-white rounded-xl p-5 shadow-sm border">
@@ -1273,11 +1274,11 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 const HOTEL = {
   name: 'Lakeside Paradise Hotel & Restaurant',
   email: 'info@lakesideparadise.com.np',
-  phone: '+977-61-XXXXXX',
+  phone: '+977-9869065252',
   address: 'Lakeside Road, Pokhara 33700, Nepal',
   bankName: 'Global IME Bank',
-  bankAccountNo: '121451215',
-  bankAccountHolder: 'hotel',
+  bankAccountNo: '09408010000520',
+  bankAccountHolder: 'Lokendra Gaire',
   bankBranch: 'Pokhara',
   vatRate: 13
 };
@@ -1804,7 +1805,8 @@ async function doRegister(e) {
   showPage('customerDashboard');
 }
 
-function logout() {
+async function logout() {
+  try { await supabaseClient.auth.signOut(); } catch(_){}
   currentUser = null;
   localStorage.removeItem('lp_currentUser');
   updateAuthUI();
@@ -3090,8 +3092,65 @@ function generateReport(type) {
     html += `<p>Invoices: ${list.length}</p>`;
     list.forEach(inv => { html += `<div class="text-sm py-1 border-b">${inv.invoiceNumber} — ${inv.customerName} — ${formatRs(inv.grandTotal)} — VAT: ${inv.applyVat?'Yes':'No'} — ${inv.paymentStatus}</div>`; });
   }
-  html += `<button onclick="window.print()" class="mt-4 px-4 py-2 bg-primary-600 text-white rounded-lg text-sm">Print / Save PDF</button>`;
+  html += `<div class="flex flex-wrap gap-2 mt-4">
+    <button onclick="window.print()" class="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm">Print / PDF</button>
+    <button onclick="exportReportExcel('${type}')" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm">Download Excel</button>
+  </div>`;
   out.innerHTML = html;
+  window._lastReportType = type;
+  window._lastReportFrom = from;
+  window._lastReportTo = to;
+}
+
+function exportReportExcel(type) {
+  const from = window._lastReportFrom || '2000-01-01';
+  const to = window._lastReportTo || '2099-12-31';
+  const inRange = (d) => d && d >= from && d <= to;
+  let rows = [];
+  let sheetName = type || 'Report';
+  if (type === 'bookings') {
+    rows = [['Booking ID','Guest','Phone','Email','Room','Check-in','Check-out','Nights','Amount','Status','Payment']];
+    bookings.filter(b => inRange((b.createdAt||'').slice(0,10)) || inRange(b.checkIn)).forEach(b => {
+      rows.push([b.bookingId, b.fullName, b.phone, b.email||'', b.roomName, b.checkIn, b.checkOut, b.nights, b.total, b.status, b.paymentMethod||'']);
+    });
+  } else if (type === 'sales') {
+    rows = [['Order ID','Customer','Phone','Type','Items','Total','Status','Coupon','Date']];
+    orders.filter(o => inRange((o.createdAt||'').slice(0,10))).forEach(o => {
+      rows.push([o.orderId, o.customerName, o.phone, o.orderType, (o.items||[]).map(i=>i.name+'x'+i.qty).join('; '), o.total, o.status, o.coupon||'', (o.createdAt||'').slice(0,10)]);
+    });
+  } else if (type === 'revenue' || type === 'pnl') {
+    rows = [['Type','Description','Category','Amount','Date']];
+    income.filter(i => inRange(i.date)).forEach(i => rows.push(['Income', i.desc, i.category||'', i.amount, i.date]));
+    expenses.filter(e => inRange(e.date)).forEach(e => rows.push(['Expense', e.desc, e.category||'', e.amount, e.date]));
+  } else if (type === 'inventory') {
+    rows = [['Item','Category','Qty','Min','Unit','Status']];
+    inventoryItems.forEach(i => rows.push([i.name, i.category, i.qty, i.min, i.unit, i.qty<=i.min?'LOW':'OK']));
+  } else if (type === 'invoices') {
+    rows = [['Invoice','Customer','Total','VAT','Status','Date','Ref']];
+    invoices.filter(inv => inRange((inv.issuedAt||'').slice(0,10))).forEach(inv => {
+      rows.push([inv.invoiceNumber, inv.customerName, inv.grandTotal, inv.applyVat?'Yes':'No', inv.paymentStatus, (inv.issuedAt||'').slice(0,10), inv.refId||'']);
+    });
+  } else if (type === 'occupancy') {
+    rows = [['Room','Type','Price','Status']];
+    rooms.forEach(r => rows.push([r.name, r.type, r.price, r.status]));
+  } else {
+    rows = [['Info'],['No tabular data for this report']];
+  }
+  if (typeof XLSX === 'undefined') {
+    // CSV fallback
+    const csv = rows.map(r => r.map(c => '"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+    a.download = sheetName + '_' + from + '_to_' + to + '.csv';
+    a.click();
+    toast('CSV downloaded (open in Excel)', 'success');
+    return;
+  }
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, sheetName.substring(0,31));
+  XLSX.writeFile(wb, sheetName + '_' + from + '_to_' + to + '.xlsx');
+  toast('Excel downloaded', 'success');
 }
 
 function saveSettings() {
@@ -3122,7 +3181,17 @@ function calcBill(subtotal, applyVat, servicePct) {
 }
 
 function buildQrPayload(amount, ref) {
-  return `Global IME Bank\nA/C: ${HOTEL.bankAccountNo}\nName: ${HOTEL.bankAccountHolder}\nAmount: Rs. ${amount}\nRef: ${ref}\nPay via IME Pay / Mobile Wallet`;
+  // Structured text for bank transfer (IME Pay / ConnectIPS / mobile banking scan)
+  const lines = [
+    'BANK TRANSFER',
+    'Bank: ' + (HOTEL.bankName || 'Global IME Bank'),
+    'Account No: ' + HOTEL.bankAccountNo,
+    'Account Name: ' + HOTEL.bankAccountHolder,
+    'Amount: NPR ' + amount,
+    'Reference: ' + ref,
+    'Hotel: ' + (HOTEL.name || 'Lakeside Paradise')
+  ];
+  return lines.join('\n');
 }
 
 function showInvoiceModal(inv) {
