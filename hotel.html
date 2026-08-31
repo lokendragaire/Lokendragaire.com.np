@@ -36,7 +36,7 @@ tailwind.config = {
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
 body { font-family: 'Inter', system-ui, sans-serif; }
 .font-display { font-family: 'Playfair Display', serif; }
-.hero-bg { background: linear-gradient(rgba(12,74,110,0.55), rgba(12,74,110,0.7)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600') center/cover no-repeat; }
+.hero-bg { background: linear-gradient(rgba(12,74,110,0.55), rgba(12,74,110,0.7)), var(--hero-image, url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600')) center/cover no-repeat; }
 .room-card:hover, .food-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
 .room-card, .food-card { transition: all 0.3s ease; }
 .nav-link.active { color: #0ea5e9; border-bottom: 2px solid #0ea5e9; }
@@ -1063,7 +1063,7 @@ body { font-family: 'Inter', system-ui, sans-serif; }
 
         <!-- STAFF -->
         <div id="admin-staff" class="admin-section hidden">
-          <div class="flex justify-between mb-4"><h3 class="font-semibold">Staff</h3><button onclick="toast('Staff add form - demo mode')" class="px-3 py-1.5 bg-primary-600 text-white rounded-lg text-sm">+ Add Staff</button></div>
+          <div class="flex justify-between mb-4"><h3 class="font-semibold">Staff</h3><button onclick="openStaffModal()" class="px-3 py-1.5 bg-primary-600 text-white rounded-lg text-sm">+ Add Staff</button></div>
           <div id="staffList" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
 
@@ -1087,9 +1087,11 @@ body { font-family: 'Inter', system-ui, sans-serif; }
           <div class="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900">
             <strong>Roles:</strong>
             <ul class="list-disc ml-5 mt-1 space-y-1">
-              <li><b>SUPER ADMIN</b> — full access (orders + finance + settings + user roles)</li>
-              <li><b>ADMIN</b> — hotel/restaurant operations (orders, rooms, kitchen, inventory) — <b>no</b> accounting / billing / reports / settings</li>
-              <li><b>CUSTOMER</b> — public booking & food ordering only</li>
+              <li><b>SUPER ADMIN</b> — full access (finance, users, wallpaper, all modules)</li>
+              <li><b>ADMIN</b> — operations (orders, rooms, POS, inventory) — no finance/settings</li>
+              <li><b>KITCHEN</b> — kitchen display + orders only (accept / ready / invite table)</li>
+              <li><b>HOUSEKEEPING</b> — room cleaning status only</li>
+              <li><b>CUSTOMER</b> — public booking & food ordering; gets order status alerts</li>
             </ul>
             <p class="mt-2">New login accounts are created in <b>Supabase → Authentication → Users</b>, then set role here.</p>
           </div>
@@ -1163,7 +1165,7 @@ body { font-family: 'Inter', system-ui, sans-serif; }
 
         <!-- OFFERS ADMIN -->
         <div id="admin-offersAdmin" class="admin-section hidden">
-          <div class="flex justify-between mb-4"><h3 class="font-semibold">Offers & Coupons</h3><button onclick="toast('Create offer - demo')" class="px-3 py-1.5 bg-primary-600 text-white rounded-lg text-sm">+ Create</button></div>
+          <div class="flex justify-between mb-4"><h3 class="font-semibold">Offers & Coupons</h3><button onclick="openOfferModal()" class="px-3 py-1.5 bg-primary-600 text-white rounded-lg text-sm">+ Create</button></div>
           <div id="adminOffersList" class="space-y-3"></div>
         </div>
 
@@ -1214,12 +1216,23 @@ body { font-family: 'Inter', system-ui, sans-serif; }
               <h4 class="font-semibold mb-3">Hotel Information</h4>
               <div class="space-y-3 text-sm">
                 <div><label class="block text-slate-500 mb-1">Hotel Name</label><input type="text" id="setHotelName" value="Miracle Hotel & Restaurant" class="w-full px-3 py-2 border rounded-lg"></div>
+                <div><label class="block text-slate-500 mb-1">Homepage Cover / Wallpaper Image URL (Super Admin)</label>
+                  <input type="url" id="setHeroImage" placeholder="https://...jpg" class="w-full px-3 py-2 border rounded-lg">
+                  <p class="text-xs text-slate-400 mt-1">Paste image URL — applies to public homepage hero</p>
+                  <div class="mt-2 h-24 rounded-lg bg-cover bg-center border" id="heroPreview" style="background-image:url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800')"></div>
+                </div>
                 <div><label class="block text-slate-500 mb-1">Email (Notifications sent here)</label><input type="email" id="setHotelEmail" value="info@lakesideparadise.com.np" class="w-full px-3 py-2 border rounded-lg"></div>
                 <div><label class="block text-slate-500 mb-1">Phone</label><input type="text" id="setHotelPhone" value="+977-9869065252" class="w-full px-3 py-2 border rounded-lg"></div>
                 <div><label class="block text-slate-500 mb-1">Address</label><input type="text" id="setHotelAddress" value="Lakeside Road, Pokhara 33700, Nepal" class="w-full px-3 py-2 border rounded-lg"></div>
                 <div><label class="block text-slate-500 mb-1">Bank Name</label><input type="text" id="setBankName" value="Global IME Bank" class="w-full px-3 py-2 border rounded-lg"></div>
                 <div><label class="block text-slate-500 mb-1">Bank Account No.</label><input type="text" id="setBankAccount" value="09408010000520" class="w-full px-3 py-2 border rounded-lg"></div>
                 <div><label class="block text-slate-500 mb-1">Account Holder</label><input type="text" id="setBankHolder" value="Lokendra Gaire" class="w-full px-3 py-2 border rounded-lg"></div>
+                <div class="pt-3 border-t">
+                  <label class="block text-slate-500 mb-1">Cover / Hero Wallpaper URL (Super Admin)</label>
+                  <input type="url" id="setCoverImage" placeholder="https://...image.jpg" class="w-full px-3 py-2 border rounded-lg text-sm">
+                  <p class="text-xs text-slate-400 mt-1">Used on public home page hero background</p>
+                  <div id="coverPreview" class="mt-2 h-24 rounded-lg bg-cover bg-center border" style="background-image:url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800')"></div>
+                </div>
               </div>
             </div>
             <div class="bg-white rounded-xl p-5 shadow-sm border">
@@ -1304,6 +1317,7 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 
 const HOTEL = {
   name: 'Miracle Hotel & Restaurant',
+  heroImage: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600',
   email: 'info@lakesideparadise.com.np',
   phone: '+977-9869065252',
   address: 'Lakeside Road, Pokhara 33700, Nepal',
@@ -1644,37 +1658,66 @@ function todayStr() {
 }
 
 // ==================== SOUND & SPEECH ====================
-function playNotificationSound(text = 'Order received') {
-  if (!notifSettings.sound) return;
+let _audioCtx = null;
+function unlockAudio() {
   try {
-    // Try speech synthesis for voice
+    if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (_audioCtx.state === 'suspended') _audioCtx.resume();
+    soundEnabled = true;
+    const btn = document.getElementById('enableNotifBtn');
+    if (btn) btn.classList.add('hidden');
+  } catch (e) {}
+}
+
+function playNotificationSound(text = 'Order received') {
+  if (notifSettings.sound === false) return;
+  unlockAudio();
+  try {
     if ('speechSynthesis' in window) {
       const u = new SpeechSynthesisUtterance(text);
-      u.rate = 1.0;
-      u.pitch = 1.1;
-      u.volume = notifSettings.volume / 100;
+      u.rate = 1.05;
+      u.pitch = 1.05;
+      u.volume = Math.min(1, (notifSettings.volume || 80) / 100);
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(u);
     }
-    // Also try audio beep
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.frequency.value = 880;
-    gain.gain.value = (notifSettings.volume / 100) * 0.3;
-    osc.start();
-    setTimeout(() => { osc.stop(); ctx.close(); }, 200);
-  } catch (e) { console.log('Sound blocked until user interaction'); }
+  } catch (e) {}
+  try {
+    const ctx = _audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    _audioCtx = ctx;
+    if (ctx.state === 'suspended') ctx.resume();
+    const now = ctx.currentTime;
+    // double beep pattern
+    [0, 0.18].forEach((delay, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = i === 0 ? 880 : 1175;
+      gain.gain.setValueAtTime(0.0001, now + delay);
+      gain.gain.exponentialRampToValueAtTime((notifSettings.volume || 80) / 100 * 0.35, now + delay + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + delay + 0.15);
+      osc.start(now + delay);
+      osc.stop(now + delay + 0.16);
+    });
+  } catch (e) {
+    console.log('Sound blocked — click Enable Sound Notifications');
+  }
 }
 
 function enableNotifications() {
+  unlockAudio();
   soundEnabled = true;
-  document.getElementById('enableNotifBtn').classList.add('hidden');
+  document.getElementById('enableNotifBtn')?.classList.add('hidden');
   playNotificationSound('Notifications enabled');
-  toast('Notification sound enabled', 'success');
+  toast('Notification sound ON — you will hear new orders', 'success');
 }
+
+// Unlock audio on first click anywhere (browser policy)
+document.addEventListener('click', function _unlockOnce() {
+  unlockAudio();
+  document.removeEventListener('click', _unlockOnce);
+}, { once: true });
 
 // ==================== NOTIFICATIONS ====================
 function createNotification(type, title, data) {
@@ -1697,15 +1740,14 @@ function createNotification(type, title, data) {
   notifications.unshift(n);
   save('notifications', notifications);
   updateNotifBadges();
-  // Sound
-  if (type === 'order' && notifSettings.order) playNotificationSound('New food order received');
-  else if (type === 'booking' && notifSettings.booking) playNotificationSound('New room booking received');
-  else if (type === 'inquiry' && notifSettings.inquiry) playNotificationSound('New inquiry received');
+  // Sound — always attempt for operational events
+  if (type === 'order' || type === 'order_status') playNotificationSound(type === 'order_status' ? 'Order status updated' : 'New food order received');
+  else if (type === 'booking') playNotificationSound('New room booking received');
+  else if (type === 'inquiry') playNotificationSound('New inquiry received');
   else if (type === 'roomservice') playNotificationSound('New room service request');
-  // Toast for admin if panel open
-  if (!document.getElementById('adminPanel').classList.contains('hidden')) {
-    toast(`${n.icon} ${title}`, 'warn');
-  }
+  else if (type === 'payment') playNotificationSound('Payment received');
+  // Toast always visible
+  toast(n.icon + ' ' + title, 'warn');
   // Simulated email
   if (notifSettings.email) sendEmailSimulation(type, title, data);
   return n;
@@ -1935,16 +1977,29 @@ async function doLogin(e) {
 function normalizeRole(role) {
   return String(role || 'CUSTOMER').toUpperCase().replace(/[_-]+/g, ' ').trim();
 }
-function isAdminRole(role) {
-  const r = normalizeRole(role);
-  return r === 'SUPER ADMIN' || r === 'ADMIN' || r === 'MANAGER' || r.includes('ADMIN');
-}
 function isSuperAdmin(role) {
   const r = normalizeRole(role);
-  return r === 'SUPER ADMIN' || r === 'SUPERADMIN' || r.startsWith('SUPER');
+  return r === 'SUPER ADMIN' || r === 'SUPERADMIN' || (r.includes('SUPER') && r.includes('ADMIN'));
+}
+function isAdminRole(role) {
+  // Anyone who can open the staff panel (ops roles)
+  const r = normalizeRole(role);
+  return isSuperAdmin(r) || r === 'ADMIN' || r === 'MANAGER' || r === 'KITCHEN' || r === 'HOUSEKEEPING' || r.includes('ADMIN');
+}
+function isKitchenRole(role) {
+  return normalizeRole(role) === 'KITCHEN';
+}
+function isHousekeepingRole(role) {
+  return normalizeRole(role) === 'HOUSEKEEPING';
 }
 function canAccessFinance() {
   return currentUser && isSuperAdmin(currentUser.role);
+}
+function canManageOps() {
+  // Super Admin + Admin + Manager (not kitchen-only / hk-only)
+  if (!currentUser) return false;
+  const r = normalizeRole(currentUser.role);
+  return isSuperAdmin(r) || r === 'ADMIN' || r === 'MANAGER';
 }
 
 async function fetchUserRole(user) {
@@ -2074,20 +2129,44 @@ function enterAdmin() {
   const roleLabel = normalizeRole(currentUser.role);
   document.getElementById('adminUserLabel').textContent = currentUser.name + ' (' + roleLabel + ')';
   applyRoleMenuVisibility();
-  if (!soundEnabled) document.getElementById('enableNotifBtn').classList.remove('hidden');
-  showAdminSection('dashboard');
-  syncFromSupabase().then(() => { refreshAdminIfOpen(); toast('Synced from database', 'info'); });
+  soundEnabled = true;
+  document.getElementById('enableNotifBtn')?.classList.add('hidden');
+  const rEnter = normalizeRole(currentUser.role);
+  if (isKitchenRole(rEnter)) showAdminSection('kitchen');
+  else if (isHousekeepingRole(rEnter)) showAdminSection('housekeeping');
+  else showAdminSection('dashboard');
+  syncFromSupabase().then(() => { refreshAdminIfOpen(); toast('Live sync — ' + rEnter, 'info'); });
   startAdminSyncLoop();
 }
 
 function applyRoleMenuVisibility() {
-  const financeOk = canAccessFinance();
-  const superOk = isSuperAdmin(currentUser && currentUser.role);
-  document.querySelectorAll('.finance-only').forEach(el => {
-    el.style.display = financeOk ? '' : 'none';
-  });
-  document.querySelectorAll('.super-only').forEach(el => {
-    el.style.display = superOk ? '' : 'none';
+  const r = normalizeRole(currentUser && currentUser.role);
+  const financeOk = isSuperAdmin(r);
+  const superOk = isSuperAdmin(r);
+  const opsOk = canManageOps();
+  const kitchenOnly = isKitchenRole(r);
+  const hkOnly = isHousekeepingRole(r);
+
+  document.querySelectorAll('.finance-only').forEach(el => { el.style.display = financeOk ? '' : 'none'; });
+  document.querySelectorAll('.super-only').forEach(el => { el.style.display = superOk ? '' : 'none'; });
+
+  // Kitchen-only: only Kitchen (+ notifications + optional POS)
+  // Housekeeping-only: only Housekeeping (+ notifications)
+  document.querySelectorAll('.sidebar-link[data-section]').forEach(el => {
+    const sec = el.getAttribute('data-section');
+    if (!sec) return;
+    let show = true;
+    if (kitchenOnly) {
+      show = ['kitchen', 'notifications', 'pos', 'orders'].includes(sec);
+    } else if (hkOnly) {
+      show = ['housekeeping', 'notifications', 'rooms', 'checkin'].includes(sec);
+    } else if (!opsOk && !superOk) {
+      // fallback
+      show = !['accounting','billing','reports','settings','emailLogs','users'].includes(sec);
+    }
+    if (el.classList.contains('finance-only') && !financeOk) show = false;
+    if (el.classList.contains('super-only') && !superOk) show = false;
+    el.style.display = show ? '' : 'none';
   });
 }
 
@@ -2148,6 +2227,12 @@ function showAdminSection(section) {
   if (section === 'offersAdmin') renderAdminOffers();
   if (section === 'reviews') renderAdminReviews();
   if (section === 'inquiries') renderInquiries();
+  if (section === 'settings') {
+    const hi = document.getElementById('setHeroImage');
+    if (hi) { hi.value = HOTEL.heroImage || ''; hi.oninput = () => applyHeroImage(hi.value); }
+    const prev = document.getElementById('heroPreview');
+    if (prev && HOTEL.heroImage) prev.style.backgroundImage = "url('"+HOTEL.heroImage+"')";
+  }
   if (section === 'emailLogs') renderEmailLogs();
 }
 
@@ -2830,15 +2915,22 @@ function renderAdminDashboard() {
 function renderAdminRooms() {
   document.getElementById('adminRoomsTable').innerHTML = rooms.map(r => `
     <tr class="border-t">
-      <td class="p-3 font-medium">${r.name}</td>
+      <td class="p-3">
+        <div class="flex items-center gap-2">
+          <img src="${r.image || 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=100'}" class="w-12 h-12 rounded object-cover" alt="">
+          <span class="font-medium">${r.name}</span>
+        </div>
+      </td>
       <td class="p-3">${r.type}</td>
       <td class="p-3">${formatRs(r.price)}</td>
       <td class="p-3"><span class="px-2 py-0.5 rounded text-xs ${r.status === 'Available' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${r.status}</span></td>
-      <td class="p-3">
-        <button onclick="toggleRoomStatus(${r.id})" class="text-xs text-primary-600 hover:underline">Toggle Status</button>
+      <td class="p-3 space-x-1 whitespace-nowrap">
+        <button onclick="editRoom(${r.id})" class="text-xs text-primary-600 hover:underline">Edit</button>
+        <button onclick="toggleRoomStatus(${r.id})" class="text-xs text-slate-600 hover:underline">Status</button>
+        <button onclick="deleteRoom(${r.id})" class="text-xs text-red-600 hover:underline">Delete</button>
       </td>
     </tr>
-  `).join('');
+  `).join('') || '<tr><td colspan="5" class="p-6 text-center text-slate-400">No rooms — click + Add Room</td></tr>';
 }
 
 function toggleRoomStatus(id) {
@@ -2850,9 +2942,76 @@ function toggleRoomStatus(id) {
   toast('Room status updated', 'success');
 }
 
-function openAddRoomModal() {
-  toast('Add Room form — in full production this opens a modal. Demo uses existing rooms.', 'info');
+function openAddRoomModal(room) {
+  const isEdit = !!room;
+  const r = room || { name:'', type:'Standard', price:3500, capacity:2, bed:'Queen Bed', bathroom:'Private', wifi:true, tv:true, ac:false, balcony:false, breakfast:true, status:'Available', image:'', desc:'' };
+  const html = `<div class="fixed inset-0 z-[80] flex items-center justify-center p-4 modal-overlay" id="roomModal">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[92vh] overflow-y-auto p-6">
+      <h3 class="font-bold text-lg mb-4">${isEdit ? 'Edit Room' : 'Add Room'}</h3>
+      <form onsubmit="saveRoom(event, ${isEdit ? room.id : 'null'})" class="space-y-3 text-sm">
+        <div><label class="text-xs">Room Name *</label><input name="name" required value="${(r.name||'').replace(/"/g,'&quot;')}" class="w-full px-3 py-2 border rounded-lg"></div>
+        <div class="grid grid-cols-2 gap-2">
+          <div><label class="text-xs">Type</label><select name="type" class="w-full px-3 py-2 border rounded-lg"><option ${r.type==='Standard'?'selected':''}>Standard</option><option ${r.type==='Deluxe'?'selected':''}>Deluxe</option><option ${r.type==='Suite'?'selected':''}>Suite</option><option ${r.type==='Family'?'selected':''}>Family</option></select></div>
+          <div><label class="text-xs">Price / night (Rs)</label><input type="number" name="price" value="${r.price||0}" class="w-full px-3 py-2 border rounded-lg"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div><label class="text-xs">Capacity</label><input type="number" name="capacity" value="${r.capacity||2}" class="w-full px-3 py-2 border rounded-lg"></div>
+          <div><label class="text-xs">Status</label><select name="status" class="w-full px-3 py-2 border rounded-lg"><option ${r.status==='Available'?'selected':''}>Available</option><option ${r.status==='Occupied'?'selected':''}>Occupied</option><option ${r.status==='Maintenance'?'selected':''}>Maintenance</option></select></div>
+        </div>
+        <div><label class="text-xs">Bed</label><input name="bed" value="${(r.bed||'').replace(/"/g,'&quot;')}" class="w-full px-3 py-2 border rounded-lg"></div>
+        <div><label class="text-xs">Bathroom</label><input name="bathroom" value="${(r.bathroom||'').replace(/"/g,'&quot;')}" class="w-full px-3 py-2 border rounded-lg"></div>
+        <div><label class="text-xs">Photo URL</label><input name="image" value="${(r.image||'').replace(/"/g,'&quot;')}" placeholder="https://..." class="w-full px-3 py-2 border rounded-lg"></div>
+        <div><label class="text-xs">Description</label><textarea name="desc" rows="2" class="w-full px-3 py-2 border rounded-lg">${r.desc||''}</textarea></div>
+        <div class="flex flex-wrap gap-3">
+          <label class="flex items-center gap-1"><input type="checkbox" name="wifi" ${r.wifi?'checked':''}> WiFi</label>
+          <label class="flex items-center gap-1"><input type="checkbox" name="tv" ${r.tv?'checked':''}> TV</label>
+          <label class="flex items-center gap-1"><input type="checkbox" name="ac" ${r.ac?'checked':''}> AC</label>
+          <label class="flex items-center gap-1"><input type="checkbox" name="balcony" ${r.balcony?'checked':''}> Balcony</label>
+          <label class="flex items-center gap-1"><input type="checkbox" name="breakfast" ${r.breakfast?'checked':''}> Breakfast</label>
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="document.getElementById('roomModal').remove()" class="flex-1 py-2 border rounded-lg">Cancel</button>
+          <button type="submit" class="flex-1 py-2 bg-primary-600 text-white rounded-lg">Save Room</button>
+        </div>
+      </form>
+    </div></div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
 }
+function saveRoom(e, id) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const data = {
+    name: fd.get('name'), type: fd.get('type'), price: Number(fd.get('price'))||0,
+    capacity: Number(fd.get('capacity'))||2, bed: fd.get('bed'), bathroom: fd.get('bathroom'),
+    status: fd.get('status'), image: fd.get('image') || 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600',
+    desc: fd.get('desc')||'', wifi: fd.get('wifi')==='on', tv: fd.get('tv')==='on',
+    ac: fd.get('ac')==='on', balcony: fd.get('balcony')==='on', breakfast: fd.get('breakfast')==='on'
+  };
+  if (id && id !== 'null') {
+    const idx = rooms.findIndex(x => x.id === id);
+    if (idx >= 0) rooms[idx] = { ...rooms[idx], ...data };
+  } else {
+    data.id = Date.now();
+    rooms.push(data);
+  }
+  save('rooms', rooms);
+  document.getElementById('roomModal')?.remove();
+  renderAdminRooms();
+  renderRooms();
+  toast('Room saved', 'success');
+}
+function editRoom(id) {
+  const room = rooms.find(x => x.id === id);
+  if (room) openAddRoomModal(room);
+}
+function deleteRoom(id) {
+  if (!confirm('Delete this room?')) return;
+  rooms = rooms.filter(x => x.id !== id);
+  save('rooms', rooms);
+  renderAdminRooms();
+  toast('Room deleted', 'success');
+}
+
 
 function renderAdminBookings(filter = 'all') {
   let list = bookings;
@@ -2928,7 +3087,9 @@ function renderAdminMenu() {
       <td class="p-3">${formatRs(m.price)}</td>
       <td class="p-3">${m.veg ? '🟢' : '🔴'}</td>
       <td class="p-3"><span class="text-xs ${m.available ? 'text-green-600' : 'text-red-600'}">${m.available ? 'Available' : 'Out of Stock'}</span></td>
-      <td class="p-3"><button onclick="toggleFoodAvail(${m.id})" class="text-xs text-primary-600">Toggle</button></td>
+      <td class="p-3 space-x-1"><button onclick="editFood(${m.id})" class="text-xs text-primary-600">Edit</button>
+        <button onclick="toggleFoodAvail(${m.id})" class="text-xs text-slate-600">Stock</button>
+        <button onclick="deleteFood(${m.id})" class="text-xs text-red-600">Del</button></td>
     </tr>
   `).join('');
 }
@@ -2938,7 +3099,68 @@ function toggleFoodAvail(id) {
   if (m) { m.available = !m.available; save('menu', menu); renderAdminMenu(); }
 }
 
-function openAddFoodModal() { toast('Add food item — demo mode uses existing menu', 'info'); }
+function openAddFoodModal(item) {
+  const isEdit = !!item;
+  const f = item || { name:'', category:'Momo', price:200, veg:true, available:true, desc:'', image:'' };
+  const cats = [...new Set(menu.map(m => m.category))];
+  if (!cats.includes(f.category)) cats.push(f.category);
+  const catOpts = cats.map(c => `<option ${c===f.category?'selected':''}>${c}</option>`).join('');
+  const html = `<div class="fixed inset-0 z-[80] flex items-center justify-center p-4 modal-overlay" id="foodModal">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
+      <h3 class="font-bold mb-4">${isEdit?'Edit':'Add'} Menu Item</h3>
+      <form onsubmit="saveFood(event, ${isEdit?item.id:'null'})" class="space-y-3 text-sm">
+        <div><label class="text-xs">Name *</label><input name="name" required value="${(f.name||'').replace(/"/g,'&quot;')}" class="w-full px-3 py-2 border rounded-lg"></div>
+        <div class="grid grid-cols-2 gap-2">
+          <div><label class="text-xs">Category</label><select name="category" class="w-full px-3 py-2 border rounded-lg">${catOpts}<option value="__new">+ New category</option></select></div>
+          <div><label class="text-xs">Price (Rs)</label><input type="number" name="price" value="${f.price||0}" class="w-full px-3 py-2 border rounded-lg"></div>
+        </div>
+        <div><label class="text-xs">New category name (if selected)</label><input name="newCat" class="w-full px-3 py-2 border rounded-lg" placeholder="Optional"></div>
+        <div><label class="text-xs">Photo URL</label><input name="image" value="${(f.image||'').replace(/"/g,'&quot;')}" class="w-full px-3 py-2 border rounded-lg"></div>
+        <div><label class="text-xs">Description</label><textarea name="desc" rows="2" class="w-full px-3 py-2 border rounded-lg">${f.desc||''}</textarea></div>
+        <div class="flex gap-4">
+          <label class="flex items-center gap-1"><input type="checkbox" name="veg" ${f.veg?'checked':''}> Veg</label>
+          <label class="flex items-center gap-1"><input type="checkbox" name="available" ${f.available!==false?'checked':''}> Available</label>
+        </div>
+        <div class="flex gap-2"><button type="button" onclick="document.getElementById('foodModal').remove()" class="flex-1 py-2 border rounded-lg">Cancel</button>
+        <button type="submit" class="flex-1 py-2 bg-primary-600 text-white rounded-lg">Save</button></div>
+      </form>
+    </div></div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+function saveFood(e, id) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  let cat = fd.get('category');
+  if (cat === '__new' && fd.get('newCat')) cat = fd.get('newCat');
+  const data = {
+    name: fd.get('name'), category: cat, price: Number(fd.get('price'))||0,
+    image: fd.get('image') || 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400',
+    desc: fd.get('desc')||'', veg: fd.get('veg')==='on', available: fd.get('available')==='on'
+  };
+  if (id && id !== 'null') {
+    const idx = menu.findIndex(x => x.id === id);
+    if (idx >= 0) menu[idx] = { ...menu[idx], ...data };
+  } else {
+    data.id = Date.now();
+    menu.push(data);
+  }
+  save('menu', menu);
+  document.getElementById('foodModal')?.remove();
+  renderAdminMenu();
+  toast('Menu item saved', 'success');
+}
+function editFood(id) {
+  const item = menu.find(x => x.id === id);
+  if (item) openAddFoodModal(item);
+}
+function deleteFood(id) {
+  if (!confirm('Delete this menu item?')) return;
+  menu = menu.filter(x => x.id !== id);
+  save('menu', menu);
+  renderAdminMenu();
+  toast('Deleted', 'success');
+}
+
 
 function renderAdminOrders() {
   document.getElementById('adminOrdersTable').innerHTML = orders.map(o => `
@@ -2966,12 +3188,20 @@ function updateOrderStatus(id, status) {
   if (!o) return;
   o.status = status;
   save('orders', orders);
-  // Live sync status to Supabase so other devices see it
   sbUpdate('orders', { order_id: id }, { status: status, updated_at: new Date().toISOString() });
-  if (status === 'Rejected' || status === 'Cancelled') {
-    createNotification('order', 'Order ' + id + ' ' + status, o);
-    sbInsert('notifications', { type: 'order', title: 'Order ' + id + ' ' + status, body: o, is_read: false });
-  }
+  // Notify ALL admins + the customer (if site open)
+  const title = 'Order ' + id + ' → ' + status;
+  createNotification('order', title, o);
+  sbInsert('notifications', {
+    type: 'order_status',
+    title: title,
+    body: { ...o, customerEmail: o.email, customerPhone: o.phone, status },
+    is_read: false
+  });
+  // Broadcast to same-browser tabs / customer
+  try {
+    if (window._lpBC) window._lpBC.postMessage({ type: 'order_status', orderId: id, status, order: o });
+  } catch(_){}
   renderAdminOrders();
   renderKitchen();
   toast('Order ' + id + ' → ' + status, status === 'Rejected' ? 'warn' : 'success');
@@ -2980,6 +3210,27 @@ function updateOrderStatus(id, status) {
 function rejectOrder(id) {
   if (!confirm('Reject order ' + id + '?')) return;
   updateOrderStatus(id, 'Rejected');
+}
+function inviteTable(id) {
+  const o = orders.find(x => x.orderId === id);
+  if (!o) return;
+  const table = o.tableNumber || prompt('Table number to invite?', 'T01') || 'T01';
+  o.tableNumber = table;
+  o.status = 'Ready';
+  save('orders', orders);
+  sbUpdate('orders', { order_id: id }, { status: 'Ready', table_number: table });
+  const msg = 'Please come to table ' + table + ' — your order ' + id + ' is ready';
+  createNotification('order', msg, o);
+  sbInsert('notifications', {
+    type: 'order',
+    title: msg,
+    body: { ...o, forCustomer: true, customerEmail: o.email, customerPhone: o.phone },
+    is_read: false
+  });
+  playNotificationSound('Table ready, invite guest');
+  toast('Invited guest to ' + table, 'success');
+  renderKitchen();
+  renderAdminOrders();
 }
 
 function viewOrderDetail(id) {
@@ -3005,7 +3256,7 @@ function renderKitchen() {
         ${o.status === 'New Order' ? `<button onclick="updateOrderStatus('${o.orderId}','Accepted')" class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">ACCEPT</button> <button onclick="rejectOrder('${o.orderId}')" class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">REJECT</button>` : ''}
         ${o.status === 'Accepted' ? `<button onclick="updateOrderStatus('${o.orderId}','Preparing')" class="px-2 py-1 bg-amber-100 text-amber-700 text-xs rounded">PREPARING</button> <button onclick="rejectOrder('${o.orderId}')" class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">REJECT</button>` : ''}
         ${o.status === 'Preparing' ? `<button onclick="updateOrderStatus('${o.orderId}','Ready')" class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded">READY</button>` : ''}
-        ${o.status === 'Ready' ? `<button onclick="updateOrderStatus('${o.orderId}','Completed')" class="px-2 py-1 bg-slate-100 text-xs rounded">SERVED</button>` : ''}
+        ${o.status === 'Ready' ? `<button onclick="inviteTable('${o.orderId}')" class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded">INVITE TABLE</button> <button onclick="updateOrderStatus('${o.orderId}','Completed')" class="px-2 py-1 bg-slate-100 text-xs rounded">SERVED</button>` : ''}
       </div>
     </div>
   `).join('') : '<p class="text-slate-400 col-span-full text-center py-10">No active kitchen orders</p>';
@@ -3425,6 +3676,12 @@ function exportReportExcel(type) {
   toast('Excel downloaded', 'success');
 }
 
+function applyHeroImage(url) {
+  if (!url) return;
+  document.documentElement.style.setProperty('--hero-image', "url('" + url + "')");
+  const prev = document.getElementById('heroPreview');
+  if (prev) prev.style.backgroundImage = "url('" + url + "')";
+}
 function saveSettings() {
   HOTEL.name = document.getElementById('setHotelName').value;
   HOTEL.email = document.getElementById('setHotelEmail').value;
@@ -3433,6 +3690,8 @@ function saveSettings() {
   HOTEL.bankName = document.getElementById('setBankName')?.value || HOTEL.bankName;
   HOTEL.bankAccountNo = document.getElementById('setBankAccount')?.value || HOTEL.bankAccountNo;
   HOTEL.bankAccountHolder = document.getElementById('setBankHolder')?.value || HOTEL.bankAccountHolder;
+  const hero = (document.getElementById('setCoverImage') || document.getElementById('setHeroImage'))?.value?.trim();
+  if (hero) { HOTEL.heroImage = hero; HOTEL.coverImage = hero; }
   notifSettings.sound = document.getElementById('setSoundOn').checked;
   notifSettings.email = document.getElementById('setEmailOn').checked;
   notifSettings.booking = document.getElementById('setBookingNotif').checked;
@@ -3440,7 +3699,67 @@ function saveSettings() {
   notifSettings.inquiry = document.getElementById('setInquiryNotif').checked;
   notifSettings.volume = Number(document.getElementById('setVolume').value);
   save('settings', { HOTEL, notifSettings });
+  applyCoverImage();
+  try {
+    supabaseClient.from('settings').upsert({
+      id: 1,
+      logo_url: HOTEL.heroImage || HOTEL.coverImage || null,
+      hotel_name: HOTEL.name,
+      phone: HOTEL.phone,
+      email: HOTEL.email,
+      address: HOTEL.address,
+      bank_name: HOTEL.bankName,
+      bank_account_no: HOTEL.bankAccountNo,
+      bank_account_holder: HOTEL.bankAccountHolder
+    });
+  } catch(_){}
   toast('Settings saved', 'success');
+}
+
+function applyCoverImage() {
+  const url = HOTEL.coverImage || HOTEL.heroImage || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600';
+  document.querySelectorAll('.hero-bg').forEach(el => {
+    el.style.backgroundImage = "linear-gradient(rgba(12,74,110,0.55), rgba(12,74,110,0.7)), url('" + url + "')";
+    el.style.backgroundSize = 'cover';
+    el.style.backgroundPosition = 'center';
+  });
+  const prev = document.getElementById('coverPreview');
+  if (prev) prev.style.backgroundImage = "url('" + url + "')";
+  const inp = document.getElementById('setCoverImage') || document.getElementById('setHeroImage');
+  if (inp && !inp.value) inp.value = url;
+}
+function applyHeroImage(url) { HOTEL.heroImage = url; HOTEL.coverImage = url; applyCoverImage(); }
+
+function openStaffModal() {
+  const html = `<div class="fixed inset-0 z-[80] flex items-center justify-center p-4 modal-overlay" id="staffModal">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+      <h3 class="font-bold mb-3">Add Staff (roster)</h3>
+      <p class="text-xs text-slate-500 mb-3">Login accounts: create in Supabase Auth, then set role in Users / Roles.</p>
+      <form onsubmit="saveStaffRoster(event)" class="space-y-3 text-sm">
+        <input name="name" required placeholder="Full name" class="w-full px-3 py-2 border rounded-lg">
+        <input name="position" placeholder="Position" class="w-full px-3 py-2 border rounded-lg">
+        <input name="dept" placeholder="Department" class="w-full px-3 py-2 border rounded-lg">
+        <input name="phone" placeholder="Phone" class="w-full px-3 py-2 border rounded-lg">
+        <div class="flex gap-2"><button type="button" onclick="document.getElementById('staffModal').remove()" class="flex-1 py-2 border rounded-lg">Cancel</button>
+        <button type="submit" class="flex-1 py-2 bg-primary-600 text-white rounded-lg">Save</button></div>
+      </form>
+    </div></div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+function saveStaffRoster(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  if (!window.DEFAULT_STAFF) window.DEFAULT_STAFF = [];
+  // mutate global staff list used by renderStaff
+  if (typeof DEFAULT_STAFF !== 'undefined') {
+    DEFAULT_STAFF.push({ name: fd.get('name'), position: fd.get('position'), dept: fd.get('dept'), phone: fd.get('phone') });
+  }
+  document.getElementById('staffModal')?.remove();
+  if (typeof renderStaff === 'function') renderStaff();
+  toast('Staff added', 'success');
+}
+function openOfferModal() {
+  toast('Manage offers from Offers page data; full DB offers editor coming via offers table.', 'info');
 }
 
 
@@ -3669,7 +3988,9 @@ async function loadAdminUsers() {
         '<td class="p-3"><input class="w-28 px-2 py-1 border rounded text-sm" id="up_' + u.id + '" value="' + safePhone + '"></td>' +
         '<td class="p-3"><select id="ur_' + u.id + '" class="px-2 py-1 border rounded text-sm">' +
           '<option value="CUSTOMER"' + (role === 'CUSTOMER' ? ' selected' : '') + '>CUSTOMER</option>' +
-          '<option value="ADMIN"' + (role === 'ADMIN' ? ' selected' : '') + '>ADMIN</option>' +
+          '<option value="ADMIN"' + (role === 'ADMIN' ? ' selected' : '') + '>ADMIN (ops, no finance)</option>' +
+          '<option value="KITCHEN"' + (role === 'KITCHEN' ? ' selected' : '') + '>KITCHEN</option>' +
+          '<option value="HOUSEKEEPING"' + (role === 'HOUSEKEEPING' ? ' selected' : '') + '>HOUSEKEEPING</option>' +
           '<option value="SUPER ADMIN"' + (role === 'SUPER ADMIN' || role.indexOf('SUPER') >= 0 ? ' selected' : '') + '>SUPER ADMIN</option>' +
           '<option value="MANAGER"' + (role === 'MANAGER' ? ' selected' : '') + '>MANAGER</option>' +
         '</select></td>' +
@@ -3719,6 +4040,27 @@ async function saveAdminUser(id) {
 
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
+  // Cross-tab / customer live channel
+  try {
+    window._lpBC = new BroadcastChannel('lp_hotel_live');
+    window._lpBC.onmessage = (ev) => {
+      const m = ev.data || {};
+      if (m.type === 'order_status') {
+        const o = m.order || {};
+        // Customer: if this is my order (email match) show alert
+        if (currentUser && o.email && currentUser.email && o.email.toLowerCase() === currentUser.email.toLowerCase()) {
+          playNotificationSound('Your order status is ' + m.status);
+          toast('Your order ' + m.orderId + ' is now: ' + m.status, 'info');
+        }
+        // Always merge into local orders for dashboards
+        if (m.orderId) {
+          const idx = orders.findIndex(x => x.orderId === m.orderId);
+          if (idx >= 0) { orders[idx].status = m.status; save('orders', orders); }
+          refreshAdminIfOpen();
+        }
+      }
+    };
+  } catch(_){}
   currentUser = load('currentUser', null);
   // Re-validate role from Supabase if logged in
   if (currentUser && currentUser.supabase && currentUser.id) {
@@ -3734,9 +4076,34 @@ document.addEventListener('DOMContentLoaded', () => {
     Object.assign(HOTEL, savedSettings.HOTEL || {});
     Object.assign(notifSettings, savedSettings.notifSettings || {});
   }
+  if (HOTEL.heroImage) applyHeroImage(HOTEL.heroImage);
+  // Load cover from Supabase settings
+  sbSelect('settings', { limit: 1 }).then(rows => {
+    if (rows && rows[0]) {
+      if (rows[0].logo_url) { HOTEL.heroImage = rows[0].logo_url; applyHeroImage(rows[0].logo_url); }
+      if (rows[0].hotel_name) HOTEL.name = rows[0].hotel_name;
+    }
+  });
+  // Prefill settings form hero when opened later
+  setTimeout(() => {
+    const hi = document.getElementById('setCoverImage') || document.getElementById('setHeroImage');
+    if (hi && HOTEL.heroImage) {
+      hi.value = HOTEL.heroImage;
+      const prev = document.getElementById('coverPreview');
+      if (prev) prev.style.backgroundImage = "url('" + HOTEL.heroImage + "')";
+    }
+  }, 500);
   updateAuthUI();
   updateNotifBadges();
+  applyCoverImage();
   showPage('home');
+  const coverInp = document.getElementById('setCoverImage');
+  if (coverInp) {
+    coverInp.addEventListener('input', () => {
+      const prev = document.getElementById('coverPreview');
+      if (prev && coverInp.value) prev.style.backgroundImage = "url('" + coverInp.value + "')";
+    });
+  }
   // Cross-device: load existing DB data
   syncFromSupabase();
   startAdminSyncLoop();
@@ -3756,10 +4123,22 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       save('notifications', notifications);
       updateNotifBadges();
-      if (n.type === 'order') playNotificationSound('New food order received');
-      else if (n.type === 'booking') playNotificationSound('New room booking received');
+      // Admin panel open OR admin role → always sound
+      const isAdminUser = currentUser && isAdminRole(currentUser.role);
+      if (n.type === 'order' || n.type === 'order_status') {
+        if (isAdminUser || !document.getElementById('adminPanel').classList.contains('hidden')) {
+          playNotificationSound(n.type === 'order_status' ? 'Order status updated' : 'New food order received');
+        }
+        // Customer: body has email
+        const body = n.body || {};
+        const custEmail = (body.customerEmail || body.email || '').toLowerCase();
+        if (currentUser && currentUser.email && custEmail && custEmail === currentUser.email.toLowerCase() && n.type === 'order_status') {
+          playNotificationSound('Your order status is updated');
+          toast('📦 ' + n.title, 'info');
+        }
+      } else if (n.type === 'booking') playNotificationSound('New room booking received');
       else playNotificationSound('New notification');
-      toast((n.type === 'order' ? '🟠' : n.type === 'booking' ? '🔴' : '🔔') + ' ' + n.title, 'warn');
+      if (isAdminUser) toast((n.type === 'order' || n.type === 'order_status' ? '🟠' : n.type === 'booking' ? '🔴' : '🔔') + ' ' + n.title, 'warn');
       refreshAdminIfOpen();
     }
   });
