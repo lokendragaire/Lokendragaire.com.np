@@ -788,6 +788,7 @@
                     <td>
                         <button class="action-btn bg-blue-100 text-blue-700 view-btn" data-id="${r.id}">हेर्नुहोस्</button>
                         <button class="action-btn bg-yellow-100 text-yellow-800 edit-btn" data-id="${r.id}">सम्पादन</button>
+                        <button class="action-btn bg-purple-100 text-purple-700 clone-btn" data-id="${r.id}">क्लोन गर्नुहोस्</button>
                         <button class="action-btn bg-red-100 text-red-700 delete-btn" data-id="${r.id}">मेटाउनुहोस्</button>
                     </td>
                 `;
@@ -803,6 +804,8 @@
                 btn.addEventListener('click', () => viewOrEditRecord(btn.dataset.id, false)));
             tbody.querySelectorAll('.edit-btn').forEach(btn =>
                 btn.addEventListener('click', () => viewOrEditRecord(btn.dataset.id, true)));
+            tbody.querySelectorAll('.clone-btn').forEach(btn =>
+                btn.addEventListener('click', () => cloneRecord(btn.dataset.id)));
             tbody.querySelectorAll('.delete-btn').forEach(btn =>
                 btn.addEventListener('click', () => deleteRecord(btn.dataset.id)));
         }
@@ -817,6 +820,23 @@
             } else {
                 showToast(`सि.नं. ${toNepaliNumber(record.serial_no)} - ${record.name || ''}`, 'info');
             }
+        }
+
+        // --- Clone Function: fills form with record data but resets ID and serial ---
+        function cloneRecord(id) {
+            const record = allRecords.find(r => String(r.id) === String(id));
+            if (!record) return;
+            // Fill the form with the record data
+            fillFormFromRecord(record);
+            // Reset ID and serial so it saves as a new record
+            document.getElementById('record-id').value = '';
+            document.getElementById('serial-number').value = '';
+            document.getElementById('serial-display').textContent = 'नयाँ (सेभ गर्दा स्वतः तयार हुनेछ)';
+            document.getElementById('preview-serial').textContent = '--';
+            document.getElementById('preview-serial').classList.add('placeholder');
+            // Switch to form tab
+            tabFormBtn.click();
+            showToast('क्लोन गरियो - सेभ गर्दा नयाँ सिरियल नम्बर आउनेछ', 'info');
         }
 
         async function deleteRecord(id) {
