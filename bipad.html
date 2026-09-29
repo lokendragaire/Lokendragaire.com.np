@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>विपद् क्षति विवरण व्यवस्थापन प्रणाली - गलकोट नगरपालिका वडा नं. ९</title>
+  <title>विपद् क्षति विवरण व्यवस्थापन प्रणाली - गलकोट नगरपालिका कार्यालय</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -31,15 +31,15 @@
     <div class="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full border border-slate-200">
       <div class="text-center mb-6">
         <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
-          <i class="fa-solid font-triangle-exclamation"></i>
+          <i class="fa-solid fa-triangle-exclamation"></i>
         </div>
         <h2 class="text-2xl font-bold text-slate-900">विपद् व्यवस्थापन पोर्टल</h2>
-        <p class="text-sm text-slate-600 mt-1">गलकोट नगरपालिका वडा नं. ९, बागलुङ</p>
+        <p class="text-sm text-slate-600 mt-1">गगलकोट नगरपालिका कार्यालय, गलकोट, बागलुङ</p>
       </div>
 
       <form @submit.prevent="handleLogin" class="space-y-4">
         <div>
-          <label class="block text-sm font-semibold mb-1">ईमेल वा युजरनेम</label>
+          <label class="block text-sm font-semibold mb-1">ईमेल</label>
           <div class="relative">
             <i class="fa-solid fa-envelope absolute left-3 top-3 text-slate-400"></i>
             <input v-model="loginEmail" type="email" required placeholder="admin@galkot.gov.np" class="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
@@ -63,7 +63,7 @@
           <span>{{ loading ? 'प्रमाणित हुँदैछ...' : 'लगइन गर्नुहोस्' }}</span>
         </button>
       </form>
-      <p class="text-xs text-center text-slate-400 mt-6">Supabase Authentication Integration</p>
+      <p class="text-xs text-center text-slate-400 mt-6">Supabase Connected Dashboard</p>
     </div>
   </div>
 
@@ -80,11 +80,21 @@
           </div>
         </div>
         <div class="flex items-center gap-4">
-          <span class="text-xs bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700"><i class="fa-solid fa-user text-red-400 mr-1.5"></i> {{ session.user.email }}</span>
-          <button @click="activeTab = 'entry'" :class="activeTab === 'entry' ? 'bg-red-600' : 'bg-slate-800 hover:bg-slate-700'" class="px-3 py-1.5 rounded-lg text-sm font-semibold transition"><i class="fa-solid fa-plus mr-1"></i> नयाँ प्रविष्टि</button>
-          <button @click="activeTab = 'view'" :class="activeTab === 'view' ? 'bg-red-600' : 'bg-slate-800 hover:bg-slate-700'" class="px-3 py-1.5 rounded-lg text-sm font-semibold transition"><i class="fa-solid fa-table mr-1"></i> डाटाबेस सूची</button>
-          <button @click="activeTab = 'report'" :class="activeTab === 'report' ? 'bg-red-600' : 'bg-slate-800 hover:bg-slate-700'" class="px-3 py-1.5 rounded-lg text-sm font-semibold transition"><i class="fa-solid fa-chart-pie mr-1"></i> रिपोर्ट</button>
-          <button @click="handleLogout" class="bg-slate-800 hover:bg-red-800 text-slate-300 hover:text-white px-3 py-1.5 rounded-lg text-sm transition"><i class="fa-solid fa-power-off"></i></button>
+          <span class="text-xs bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700">
+            <i class="fa-solid fa-user text-red-400 mr-1.5"></i> {{ session.user.email }}
+          </span>
+          <button @click="activeTab = 'entry'" :class="activeTab === 'entry' ? 'bg-red-600' : 'bg-slate-800 hover:bg-slate-700'" class="px-3 py-1.5 rounded-lg text-sm font-semibold transition">
+            <i class="fa-solid fa-plus mr-1"></i> नयाँ प्रविष्टि
+          </button>
+          <button @click="activeTab = 'view'" :class="activeTab === 'view' ? 'bg-red-600' : 'bg-slate-800 hover:bg-slate-700'" class="px-3 py-1.5 rounded-lg text-sm font-semibold transition">
+            <i class="fa-solid fa-table mr-1"></i> डाटाबेस सूची
+          </button>
+          <button @click="activeTab = 'report'" :class="activeTab === 'report' ? 'bg-red-600' : 'bg-slate-800 hover:bg-slate-700'" class="px-3 py-1.5 rounded-lg text-sm font-semibold transition">
+            <i class="fa-solid fa-chart-pie mr-1"></i> रिपोर्ट
+          </button>
+          <button @click="handleLogout" class="bg-slate-800 hover:bg-red-800 text-slate-300 hover:text-white px-3 py-1.5 rounded-lg text-sm transition">
+            <i class="fa-solid fa-power-off"></i>
+          </button>
         </div>
       </div>
     </header>
@@ -126,7 +136,6 @@
         </div>
 
         <form @submit.prevent="saveRecord" class="space-y-6">
-          <!-- Person & Location Info -->
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-50 p-4 rounded-lg border">
             <div>
               <label class="block text-xs font-bold mb-1">घरधनी/जग्गाधनी नाम *</label>
@@ -152,9 +161,7 @@
             </div>
           </div>
 
-          <!-- Major Damage Categories Input -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- 1. घर / गोठ क्षति -->
             <div class="border rounded-lg p-4 bg-slate-50/50 space-y-3">
               <h4 class="font-bold text-sm text-red-700 border-b pb-1"><i class="fa-solid fa-house mr-1"></i> घर तथा गोठ क्षति</h4>
               <div>
@@ -188,7 +195,6 @@
               </div>
             </div>
 
-            <!-- 2. जग्गा तथा बालि क्षति -->
             <div class="border rounded-lg p-4 bg-slate-50/50 space-y-3">
               <h4 class="font-bold text-sm text-amber-700 border-b pb-1"><i class="fa-solid fa-mountain-sun mr-1"></i> जग्गा तथा बाली क्षति</h4>
               <div class="grid grid-cols-2 gap-2">
@@ -221,7 +227,6 @@
               </div>
             </div>
 
-            <!-- 3. पशुचौपाया, मानवीय र अन्य -->
             <div class="border rounded-lg p-4 bg-slate-50/50 space-y-3">
               <h4 class="font-bold text-sm text-purple-700 border-b pb-1"><i class="fa-solid fa-paw mr-1"></i> मानवीय, चौपाया र अन्य</h4>
               <div class="grid grid-cols-2 gap-2">
@@ -245,10 +250,9 @@
             </div>
           </div>
 
-          <!-- कैफियत -->
           <div>
             <label class="block text-xs font-bold mb-1">कैफियत (विस्तृत विवरण)</label>
-            <textarea v-model="form.remarks" rows="2" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-red-500 outline-none text-sm" placeholder="थप विवरण, क्षति पुगेको पूर्वाधार वा अन्य टिप्पणी लेख्नुहोस्..."></textarea>
+            <textarea v-model="form.remarks" rows="2" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-red-500 outline-none text-sm" placeholder="थप विवरण वा क्षति पुगेको पूर्वाधार..."></textarea>
           </div>
 
           <div class="flex justify-end gap-3 border-t pt-4">
@@ -263,22 +267,18 @@
 
       <!-- TAB 2: DATA TABLE VIEW WITH FILTERS -->
       <div v-if="activeTab === 'view'" class="space-y-4 no-print">
-        <!-- FILTER BAR -->
         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap gap-3 items-center justify-between">
           <div class="flex flex-wrap items-center gap-3 flex-1">
             <span class="text-xs font-bold text-slate-500"><i class="fa-solid fa-filter mr-1"></i> फिल्टर:</span>
             
-            <!-- Category Filter -->
             <select v-model="filterCategory" class="px-3 py-1.5 border rounded-lg text-sm bg-slate-50 focus:ring-2 focus:ring-red-500 outline-none">
               <option value="ALL">सबै क्षति श्रेणी</option>
               <option value="LAND">जग्गा कटान क्षति</option>
               <option value="PADDY">धान बाली क्षति</option>
               <option value="GOTH">गोठ/संरचना क्षति</option>
               <option value="ANIMALS">चौपाया/पंक्षी क्षति</option>
-              <option value="INFRA">सार्वजनिक पूर्वाधार क्षति</option>
             </select>
 
-            <!-- Location Filter -->
             <select v-model="filterLocation" class="px-3 py-1.5 border rounded-lg text-sm bg-slate-50 focus:ring-2 focus:ring-red-500 outline-none">
               <option value="ALL">सबै स्थानहरू</option>
               <option value="मिठामारा">मिठामारा</option>
@@ -287,7 +287,6 @@
               <option value="ठुलाखेत">ठुलाखेत</option>
             </select>
 
-            <!-- Search input -->
             <div class="relative min-w-[200px]">
               <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
               <input v-model="searchQuery" type="text" placeholder="नाम वा मो.नं खोज्नुहोस्..." class="w-full pl-8 pr-3 py-1.5 border rounded-lg text-sm outline-none">
@@ -295,12 +294,11 @@
           </div>
 
           <div class="flex items-center gap-2">
-            <button @click="resetFilters" class="px-3 py-1.5 text-xs text-slate-600 border rounded-lg hover:bg-slate-50">Filter Hataउनुहोस्</button>
+            <button @click="resetFilters" class="px-3 py-1.5 text-xs text-slate-600 border rounded-lg hover:bg-slate-50">Filter हटाउनुहोस्</button>
             <button @click="exportCSV" class="px-3 py-1.5 text-xs bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow font-semibold"><i class="fa-solid fa-file-csv mr-1"></i> CSV Export</button>
           </div>
         </div>
 
-        <!-- MAIN TABLE -->
         <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse">
@@ -339,12 +337,8 @@
                     <span v-if="item.paddy_damage_muri">{{ item.paddy_damage_muri }} मुरी</span>
                     <span v-else class="text-slate-400">-</span>
                   </td>
-                  <td class="p-3 text-purple-700 font-medium">
-                    {{ item.animal_bird_damage || '-' }}
-                  </td>
-                  <td class="p-3 text-slate-600 max-w-xs truncate" :title="item.remarks">
-                    {{ item.remarks || '-' }}
-                  </td>
+                  <td class="p-3 text-purple-700 font-medium">{{ item.animal_bird_damage || '-' }}</td>
+                  <td class="p-3 text-slate-600 max-w-xs truncate" :title="item.remarks">{{ item.remarks || '-' }}</td>
                   <td class="p-3 text-center">
                     <button @click="deleteRecord(item.id)" class="text-slate-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash"></i></button>
                   </td>
@@ -371,16 +365,13 @@
           </button>
         </div>
 
-        <!-- PRINTABLE REPORT SHEET -->
         <div class="bg-white p-8 rounded-xl shadow-lg border text-slate-900 border-slate-300 print:shadow-none print:border-none print:p-0">
-          <!-- Report Header -->
           <div class="text-center border-b-2 border-red-600 pb-4 mb-6">
             <h2 class="text-xl font-bold text-red-700">गलकोट नगरपालिका</h2>
             <h3 class="text-base font-bold">वडा कार्यालय, ९ नं. वडा कार्यालय</h3>
             <p class="text-xs font-semibold text-slate-600">बाँसखोला विपद् क्षति संकलन तथ्याङ्क प्रतिवेदन - २०८३</p>
           </div>
 
-          <!-- Report Metadata Table -->
           <div class="grid grid-cols-2 text-xs border p-3 rounded mb-6 bg-slate-50 gap-y-1">
             <div><strong>प्रदेश:</strong> गण्डकी प्रदेश</div>
             <div><strong>विपद्को प्रकार:</strong> घर/गोठ क्षति, जग्गा कटान तथा पहिरो</div>
@@ -392,7 +383,6 @@
             <div><strong>संकलन टोली:</strong> रामचन्द्र शर्मा (प्र.अ.), मनु सिंजाली (स.शि.)</div>
           </div>
 
-          <!-- Printable Table -->
           <table class="w-full text-xs border-collapse border border-slate-400 mb-6">
             <thead>
               <tr class="bg-slate-100 text-slate-800">
@@ -433,7 +423,6 @@
             </tfoot>
           </table>
 
-          <!-- Signatures -->
           <div class="mt-12 flex justify-between text-xs pt-8">
             <div class="text-center">
               <p class="mb-8">..................................................</p>
@@ -454,36 +443,10 @@
 </div>
 
 <script>
-  // SUPABASE CONFIGURATION
-  // Replace these with your actual Supabase URL & Anon Key
-  const SUPABASE_URL = 'HTTPS://YOUR_SUPABASE_PROJECT_ID.supabase.co';
-  const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+  // YOUR INTEGRATED SUPABASE CREDENTIALS
+  const SUPABASE_URL = 'https://dqeazvueqvncpbofbrpu.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_5VbUjJ1HqZ6jp-agyn6zIw_v3wTyxcU';
   const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  // SEED INITIAL DATA FROM USER PROMPT
-  const INITIAL_SEED_DATA = [
-    { id: 1, owner_name: 'दुवनाथ सापकोटा', location: 'मिठामारा', mobile_no: '9847640350', land_erosion_ropani: 0.50, paddy_damage_muri: 2 },
-    { id: 2, owner_name: 'सन्तोष सेरचन', location: 'मिठामारा', mobile_no: '', land_erosion_ropani: 1.50, paddy_damage_muri: 7, goth_damage: '२ वटा कच्ची छाप्रा', remarks: '२ वटा कच्ची छाप्रा र २ ट्याक्टर दाउरा बगाएको' },
-    { id: 3, owner_name: 'ढगेन्द्र सापकोटा', location: 'मिठामारा', mobile_no: '', remarks: 'ग्याविन जाली कमजोर भर्इ थोरा खोलामा सरेको' },
-    { id: 4, owner_name: 'जिवलाल सापकोटा', location: 'मिठामारा', mobile_no: '9848614017', land_erosion_ropani: 1.50, paddy_damage_muri: 7, remarks: '६५ mm को ६० मिटर पाइब बगाएको' },
-    { id: 5, owner_name: 'एज्ञप्रसाद खराल', location: 'मिठामारा', mobile_no: '9842921798', land_erosion_ropani: 0.33, paddy_damage_muri: 2, remarks: 'ग्याविन जाली र खेत कटान ०.३३ रोपनी, २ मुरी धान क्षति' },
-    { id: 6, owner_name: 'प्रेम सागर खरेल', location: 'मिठामारा', mobile_no: '9847640496', land_erosion_ropani: 0.25, paddy_damage_muri: 3, remarks: 'खेत कटान ०.२५ रोपनी, ३ मुरी धान क्षति' },
-    { id: 7, owner_name: 'प्रेम सागर खरेल', beneficiary_name: 'पदम दरजी', location: 'मिठामारा', mobile_no: '', animal_bird_damage: '१ बंगुर, १५ कुखुरा', remarks: '१ वटा बंगुर र १५ वटा कुखुरा खोर सहित बगाएको' },
-    { id: 8, owner_name: 'उमेन्द्र सापकोटा', location: 'तल्लो काभ्रे', mobile_no: '9857662766', expectation: 'तटबन्धन', remarks: 'तटबन्धन नगरे खेतमा क्षति पुग्ने' },
-    { id: 9, owner_name: 'टिकाराम सापकोटा', beneficiary_name: 'सुरेन्द्र छन्तयाल', location: 'तल्लो काभ्रे', mobile_no: '9857666971', animal_bird_damage: '२२ कुखुरा', remarks: '२२ वटा कुखुरा खोला पसेर बगाएको' },
-    { id: 10, owner_name: 'टिकाराम सापकोटा', location: 'तल्लो काभ्रे', mobile_no: '', land_erosion_ropani: 3.00, paddy_damage_muri: 9, remarks: '३ हलको खेतमा १ हल भन्दा बढी खेत कटान' },
-    { id: 11, owner_name: 'छविलाल सापकोटा', location: 'खोल्याड', mobile_no: '', land_erosion_ropani: 0.50, paddy_damage_muri: 3, remarks: '०.५ रोपनी खेत बगर बनाएको, धान नोक्सान १ रोपनी तटबन्ध आवश्यक' },
-    { id: 12, owner_name: 'एमकलि (रामचन्द्र सापकोटा)', location: 'खोल्याड', mobile_no: '9843184922', land_erosion_ropani: 1.00, paddy_damage_muri: 3, remarks: '१ रोपनी खेत बगर बनाएको, ३ मुरी धान क्षति' },
-    { id: 13, owner_name: 'ललित सापकोटा (कल्पना)', location: 'खोल्याड', mobile_no: '9764512814', land_erosion_ropani: 1.50, paddy_damage_muri: 4.5, remarks: '०.५ रोपनी खेत कटान र १ रोपनी बगर बनाएको, ४.५ मुरी धान क्षति' },
-    { id: 14, owner_name: 'कृष्ण प्रसाद सापकोटा', location: 'ठुलाखेत', mobile_no: '9860697177', land_erosion_ropani: 3.00, paddy_damage_muri: 9 },
-    { id: 15, owner_name: 'हेम सापकोटा', location: 'ठुलाखेत', mobile_no: '9860697177', land_erosion_ropani: 0.50, paddy_damage_muri: 1.5 },
-    { id: 16, owner_name: 'रवि सापकोटा', location: 'ठुलाखेत', mobile_no: '9860697177', land_erosion_ropani: 2.00, paddy_damage_muri: 6 },
-    { id: 17, owner_name: 'प्रेम सागर सापकोटा', location: 'ठुलाखेत', mobile_no: '9847665151', land_erosion_ropani: 0.66, paddy_damage_muri: 2 },
-    { id: 18, owner_name: 'डिलाराम सापकोटा', location: 'ठुलाखेत', mobile_no: '9847640603', land_erosion_ropani: 1.50, paddy_damage_muri: 4.5 },
-    { id: 19, owner_name: 'कुलाइनथान समसानघाट प्रतिक्षालय', location: 'ठुलाखेत', mobile_no: '', remarks: 'प्रतिक्षालयमा क्षति, पूर्ण रूपमा नष्ट' },
-    { id: 20, owner_name: 'टिकाराम सापकोटा पुछारे', location: 'ठुलाखेत', mobile_no: '', land_erosion_ropani: 0.33, paddy_damage_muri: 1 },
-    { id: 21, owner_name: 'कुलान्द सापकोटा (खैसरा)', location: 'ठुलाखेत', mobile_no: '', land_erosion_ropani: 1.00, paddy_damage_muri: 3 }
-  ];
 
   Vue.createApp({
     data() {
@@ -493,8 +456,8 @@
         authError: '',
         loginEmail: '',
         loginPassword: '',
-        activeTab: 'view', // 'entry', 'view', 'report'
-        records: INITIAL_SEED_DATA,
+        activeTab: 'view',
+        records: [],
         filterCategory: 'ALL',
         filterLocation: 'ALL',
         searchQuery: '',
@@ -504,18 +467,13 @@
     computed: {
       filteredRecords() {
         return this.records.filter(r => {
-          // Category Filter
           let passCat = true;
           if (this.filterCategory === 'LAND') passCat = r.land_erosion_ropani > 0;
           else if (this.filterCategory === 'PADDY') passCat = r.paddy_damage_muri > 0;
           else if (this.filterCategory === 'GOTH') passCat = !!r.goth_damage || !!r.house_status;
           else if (this.filterCategory === 'ANIMALS') passCat = !!r.animal_bird_damage;
-          else if (this.filterCategory === 'INFRA') passCat = r.remarks && (r.remarks.includes('कुलो') || r.remarks.includes('प्रतिक्षालय') || r.remarks.includes('पाइब'));
 
-          // Location Filter
           let passLoc = this.filterLocation === 'ALL' || r.location === this.filterLocation;
-
-          // Search Filter
           let q = this.searchQuery.toLowerCase();
           let passSearch = !q || (r.owner_name && r.owner_name.toLowerCase().includes(q)) || (r.mobile_no && r.mobile_no.includes(q));
 
@@ -536,16 +494,21 @@
       }
     },
     async mounted() {
-      // Check active Supabase session
+      // 1. Get initial session
       const { data } = await supabase.auth.getSession();
       this.session = data.session;
 
+      // 2. Listen to Auth changes
       supabase.auth.onAuthStateChange((_event, session) => {
         this.session = session;
+        if (session) {
+          this.fetchSupabaseRecords();
+        }
       });
 
-      // Load records from Supabase table if connected
-      this.fetchSupabaseRecords();
+      if (this.session) {
+        this.fetchSupabaseRecords();
+      }
     },
     methods: {
       async handleLogin() {
@@ -557,12 +520,10 @@
         });
 
         if (error) {
-          // Demo fallback: Allow offline view for demonstration
-          if(this.loginEmail && this.loginPassword) {
-            this.session = { user: { email: this.loginEmail } };
-          } else {
-            this.authError = error.message;
-          }
+          this.authError = error.message;
+        } else {
+          this.session = data.session;
+          await this.fetchSupabaseRecords();
         }
         this.loading = false;
       },
@@ -590,30 +551,29 @@
         };
       },
       async fetchSupabaseRecords() {
-        try {
-          const { data, error } = await supabase.from('disaster_damages').select('*');
-          if (data && data.length > 0) {
-            this.records = data;
-          }
-        } catch (e) {
-          console.log('Supabase connection pending database setup.');
+        const { data, error } = await supabase.from('disaster_damages').select('*').order('id', { ascending: false });
+        if (!error && data) {
+          this.records = data;
         }
       },
       async saveRecord() {
-        const newRecord = { ...this.form, id: Date.now() };
-        this.records.unshift(newRecord);
-
-        // Try persisting to Supabase DB
-        try {
-          await supabase.from('disaster_damages').insert([this.form]);
-        } catch(e) {}
-
-        this.resetForm();
-        this.activeTab = 'view';
+        const { data, error } = await supabase.from('disaster_damages').insert([this.form]).select();
+        if (error) {
+          alert('डाटा सेभ गर्न सकिएन: ' + error.message);
+        } else {
+          await this.fetchSupabaseRecords();
+          this.resetForm();
+          this.activeTab = 'view';
+        }
       },
-      deleteRecord(id) {
+      async deleteRecord(id) {
         if (confirm('के तपाईं यो विवरण हटाउन निश्चित हुनुहुन्छ?')) {
-          this.records = this.records.filter(r => r.id !== id);
+          const { error } = await supabase.from('disaster_damages').delete().eq('id', id);
+          if (!error) {
+            this.records = this.records.filter(r => r.id !== id);
+          } else {
+            alert('हटाउन सकिएन: ' + error.message);
+          }
         }
       },
       resetForm() {
