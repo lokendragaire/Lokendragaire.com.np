@@ -1,649 +1,163 @@
 <!DOCTYPE html>
-<html lang="ne">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>गलकोट नगरपालिका - विपद् विवरण प्रणाली</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- SheetJS (Excel) -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <!-- jsPDF & AutoTable -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-    <!-- Supabase JS Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap');
-        body { font-family: 'Mukta', sans-serif; }
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white; color: black; }
-        }
-    </style>
-</head>
-<body class="bg-slate-100 text-gray-800 min-h-screen">
+<html lang="ne"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>गलकोट नगरपालिका – विपद् क्षति ड्यासबोर्ड</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:"Noto Sans Devanagari","Mangal",Arial,sans-serif;background:#f3f5f8;color:#1c2733;font-size:14px}
+header{background:#14466b;color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+h1{font-size:18px;margin:0}main{padding:12px 16px;max-width:1500px;margin:auto}
+.card{background:#fff;border-radius:8px;padding:12px;margin-bottom:12px;box-shadow:0 1px 3px #0002}
+button,select,input,textarea{font:inherit;padding:6px 10px;border:1px solid #b9c3cf;border-radius:6px;background:#fff}
+button{cursor:pointer;background:#14466b;color:#fff;border:0}button.alt{background:#e5ebf1;color:#14466b}
+.tabs button{background:#e5ebf1;color:#14466b;margin-right:4px}.tabs button.on{background:#14466b;color:#fff}
+.chips label{display:inline-block;margin:2px 4px 2px 0;padding:3px 9px;border:1px solid #b9c3cf;border-radius:14px;cursor:pointer;background:#fff}
+.chips input{display:none}.chips label:has(input:checked){background:#14466b;color:#fff;border-color:#14466b}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.kpi{background:#eaf1f8;border-radius:8px;padding:10px}.kpi b{font-size:22px;display:block;color:#14466b}
+.tw{overflow:auto;max-height:60vh}table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{border:1px solid #cfd6de;padding:4px 6px;vertical-align:top}th{background:#dfe8f1;position:sticky;top:0}
+.bar{display:flex;align-items:center;margin:3px 0}.bar span{width:210px;font-size:13px}.bar i{display:block;height:16px;background:#2f7fbf;border-radius:3px}.bar em{margin-left:6px;font-style:normal;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}.grid label{font-size:12px;display:block}.grid input,.grid select,.grid textarea{width:100%}
+#login{max-width:340px;margin:12vh auto}#login input{width:100%;margin:5px 0}.hide{display:none}.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+@media print{header,.noprint{display:none!important}body{background:#fff}.tw{max-height:none;overflow:visible}.card{box-shadow:none}}
+</style></head><body>
 
-    <!-- LOGIN SCREEN -->
-    <div id="loginScreen" class="fixed inset-0 bg-slate-900 bg-opacity-95 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full border border-gray-200">
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3 text-red-600 text-2xl">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                </div>
-                <h1 class="text-2xl font-bold text-gray-800">गलकोट नगरपालिका</h1>
-                <p class="text-sm text-gray-500">विपद् व्यवस्थापन तथा तथ्यांक प्रणाली</p>
-            </div>
-            
-            <form id="loginForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">प्रयोगकर्ता ID</label>
-                    <input type="text" id="loginId" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none" placeholder="Lokendr@">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">पासवर्ड</label>
-                    <input type="password" id="loginPass" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none" placeholder="••••••••">
-                </div>
-                <div id="loginError" class="text-red-500 text-sm hidden font-medium text-center">ID वा पासवर्ड मिलेन!</div>
-                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg transition shadow-md">
-                    लगइन गर्नुहोस्
-                </button>
-            </form>
-        </div>
-    </div>
+<div id="login" class="card"><h1 style="color:#14466b">गलकोट नगरपालिका</h1><p>विपद् क्षति ड्यासबोर्ड – लगइन</p>
+<input id="u" placeholder="आईडी / इमेल"><input id="p" type="password" placeholder="पासवर्ड" onkeydown="if(event.key=='Enter')login()">
+<button onclick="login()" style="width:100%">लगइन</button><p id="lerr" style="color:#b00"></p></div>
 
-    <!-- MAIN DASHBOARD -->
-    <div id="appContainer" class="hidden">
-        <!-- HEADER -->
-        <header class="bg-red-700 text-white shadow-lg no-print">
-            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-                <div class="flex items-center space-x-3">
-                    <div class="p-2 bg-white rounded-lg text-red-700 font-bold text-xl">
-                        <i class="fa-solid fa-house-crack"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold">गलकोट नगरपालिका, नगर कार्यपालिकाको कार्यालय</h1>
-                        <p class="text-xs text-red-200">विपद् व्यवस्थापन पोर्टल (Supabase Live Linked)</p>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <span id="userBadge" class="bg-red-800 text-red-100 text-xs px-3 py-1.5 rounded-full font-semibold">
-                        <i class="fa-solid fa-user-shield mr-1"></i> Lokendr@
-                    </span>
-                    <button onclick="logout()" class="bg-red-900 hover:bg-red-950 text-white text-sm px-3 py-1.5 rounded-lg transition">
-                        <i class="fa-solid fa-right-from-bracket"></i> बाहिरिनुहोस्
-                    </button>
-                </div>
-            </div>
-        </header>
+<div id="app" class="hide">
+<header><h1>गलकोट नगरपालिका – विपद् क्षति विवरण</h1><div class="row"><span id="mode"></span><button class="alt" onclick="logout()">लगआउट</button></div></header>
+<main>
+<div class="card noprint row tabs"><button id="t1" class="on" onclick="tab(1)">ड्यासबोर्ड</button><button id="t2" onclick="tab(2)">फिल्टर / तालिका</button><button id="t3" onclick="tab(3)">नयाँ डाटा प्रविष्टि</button>
+<span style="flex:1"></span><label class="alt" style="padding:6px 10px;border-radius:6px;background:#e5ebf1;cursor:pointer">📂 Excel अपलोड<input type="file" accept=".xlsx,.xls" class="hide" onchange="upload(this)"></label></div>
 
-        <main class="container mx-auto px-4 py-6 space-y-6">
-            <!-- STATS CARDS -->
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 no-print">
-                <div class="bg-white p-4 rounded-xl shadow border-l-4 border-blue-500">
-                    <div class="text-xs text-gray-500 font-bold">कुल दर्ता</div>
-                    <div id="statTotal" class="text-2xl font-bold text-gray-800">0</div>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow border-l-4 border-red-500">
-                    <div class="text-xs text-gray-500 font-bold">घर क्षति</div>
-                    <div id="statHouse" class="text-2xl font-bold text-gray-800">0</div>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow border-l-4 border-orange-500">
-                    <div class="text-xs text-gray-500 font-bold">मानवीय क्षति</div>
-                    <div id="statHuman" class="text-2xl font-bold text-gray-800">0</div>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow border-l-4 border-green-500">
-                    <div class="text-xs text-gray-500 font-bold">सिँचाइ क्षति</div>
-                    <div id="statIrrigation" class="text-2xl font-bold text-gray-800">0</div>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow border-l-4 border-amber-500">
-                    <div class="text-xs text-gray-500 font-bold">बाली/खाद्यान्न क्षति</div>
-                    <div id="statCrop" class="text-2xl font-bold text-gray-800">0</div>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow border-l-4 border-purple-500">
-                    <div class="text-xs text-gray-500 font-bold">चौपाया/पन्छी क्षति</div>
-                    <div id="statLivestock" class="text-2xl font-bold text-gray-800">0</div>
-                </div>
-            </div>
+<div class="card noprint"><b>वडा:</b> <span class="chips" id="fw"></span><br><b>क्षतिको किसिम:</b> <span class="chips" id="fc"></span>
+<div class="row" style="margin-top:6px"><select id="mode2" onchange="render()"><option value="any">कुनै पनि (OR)</option><option value="all">सबै (AND)</option></select>
+<input id="q" placeholder="नाम / स्थान / फोन खोज्नुहोस्" oninput="render()"><button class="alt" onclick="clr()">फिल्टर हटाउने</button></div></div>
 
-            <!-- CONTROLS & EXPORT -->
-            <div class="bg-white p-4 rounded-xl shadow flex flex-wrap gap-3 justify-between items-center no-print">
-                <div class="flex flex-wrap items-center gap-2">
-                    <button onclick="openFormModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition">
-                        <i class="fa-solid fa-plus mr-1"></i> नयाँ विवरण प्रविष्टि
-                    </button>
-                    <label class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-sm cursor-pointer transition">
-                        <i class="fa-solid fa-file-excel mr-1"></i> Excel Upload (सबै Sheets)
-                        <input type="file" id="excelUpload" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleFileUpload(event)">
-                    </label>
-                    <span id="loadingSpinner" class="hidden text-xs text-blue-600 font-bold animate-pulse">
-                        <i class="fa-solid fa-spinner fa-spin mr-1"></i> ५००+ डाटा प्रोसेसिङ हुँदैछ...
-                    </span>
-                </div>
+<div id="v1"><div class="card"><div class="kpis" id="kpis"></div></div>
+<div class="card"><b>क्षतिको किसिम अनुसार प्रभावित विवरण (संख्या)</b><div id="bars"></div></div>
+<div class="card"><b>वडागत सारांश</b><div class="tw"><table id="wt"></table></div></div></div>
 
-                <div class="flex flex-wrap items-center gap-2">
-                    <button onclick="exportToXLSX()" class="bg-green-700 hover:bg-green-800 text-white text-xs px-3 py-2 rounded-lg transition">
-                        <i class="fa-solid fa-download"></i> Excel Export
-                    </button>
-                    <button onclick="exportToPDF()" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-2 rounded-lg transition">
-                        <i class="fa-solid fa-file-pdf"></i> PDF Export
-                    </button>
-                    <button onclick="exportToDOCX()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-2 rounded-lg transition">
-                        <i class="fa-solid fa-file-word"></i> DOCX Export
-                    </button>
-                    <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-800 text-white text-xs px-3 py-2 rounded-lg transition">
-                        <i class="fa-solid fa-print"></i> Print
-                    </button>
-                </div>
-            </div>
+<div id="v2" class="hide"><div class="card"><div class="row noprint" style="margin-bottom:6px"><b id="cnt2"></b><span style="flex:1"></span>
+<button onclick="xl()">⬇ XLSX</button><button onclick="doc()">⬇ Word (DOC)</button><button onclick="pdf()">🖨 PDF / प्रिन्ट</button></div>
+<div class="tw"><table id="tb"></table></div></div></div>
 
-            <!-- FILTER PANEL -->
-            <div class="bg-white p-4 rounded-xl shadow space-y-3 no-print">
-                <div class="text-sm font-bold text-gray-700 border-b pb-2 flex items-center justify-between">
-                    <span><i class="fa-solid fa-filter text-red-600 mr-1"></i> बहु-फिल्टर प्रणाली (Multi-Filter Engine)</span>
-                    <button onclick="resetFilters()" class="text-xs text-blue-600 hover:underline">फिल्टर रिसेट गर्नुहोस्</button>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">वडा छनौट</label>
-                        <select id="filterWard" onchange="applyFilters()" class="w-full text-xs p-2 border rounded-lg outline-none focus:ring-1 focus:ring-red-500">
-                            <option value="">सबै वडाहरू</option>
-                            <option value="1">वडा नं. १</option>
-                            <option value="2">वडा नं. २</option>
-                            <option value="3">वडा नं. ३</option>
-                            <option value="4">वडा नं. ४</option>
-                            <option value="5">वडा नं. ५</option>
-                            <option value="6">वडा नं. ६</option>
-                            <option value="7">वडा नं. ७</option>
-                            <option value="8">वडा नं. ८</option>
-                            <option value="9">वडा नं. ९</option>
-                            <option value="10">वडा नं. १०</option>
-                            <option value="11">वडा नं. ११</option>
-                        </select>
-                    </div>
+<div id="v3" class="hide"><div class="card"><b>नयाँ रेकर्ड थप्ने</b><div class="grid" id="form" style="margin-top:8px"></div>
+<div class="row" style="margin-top:8px"><button onclick="addRec()">+ सुरक्षित गर्ने</button><button class="alt" onclick="if(confirm('सबै डाटा (Supabase सहित) हटाउने?')){wipe();data=[];save();render()}">सबै डाटा खाली</button><span id="fmsg"></span></div></div></div>
+</main></div>
 
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">क्षतिको विधा (Category)</label>
-                        <select id="filterCategory" onchange="applyFilters()" class="w-full text-xs p-2 border rounded-lg outline-none focus:ring-1 focus:ring-red-500">
-                            <option value="">सबै विधा</option>
-                            <option value="house">घरको क्षति</option>
-                            <option value="irrigation_pakki">सिँचाइ (पक्की)</option>
-                            <option value="irrigation_katchi">सिँचाइ (कच्ची)</option>
-                            <option value="goth">गोठमा क्षति</option>
-                            <option value="human">मानवीय क्षति</option>
-                            <option value="land">जग्गा जमिनको क्षति</option>
-                            <option value="crop">बालीमा क्षति</option>
-                            <option value="livestock">चौपायामा क्षति</option>
-                            <option value="poultry">पन्छीमा क्षति</option>
-                            <option value="food">खाद्यान्नमा क्षति</option>
-                        </select>
-                    </div>
+<script>
+/* ===== Supabase (खाली राख्दा local demo मात्र चल्छ) =====
+ SQL: create table damage_records(id uuid default gen_random_uuid() primary key, ward int, data jsonb, created_at timestamptz default now());
+ alter table damage_records enable row level security;
+ create policy "auth rw" on damage_records for all to authenticated using(true) with check(true); */
+const SUPA_URL='https://dqeazvueqvncpbofbrpu.supabase.co', SUPA_KEY='sb_publishable_5VbUjJ1HqZ6jp-agyn6zIw_v3wTyxcU';
+const EMAIL_DOMAIN='@galkot.app'; // ID 'Lokendr@' -> email 'lokendr@galkot.app' (Supabase Auth ma yahi user banaunus)
+const LOCAL_ID='Lokendr@', LOCAL_PW='Galkot@123';
+const sb=(SUPA_URL&&SUPA_KEY&&window.supabase)?supabase.createClient(SUPA_URL,SUPA_KEY):null;
 
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">घरको अवस्था</label>
-                        <select id="filterCondition" onchange="applyFilters()" class="w-full text-xs p-2 border rounded-lg outline-none focus:ring-1 focus:ring-red-500">
-                            <option value="">सबै अवस्था</option>
-                            <option value="पूर्ण">पूर्ण क्षति</option>
-                            <option value="अधिकांश">अधिकांश भाग नष्ट</option>
-                            <option value="सामान्य">सामान्य क्षति</option>
-                            <option value="जोखिम">जोखिमयुक्त</option>
-                        </select>
-                    </div>
+const FD={h_pakki:'घर पक्की',h_kachi:'घर कच्ची',d_full:'घर क्षति पूर्ण',d_most:'घर अधिकांश नष्ट',d_normal:'घर क्षति सामान्य',
+ip_full:'सिँचाइ पक्की पूर्ण',ip_part:'सिँचाइ पक्की आंशिक',ik_full:'सिँचाइ कच्ची पूर्ण',ik_part:'सिँचाइ कच्ची आंशिक',
+g_full:'गोठ पूर्ण',g_norm:'गोठ सामान्य',death:'मृत्यु',injured:'घाइते',l_bagar:'जग्गा बगर (रोपनी)',l_katan:'जग्गा कटान (रोपनी)',l_other:'जग्गा पाखो/अन्य',
+c_dhan:'बाली धान (मुरी)',c_other:'बाली अन्य',cattle:'चौपाया',birds:'पंक्षी',grain:'खाद्यान्न'};
+const CATS=[['घरको अवस्था',['h_pakki','h_kachi']],['घरको क्षति',['d_full','d_most','d_normal']],['सिँचाइ क्षति पक्की',['ip_full','ip_part']],
+['सिँचाइ क्षति कच्ची',['ik_full','ik_part']],['गोठमा क्षति',['g_full','g_norm']],['मानवीय क्षति',['death','injured']],['जग्गा जमिनको क्षति',['l_bagar','l_katan','l_other']],
+['बालीमा क्षति',['c_dhan','c_other']],['चौपायामा क्षति',['cattle']],['पंक्षिमा क्षति',['birds']],['खाद्यान्नमा क्षति',['grain']]];
+const BASE=['sn','name','user','hh','place','phone','nature'],TAIL=['demand','remark'];
+const LBL={ward:'वडा',sn:'क्र.सं.',name:'घरधनी/जग्गाधनी',user:'भोगकर्ता',hh:'प्रभावित परिवार',place:'स्थान',phone:'मो.नं.',nature:'घरको प्रकृति',demand:'अपेक्षा',remark:'कैफियत',...FD};
+const STD=[...BASE,'h_pakki','h_kachi','d_full','d_most','d_normal','ip_full','ip_part','ik_full','ik_part','g_full','g_norm','death','injured','l_bagar','l_katan','l_other','c_dhan','c_other','cattle','birds','grain',...TAIL];
+const S6=[...BASE,'h_kachi','d_full','d_most','d_normal','ip_full','ip_part','ik_full','ik_part','l_bagar','l_katan','l_other','c_dhan','c_other','cattle','birds','grain',...TAIL];
+const allKeys=CATS.flatMap(c=>c[1]);
+let data=JSON.parse(localStorage.getItem('galkot_data')||'[]'),W=new Set(),C=new Set();
 
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">खोज्नुहोस् (नाम/स्थान/कैफियत)</label>
-                        <input type="text" id="filterSearch" oninput="applyFilters()" placeholder="घरधनीको नाम वा स्थान..." class="w-full text-xs p-2 border rounded-lg outline-none focus:ring-1 focus:ring-red-500">
-                    </div>
-                </div>
-            </div>
+const dn=s=>String(s).replace(/[०-९]/g,d=>'०१२३४५६७८९'.indexOf(d));
+const cl=v=>{if(v==null)return'';const s=String(v).trim();return/^[-_–—\s]*$/.test(s)?'':s};
+const num=v=>{const m=dn(v).match(/\d+(\.\d+)?/);return m?parseFloat(m[0]):NaN};
+const has=(r,k)=>r[k]!==undefined&&r[k]!=='';
+const save=()=>localStorage.setItem('galkot_data',JSON.stringify(data));
 
-            <!-- DATA TABLE -->
-            <div class="bg-white rounded-xl shadow overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead class="bg-gray-800 text-white uppercase text-[11px]">
-                            <tr>
-                                <th class="p-3">क्र.सं.</th>
-                                <th class="p-3">वडा</th>
-                                <th class="p-3">स्थान</th>
-                                <th class="p-3">घरधनी/जग्गाधनी</th>
-                                <th class="p-3">सम्पर्क</th>
-                                <th class="p-3">घरको अवस्था/क्षति</th>
-                                <th class="p-3">सिँचाइ (पक्की/कच्ची)</th>
-                                <th class="p-3">गोठ/मानवीय</th>
-                                <th class="p-3">जग्गा/बाली</th>
-                                <th class="p-3">चौपाया/पन्छी/खाद्यान्न</th>
-                                <th class="p-3">कैफियत/अपेक्षा</th>
-                                <th class="p-3 no-print">कार्य</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody" class="divide-y divide-gray-200">
-                            <!-- Rows injected dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
-    </div>
+/* ---- login ---- */
+async function login(){const u=$('u').value.trim(),p=$('p').value;$('lerr').textContent='';
+ if(sb){const email=u.includes('@')&&u.indexOf('@')<u.length-1?u:u.replace(/@$/,'').toLowerCase()+EMAIL_DOMAIN;
+  const{error}=await sb.auth.signInWithPassword({email,password:p});
+  if(!error){sessionStorage.a='sb';await pull();return start()}
+  if(u===LOCAL_ID&&p===LOCAL_PW){sessionStorage.a='local';alert('Supabase login भएन – offline demo मोडमा खुल्यो (डाटा यही browser मा मात्र सुरक्षित हुन्छ)');return start()}
+  $('lerr').textContent='आईडी/पासवर्ड मिलेन';return}
+ if(u===LOCAL_ID&&p===LOCAL_PW){sessionStorage.a='local';start()}else $('lerr').textContent='आईडी/पासवर्ड मिलेन'}
+function logout(){sessionStorage.removeItem('a');sb&&sb.auth.signOut();location.reload()}
+async function pull(){try{let all=[],from=0;for(;;){const{data:d,error}=await sb.from('damage_records').select('ward,data').order('created_at').range(from,from+999);if(error)throw error;all.push(...d);if(d.length<1000)break;from+=1000}
+ data=all.map(x=>({...x.data,ward:x.ward}));save()}catch(e){console.log(e);alert('Supabase बाट डाटा ल्याउन सकिएन: '+(e.message||e))}}
+async function wipe(){if(!sb)return;try{await sb.from('damage_records').delete().gte('ward',0)}catch(e){console.log(e)}}
+async function push(rows){if(!sb||sessionStorage.a!='sb')return;try{for(let i=0;i<rows.length;i+=500){const{error}=await sb.from('damage_records').insert(rows.slice(i,i+500).map(r=>({ward:r.ward,data:r})));if(error)throw error}}catch(e){console.log(e);alert('Supabase मा सेभ भएन: '+(e.message||e))}}
+const $=id=>document.getElementById(id);
+function start(){$('login').classList.add('hide');$('app').classList.remove('hide');$('mode').textContent=sessionStorage.a=='sb'?'Supabase जडित':'Demo (local)';buildUI();render()}
 
-    <!-- ENTRY FORM MODAL -->
-    <div id="formModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6">
-            <div class="flex justify-between items-center border-b pb-3 mb-4">
-                <h3 class="text-lg font-bold text-gray-800">नयाँ विपद् विवरण प्रविष्टि Form</h3>
-                <button onclick="closeFormModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
-            </div>
-            
-            <form id="disasterForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700">वडा नं.</label>
-                        <select id="formWard" required class="w-full border rounded p-2 text-xs">
-                            <option value="1">वडा नं. १</option>
-                            <option value="2">वडा नं. २</option>
-                            <option value="3">वडा नं. ३</option>
-                            <option value="4" selected>वडा नं. ४</option>
-                            <option value="5">वडा नं. ५</option>
-                            <option value="6">वडा नं. ६</option>
-                            <option value="7">वडा नं. ७</option>
-                            <option value="8">वडा नं. ८</option>
-                            <option value="9">वडा नं. ९</option>
-                            <option value="10">वडा नं. १०</option>
-                            <option value="11">वडा नं. ११</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700">स्थान</label>
-                        <input type="text" id="formLocation" required class="w-full border rounded p-2 text-xs" placeholder="स्थान">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700">घरधनीको नाम</label>
-                        <input type="text" id="formOwner" required class="w-full border rounded p-2 text-xs" placeholder="नाम थर">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700">मोवाइल नं.</label>
-                        <input type="text" id="formPhone" class="w-full border rounded p-2 text-xs" placeholder="98XXXXXXXX">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700">घरको प्रकृति</label>
-                        <select id="formHouseType" class="w-full border rounded p-2 text-xs">
-                            <option value="आवासीय स्थायी">आवासीय स्थायी</option>
-                            <option value="आवासीय अस्थायी">आवासीय अस्थायी</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700">घरको क्षति/अवस्था</label>
-                        <input type="text" id="formHouseDamage" class="w-full border rounded p-2 text-xs" placeholder="पूर्ण / अधिकांश / सामान्य">
-                    </div>
-                </div>
+/* ---- Excel parsing ---- */
+function parseSheet(ws,name){const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:true}),ward=num(name),out=[];
+ if(/क्षतिको विवरण/.test(String(rows[0]&&rows[0][0]))){let last=null;
+  for(let i=2;i<rows.length;i++){const r=rows[i];if(!r.some(x=>cl(x)))continue;
+   if(cl(r[0])){last={ward,sn:cl(r[0]),place:cl(r[1]),name:cl(r[2]),phone:cl(r[5]),nature:cl(r[6]),remark:[cl(r[7]),cl(r[8])].filter(Boolean).join(' | '),demand:cl(r[9])};out.push(last)}
+   else if(last){last.remark+=[' | '+cl(r[7]),cl(r[8])].filter(Boolean).join(' | ');if(cl(r[9]))last.demand+=' | '+cl(r[9])}}
+  return out}
+ const map=(rows[3]||[]).some(c=>/गोठ/.test(c))?STD:S6;
+ for(let i=5;i<rows.length;i++){const r=rows[i];if(/बगर रोपनीमा|कटान रोपनीमा/.test(r.join('')))continue;
+  const o={ward};let any=false;map.forEach((k,j)=>{const v=cl(r[j]);if(v){o[k]=v;if(j>0)any=true}});
+  if(any){if(!o.name)o.name='(नाम नखुलेको)';out.push(o)}}
+ return out}
+function upload(inp){const f=inp.files[0];if(!f)return;const rd=new FileReader();
+ rd.onload=e=>{const wb=XLSX.read(e.target.result,{type:'array'});let rows=[];wb.SheetNames.forEach(n=>rows.push(...parseSheet(wb.Sheets[n],n)));
+  const rep=confirm('पुरानो डाटा हटाएर यो फाइलले बदल्ने? (Cancel = पुरानोमा थप्ने)');
+  (async()=>{if(rep&&sessionStorage.a=='sb')await wipe();data=rep?rows:data.concat(rows);save();await push(rows);buildUI();render();alert(rows.length+' रेकर्ड लोड भयो')})()};
+ rd.readAsArrayBuffer(f);inp.value=''}
 
-                <div class="border-t pt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700">सिँचाइमा क्षति (पक्की)</label>
-                        <input type="text" id="formIrrigationPakki" class="w-full border rounded p-2 text-xs" placeholder="पक्की कुलो/क्यानाल क्षति">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700">सिँचाइमा क्षति (कच्ची)</label>
-                        <input type="text" id="formIrrigationKatchi" class="w-full border rounded p-2 text-xs" placeholder="कच्ची कुलो क्षति">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700">गोठमा क्षति</label>
-                        <input type="text" id="formGoth" class="w-full border rounded p-2 text-xs" placeholder="पूर्ण / आंशिक क्षति">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700">मानवीय क्षति</label>
-                        <input type="text" id="formHuman" class="w-full border rounded p-2 text-xs" placeholder="मृत्यु / घाइते विवरण">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700">जग्गा जमिनको क्षति</label>
-                        <input type="text" id="formLand" class="w-full border rounded p-2 text-xs" placeholder="रोपनी / भित्ता/ पहिरो">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700">बालीमा क्षति</label>
-                        <input type="text" id="formCrop" class="w-full border rounded p-2 text-xs" placeholder="धान, मकै क्षति विवरण">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700">चौपायामा क्षति</label>
-                        <input type="text" id="formLivestock" class="w-full border rounded p-2 text-xs" placeholder="गाई/भैँसी/बाख्रा मृत्यु/घाइते">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700">पन्छीमा क्षति</label>
-                        <input type="text" id="formPoultry" class="w-full border rounded p-2 text-xs" placeholder="कुखुरा, हाँस क्षति">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700">खाद्यान्नमा क्षति</label>
-                        <input type="text" id="formFood" class="w-full border rounded p-2 text-xs" placeholder="अन्न/खाद्यान्न परिमाण">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700">अपेक्षित सहयोग / कैफियत</label>
-                        <input type="text" id="formExpectation" class="w-full border rounded p-2 text-xs" placeholder="त्रिपाल / राहत / ग्याबिन जाली">
-                    </div>
-                </div>
+/* ---- UI ---- */
+function chip(id,val,label,set){return`<label><input type=checkbox ${set.has(val)?'checked':''} onchange="tg('${id}','${val}',this.checked)">${label}</label>`}
+function tg(id,v,on){const s=id=='w'?W:C;on?s.add(v):s.delete(v);render()}
+function clr(){W.clear();C.clear();$('q').value='';buildUI();render()}
+function buildUI(){const ws=[...new Set([...Array(11)].map((_,i)=>i+1).concat(data.map(r=>r.ward).filter(x=>x)))].sort((a,b)=>a-b);
+ $('fw').innerHTML=ws.map(w=>chip('w',w,'वडा '+w,W)).join('');$('fc').innerHTML=CATS.map(c=>chip('c',c[0],c[0],C)).join('');
+ $('form').innerHTML=`<div><label>वडा नं.</label><select id="f_ward">${ws.map(w=>`<option>${w}</option>`).join('')}</select></div>`+
+  [...BASE,...allKeys,...TAIL].filter(k=>k!='sn').map(k=>`<div><label>${LBL[k]}</label>${k=='remark'?`<textarea id="f_${k}" rows=2></textarea>`:`<input id="f_${k}">`}</div>`).join('')}
+function addRec(){const r={ward:+$('f_ward').value};[...BASE,...allKeys,...TAIL].forEach(k=>{if(k=='sn')return;const v=cl($('f_'+k)&&$('f_'+k).value);if(v)r[k]=v});
+ if(!r.name){$('fmsg').textContent='घरधनीको नाम आवश्यक छ';return}
+ r.sn=data.filter(x=>x.ward==r.ward).length+1;data.push(r);save();push([r]);
+ document.querySelectorAll('#form input,#form textarea').forEach(i=>i.value='');$('fmsg').textContent='✔ सुरक्षित भयो';buildUI();render()}
+function tab(n){[1,2,3].forEach(i=>{$('v'+i).classList.toggle('hide',i!=n);$('t'+i).classList.toggle('on',i==n)})}
 
-                <div class="flex justify-end space-x-2 border-t pt-3">
-                    <button type="button" onclick="closeFormModal()" class="px-4 py-2 border rounded-lg text-xs font-semibold text-gray-600">रद्द गर्नुहोस्</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700">सुरक्षित गर्नुहोस् (Supabase Sync)</button>
-                </div>
-            </form>
-        </div>
-    </div>
+/* ---- filtering ---- */
+function filtered(){const q=$('q').value.trim(),sel=CATS.filter(c=>C.has(c[0])),all=$('mode2').value=='all';
+ return data.filter(r=>{if(W.size&&!W.has(String(r.ward))&&!W.has(r.ward))return false;
+  if(sel.length){const t=c=>c[1].some(k=>has(r,k));if(all?!sel.every(t):!sel.some(t))return false}
+  if(q&&!['name','user','place','phone','remark'].some(k=>(r[k]||'').includes(q)))return false;return true})}
+const sum=(rs,k)=>rs.reduce((a,r)=>a+(has(r,k)?(isNaN(num(r[k]))?0:num(r[k])):0),0);
+const cnt=(rs,ks)=>rs.filter(r=>ks.some(k=>has(r,k))).length;
+function cols(){const sel=CATS.filter(c=>C.has(c[0]));return['ward',...BASE,...(sel.length?sel.flatMap(c=>c[1]):allKeys),...TAIL]}
 
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        // 1. SUPABASE INITIALIZATION
-        const SUPABASE_URL = "https://dqeazvueqvncpbofbrpu.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_5VbUjJ1HqZ6jp-agyn6zIw_v3wTyxcU";
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+function render(){const rs=filtered();
+ const ward=new Set(rs.map(r=>r.ward)).size;
+ $('kpis').innerHTML=[['रेकर्ड',rs.length],['वडा',ward],['प्रभावित परिवार (कुल)',sum(rs,'hh')||'-'],['मृत्यु',sum(rs,'death')],['घाइते',sum(rs,'injured')],
+  ['घर पूर्ण क्षति',cnt(rs,['d_full'])],['जग्गा बगर+कटान (रोपनी)',(sum(rs,'l_bagar')+sum(rs,'l_katan')).toFixed(2)],['धान क्षति (मुरी)',sum(rs,'c_dhan')]]
+  .map(k=>`<div class=kpi><b>${k[1]}</b>${k[0]}</div>`).join('');
+ const bs=CATS.map(c=>[c[0],cnt(rs,c[1])]),mx=Math.max(1,...bs.map(b=>b[1]));
+ $('bars').innerHTML=bs.map(b=>`<div class=bar><span>${b[0]}</span><i style="width:${b[1]/mx*60}%"></i><em>${b[1]}</em></div>`).join('');
+ const ws=[...new Set(rs.map(r=>+r.ward))].sort((a,b)=>a-b);
+ $('wt').innerHTML='<tr><th>वडा</th><th>रेकर्ड</th><th>घर क्षति</th><th>सिँचाइ</th><th>गोठ</th><th>मृत्यु</th><th>घाइते</th><th>जग्गा (रोपनी)</th><th>धान (मुरी)</th><th>चौपाया</th><th>पंक्षी</th><th>खाद्यान्न</th></tr>'+
+  ws.map(w=>{const g=rs.filter(r=>r.ward==w);return`<tr><td>${w}</td><td>${g.length}</td><td>${cnt(g,['d_full','d_most','d_normal'])}</td><td>${cnt(g,['ip_full','ip_part','ik_full','ik_part'])}</td><td>${cnt(g,['g_full','g_norm'])}</td><td>${sum(g,'death')}</td><td>${sum(g,'injured')}</td><td>${(sum(g,'l_bagar')+sum(g,'l_katan')).toFixed(2)}</td><td>${sum(g,'c_dhan')}</td><td>${cnt(g,['cattle'])}</td><td>${cnt(g,['birds'])}</td><td>${cnt(g,['grain'])}</td></tr>`}).join('')||'<tr><td>डाटा छैन – Excel अपलोड गर्नुहोस्</td></tr>';
+ const cs=cols();$("cnt2").textContent=`कुल ${rs.length} रेकर्ड`;
+ $('tb').innerHTML='<tr>'+cs.map(k=>`<th>${LBL[k]}</th>`).join('')+'</tr>'+rs.map(r=>'<tr>'+cs.map(k=>`<td>${esc(r[k]??'')}</td>`).join('')+'</tr>').join('')}
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 
-        let records = [];
-        let filteredRecords = [];
+/* ---- export ---- */
+function title(){return'गलकोट नगरपालिका – विपद् क्षति विवरण'+(W.size?' (वडा '+[...W].sort((a,b)=>a-b).join(', ')+')':'')+(C.size?' – '+[...C].join(', '):'')}
+function tableHTML(){const cs=cols(),rs=filtered();return`<h3>${title()}</h3><table border=1 cellspacing=0 cellpadding=3 style="border-collapse:collapse;font-size:10pt"><tr>${cs.map(k=>`<th>${LBL[k]}</th>`).join('')}</tr>${rs.map(r=>'<tr>'+cs.map(k=>`<td>${esc(r[k]??'')}</td>`).join('')+'</tr>').join('')}</table>`}
+function xl(){const cs=cols(),rs=filtered(),ws=XLSX.utils.aoa_to_sheet([cs.map(k=>LBL[k]),...rs.map(r=>cs.map(k=>r[k]??''))]);
+ const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'क्षति विवरण');XLSX.writeFile(wb,'galkot_kshati.xlsx')}
+function doc(){const h=`<html xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><style>@page{size:landscape}</style></head><body>${tableHTML()}</body></html>`;
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff',h],{type:'application/msword'}));a.download='galkot_kshati.doc';a.click()}
+function pdf(){const w=window.open('','_blank');w.document.write(`<html><head><meta charset="utf-8"><title>${title()}</title><style>@page{size:A4 landscape;margin:10mm}body{font-family:"Noto Sans Devanagari",Mangal,Arial}td,th{font-size:8pt;vertical-align:top}</style></head><body>${tableHTML()}</body></html>`);w.document.close();setTimeout(()=>w.print(),400)}
 
-        // Nepali to English digits conversion helper
-        const nepalitoEngDigits = str => String(str || '').replace(/[०-९]/g, d => "०१२३४५६७८९".indexOf(d));
-
-        // 2. AUTHENTICATION (Lokendr@ / Galkot@123)
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const id = document.getElementById('loginId').value.trim();
-            const pass = document.getElementById('loginPass').value.trim();
-
-            if(id === "Lokendr@" && pass === "Galkot@123") {
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('appContainer').classList.remove('hidden');
-                fetchSupabaseData();
-            } else {
-                document.getElementById('loginError').classList.remove('hidden');
-            }
-        });
-
-        function logout() {
-            document.getElementById('appContainer').classList.add('hidden');
-            document.getElementById('loginScreen').classList.remove('hidden');
-        }
-
-        // 3. FETCH DATA FROM SUPABASE
-        async function fetchSupabaseData() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('disaster_records')
-                    .select('*')
-                    .order('id', { ascending: false });
-
-                if (error) {
-                    console.error("Supabase Fetch Error:", error.message);
-                } else {
-                    records = data || [];
-                }
-            } catch (err) {
-                console.error("Connection Exception:", err);
-            }
-            applyFilters();
-        }
-
-        // 4. RENDER TABLE
-        function renderTable(dataList) {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-
-            if (dataList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="12" class="text-center p-4 text-gray-500 font-bold">कुनै पनि विवरण भेटिएन। Excel Upload गरी ५००+ डाटा थप्नुहोस्।</td></tr>`;
-                return;
-            }
-
-            dataList.forEach((r, idx) => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-gray-50 border-b text-[12px]";
-                tr.innerHTML = `
-                    <td class="p-2 font-semibold">${idx + 1}</td>
-                    <td class="p-2"><span class="bg-gray-100 px-2 py-0.5 rounded border">वडा ${r.ward || '-'}</span></td>
-                    <td class="p-2">${r.location || '-'}</td>
-                    <td class="p-2 font-bold text-gray-900">${r.houseowner || '-'}</td>
-                    <td class="p-2">${r.phone || '-'}</td>
-                    <td class="p-2 text-red-600 font-medium">${r.house_damage || '-'}</td>
-                    <td class="p-2">${(r.irrigation_pakki && r.irrigation_pakki !== '-') ? 'पक्की: '+r.irrigation_pakki : ''} ${(r.irrigation_katchi && r.irrigation_katchi !== '-') ? 'कच्ची: '+r.irrigation_katchi : '-'}</td>
-                    <td class="p-2">${r.goth_damage || '-'} ${r.human_damage && r.human_damage !== '-' ? '/ '+r.human_damage : ''}</td>
-                    <td class="p-2">${r.land_damage || '-'} ${r.crop_damage && r.crop_damage !== '-' ? '/ '+r.crop_damage : ''}</td>
-                    <td class="p-2">${r.livestock_damage || '-'} ${r.food_damage && r.food_damage !== '-' ? '/ खाद्यान्न: '+r.food_damage : ''}</td>
-                    <td class="p-2 text-gray-600">${r.remarks || r.expectation || '-'}</td>
-                    <td class="p-2 no-print">
-                        <button onclick="deleteRecord(${r.id})" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            updateStats(dataList);
-        }
-
-        function updateStats(dataList) {
-            document.getElementById('statTotal').innerText = dataList.length;
-            document.getElementById('statHouse').innerText = dataList.filter(d => d.house_damage && d.house_damage !== '-').length;
-            document.getElementById('statHuman').innerText = dataList.filter(d => d.human_damage && d.human_damage !== '-').length;
-            document.getElementById('statIrrigation').innerText = dataList.filter(d => (d.irrigation_pakki && d.irrigation_pakki !== '-') || (d.irrigation_katchi && d.irrigation_katchi !== '-')).length;
-            document.getElementById('statCrop').innerText = dataList.filter(d => (d.crop_damage && d.crop_damage !== '-') || (d.food_damage && d.food_damage !== '-')).length;
-            document.getElementById('statLivestock').innerText = dataList.filter(d => (d.livestock_damage && d.livestock_damage !== '-') || (d.poultry_damage && d.poultry_damage !== '-')).length;
-        }
-
-        // 5. MULTI-FILTER ENGINE
-        function applyFilters() {
-            const ward = document.getElementById('filterWard').value;
-            const category = document.getElementById('filterCategory').value;
-            const condition = document.getElementById('filterCondition').value;
-            const search = document.getElementById('filterSearch').value.toLowerCase();
-
-            filteredRecords = records.filter(r => {
-                const matchWard = !ward || String(r.ward) === String(ward);
-                const matchSearch = !search || 
-                    (r.houseowner && r.houseowner.toLowerCase().includes(search)) || 
-                    (r.location && r.location.toLowerCase().includes(search)) ||
-                    (r.remarks && r.remarks.toLowerCase().includes(search));
-                
-                const matchCondition = !condition || (r.house_damage && r.house_damage.includes(condition));
-                
-                let matchCategory = true;
-                if(category === 'house') matchCategory = r.house_damage && r.house_damage !== '-';
-                else if(category === 'irrigation_pakki') matchCategory = r.irrigation_pakki && r.irrigation_pakki !== '-';
-                else if(category === 'irrigation_katchi') matchCategory = r.irrigation_katchi && r.irrigation_katchi !== '-';
-                else if(category === 'goth') matchCategory = r.goth_damage && r.goth_damage !== '-';
-                else if(category === 'human') matchCategory = r.human_damage && r.human_damage !== '-';
-                else if(category === 'land') matchCategory = r.land_damage && r.land_damage !== '-';
-                else if(category === 'crop') matchCategory = r.crop_damage && r.crop_damage !== '-';
-                else if(category === 'livestock') matchCategory = r.livestock_damage && r.livestock_damage !== '-';
-                else if(category === 'poultry') matchCategory = r.poultry_damage && r.poultry_damage !== '-';
-                else if(category === 'food') matchCategory = r.food_damage && r.food_damage !== '-';
-
-                return matchWard && matchSearch && matchCondition && matchCategory;
-            });
-
-            renderTable(filteredRecords);
-        }
-
-        function resetFilters() {
-            document.getElementById('filterWard').value = '';
-            document.getElementById('filterCategory').value = '';
-            document.getElementById('filterCondition').value = '';
-            document.getElementById('filterSearch').value = '';
-            applyFilters();
-        }
-
-        // 6. ADVANCED DYNAMIC MULTI-SHEET EXCEL PARSER
-        function handleFileUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            document.getElementById('loadingSpinner').classList.remove('hidden');
-
-            const reader = new FileReader();
-            reader.onload = async function(evt) {
-                const data = new Uint8Array(evt.target.result);
-                const workbook = XLSX.read(data, {type: 'array'});
-                
-                let allImported = [];
-
-                workbook.SheetNames.forEach(sheetName => {
-                    const sheet = workbook.Sheets[sheetName];
-                    const rows = XLSX.utils.sheet_to_json(sheet, {header: 1, defval: ""});
-                    
-                    if (rows.length < 2) return;
-
-                    // Extract Ward Number from Sheet Name or Header Text
-                    let wardNum = nepalitoEngDigits(sheetName).replace(/\D/g, '');
-                    for (let r = 0; r < Math.min(5, rows.length); r++) {
-                        let rowStr = rows[r].join(' ');
-                        if (rowStr.includes('वडा नं.')) {
-                            let match = rowStr.match(/वडा नं\.?\s*[:\s]*([०-९0-9]+)/);
-                            if (match) wardNum = nepalitoEngDigits(match[1]);
-                        }
-                    }
-
-                    // Find Header Row Index dynamically
-                    let headerIdx = -1;
-                    for (let r = 0; r < rows.length; r++) {
-                        let rowStr = rows[r].join(' ');
-                        if (rowStr.includes('क्र सं') || rowStr.includes('क्र.स') || rowStr.includes('घरधनि') || rowStr.includes('घरधनी')) {
-                            headerIdx = r;
-                            break;
-                        }
-                    }
-
-                    if (headerIdx === -1) headerIdx = 3;
-
-                    // Loop data rows after header
-                    for (let r = headerIdx + 1; r < rows.length; r++) {
-                        let row = rows[r];
-                        if (!row || row.length === 0) continue;
-
-                        let owner = String(row[1] || row[2] || '').trim();
-                        if (!owner || owner === 'NaN' || owner === 'undefined' || owner === 'घरधनि/जग्गाधनिको नाम') continue;
-
-                        let loc = String(row[4] || row[3] || row[1] || '-').trim();
-                        let phone = nepalitoEngDigits(row[5] || row[4] || '');
-
-                        let rec = {
-                            ward: wardNum || '1',
-                            location: loc !== '-' ? loc : '',
-                            houseowner: owner,
-                            phone: phone !== '-' ? phone : '',
-                            house_damage: String(row[8] || row[9] || row[7] || row[6] || '-').trim(),
-                            irrigation_pakki: String(row[12] || '-').trim(),
-                            irrigation_katchi: String(row[14] || '-').trim(),
-                            goth_damage: String(row[16] || row[17] || '-').trim(),
-                            human_damage: String(row[18] || row[19] || '-').trim(),
-                            land_damage: String(row[20] || row[21] || '-').trim(),
-                            crop_damage: String(row[23] || row[24] || '-').trim(),
-                            livestock_damage: String(row[25] || '-').trim(),
-                            poultry_damage: String(row[26] || '-').trim(),
-                            food_damage: String(row[27] || '-').trim(),
-                            expectation: String(row[28] || '-').trim(),
-                            remarks: String(row[29] || row[row.length - 1] || '-').trim()
-                        };
-
-                        allImported.push(rec);
-                    }
-                });
-
-                // Batch Save to Supabase in chunks of 100
-                if (allImported.length > 0) {
-                    const chunkSize = 100;
-                    for (let i = 0; i < allImported.length; i += chunkSize) {
-                        const chunk = allImported.slice(i, i + chunkSize);
-                        const { error } = await supabaseClient.from('disaster_records').insert(chunk);
-                        if(error) console.error("Batch insert error:", error);
-                    }
-                    alert(`सफलतापूर्वक ${allImported.length} वटा डाटा (सबै Wards का Sheets बाट) Supabase मा Upload र Sync भयो!`);
-                } else {
-                    alert("Excel file scan गर्दा डाटा भेटिएन, कृपया फाइल जाँच गर्नुहोस्।");
-                }
-
-                document.getElementById('loadingSpinner').classList.add('hidden');
-                await fetchSupabaseData();
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
-        // 7. MODAL & ENTRY FORM HANDLERS
-        function openFormModal() { document.getElementById('formModal').classList.remove('hidden'); }
-        function closeFormModal() { document.getElementById('formModal').classList.add('hidden'); }
-
-        async function handleFormSubmit(e) {
-            e.preventDefault();
-            const newRecord = {
-                ward: document.getElementById('formWard').value,
-                location: document.getElementById('formLocation').value,
-                houseowner: document.getElementById('formOwner').value,
-                phone: document.getElementById('formPhone').value || '-',
-                house_type: document.getElementById('formHouseType').value,
-                house_damage: document.getElementById('formHouseDamage').value || '-',
-                irrigation_pakki: document.getElementById('formIrrigationPakki').value || '-',
-                irrigation_katchi: document.getElementById('formIrrigationKatchi').value || '-',
-                goth_damage: document.getElementById('formGoth').value || '-',
-                human_damage: document.getElementById('formHuman').value || '-',
-                land_damage: document.getElementById('formLand').value || '-',
-                crop_damage: document.getElementById('formCrop').value || '-',
-                livestock_damage: document.getElementById('formLivestock').value || '-',
-                poultry_damage: document.getElementById('formPoultry').value || '-',
-                food_damage: document.getElementById('formFood').value || '-',
-                expectation: document.getElementById('formExpectation').value || '-',
-                remarks: document.getElementById('formExpectation').value || '-'
-            };
-
-            await supabaseClient.from('disaster_records').insert([newRecord]);
-            await fetchSupabaseData();
-            closeFormModal();
-            document.getElementById('disasterForm').reset();
-        }
-
-        async function deleteRecord(id) {
-            if(confirm("के तपाइँ यो विवरण हटाउन चाहनुहुन्छ?")) {
-                await supabaseClient.from('disaster_records').delete().eq('id', id);
-                fetchSupabaseData();
-            }
-        }
-
-        // 8. EXPORT FUNCTIONS (XLSX, PDF, DOCX)
-        function exportToXLSX() {
-            const ws = XLSX.utils.json_to_sheet(filteredRecords);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Filtered_Disaster_Data");
-            XLSX.writeFile(wb, "Galkot_Disaster_Filtered_Report.xlsx");
-        }
-
-        function exportToPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('l', 'mm', 'a4');
-            doc.text("Galkot Municipality - Disaster Report", 14, 15);
-            
-            const tableCols = ["Ward", "Location", "House Owner", "Phone", "House Damage", "Human Damage", "Remarks"];
-            const tableRows = filteredRecords.map(r => [
-                r.ward, r.location, r.houseowner, r.phone, r.house_damage, r.human_damage, r.remarks
-            ]);
-
-            doc.autoTable({
-                head: [tableCols],
-                body: tableRows,
-                startY: 20
-            });
-            doc.save("Galkot_Disaster_Filtered_Report.pdf");
-        }
-
-        function exportToDOCX() {
-            let content = "<html><body><h2>गलकोट नगरपालिका - विपद् विवरण प्रतिवेदन</h2><table border='1'>";
-            content += "<tr><th>वडा</th><th>स्थान</th><th>घरधनी</th><th>सम्पर्क</th><th>घर क्षति</th><th>मानवीय क्षति</th><th>कैफियत</th></tr>";
-            filteredRecords.forEach(r => {
-                content += `<tr><td>${r.ward}</td><td>${r.location}</td><td>${r.houseowner}</td><td>${r.phone}</td><td>${r.house_damage}</td><td>${r.human_damage}</td><td>${r.remarks}</td></tr>`;
-            });
-            content += "</table></body></html>";
-
-            const blob = new Blob(['\ufeff' + content], { type: 'application/msword' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = "Galkot_Disaster_Filtered_Report.doc";
-            a.click();
-        }
-    </script>
-</body>
-</html>
+if(sessionStorage.a){if(sessionStorage.a=='sb'&&sb)pull().then(start);else start()}
+</script></body></html>
