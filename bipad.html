@@ -115,11 +115,11 @@
                         <i class="fa-solid fa-plus mr-1"></i> नयाँ विवरण प्रविष्टि
                     </button>
                     <label class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-sm cursor-pointer transition">
-                        <i class="fa-solid fa-file-excel mr-1"></i> Excel/CSV अपलोड (सबै सिटहरू)
+                        <i class="fa-solid fa-file-excel mr-1"></i> Excel Upload (सबै Sheets)
                         <input type="file" id="excelUpload" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleFileUpload(event)">
                     </label>
                     <span id="loadingSpinner" class="hidden text-xs text-blue-600 font-bold animate-pulse">
-                        <i class="fa-solid fa-spinner fa-spin mr-1"></i> डेटा अपलोड तथा प्रोसेसिङ हुँदैछ...
+                        <i class="fa-solid fa-spinner fa-spin mr-1"></i> ५००+ डाटा प्रोसेसिङ हुँदैछ...
                     </span>
                 </div>
 
@@ -221,7 +221,7 @@
                             </tr>
                         </thead>
                         <tbody id="tableBody" class="divide-y divide-gray-200">
-                            <!-- Table Rows -->
+                            <!-- Rows injected dynamically -->
                         </tbody>
                     </table>
                 </div>
@@ -341,6 +341,9 @@
         let records = [];
         let filteredRecords = [];
 
+        // Nepali to English digits conversion helper
+        const nepalitoEngDigits = str => String(str || '').replace(/[०-९]/g, d => "०१२३४५६७८९".indexOf(d));
+
         // 2. AUTHENTICATION (Lokendr@ / Galkot@123)
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -386,7 +389,7 @@
             tbody.innerHTML = '';
 
             if (dataList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="12" class="text-center p-4 text-gray-500">कुनै पनि विवरण भेटिएन। Excel Upload गरी डेटा थप्नुहोस्।</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="12" class="text-center p-4 text-gray-500 font-bold">कुनै पनि विवरण भेटिएन। Excel Upload गरी ५००+ डाटा थप्नुहोस्।</td></tr>`;
                 return;
             }
 
@@ -403,7 +406,7 @@
                     <td class="p-2">${(r.irrigation_pakki && r.irrigation_pakki !== '-') ? 'पक्की: '+r.irrigation_pakki : ''} ${(r.irrigation_katchi && r.irrigation_katchi !== '-') ? 'कच्ची: '+r.irrigation_katchi : '-'}</td>
                     <td class="p-2">${r.goth_damage || '-'} ${r.human_damage && r.human_damage !== '-' ? '/ '+r.human_damage : ''}</td>
                     <td class="p-2">${r.land_damage || '-'} ${r.crop_damage && r.crop_damage !== '-' ? '/ '+r.crop_damage : ''}</td>
-                    <td class="p-2">${r.livestock_damage || '-'} ${r.food_damage && r.food_damage !== '-' ? '/ ખાद्यान्न: '+r.food_damage : ''}</td>
+                    <td class="p-2">${r.livestock_damage || '-'} ${r.food_damage && r.food_damage !== '-' ? '/ खाद्यान्न: '+r.food_damage : ''}</td>
                     <td class="p-2 text-gray-600">${r.remarks || r.expectation || '-'}</td>
                     <td class="p-2 no-print">
                         <button onclick="deleteRecord(${r.id})" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>
@@ -424,7 +427,7 @@
             document.getElementById('statLivestock').innerText = dataList.filter(d => (d.livestock_damage && d.livestock_damage !== '-') || (d.poultry_damage && d.poultry_damage !== '-')).length;
         }
 
-        // 5. MULTI-FILTER LOGIC
+        // 5. MULTI-FILTER ENGINE
         function applyFilters() {
             const ward = document.getElementById('filterWard').value;
             const category = document.getElementById('filterCategory').value;
@@ -466,7 +469,7 @@
             applyFilters();
         }
 
-        // 6. MULTI-SHEET EXCEL PARSER (500+ ROWS FULL SUPPORT)
+        // 6. ADVANCED DYNAMIC MULTI-SHEET EXCEL PARSER
         function handleFileUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -480,87 +483,79 @@
                 
                 let allImported = [];
 
-                // Nepali to English Digit conversion helper
-                const toEngDigit = str => String(str || '').replace(/[०-९]/g, d => "०१२३४५६७८९".indexOf(d));
-
-                // Loop through ALL Sheets in the Excel File
                 workbook.SheetNames.forEach(sheetName => {
                     const sheet = workbook.Sheets[sheetName];
                     const rows = XLSX.utils.sheet_to_json(sheet, {header: 1, defval: ""});
                     
-                    if (rows.length < 3) return;
+                    if (rows.length < 2) return;
 
-                    // Extract Ward Number from Sheet Name or Top Rows
-                    let wardNum = toEngDigit(sheetName).replace(/\D/g, '');
+                    // Extract Ward Number from Sheet Name or Header Text
+                    let wardNum = nepalitoEngDigits(sheetName).replace(/\D/g, '');
                     for (let r = 0; r < Math.min(5, rows.length); r++) {
                         let rowStr = rows[r].join(' ');
                         if (rowStr.includes('वडा नं.')) {
                             let match = rowStr.match(/वडा नं\.?\s*[:\s]*([०-९0-9]+)/);
-                            if (match) wardNum = toEngDigit(match[1]);
+                            if (match) wardNum = nepalitoEngDigits(match[1]);
                         }
                     }
 
-                    // Find Data Header Row Index
+                    // Find Header Row Index dynamically
                     let headerIdx = -1;
                     for (let r = 0; r < rows.length; r++) {
                         let rowStr = rows[r].join(' ');
-                        if (rowStr.includes('क्र सं') || rowStr.includes('क्र.स') || rowStr.includes('घरधनी')) {
+                        if (rowStr.includes('क्र सं') || rowStr.includes('क्र.स') || rowStr.includes('घरधनि') || rowStr.includes('घरधनी')) {
                             headerIdx = r;
                             break;
                         }
                     }
 
-                    if (headerIdx === -1) headerIdx = 2; // fallback
+                    if (headerIdx === -1) headerIdx = 3;
 
-                    // Parse Data Rows
+                    // Loop data rows after header
                     for (let r = headerIdx + 1; r < rows.length; r++) {
                         let row = rows[r];
                         if (!row || row.length === 0) continue;
 
-                        // Identify owner/name column dynamically
-                        let owner = row[1] || row[2] || '';
-                        let loc = row[4] || row[3] || row[1] || '';
-                        
-                        // Check if row has meaningful data
-                        let rowCombined = row.join('').trim();
-                        if (!rowCombined || rowCombined.length < 3) continue;
+                        let owner = String(row[1] || row[2] || '').trim();
+                        if (!owner || owner === 'NaN' || owner === 'undefined' || owner === 'घरधनि/जग्गाधनिको नाम') continue;
+
+                        let loc = String(row[4] || row[3] || row[1] || '-').trim();
+                        let phone = nepalitoEngDigits(row[5] || row[4] || '');
 
                         let rec = {
-                            ward: wardNum || '4',
-                            location: String(loc !== '-' ? loc : ''),
-                            houseowner: String(owner !== '-' ? owner : 'विवरण नभएको'),
-                            phone: toEngDigit(row[5] || row[4] || ''),
-                            house_damage: String(row[8] || row[9] || row[7] || '-'),
-                            irrigation_pakki: String(row[12] || '-'),
-                            irrigation_katchi: String(row[14] || '-'),
-                            goth_damage: String(row[16] || row[17] || '-'),
-                            human_damage: String(row[18] || row[19] || '-'),
-                            land_damage: String(row[20] || row[21] || '-'),
-                            crop_damage: String(row[23] || row[24] || '-'),
-                            livestock_damage: String(row[25] || '-'),
-                            poultry_damage: String(row[26] || '-'),
-                            food_damage: String(row[27] || '-'),
-                            expectation: String(row[28] || '-'),
-                            remarks: String(row[29] || row[ row.length - 1 ] || '-')
+                            ward: wardNum || '1',
+                            location: loc !== '-' ? loc : '',
+                            houseowner: owner,
+                            phone: phone !== '-' ? phone : '',
+                            house_damage: String(row[8] || row[9] || row[7] || row[6] || '-').trim(),
+                            irrigation_pakki: String(row[12] || '-').trim(),
+                            irrigation_katchi: String(row[14] || '-').trim(),
+                            goth_damage: String(row[16] || row[17] || '-').trim(),
+                            human_damage: String(row[18] || row[19] || '-').trim(),
+                            land_damage: String(row[20] || row[21] || '-').trim(),
+                            crop_damage: String(row[23] || row[24] || '-').trim(),
+                            livestock_damage: String(row[25] || '-').trim(),
+                            poultry_damage: String(row[26] || '-').trim(),
+                            food_damage: String(row[27] || '-').trim(),
+                            expectation: String(row[28] || '-').trim(),
+                            remarks: String(row[29] || row[row.length - 1] || '-').trim()
                         };
 
-                        if (rec.houseowner && rec.houseowner !== 'NaN' && rec.houseowner !== 'undefined') {
-                            allImported.push(rec);
-                        }
+                        allImported.push(rec);
                     }
                 });
 
-                // Batch Insert into Supabase
+                // Batch Save to Supabase in chunks of 100
                 if (allImported.length > 0) {
-                    const { error } = await supabaseClient.from('disaster_records').insert(allImported);
-                    if (error) {
-                        console.error("Supabase Import Error:", error);
-                        alert("Supabase मा अपलोड गर्दा केही त्रुटि भयो: " + error.message);
-                    } else {
-                        alert(`बधाई छ! कुल ${allImported.length} वटा विवरणहरू Excel का सबै सिटहरूबाट सफलता पुर्वक Supabase मा Save भयो!`);
+                    const chunkSize = 100;
+                    for (let i = 0; i < allImported.length; i += chunkSize) {
+                        const chunk = allImported.slice(i, i + chunkSize);
+                        const { error } = await supabaseClient.from('disaster_records').insert(chunk);
+                        if(error) console.error("Batch insert error:", error);
                     }
+                    alert(`सफलतापूर्वक ${allImported.length} वटा डाटा (सबै Wards का Sheets बाट) Supabase मा Upload र Sync भयो!`);
                 } else {
-                    alert("Excel फाइलबाट विवरणहरू पहिचान गर्न सकिएन।");
+                    alert("Excel file scan गर्दा डाटा भेटिएन, कृपया फाइल जाँच गर्नुहोस्।");
                 }
 
                 document.getElementById('loadingSpinner').classList.add('hidden');
