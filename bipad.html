@@ -1,163 +1,643 @@
 <!DOCTYPE html>
-<html lang="ne"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>गलकोट नगरपालिका – विपद् क्षति ड्यासबोर्ड</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<style>
-*{box-sizing:border-box}body{margin:0;font-family:"Noto Sans Devanagari","Mangal",Arial,sans-serif;background:#f3f5f8;color:#1c2733;font-size:14px}
-header{background:#14466b;color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-h1{font-size:18px;margin:0}main{padding:12px 16px;max-width:1500px;margin:auto}
-.card{background:#fff;border-radius:8px;padding:12px;margin-bottom:12px;box-shadow:0 1px 3px #0002}
-button,select,input,textarea{font:inherit;padding:6px 10px;border:1px solid #b9c3cf;border-radius:6px;background:#fff}
-button{cursor:pointer;background:#14466b;color:#fff;border:0}button.alt{background:#e5ebf1;color:#14466b}
-.tabs button{background:#e5ebf1;color:#14466b;margin-right:4px}.tabs button.on{background:#14466b;color:#fff}
-.chips label{display:inline-block;margin:2px 4px 2px 0;padding:3px 9px;border:1px solid #b9c3cf;border-radius:14px;cursor:pointer;background:#fff}
-.chips input{display:none}.chips label:has(input:checked){background:#14466b;color:#fff;border-color:#14466b}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
-.kpi{background:#eaf1f8;border-radius:8px;padding:10px}.kpi b{font-size:22px;display:block;color:#14466b}
-.tw{overflow:auto;max-height:60vh}table{border-collapse:collapse;width:100%;font-size:12.5px}
-th,td{border:1px solid #cfd6de;padding:4px 6px;vertical-align:top}th{background:#dfe8f1;position:sticky;top:0}
-.bar{display:flex;align-items:center;margin:3px 0}.bar span{width:210px;font-size:13px}.bar i{display:block;height:16px;background:#2f7fbf;border-radius:3px}.bar em{margin-left:6px;font-style:normal;font-size:12px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}.grid label{font-size:12px;display:block}.grid input,.grid select,.grid textarea{width:100%}
-#login{max-width:340px;margin:12vh auto}#login input{width:100%;margin:5px 0}.hide{display:none}.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-@media print{header,.noprint{display:none!important}body{background:#fff}.tw{max-height:none;overflow:visible}.card{box-shadow:none}}
-</style></head><body>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>विपद् क्षति विवरण व्यवस्थापन प्रणाली - गलकोट नगरपालिका-९</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap');
+    body { font-family: 'Mukta', sans-serif; }
+    @media print {
+      .no-print { display: none !important; }
+      .print-area { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+      body { background: white !important; color: black !important; }
+      @page { size: A4 landscape; margin: 1cm; }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen font-sans">
 
-<div id="login" class="card"><h1 style="color:#14466b">गलकोट नगरपालिका</h1><p>विपद् क्षति ड्यासबोर्ड – लगइन</p>
-<input id="u" placeholder="आईडी / इमेल"><input id="p" type="password" placeholder="पासवर्ड" onkeydown="if(event.key=='Enter')login()">
-<button onclick="login()" style="width:100%">लगइन</button><p id="lerr" style="color:#b00"></p></div>
+<div id="app">
+  <!-- 1. LOGIN SCREEN -->
+  <div v-if="!currentUser" class="min-h-screen flex items-center justify-center p-4 bg-slate-900">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full border border-slate-200">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900">विपद् क्षति व्यवस्थापन प्रणाली</h2>
+        <p class="text-xs text-slate-500 mt-1">गलकोट नगरपालिका वडा नं. ९, बागलुङ (बाँसखोला)</p>
+      </div>
 
-<div id="app" class="hide">
-<header><h1>गलकोट नगरपालिका – विपद् क्षति विवरण</h1><div class="row"><span id="mode"></span><button class="alt" onclick="logout()">लगआउट</button></div></header>
-<main>
-<div class="card noprint row tabs"><button id="t1" class="on" onclick="tab(1)">ड्यासबोर्ड</button><button id="t2" onclick="tab(2)">फिल्टर / तालिका</button><button id="t3" onclick="tab(3)">नयाँ डाटा प्रविष्टि</button>
-<span style="flex:1"></span><label class="alt" style="padding:6px 10px;border-radius:6px;background:#e5ebf1;cursor:pointer">📂 Excel अपलोड<input type="file" accept=".xlsx,.xls" class="hide" onchange="upload(this)"></label></div>
+      <form @submit.prevent="handleLogin" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">प्रयोगकर्ता नाम (Username)</label>
+          <input v-model="loginUsername" type="text" required placeholder="admin वा user" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">पासवर्ड (Password)</label>
+          <input v-model="loginPassword" type="password" required placeholder="••••••••" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none text-sm">
+        </div>
 
-<div class="card noprint"><b>वडा:</b> <span class="chips" id="fw"></span><br><b>क्षतिको किसिम:</b> <span class="chips" id="fc"></span>
-<div class="row" style="margin-top:6px"><select id="mode2" onchange="render()"><option value="any">कुनै पनि (OR)</option><option value="all">सबै (AND)</option></select>
-<input id="q" placeholder="नाम / स्थान / फोन खोज्नुहोस्" oninput="render()"><button class="alt" onclick="clr()">फिल्टर हटाउने</button></div></div>
+        <div v-if="authError" class="p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-xs font-semibold">
+          {{ authError }}
+        </div>
 
-<div id="v1"><div class="card"><div class="kpis" id="kpis"></div></div>
-<div class="card"><b>क्षतिको किसिम अनुसार प्रभावित विवरण (संख्या)</b><div id="bars"></div></div>
-<div class="card"><b>वडागत सारांश</b><div class="tw"><table id="wt"></table></div></div></div>
+        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg shadow transition text-sm">
+          लगइन गर्नुहोस्
+        </button>
+      </form>
+      <div class="mt-4 p-3 bg-slate-50 border rounded-lg text-[11px] text-slate-500 space-y-1">
+        <p><strong>Admin Credentials:</strong> admin / admin123 (Full Access + Report)</p>
+        <p><strong>User Credentials:</strong> user / user123 (Data Entry & View Only)</p>
+      </div>
+    </div>
+  </div>
 
-<div id="v2" class="hide"><div class="card"><div class="row noprint" style="margin-bottom:6px"><b id="cnt2"></b><span style="flex:1"></span>
-<button onclick="xl()">⬇ XLSX</button><button onclick="doc()">⬇ Word (DOC)</button><button onclick="pdf()">🖨 PDF / प्रिन्ट</button></div>
-<div class="tw"><table id="tb"></table></div></div></div>
+  <!-- 2. MAIN DASHBOARD -->
+  <div v-else class="min-h-screen flex flex-col">
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50 no-print">
+      <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 bg-red-600 rounded-lg flex items-center justify-center font-bold">ग</div>
+          <div>
+            <h1 class="text-base font-bold leading-tight">विपद् क्षति संकलन तथा प्रतिवेदन पोर्टल</h1>
+            <p class="text-[11px] text-slate-300">गलकोट नगरपालिका-९, बागलुङ (स्थान: बाँसखोला)</p>
+          </div>
+        </div>
 
-<div id="v3" class="hide"><div class="card"><b>नयाँ रेकर्ड थप्ने</b><div class="grid" id="form" style="margin-top:8px"></div>
-<div class="row" style="margin-top:8px"><button onclick="addRec()">+ सुरक्षित गर्ने</button><button class="alt" onclick="if(confirm('सबै डाटा (Supabase सहित) हटाउने?')){wipe();data=[];save();render()}">सबै डाटा खाली</button><span id="fmsg"></span></div></div></div>
-</main></div>
+        <div class="flex items-center gap-2">
+          <!-- Connection Status Indicator -->
+          <span :class="supabaseConnected ? 'bg-emerald-900 text-emerald-200 border-emerald-700' : 'bg-amber-900 text-amber-200 border-amber-700'" class="text-[10px] px-2.5 py-1 rounded-full border flex items-center gap-1 font-semibold">
+            <i class="fa-solid" :class="supabaseConnected ? 'fa-circle-check' : 'fa-triangle-exclamation'"></i>
+            {{ supabaseConnected ? 'Supabase Connected' : 'Offline Mode' }}
+          </span>
+
+          <span class="text-xs bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 text-slate-300">
+            <i class="fa-solid fa-user-shield text-red-400 mr-1"></i> {{ currentUser.name }} ({{ currentUser.role.toUpperCase() }})
+          </span>
+          <button @click="activeTab = 'entry'" :class="activeTab === 'entry' ? 'bg-red-600' : 'bg-slate-800 hover:bg-slate-700'" class="px-3 py-1.5 rounded-lg text-xs font-semibold">
+            <i class="fa-solid fa-plus mr-1"></i> प्रविष्टि फारम
+          </button>
+          <button @click="activeTab = 'view'" :class="activeTab === 'view' ? 'bg-red-600' : 'bg-slate-800 hover:bg-slate-700'" class="px-3 py-1.5 rounded-lg text-xs font-semibold">
+            <i class="fa-solid fa-table mr-1"></i> डाटाबेस सूची
+          </button>
+          <button v-if="currentUser.role === 'admin'" @click="activeTab = 'report'" :class="activeTab === 'report' ? 'bg-red-600' : 'bg-slate-800 hover:bg-slate-700'" class="px-3 py-1.5 rounded-lg text-xs font-semibold">
+            <i class="fa-solid fa-file-invoice mr-1"></i> रिपोर्ट जेनेरेटर
+          </button>
+          <button @click="logout" class="bg-slate-800 hover:bg-red-800 text-slate-300 px-3 py-1.5 rounded-lg text-xs">
+            <i class="fa-solid fa-power-off"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
+
+      <!-- TOP METRICS -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6 no-print">
+        <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-[11px] font-bold text-slate-400 uppercase">कुल प्रभावित</span>
+          <div class="text-xl font-bold text-slate-900 mt-0.5">{{ records.length }} <span class="text-xs font-normal text-slate-500">जना/क्षेत्र</span></div>
+        </div>
+        <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-[11px] font-bold text-slate-400 uppercase">खेत कटान</span>
+          <div class="text-xl font-bold text-amber-600 mt-0.5">{{ totalLandErosion.toFixed(2) }} <span class="text-xs font-normal text-slate-500">रोपनी</span></div>
+        </div>
+        <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-[11px] font-bold text-slate-400 uppercase">धान बाली क्षति</span>
+          <div class="text-xl font-bold text-emerald-600 mt-0.5">{{ totalPaddyDamage }} <span class="text-xs font-normal text-slate-500">मुरी</span></div>
+        </div>
+        <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-[11px] font-bold text-slate-400 uppercase">घर/गोठ क्षति</span>
+          <div class="text-xl font-bold text-blue-600 mt-0.5">{{ totalHouseGothDamage }} <span class="text-xs font-normal text-slate-500">वटा</span></div>
+        </div>
+        <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-[11px] font-bold text-slate-400 uppercase">पशु/पंक्षी क्षति</span>
+          <div class="text-xl font-bold text-purple-600 mt-0.5">{{ totalAnimalsCount }} <span class="text-xs font-normal text-slate-500">घटना</span></div>
+        </div>
+      </div>
+
+      <!-- TAB 1: ENTRY FORM -->
+      <div v-if="activeTab === 'entry'" class="bg-white rounded-xl shadow border border-slate-200 p-6 no-print">
+        <div class="border-b pb-3 mb-4 flex justify-between items-center">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900">विपद् क्षति प्रविष्टि फारम</h3>
+            <p class="text-xs text-slate-500">घटना मिति: २०८३।०६।०९ देखि ११ | संकलन टोली: रामचन्द्र शर्मा, मनु सिंजाली</p>
+          </div>
+          <span class="bg-red-50 text-red-700 text-xs font-bold px-3 py-1 rounded-full border border-red-200">गलकोट-९ बाँसखोला</span>
+        </div>
+
+        <form @submit.prevent="saveRecord" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-50 p-4 rounded-lg border">
+            <div>
+              <label class="block text-xs font-bold mb-1">घरधनी/जग्गाधनीको नाम *</label>
+              <input v-model="form.owner_name" required type="text" class="w-full px-3 py-1.5 border rounded text-sm outline-none focus:ring-2 focus:ring-red-500">
+            </div>
+            <div>
+              <label class="block text-xs font-bold mb-1">भोगकर्ताको नाम</label>
+              <input v-model="form.beneficiary_name" type="text" class="w-full px-3 py-1.5 border rounded text-sm outline-none focus:ring-2 focus:ring-red-500">
+            </div>
+            <div>
+              <label class="block text-xs font-bold mb-1">स्थान *</label>
+              <input v-model="form.location" required type="text" placeholder="उदा: मिठामारा, तल्लो काभ्रे, खोल्याड, ठुलाखेत" class="w-full px-3 py-1.5 border rounded text-sm outline-none focus:ring-2 focus:ring-red-500">
+            </div>
+            <div>
+              <label class="block text-xs font-bold mb-1">मो नं</label>
+              <input v-model="form.mobile_no" type="text" class="w-full px-3 py-1.5 border rounded text-sm outline-none focus:ring-2 focus:ring-red-500">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="border rounded-lg p-4 bg-slate-50/50 space-y-3">
+              <h4 class="font-bold text-sm text-red-700 border-b pb-1"><i class="fa-solid fa-house mr-1"></i> घर र गोठ क्षति</h4>
+              <div>
+                <label class="block text-xs font-semibold mb-1">घरको प्रकृति</label>
+                <select v-model="form.house_nature" class="w-full px-2 py-1.5 border rounded text-xs">
+                  <option value="">-- छान्नुहोस् --</option>
+                  <option value="आवासीय पक्की">आवासीय पक्की</option>
+                  <option value="आवासीय कच्ची">आवासीय कच्ची</option>
+                  <option value="अस्थायी छाप्रो">अस्थायी छाप्रो</option>
+                </select>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-xs font-semibold mb-1">घरको अवस्था</label>
+                  <select v-model="form.house_status" class="w-full px-2 py-1.5 border rounded text-xs">
+                    <option value="">-- छान्नुहोस् --</option>
+                    <option value="पूर्ण नष्ट">पूर्ण नष्ट</option>
+                    <option value="अधिकांश भाग नष्ट">अधिकांश भाग नष्ट</option>
+                    <option value="सामान्य क्षति">सामान्य क्षति</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold mb-1">गोठमा क्षति</label>
+                  <select v-model="form.goth_damage" class="w-full px-2 py-1.5 border rounded text-xs">
+                    <option value="">-- छान्नुहोस् --</option>
+                    <option value="पूर्ण नष्ट">पूर्ण नष्ट</option>
+                    <option value="सामान्य क्षति">सामान्य क्षति</option>
+                    <option value="कच्ची छाप्रा बगाएको">कच्ची छाप्रा बगाएको</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="border rounded-lg p-4 bg-slate-50/50 space-y-3">
+              <h4 class="font-bold text-sm text-amber-700 border-b pb-1"><i class="fa-solid fa-water mr-1"></i> सिँचाइ र जग्गा जमिन क्षति</h4>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-xs font-semibold mb-1">सिँचाइ पक्की क्षति</label>
+                  <select v-model="form.irrigation_pakkhi" class="w-full px-2 py-1.5 border rounded text-xs">
+                    <option value="">-- छान्नुहोस् --</option>
+                    <option value="पूर्ण">पूर्ण</option>
+                    <option value="मि.आंशिक">मि.आंशिक</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold mb-1">सिँचाइ कच्चि क्षति</label>
+                  <select v-model="form.irrigation_kacchi" class="w-full px-2 py-1.5 border rounded text-xs">
+                    <option value="">-- छान्नुहोस् --</option>
+                    <option value="पूर्ण">पूर्ण</option>
+                    <option value="आंशिक">आंशिक</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-xs font-semibold mb-1">कटान रोपनीमा</label>
+                  <input v-model.number="form.land_katan_ropani" type="number" step="0.01" class="w-full px-2 py-1.5 border rounded text-xs">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold mb-1">बगर रोपनीमा / पाखो</label>
+                  <input v-model.number="form.land_bagar_ropani" type="number" step="0.01" class="w-full px-2 py-1.5 border rounded text-xs">
+                </div>
+              </div>
+            </div>
+
+            <div class="border rounded-lg p-4 bg-slate-50/50 space-y-3">
+              <h4 class="font-bold text-sm text-purple-700 border-b pb-1"><i class="fa-solid fa-wheat-awn mr-1"></i> बाली, पशुचौपाया, पंक्षी र अन्य</h4>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-xs font-semibold mb-1">धान करिब (मुरी)</label>
+                  <input v-model.number="form.paddy_damage_muri" type="number" step="0.5" class="w-full px-2 py-1.5 border rounded text-xs">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold mb-1">अन्य बाली/खाद्यान्न</label>
+                  <input v-model="form.other_crop_damage" type="text" class="w-full px-2 py-1.5 border rounded text-xs">
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-xs font-semibold mb-1">चौपायामा क्षति</label>
+                  <input v-model="form.livestock_damage" type="text" placeholder="उदा: १ बंगुर" class="w-full px-2 py-1.5 border rounded text-xs">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold mb-1">पंक्षिमा क्षति</label>
+                  <input v-model="form.poultry_damage" type="text" placeholder="उदा: २२ कुखुरा" class="w-full px-2 py-1.5 border rounded text-xs">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold mb-1">अपेक्षा (माग/आवश्यकता)</label>
+              <input v-model="form.expectation" type="text" placeholder="उदा: तटबन्धन आवश्यक, ग्याबिन जाली" class="w-full px-3 py-1.5 border rounded text-sm outline-none focus:ring-2 focus:ring-red-500">
+            </div>
+            <div>
+              <label class="block text-xs font-bold mb-1">कैफियत</label>
+              <input v-model="form.remarks" type="text" placeholder="विस्तृत विवरण लेख्नुहोस्..." class="w-full px-3 py-1.5 border rounded text-sm outline-none focus:ring-2 focus:ring-red-500">
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3 border-t pt-4">
+            <button type="button" @click="resetForm" class="px-4 py-2 border rounded-lg text-sm hover:bg-slate-100">रद्द गर्नुहोस्</button>
+            <button type="submit" :disabled="saving" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow text-sm flex items-center gap-2">
+              <i v-if="saving" class="fa-solid fa-spinner animate-spin"></i>
+              <span>{{ saving ? 'सेभ हुँदैछ...' : 'विवरण सुरक्षित गर्नुहोस्' }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- TAB 2: DATA TABLE VIEW -->
+      <div v-if="activeTab === 'view'" class="space-y-4 no-print">
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap gap-3 items-center justify-between">
+          <div class="flex flex-wrap items-center gap-3 flex-1">
+            <span class="text-xs font-bold text-slate-600"><i class="fa-solid fa-filter mr-1"></i> मुख्य क्याटेगोरी फिल्टर:</span>
+            
+            <select v-model="filterMajorCategory" class="px-3 py-1.5 border rounded-lg text-xs bg-slate-50 font-bold focus:ring-2 focus:ring-red-500 outline-none">
+              <option value="ALL">सबै विवरणहरू (Show All)</option>
+              <option value="HOUSE_GOTH">१. घर तथा गोठ क्षति</option>
+              <option value="LAND">२. जग्गा कटान तथा बगर</option>
+              <option value="PADDY">३. धान तथा बाली क्षति</option>
+              <option value="ANIMALS">४. पशुचौपाया तथा पंक्षी क्षति</option>
+              <option value="IRRIGATION">५. सिँचाइ कुलो क्षति</option>
+            </select>
+
+            <select v-model="filterLocation" class="px-3 py-1.5 border rounded-lg text-xs bg-slate-50 focus:ring-2 focus:ring-red-500 outline-none">
+              <option value="ALL">सबै स्थानहरू</option>
+              <option value="मिठामारा">मिठामारा</option>
+              <option value="तल्लो काभ्रे">तल्लो काभ्रे</option>
+              <option value="खोल्याड">खोल्याड</option>
+              <option value="ठुलाखेत">ठुलाखेत</option>
+            </select>
+
+            <input v-model="searchQuery" type="text" placeholder="नाम वा मो.नं खोज्नुहोस्..." class="px-3 py-1.5 border rounded-lg text-xs outline-none min-w-[200px]">
+          </div>
+
+          <button @click="exportCSV" class="px-3 py-1.5 text-xs bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow font-semibold">
+            <i class="fa-solid fa-file-csv mr-1"></i> Excel / CSV Export
+          </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-slate-800 text-white uppercase text-[11px]">
+                <tr>
+                  <th class="p-2 border">क्र.सं</th>
+                  <th class="p-2 border">घरधनी/जग्गाधनी</th>
+                  <th class="p-2 border">भोगकर्ता</th>
+                  <th class="p-2 border">स्थान</th>
+                  <th class="p-2 border">मो नं</th>
+                  <th class="p-2 border">घर/गोठ क्षति</th>
+                  <th class="p-2 border">सिँचाइ क्षति</th>
+                  <th class="p-2 border text-center">कटान (रोपनी)</th>
+                  <th class="p-2 border text-center">धान (मुरी)</th>
+                  <th class="p-2 border">चौपाया/पंक्षी</th>
+                  <th class="p-2 border">अपेक्षा / कैफियत</th>
+                  <th class="p-2 border text-center" v-if="currentUser.role === 'admin'">कार्य</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                <tr v-for="(item, idx) in filteredRecords" :key="item.id" class="hover:bg-slate-50">
+                  <td class="p-2 border text-center font-bold">{{ idx + 1 }}</td>
+                  <td class="p-2 border font-bold text-slate-900">{{ item.owner_name }}</td>
+                  <td class="p-2 border">{{ item.beneficiary_name || '-' }}</td>
+                  <td class="p-2 border font-semibold text-slate-700">{{ item.location }}</td>
+                  <td class="p-2 border font-mono">{{ item.mobile_no || '-' }}</td>
+                  <td class="p-2 border">
+                    <span v-if="item.house_status" class="text-red-600 font-bold block">{{ item.house_nature }} ({{ item.house_status }})</span>
+                    <span v-if="item.goth_damage" class="text-amber-700 text-[11px] block">गोठ: {{ item.goth_damage }}</span>
+                    <span v-if="!item.house_status && !item.goth_damage">-</span>
+                  </td>
+                  <td class="p-2 border">
+                    <span v-if="item.irrigation_pakkhi">पक्की: {{ item.irrigation_pakkhi }} </span>
+                    <span v-if="item.irrigation_kacchi">कच्ची: {{ item.irrigation_kacchi }}</span>
+                    <span v-if="!item.irrigation_pakkhi && !item.irrigation_kacchi">-</span>
+                  </td>
+                  <td class="p-2 border text-center font-bold text-amber-700">{{ item.land_katan_ropani || '-' }}</td>
+                  <td class="p-2 border text-center font-bold text-emerald-700">{{ item.paddy_damage_muri || '-' }}</td>
+                  <td class="p-2 border">
+                    <span v-if="item.livestock_damage">{{ item.livestock_damage }} </span>
+                    <span v-if="item.poultry_damage">{{ item.poultry_damage }}</span>
+                    <span v-if="!item.livestock_damage && !item.poultry_damage">-</span>
+                  </td>
+                  <td class="p-2 border text-[11px]">
+                    <div v-if="item.expectation" class="font-bold text-blue-800">माग: {{ item.expectation }}</div>
+                    <div>{{ item.remarks }}</div>
+                  </td>
+                  <td class="p-2 border text-center" v-if="currentUser.role === 'admin'">
+                    <button @click="deleteRecord(item.id)" class="text-slate-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: ADMIN REPORT GENERATOR -->
+      <div v-if="activeTab === 'report' && currentUser.role === 'admin'">
+        <div class="no-print mb-4 flex justify-between items-center bg-white p-4 rounded-xl border">
+          <div>
+            <h3 class="font-bold">औपचारिक विपद् क्षति विवरण प्रतिवेदन (Report Preview)</h3>
+            <p class="text-xs text-slate-500">A4 Landscape प्रिन्ट ढाँचा</p>
+          </div>
+          <button @click="printReport" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-2">
+            <i class="fa-solid fa-print"></i> प्रिन्ट / Save PDF
+          </button>
+        </div>
+
+        <div class="print-area bg-white p-6 rounded-xl border text-slate-900 border-slate-300">
+          <div class="text-center border-b-2 border-red-600 pb-3 mb-4">
+            <p class="text-xs font-bold text-red-600">प्रदेश: गण्डकी प्रदेश | जिल्ला: बागलुङ | स्थानीय तह: गलकोट नगरपालिका वडा नं. ९</p>
+            <h2 class="text-xl font-bold mt-1">बाँसखोला विपद् (घर गोठमा क्षति, जग्गा कटान तथा पहिरो) संकलन प्रतिवेदन</h2>
+            <p class="text-xs font-semibold text-slate-600">घटना मिति: २०८३।०६।०९ देखी ११ सम्म | संकलन मिति: २०८३।०६।१२ | टोली: रामचन्द्र शर्मा (प्र.अ.), मनु सिंजाली (स.शि.)</p>
+          </div>
+
+          <table class="w-full text-[10px] border-collapse border border-slate-400">
+            <thead>
+              <tr class="bg-slate-100 text-slate-900 font-bold">
+                <th class="border border-slate-400 p-1" rowspan="2">क्र सं</th>
+                <th class="border border-slate-400 p-1" rowspan="2">घरधनी/जग्गाधनीको नाम</th>
+                <th class="border border-slate-400 p-1" rowspan="2">भोगकर्ता</th>
+                <th class="border border-slate-400 p-1" rowspan="2">स्थान</th>
+                <th class="border border-slate-400 p-1" rowspan="2">मो नं</th>
+                <th class="border border-slate-400 p-1" rowspan="2">घरको प्रकृति</th>
+                <th class="border border-slate-400 p-1" colspan="3">घरको अवस्था / क्षति</th>
+                <th class="border border-slate-400 p-1" colspan="2">सिँचाइमा क्षति</th>
+                <th class="border border-slate-400 p-1" rowspan="2">मानवीय क्षति</th>
+                <th class="border border-slate-400 p-1" colspan="2">जग्गा जमिनमा क्षति</th>
+                <th class="border border-slate-400 p-1" colspan="2">बालीमा क्षति</th>
+                <th class="border border-slate-400 p-1" rowspan="2">चौपाया क्षति</th>
+                <th class="border border-slate-400 p-1" rowspan="2">पंक्षी क्षति</th>
+                <th class="border border-slate-400 p-1" rowspan="2">अपेक्षा</th>
+                <th class="border border-slate-400 p-1" rowspan="2">कैफियत</th>
+              </tr>
+              <tr class="bg-slate-100 text-slate-900 font-bold text-[9px]">
+                <th class="border border-slate-400 p-1">पूर्ण</th>
+                <th class="border border-slate-400 p-1">अधिकांश</th>
+                <th class="border border-slate-400 p-1">गोठमा</th>
+                <th class="border border-slate-400 p-1">पक्की</th>
+                <th class="border border-slate-400 p-1">कच्चि</th>
+                <th class="border border-slate-400 p-1">कटान (रोपनी)</th>
+                <th class="border border-slate-400 p-1">बगर/पाखो</th>
+                <th class="border border-slate-400 p-1">धान (मुरी)</th>
+                <th class="border border-slate-400 p-1">अन्य</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(r, idx) in filteredRecords" :key="'p-'+r.id">
+                <td class="border border-slate-400 p-1 text-center font-bold">{{ idx + 1 }}</td>
+                <td class="border border-slate-400 p-1 font-bold">{{ r.owner_name }}</td>
+                <td class="border border-slate-400 p-1">{{ r.beneficiary_name || '' }}</td>
+                <td class="border border-slate-400 p-1">{{ r.location }}</td>
+                <td class="border border-slate-400 p-1 font-mono">{{ r.mobile_no || '' }}</td>
+                <td class="border border-slate-400 p-1">{{ r.house_nature || '' }}</td>
+                <td class="border border-slate-400 p-1 text-center">{{ r.house_status === 'पूर्ण नष्ट' ? '✓' : '' }}</td>
+                <td class="border border-slate-400 p-1 text-center">{{ r.house_status === 'अधिकांश भाग नष्ट' ? '✓' : '' }}</td>
+                <td class="border border-slate-400 p-1">{{ r.goth_damage || '' }}</td>
+                <td class="border border-slate-400 p-1 text-center">{{ r.irrigation_pakkhi || '' }}</td>
+                <td class="border border-slate-400 p-1 text-center">{{ r.irrigation_kacchi || '' }}</td>
+                <td class="border border-slate-400 p-1 text-center">{{ r.human_damage || '' }}</td>
+                <td class="border border-slate-400 p-1 text-center font-bold">{{ r.land_katan_ropani || '' }}</td>
+                <td class="border border-slate-400 p-1 text-center">{{ r.land_bagar_ropani || '' }}</td>
+                <td class="border border-slate-400 p-1 text-center font-bold">{{ r.paddy_damage_muri || '' }}</td>
+                <td class="border border-slate-400 p-1">{{ r.other_crop_damage || '' }}</td>
+                <td class="border border-slate-400 p-1">{{ r.livestock_damage || '' }}</td>
+                <td class="border border-slate-400 p-1">{{ r.poultry_damage || '' }}</td>
+                <td class="border border-slate-400 p-1">{{ r.expectation || '' }}</td>
+                <td class="border border-slate-400 p-1 text-[9px]">{{ r.remarks || '' }}</td>
+              </tr>
+            </tbody>
+            <tfoot class="font-bold bg-slate-50">
+              <tr>
+                <td colspan="12" class="border border-slate-400 p-1 text-right">कुल जम्मा:</td>
+                <td class="border border-slate-400 p-1 text-center text-red-700">{{ totalLandErosion.toFixed(2) }}</td>
+                <td class="border border-slate-400 p-1"></td>
+                <td class="border border-slate-400 p-1 text-center text-emerald-700">{{ totalPaddyDamage }}</td>
+                <td colspan="5" class="border border-slate-400 p-1"></td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <div class="mt-8 flex justify-between text-xs pt-4">
+            <div class="text-center">
+              <p class="mb-6">..................................................</p>
+              <p class="font-bold">तथ्याङ्क संकलक</p>
+              <p class="text-slate-500">(रामचन्द्र शर्मा / मनु सिंजाली)</p>
+            </div>
+            <div class="text-center">
+              <p class="mb-6">..................................................</p>
+              <p class="font-bold">प्रमाणित गर्ने (वडा अध्यक्ष / सचिव)</p>
+              <p class="text-slate-500">गलकोट नगरपालिका - ९</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
 
 <script>
-/* ===== Supabase (खाली राख्दा local demo मात्र चल्छ) =====
- SQL: create table damage_records(id uuid default gen_random_uuid() primary key, ward int, data jsonb, created_at timestamptz default now());
- alter table damage_records enable row level security;
- create policy "auth rw" on damage_records for all to authenticated using(true) with check(true); */
-const SUPA_URL='https://dqeazvueqvncpbofbrpu.supabase.co', SUPA_KEY='sb_publishable_5VbUjJ1HqZ6jp-agyn6zIw_v3wTyxcU';
-const EMAIL_DOMAIN='@galkot.app'; // ID 'Lokendr@' -> email 'lokendr@galkot.app' (Supabase Auth ma yahi user banaunus)
-const LOCAL_ID='Lokendr@', LOCAL_PW='Galkot@123';
-const sb=(SUPA_URL&&SUPA_KEY&&window.supabase)?supabase.createClient(SUPA_URL,SUPA_KEY):null;
+  // SUPABASE CONFIGURATION
+  const SUPABASE_URL = 'https://dqeazvueqvncpbofbrpu.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_5VbUjJ1HqZ6jp-agyn6zIw_v3wTyxcU';
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const FD={h_pakki:'घर पक्की',h_kachi:'घर कच्ची',d_full:'घर क्षति पूर्ण',d_most:'घर अधिकांश नष्ट',d_normal:'घर क्षति सामान्य',
-ip_full:'सिँचाइ पक्की पूर्ण',ip_part:'सिँचाइ पक्की आंशिक',ik_full:'सिँचाइ कच्ची पूर्ण',ik_part:'सिँचाइ कच्ची आंशिक',
-g_full:'गोठ पूर्ण',g_norm:'गोठ सामान्य',death:'मृत्यु',injured:'घाइते',l_bagar:'जग्गा बगर (रोपनी)',l_katan:'जग्गा कटान (रोपनी)',l_other:'जग्गा पाखो/अन्य',
-c_dhan:'बाली धान (मुरी)',c_other:'बाली अन्य',cattle:'चौपाया',birds:'पंक्षी',grain:'खाद्यान्न'};
-const CATS=[['घरको अवस्था',['h_pakki','h_kachi']],['घरको क्षति',['d_full','d_most','d_normal']],['सिँचाइ क्षति पक्की',['ip_full','ip_part']],
-['सिँचाइ क्षति कच्ची',['ik_full','ik_part']],['गोठमा क्षति',['g_full','g_norm']],['मानवीय क्षति',['death','injured']],['जग्गा जमिनको क्षति',['l_bagar','l_katan','l_other']],
-['बालीमा क्षति',['c_dhan','c_other']],['चौपायामा क्षति',['cattle']],['पंक्षिमा क्षति',['birds']],['खाद्यान्नमा क्षति',['grain']]];
-const BASE=['sn','name','user','hh','place','phone','nature'],TAIL=['demand','remark'];
-const LBL={ward:'वडा',sn:'क्र.सं.',name:'घरधनी/जग्गाधनी',user:'भोगकर्ता',hh:'प्रभावित परिवार',place:'स्थान',phone:'मो.नं.',nature:'घरको प्रकृति',demand:'अपेक्षा',remark:'कैफियत',...FD};
-const STD=[...BASE,'h_pakki','h_kachi','d_full','d_most','d_normal','ip_full','ip_part','ik_full','ik_part','g_full','g_norm','death','injured','l_bagar','l_katan','l_other','c_dhan','c_other','cattle','birds','grain',...TAIL];
-const S6=[...BASE,'h_kachi','d_full','d_most','d_normal','ip_full','ip_part','ik_full','ik_part','l_bagar','l_katan','l_other','c_dhan','c_other','cattle','birds','grain',...TAIL];
-const allKeys=CATS.flatMap(c=>c[1]);
-let data=JSON.parse(localStorage.getItem('galkot_data')||'[]'),W=new Set(),C=new Set();
+  // LOCAL FALLBACK DATA
+  const INITIAL_SEED_DATA = [
+    { id: 1, owner_name: 'दुवनाथ सापकोटा', location: 'मिठामारा', mobile_no: '9847640350', land_katan_ropani: 0.50, paddy_damage_muri: 2 },
+    { id: 2, owner_name: 'सन्तोष सेरचन', location: 'मिठामारा', mobile_no: '', land_katan_ropani: 1.50, paddy_damage_muri: 7, goth_damage: '२ कच्ची छाप्रा', remarks: '२ वटा कच्ची छाप्रा र २ ट्याक्टर दाउरा बगाएको' },
+    { id: 3, owner_name: 'ढगेन्द्र सापकोटा', location: 'मिठामारा', mobile_no: '', remarks: 'ग्याविन जाली कमजोर भर्इ थोरा खोलामा सरेको' },
+    { id: 4, owner_name: 'जिवलाल सापकोटा', location: 'मिठामारा', mobile_no: '9848614017', land_katan_ropani: 1.50, paddy_damage_muri: 7, remarks: '६५ mm को ६० मिटर पाइब बगाएको' },
+    { id: 5, owner_name: 'एज्ञप्रसाद खराल', location: 'मिठामारा', mobile_no: '9842921798', land_katan_ropani: 0.33, paddy_damage_muri: 2, remarks: 'ग्याविन जाली र खेत कटान ०.३३ रोपनी, २ मुरी धान क्षति' },
+    { id: 6, owner_name: 'प्रेम सागर खरेल', location: 'मिठामारा', mobile_no: '9847640496', land_katan_ropani: 0.25, paddy_damage_muri: 3, remarks: 'खेत कटान ०.२५ रोपनी, ३ मुरी धान क्षति' },
+    { id: 7, owner_name: 'प्रेम सागर खरेल', beneficiary_name: 'पदम दरजी', location: 'मिठामारा', mobile_no: '', livestock_damage: '१ बंगुर', poultry_damage: '१५ कुखुरा', remarks: '१ वटा बंगुर मध्यम र १५ वटा कुखुरा खोर सहित बगाएको' },
+    { id: 8, owner_name: 'उमेन्द्र सापकोटा', location: 'तल्लो काभ्रे', mobile_no: '9857662766', expectation: 'तटबन्धन', remarks: 'तटबन्धन नगरे खेतमा क्षति पुग्ने' },
+    { id: 9, owner_name: 'टिकाराम सापकोटा', beneficiary_name: 'सुरेन्द्र छन्तयाल', location: 'तल्लो काभ्रे', mobile_no: '9857666971', poultry_damage: '२२ कुखुरा', remarks: '२२ वटा कुखुरा खोला पसेर बगाएको' },
+    { id: 10, owner_name: 'टिकाराम सापकोटा', location: 'तल्लो काभ्रे', mobile_no: '', land_katan_ropani: 3.00, paddy_damage_muri: 9, expectation: 'तटबन्धन', remarks: '३ हलको खेतमा १ हल भन्दा बढी खेत कटान' },
+    { id: 11, owner_name: 'छविलाल सापकोटा', location: 'खोल्याड', mobile_no: '', land_katan_ropani: 0.50, paddy_damage_muri: 3, expectation: '१ रोपनीमा तटबन्ध', remarks: '०.५ रोपनी खेत बगर बनाएको, धान नोक्सान' },
+    { id: 12, owner_name: 'एमकलि (रामचन्द्र सापकोटा)', location: 'खोल्याड', mobile_no: '9843184922', land_katan_ropani: 1.00, paddy_damage_muri: 3 },
+    { id: 13, owner_name: 'ललित सापकोटा (कल्पना)', location: 'खोल्याड', mobile_no: '9764512814', land_katan_ropani: 1.50, paddy_damage_muri: 4.5 },
+    { id: 14, owner_name: 'कृष्ण प्रसाद सापकोटा', location: 'ठुलाखेत', mobile_no: '9860697177', land_katan_ropani: 3.00, paddy_damage_muri: 9 },
+    { id: 15, owner_name: 'हेम सापकोटा', location: 'ठुलाखेत', mobile_no: '9860697177', land_katan_ropani: 0.50, paddy_damage_muri: 1.5 },
+    { id: 16, owner_name: 'रवि सापकोटा', location: 'ठुलाखेत', mobile_no: '9860697177', land_katan_ropani: 2.00, paddy_damage_muri: 6 },
+    { id: 17, owner_name: 'प्रेम सागर सापकोटा', location: 'ठुलाखेत', mobile_no: '9847665151', land_katan_ropani: 0.66, paddy_damage_muri: 2 },
+    { id: 18, owner_name: 'डिलाराम सापकोटा', location: 'ठुलाखेत', mobile_no: '9847640603', land_katan_ropani: 1.50, paddy_damage_muri: 4.5 },
+    { id: 19, owner_name: 'कुलाइनथान समसानघाट प्रतिक्षालय', location: 'ठुलाखेत', mobile_no: '', remarks: 'प्रतिक्षालयमा क्षति पूर्ण रुपमा नष्ट' },
+    { id: 20, owner_name: 'टिकाराम सापकोटा पुछारे', location: 'ठुलाखेत', mobile_no: '', land_katan_ropani: 0.33, paddy_damage_muri: 1 },
+    { id: 21, owner_name: 'कुलान्द सापकोटा (खैसरा)', location: 'ठुलाखेत', mobile_no: '', land_katan_ropani: 1.00, paddy_damage_muri: 3 }
+  ];
 
-const dn=s=>String(s).replace(/[०-९]/g,d=>'०१२३४५६७८९'.indexOf(d));
-const cl=v=>{if(v==null)return'';const s=String(v).trim();return/^[-_–—\s]*$/.test(s)?'':s};
-const num=v=>{const m=dn(v).match(/\d+(\.\d+)?/);return m?parseFloat(m[0]):NaN};
-const has=(r,k)=>r[k]!==undefined&&r[k]!=='';
-const save=()=>localStorage.setItem('galkot_data',JSON.stringify(data));
+  Vue.createApp({
+    data() {
+      return {
+        currentUser: null,
+        loginUsername: '',
+        loginPassword: '',
+        authError: '',
+        activeTab: 'view',
+        records: INITIAL_SEED_DATA,
+        supabaseConnected: false,
+        saving: false,
+        filterMajorCategory: 'ALL',
+        filterLocation: 'ALL',
+        searchQuery: '',
+        form: this.getEmptyForm()
+      }
+    },
+    computed: {
+      filteredRecords() {
+        return this.records.filter(r => {
+          let passCat = true;
+          if (this.filterMajorCategory === 'HOUSE_GOTH') passCat = !!r.house_status || !!r.goth_damage || !!r.house_nature;
+          else if (this.filterMajorCategory === 'LAND') passCat = (r.land_katan_ropani > 0) || (r.land_bagar_ropani > 0);
+          else if (this.filterMajorCategory === 'PADDY') passCat = (r.paddy_damage_muri > 0) || !!r.other_crop_damage;
+          else if (this.filterMajorCategory === 'ANIMALS') passCat = !!r.livestock_damage || !!r.poultry_damage;
+          else if (this.filterMajorCategory === 'IRRIGATION') passCat = !!r.irrigation_pakkhi || !!r.irrigation_kacchi || (r.remarks && r.remarks.includes('कुलो'));
 
-/* ---- login ---- */
-async function login(){const u=$('u').value.trim(),p=$('p').value;$('lerr').textContent='';
- if(sb){const email=u.includes('@')&&u.indexOf('@')<u.length-1?u:u.replace(/@$/,'').toLowerCase()+EMAIL_DOMAIN;
-  const{error}=await sb.auth.signInWithPassword({email,password:p});
-  if(!error){sessionStorage.a='sb';await pull();return start()}
-  if(u===LOCAL_ID&&p===LOCAL_PW){sessionStorage.a='local';alert('Supabase login भएन – offline demo मोडमा खुल्यो (डाटा यही browser मा मात्र सुरक्षित हुन्छ)');return start()}
-  $('lerr').textContent='आईडी/पासवर्ड मिलेन';return}
- if(u===LOCAL_ID&&p===LOCAL_PW){sessionStorage.a='local';start()}else $('lerr').textContent='आईडी/पासवर्ड मिलेन'}
-function logout(){sessionStorage.removeItem('a');sb&&sb.auth.signOut();location.reload()}
-async function pull(){try{let all=[],from=0;for(;;){const{data:d,error}=await sb.from('damage_records').select('ward,data').order('created_at').range(from,from+999);if(error)throw error;all.push(...d);if(d.length<1000)break;from+=1000}
- data=all.map(x=>({...x.data,ward:x.ward}));save()}catch(e){console.log(e);alert('Supabase बाट डाटा ल्याउन सकिएन: '+(e.message||e))}}
-async function wipe(){if(!sb)return;try{await sb.from('damage_records').delete().gte('ward',0)}catch(e){console.log(e)}}
-async function push(rows){if(!sb||sessionStorage.a!='sb')return;try{for(let i=0;i<rows.length;i+=500){const{error}=await sb.from('damage_records').insert(rows.slice(i,i+500).map(r=>({ward:r.ward,data:r})));if(error)throw error}}catch(e){console.log(e);alert('Supabase मा सेभ भएन: '+(e.message||e))}}
-const $=id=>document.getElementById(id);
-function start(){$('login').classList.add('hide');$('app').classList.remove('hide');$('mode').textContent=sessionStorage.a=='sb'?'Supabase जडित':'Demo (local)';buildUI();render()}
+          let passLoc = this.filterLocation === 'ALL' || r.location === this.filterLocation;
+          let q = this.searchQuery.toLowerCase();
+          let passSearch = !q || (r.owner_name && r.owner_name.toLowerCase().includes(q)) || (r.mobile_no && r.mobile_no.includes(q));
 
-/* ---- Excel parsing ---- */
-function parseSheet(ws,name){const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:true}),ward=num(name),out=[];
- if(/क्षतिको विवरण/.test(String(rows[0]&&rows[0][0]))){let last=null;
-  for(let i=2;i<rows.length;i++){const r=rows[i];if(!r.some(x=>cl(x)))continue;
-   if(cl(r[0])){last={ward,sn:cl(r[0]),place:cl(r[1]),name:cl(r[2]),phone:cl(r[5]),nature:cl(r[6]),remark:[cl(r[7]),cl(r[8])].filter(Boolean).join(' | '),demand:cl(r[9])};out.push(last)}
-   else if(last){last.remark+=[' | '+cl(r[7]),cl(r[8])].filter(Boolean).join(' | ');if(cl(r[9]))last.demand+=' | '+cl(r[9])}}
-  return out}
- const map=(rows[3]||[]).some(c=>/गोठ/.test(c))?STD:S6;
- for(let i=5;i<rows.length;i++){const r=rows[i];if(/बगर रोपनीमा|कटान रोपनीमा/.test(r.join('')))continue;
-  const o={ward};let any=false;map.forEach((k,j)=>{const v=cl(r[j]);if(v){o[k]=v;if(j>0)any=true}});
-  if(any){if(!o.name)o.name='(नाम नखुलेको)';out.push(o)}}
- return out}
-function upload(inp){const f=inp.files[0];if(!f)return;const rd=new FileReader();
- rd.onload=e=>{const wb=XLSX.read(e.target.result,{type:'array'});let rows=[];wb.SheetNames.forEach(n=>rows.push(...parseSheet(wb.Sheets[n],n)));
-  const rep=confirm('पुरानो डाटा हटाएर यो फाइलले बदल्ने? (Cancel = पुरानोमा थप्ने)');
-  (async()=>{if(rep&&sessionStorage.a=='sb')await wipe();data=rep?rows:data.concat(rows);save();await push(rows);buildUI();render();alert(rows.length+' रेकर्ड लोड भयो')})()};
- rd.readAsArrayBuffer(f);inp.value=''}
+          return passCat && passLoc && passSearch;
+        });
+      },
+      totalLandErosion() {
+        return this.records.reduce((acc, r) => acc + (Number(r.land_katan_ropani) || 0), 0);
+      },
+      totalPaddyDamage() {
+        return this.records.reduce((acc, r) => acc + (Number(r.paddy_damage_muri) || 0), 0);
+      },
+      totalHouseGothDamage() {
+        return this.records.filter(r => r.house_status || r.goth_damage).length;
+      },
+      totalAnimalsCount() {
+        return this.records.filter(r => r.livestock_damage || r.poultry_damage).length;
+      }
+    },
+    async mounted() {
+      await this.fetchFromSupabase();
+    },
+    methods: {
+      handleLogin() {
+        this.authError = '';
+        if (this.loginUsername === 'admin' && this.loginPassword === 'admin123') {
+          this.currentUser = { name: 'प्रशासक (Admin)', role: 'admin' };
+        } else if (this.loginUsername === 'user' && this.loginPassword === 'user123') {
+          this.currentUser = { name: 'कर्मचारी (User)', role: 'user' };
+        } else {
+          this.authError = 'गलत युजरनेम वा पासवर्ड! कृपया पुन: प्रयास गर्नुहोस्।';
+        }
+      },
+      logout() {
+        this.currentUser = null;
+        this.activeTab = 'view';
+      },
+      getEmptyForm() {
+        return {
+          owner_name: '', beneficiary_name: '', location: 'मिठामारा', mobile_no: '',
+          house_nature: '', house_status: '', goth_damage: '',
+          irrigation_pakkhi: '', irrigation_kacchi: '', human_damage: '',
+          land_katan_ropani: null, land_bagar_ropani: null, paddy_damage_muri: null,
+          other_crop_damage: '', livestock_damage: '', poultry_damage: '',
+          expectation: '', remarks: ''
+        };
+      },
+      async fetchFromSupabase() {
+        try {
+          const { data, error } = await supabase.from('disaster_damages').select('*').order('id', { ascending: false });
+          if (error) {
+            console.error('Supabase fetch error:', error);
+            this.supabaseConnected = false;
+          } else if (data) {
+            this.supabaseConnected = true;
+            if (data.length > 0) {
+              this.records = data;
+            }
+          }
+        } catch(e) {
+          console.error(e);
+          this.supabaseConnected = false;
+        }
+      },
+      async saveRecord() {
+        this.saving = true;
+        const newRecord = { ...this.form, id: Date.now() };
 
-/* ---- UI ---- */
-function chip(id,val,label,set){return`<label><input type=checkbox ${set.has(val)?'checked':''} onchange="tg('${id}','${val}',this.checked)">${label}</label>`}
-function tg(id,v,on){const s=id=='w'?W:C;on?s.add(v):s.delete(v);render()}
-function clr(){W.clear();C.clear();$('q').value='';buildUI();render()}
-function buildUI(){const ws=[...new Set([...Array(11)].map((_,i)=>i+1).concat(data.map(r=>r.ward).filter(x=>x)))].sort((a,b)=>a-b);
- $('fw').innerHTML=ws.map(w=>chip('w',w,'वडा '+w,W)).join('');$('fc').innerHTML=CATS.map(c=>chip('c',c[0],c[0],C)).join('');
- $('form').innerHTML=`<div><label>वडा नं.</label><select id="f_ward">${ws.map(w=>`<option>${w}</option>`).join('')}</select></div>`+
-  [...BASE,...allKeys,...TAIL].filter(k=>k!='sn').map(k=>`<div><label>${LBL[k]}</label>${k=='remark'?`<textarea id="f_${k}" rows=2></textarea>`:`<input id="f_${k}">`}</div>`).join('')}
-function addRec(){const r={ward:+$('f_ward').value};[...BASE,...allKeys,...TAIL].forEach(k=>{if(k=='sn')return;const v=cl($('f_'+k)&&$('f_'+k).value);if(v)r[k]=v});
- if(!r.name){$('fmsg').textContent='घरधनीको नाम आवश्यक छ';return}
- r.sn=data.filter(x=>x.ward==r.ward).length+1;data.push(r);save();push([r]);
- document.querySelectorAll('#form input,#form textarea').forEach(i=>i.value='');$('fmsg').textContent='✔ सुरक्षित भयो';buildUI();render()}
-function tab(n){[1,2,3].forEach(i=>{$('v'+i).classList.toggle('hide',i!=n);$('t'+i).classList.toggle('on',i==n)})}
+        try {
+          const { data, error } = await supabase.from('disaster_damages').insert([this.form]).select();
+          if (error) {
+            alert('Supabase मा सेभ गर्न समस्या आयो:\n' + error.message + '\n\nकृपया Supabase SQL Editor मा RLS disable गर्नुहोस्।');
+            // Local fallback save
+            this.records.unshift(newRecord);
+          } else {
+            alert('डाटा Supabase मा सफलतापूर्वक सुरक्षित भयो!');
+            await this.fetchFromSupabase();
+          }
+        } catch(e) {
+          alert('सेभ भएन: ' + e.message);
+          this.records.unshift(newRecord);
+        }
 
-/* ---- filtering ---- */
-function filtered(){const q=$('q').value.trim(),sel=CATS.filter(c=>C.has(c[0])),all=$('mode2').value=='all';
- return data.filter(r=>{if(W.size&&!W.has(String(r.ward))&&!W.has(r.ward))return false;
-  if(sel.length){const t=c=>c[1].some(k=>has(r,k));if(all?!sel.every(t):!sel.some(t))return false}
-  if(q&&!['name','user','place','phone','remark'].some(k=>(r[k]||'').includes(q)))return false;return true})}
-const sum=(rs,k)=>rs.reduce((a,r)=>a+(has(r,k)?(isNaN(num(r[k]))?0:num(r[k])):0),0);
-const cnt=(rs,ks)=>rs.filter(r=>ks.some(k=>has(r,k))).length;
-function cols(){const sel=CATS.filter(c=>C.has(c[0]));return['ward',...BASE,...(sel.length?sel.flatMap(c=>c[1]):allKeys),...TAIL]}
+        this.saving = false;
+        this.resetForm();
+        this.activeTab = 'view';
+      },
+      async deleteRecord(id) {
+        if (confirm('के तपाईं यो रेकर्ड हटाउन चाहनुहुन्छ?')) {
+          try {
+            const { error } = await supabase.from('disaster_damages').delete().eq('id', id);
+            if (!error) {
+              await this.fetchFromSupabase();
+            } else {
+              this.records = this.records.filter(r => r.id !== id);
+            }
+          } catch(e) {
+            this.records = this.records.filter(r => r.id !== id);
+          }
+        }
+      },
+      resetForm() { this.form = this.getEmptyForm(); },
+      printReport() { window.print(); },
+      exportCSV() {
+        let headers = ["क्र सं", "घरधनी", "भोगकर्ता", "स्थान", "मो नं", "घर क्षति", "गोठ क्षति", "कटान रोपनी", "धान मुरी", "कैफियत"];
+        let rows = this.filteredRecords.map((r, i) => [
+          i + 1, `"${r.owner_name || ''}"`, `"${r.beneficiary_name || ''}"`, `"${r.location || ''}"`,
+          `"${r.mobile_no || ''}"`, `"${r.house_status || ''}"`, `"${r.goth_damage || ''}"`,
+          r.land_katan_ropani || 0, r.paddy_damage_muri || 0, `"${r.remarks || ''}"`
+        ]);
 
-function render(){const rs=filtered();
- const ward=new Set(rs.map(r=>r.ward)).size;
- $('kpis').innerHTML=[['रेकर्ड',rs.length],['वडा',ward],['प्रभावित परिवार (कुल)',sum(rs,'hh')||'-'],['मृत्यु',sum(rs,'death')],['घाइते',sum(rs,'injured')],
-  ['घर पूर्ण क्षति',cnt(rs,['d_full'])],['जग्गा बगर+कटान (रोपनी)',(sum(rs,'l_bagar')+sum(rs,'l_katan')).toFixed(2)],['धान क्षति (मुरी)',sum(rs,'c_dhan')]]
-  .map(k=>`<div class=kpi><b>${k[1]}</b>${k[0]}</div>`).join('');
- const bs=CATS.map(c=>[c[0],cnt(rs,c[1])]),mx=Math.max(1,...bs.map(b=>b[1]));
- $('bars').innerHTML=bs.map(b=>`<div class=bar><span>${b[0]}</span><i style="width:${b[1]/mx*60}%"></i><em>${b[1]}</em></div>`).join('');
- const ws=[...new Set(rs.map(r=>+r.ward))].sort((a,b)=>a-b);
- $('wt').innerHTML='<tr><th>वडा</th><th>रेकर्ड</th><th>घर क्षति</th><th>सिँचाइ</th><th>गोठ</th><th>मृत्यु</th><th>घाइते</th><th>जग्गा (रोपनी)</th><th>धान (मुरी)</th><th>चौपाया</th><th>पंक्षी</th><th>खाद्यान्न</th></tr>'+
-  ws.map(w=>{const g=rs.filter(r=>r.ward==w);return`<tr><td>${w}</td><td>${g.length}</td><td>${cnt(g,['d_full','d_most','d_normal'])}</td><td>${cnt(g,['ip_full','ip_part','ik_full','ik_part'])}</td><td>${cnt(g,['g_full','g_norm'])}</td><td>${sum(g,'death')}</td><td>${sum(g,'injured')}</td><td>${(sum(g,'l_bagar')+sum(g,'l_katan')).toFixed(2)}</td><td>${sum(g,'c_dhan')}</td><td>${cnt(g,['cattle'])}</td><td>${cnt(g,['birds'])}</td><td>${cnt(g,['grain'])}</td></tr>`}).join('')||'<tr><td>डाटा छैन – Excel अपलोड गर्नुहोस्</td></tr>';
- const cs=cols();$("cnt2").textContent=`कुल ${rs.length} रेकर्ड`;
- $('tb').innerHTML='<tr>'+cs.map(k=>`<th>${LBL[k]}</th>`).join('')+'</tr>'+rs.map(r=>'<tr>'+cs.map(k=>`<td>${esc(r[k]??'')}</td>`).join('')+'</tr>').join('')}
-const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-
-/* ---- export ---- */
-function title(){return'गलकोट नगरपालिका – विपद् क्षति विवरण'+(W.size?' (वडा '+[...W].sort((a,b)=>a-b).join(', ')+')':'')+(C.size?' – '+[...C].join(', '):'')}
-function tableHTML(){const cs=cols(),rs=filtered();return`<h3>${title()}</h3><table border=1 cellspacing=0 cellpadding=3 style="border-collapse:collapse;font-size:10pt"><tr>${cs.map(k=>`<th>${LBL[k]}</th>`).join('')}</tr>${rs.map(r=>'<tr>'+cs.map(k=>`<td>${esc(r[k]??'')}</td>`).join('')+'</tr>').join('')}</table>`}
-function xl(){const cs=cols(),rs=filtered(),ws=XLSX.utils.aoa_to_sheet([cs.map(k=>LBL[k]),...rs.map(r=>cs.map(k=>r[k]??''))]);
- const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'क्षति विवरण');XLSX.writeFile(wb,'galkot_kshati.xlsx')}
-function doc(){const h=`<html xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><style>@page{size:landscape}</style></head><body>${tableHTML()}</body></html>`;
- const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff',h],{type:'application/msword'}));a.download='galkot_kshati.doc';a.click()}
-function pdf(){const w=window.open('','_blank');w.document.write(`<html><head><meta charset="utf-8"><title>${title()}</title><style>@page{size:A4 landscape;margin:10mm}body{font-family:"Noto Sans Devanagari",Mangal,Arial}td,th{font-size:8pt;vertical-align:top}</style></head><body>${tableHTML()}</body></html>`);w.document.close();setTimeout(()=>w.print(),400)}
-
-if(sessionStorage.a){if(sessionStorage.a=='sb'&&sb)pull().then(start);else start()}
-</script></body></html>
+        let csvContent = "data:text/csv;charset=utf-8,\uFEFF" + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+        let link = document.createElement("a");
+        link.href = encodeURI(csvContent);
+        link.download = "Banskhola_Disaster_Data.csv";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+  }).mount('#app');
+</script>
+</body>
+</html>
