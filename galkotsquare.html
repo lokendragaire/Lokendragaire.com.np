@@ -30,8 +30,7 @@ tailwind.config = {
       fontFamily: { display: ['Playfair Display','serif'], body: ['Inter','system-ui','sans-serif'] }
     }
   }
-}   
-
+}
 </script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
@@ -1121,7 +1120,7 @@ body { font-family: 'Inter', system-ui, sans-serif; }
               <label class="block text-sm">Full name<input id="newUserName" required class="mt-1 w-full border rounded-lg p-2.5" /></label>
               <label class="block text-sm">Email<input id="newUserEmail" type="email" required class="mt-1 w-full border rounded-lg p-2.5" /></label>
               <label class="block text-sm">Phone<input id="newUserPhone" class="mt-1 w-full border rounded-lg p-2.5" /></label>
-              <label class="block text-sm">Temporary password<input id="newUserPassword" type="password" minlength="6" required autocomplete="new-password" class="mt-1 w-full border rounded-lg p-2.5" /><span class="text-xs text-slate-500">Shown only while creating the account; it will not be saved or viewable later.</span></label>
+              <label class="block text-sm">Temporary password<div class="mt-1 flex gap-2"><input id="newUserPassword" type="password" minlength="8" required autocomplete="new-password" class="w-full border rounded-lg p-2.5" /><button type="button" onclick="toggleNewUserPassword()" id="toggleNewUserPasswordBtn" class="px-3 border rounded-lg text-sm">Show</button></div><span class="text-xs text-slate-500">Password देखाउन/लुकाउन मिल्छ। सुरक्षा कारणले पछि पुरानो password पढ्न मिल्दैन; आवश्यक परे Reset Email प्रयोग गर्नुहोस्।</span></label>
               <label class="block text-sm">Role<select id="newUserRole" class="mt-1 w-full border rounded-lg p-2.5"><option value="CUSTOMER">CUSTOMER</option><option value="ADMIN">ADMIN</option><option value="MANAGER">MANAGER</option><option value="KITCHEN">KITCHEN</option><option value="HOUSEKEEPING">HOUSEKEEPING</option><option value="SUPER ADMIN">SUPER ADMIN</option></select></label>
               <div class="flex gap-2 justify-end pt-2"><button type="button" onclick="closeAddAdminUser()" class="px-4 py-2 border rounded-lg">Cancel</button><button type="submit" class="px-4 py-2 bg-primary-600 text-white rounded-lg">Create User</button></div>
             </form>
@@ -4224,29 +4223,55 @@ async function loadAdminUsers() {
           ['CUSTOMER','ADMIN','KITCHEN','HOUSEKEEPING','MANAGER','SUPER ADMIN'].map(r=>'<option value="'+r+'"'+(role===r?' selected':'')+'>'+r+'</option>').join('') +
         '</select></td>' +
         '<td class="p-3"><span class="text-xs text-slate-500 block mb-1">••••••••</span><button onclick="sendUserPasswordReset(\'' + u.id + '\')" class="text-xs px-2 py-1 border rounded-lg whitespace-nowrap">Reset Email</button></td>' +
-        '<td class="p-3"><div class="flex gap-1"><button onclick="saveAdminUser(\'' + u.id + '\')" class="text-xs px-3 py-1.5 bg-primary-600 text-white rounded-lg">Save</button></div></td>' +
+        '<td class="p-3"><div class="flex flex-wrap gap-1"><button onclick="saveAdminUser(\'' + u.id + '\')" class="text-xs px-3 py-1.5 bg-primary-600 text-white rounded-lg">Save</button><button onclick="deleteAdminUser(\'' + u.id + '\')" class="text-xs px-3 py-1.5 bg-red-600 text-white rounded-lg">Delete</button></div></td>' +
       '</tr>';
     }).join('');
   } catch (err) { tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-red-500">' + String(err.message || err).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</td></tr>'; }
 }
+function toggleNewUserPassword(){const input=document.getElementById('newUserPassword');const btn=document.getElementById('toggleNewUserPasswordBtn');if(!input)return;const showing=input.type==='password';input.type=showing?'text':'password';if(btn)btn.textContent=showing?'Hide':'Show';}
 function openAddAdminUser(){ if(!isSuperAdmin(currentUser && currentUser.role)){toast('Super Admin only','error');return;} document.getElementById('addUserModal')?.classList.remove('hidden'); }
 function closeAddAdminUser(){ document.getElementById('addUserModal')?.classList.add('hidden'); }
 async function createAdminUser(e){
   e.preventDefault();
   if(!isSuperAdmin(currentUser && currentUser.role)){toast('Super Admin only','error');return;}
-  const name=document.getElementById('newUserName').value.trim(), email=document.getElementById('newUserEmail').value.trim(), phone=document.getElementById('newUserPhone').value.trim(), password=document.getElementById('newUserPassword').value, role=document.getElementById('newUserRole').value;
-  if(password.length<6){toast('Password must be at least 6 characters','error');return;}
+  const name=document.getElementById('newUserName').value.trim();
+  const email=document.getElementById('newUserEmail').value.trim().toLowerCase();
+  const phone=document.getElementById('newUserPhone').value.trim();
+  const password=document.getElementById('newUserPassword').value;
+  const role=document.getElementById('newUserRole').value;
+  if(!name || !email){toast('Name and email are required','error');return;}
+  if(password.length<8){toast('Use a password with at least 8 characters','error');return;}
+  const submitBtn=document.querySelector('#addUserForm button[type="submit"]');
+  if(submitBtn){submitBtn.disabled=true;submitBtn.dataset.oldText=submitBtn.textContent;submitBtn.textContent='Creating user...';}
   try{
-    // Isolated client avoids replacing the currently logged-in admin session.
-    const isolated=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
-    const {data,error}=await isolated.auth.signUp({email,password,options:{data:{full_name:name,phone}}});
-    if(error) throw error;
-    if(!data.user) throw new Error('Supabase did not return a user. Check Auth settings.');
-    const {error:profileError}=await supabaseClient.from('profiles').upsert({id:data.user.id,full_name:name,email,phone:phone||null,role,updated_at:new Date().toISOString()},{onConflict:'id'});
-    if(profileError) throw new Error('Auth account created, but profile/role could not be saved: '+profileError.message+' — check SQL/RLS policies.');
-    document.getElementById('addUserForm').reset(); closeAddAdminUser(); await loadAdminUsers();
-    toast(data.session ? 'User created. Ask them to sign in and change the temporary password.' : 'User created. Email confirmation may be required before login. Password cannot be viewed later.','success');
-  }catch(err){toast('Create user failed: '+(err.message||err),'error');}
+    // User creation is performed server-side by an Edge Function. The service-role
+    // key must NEVER be embedded in this HTML file.
+    const {data:sessionData,error:sessionError}=await supabaseClient.auth.getSession();
+    if(sessionError) throw sessionError;
+    const accessToken=sessionData && sessionData.session && sessionData.session.access_token;
+    if(!accessToken) throw new Error('Your session expired. Please sign in again as SUPER ADMIN.');
+    const response=await fetch(SUPABASE_URL+'/functions/v1/admin-create-user',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+accessToken,
+        'apikey':SUPABASE_ANON_KEY
+      },
+      body:JSON.stringify({name,email,phone,password,role})
+    });
+    let result={};
+    try{result=await response.json();}catch(_){}
+    if(!response.ok) throw new Error(result.error || result.message || ('Server returned HTTP '+response.status));
+    document.getElementById('addUserForm').reset();
+    closeAddAdminUser();
+    await loadAdminUsers();
+    toast('User created successfully. Email confirmation is disabled; share the login details securely.','success');
+  }catch(err){
+    console.error('Create user failed:',err);
+    toast('Create user failed: '+(err.message==='Failed to fetch'?'Cannot reach admin-create-user. Deploy the Edge Function and check CORS/network.':(err.message||err)),'error');
+  }finally{
+    if(submitBtn){submitBtn.disabled=false;submitBtn.textContent=submitBtn.dataset.oldText||'Create User';}
+  }
 }
 async function saveAdminUser(id) {
   if (!isSuperAdmin(currentUser && currentUser.role)) { toast('Only Super Admin can change roles', 'error'); return; }
@@ -4259,6 +4284,19 @@ async function saveAdminUser(id) {
     if (currentUser && currentUser.id === id) { currentUser.name=name; currentUser.role=role; currentUser.phone=phone; save('currentUser',currentUser); updateAuthUI(); applyRoleMenuVisibility(); const lbl=document.getElementById('adminUserLabel'); if(lbl) lbl.textContent=name+' ('+normalizeRole(role)+')'; }
     toast('User profile saved. Email/password are managed by Supabase Auth.','success'); await loadAdminUsers();
   } catch(err){toast('Save failed: '+(err.message||err),'error');}
+}
+async function deleteAdminUser(id,email){
+  if(!isSuperAdmin(currentUser && currentUser.role)){toast('Super Admin only','error');return;}
+  if(currentUser && currentUser.id===id){toast('You cannot delete the account currently signed in.','error');return;}
+  if(!confirm('Permanently delete user '+(email||id)+'? This removes the Auth login and linked profile. This cannot be undone.'))return;
+  try{
+    const {data:sd,error:se}=await supabaseClient.auth.getSession(); if(se)throw se;
+    const token=sd&&sd.session&&sd.session.access_token; if(!token)throw new Error('Session expired. Sign in again as SUPER ADMIN.');
+    const response=await fetch(SUPABASE_URL+'/functions/v1/admin-delete-user',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token,'apikey':SUPABASE_ANON_KEY},body:JSON.stringify({userId:id})});
+    let result={};try{result=await response.json();}catch(_){}
+    if(!response.ok)throw new Error(result.error||result.message||('Server returned HTTP '+response.status));
+    toast('User deleted successfully.','success'); await loadAdminUsers();
+  }catch(err){console.error('Delete user failed:',err);toast('Delete user failed: '+(err.message==='Failed to fetch'?'Cannot reach admin-delete-user. Deploy the Edge Function and check CORS/network.':(err.message||err)),'error');}
 }
 async function sendUserPasswordReset(id){
   if(!isSuperAdmin(currentUser && currentUser.role)){toast('Super Admin only','error');return;}
