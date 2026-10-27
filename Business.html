@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ABC Pvt. Ltd. – Integrated System</title>
+
+    <!-- Tailwind + FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- html2pdf for invoice PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        /* smooth tab switching */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* custom card style */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 18px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border-left: 5px solid #1e3a5f;
+        }
+        .stat-card .label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.3px; }
+        .stat-card .value { font-size: 22px; font-weight: 700; color: #1e3a5f; }
+
+        .badge-credit { background: #fee2e2; color: #b91c1c; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
+        .badge-paid { background: #dcfce7; color: #166534; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
+
+        .nav-btn {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nav-btn.active {
+            background: #eef2ff;
+            color: #1e3a5f;
+            font-weight: 600;
+            border-right: 3px solid #1e3a5f;
+        }
+        .nav-btn:hover { background: #f1f5f9; }
+
+        /* login overlay */
+        #loginOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        #loginOverlay.hidden { display: none; }
+        .login-card {
+            background: white;
+            padding: 32px 28px;
+            border-radius: 20px;
+            width: 380px;
+            max-width: 92%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .login-card h2 { color: #1e3a5f; font-weight: 700; }
+        .login-card input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            margin-top: 4px;
+        }
+        .login-card button {
+            width: 100%;
+            padding: 12px;
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .login-card button:hover { background: #15324f; }
+
+        /* toast */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1e3a5f;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            z-index: 9999;
+            display: none;
+            font-weight: 500;
+        }
+        #toast.show { display: block; }
+
+        /* invoice preview style */
+        .invoice-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .invoice-box table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .invoice-box th { background: #f1f5f9; padding: 8px; text-align: left; }
+        .invoice-box td { padding: 6px 8px; border-bottom: 1px solid #e2e8f0; }
+
+        @media print {
+            .no-print { display: none !important; }
+            .invoice-box { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== TOAST ===== -->
+<div id="toast"></div>
+
+<!-- ===== LOGIN OVERLAY ===== -->
+<div id="loginOverlay">
+    <div class="login-card">
+        <h2 class="text-2xl text-center">🧾 ABC Pvt. Ltd.</h2>
+        <p class="text-center text-gray-500 text-sm mb-4">Integrated Billing & Accounting</p>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="mb-3">
+                <label class="text-sm font-medium">Username</label>
+                <input type="text" id="loginUser" value="admin" required />
+            </div>
+            <div class="mb-4">
+                <label class="text-sm font-medium">Password</label>
+                <input type="password" id="loginPass" value="admin123" required />
+            </div>
+            <button type="submit">🔐 Login</button>
+            <p class="text-xs text-center text-gray-400 mt-3">demo: admin / admin123</p>
+        </form>
+    </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="app" class="hidden">
+
+    <!-- ====== NAVBAR ====== -->
+    <nav class="bg-[#1e3a5f] text-white px-6 py-3 flex justify-between items-center flex-wrap gap-3">
+        <div class="text-xl font-bold">🧾 ABC <span class="text-yellow-400">Pvt. Ltd.</span></div>
+        <div class="flex items-center gap-3 flex-wrap text-sm">
+            <button onclick="switchTab('dashboard')" class="hover:underline">📊 Dashboard</button>
+            <button onclick="switchTab('billing')" class="hover:underline">📝 Billing</button>
+            <button onclick="switchTab('credit')" class="hover:underline">🔴 Credit</button>
+            <button onclick="switchTab('history')" class="hover:underline">📋 History</button>
+            <button onclick="switchTab('accounting')" class="hover:underline">💰 Accounting</button>
+            <button onclick="logout()" class="bg-red-600 px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-red-700">🚪 Logout</button>
+        </div>
+    </nav>
+
+    <!-- ====== MAIN CONTAINER ====== -->
+    <div class="max-w-7xl mx-auto p-4 grid grid-cols-1 md:grid-cols-6 gap-6">
+
+        <!-- SIDEBAR (quick stats + nav) -->
+        <aside class="md:col-span-1 space-y-3">
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <p class="text-xs text-gray-400 uppercase font-semibold">Total Revenue</p>
+                <p class="text-xl font-bold text-[#1e3a5f]" id="sideRevenue">Rs. 0</p>
+                <p class="text-xs text-gray-400 uppercase font-semibold mt-2">Pending Credit</p>
+                <p class="text-xl font-bold text-red-600" id="sideCredit">Rs. 0</p>
+            </div>
+            <div class="bg-white rounded-xl p-3 shadow-sm space-y-1">
+                <button onclick="switchTab('billing')" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2"><i class="fa-regular fa-pen-to-square"></i> New Bill</button>
+                <button onclick="switchTab('credit')" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2"><i class="fa-regular fa-circle-exclamation"></i> Credit List</button>
+                <button onclick="switchTab('history')" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2"><i class="fa-regular fa-clock"></i> History</button>
+                <button onclick="switchTab('accounting')" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2"><i class="fa-regular fa-chart-pie"></i> Accounting</button>
+            </div>
+        </aside>
+
+        <!-- ====== MAIN CONTENT ====== -->
+        <main class="md:col-span-5 space-y-4">
+
+            <!-- ========== DASHBOARD TAB ========== -->
+            <section id="tab-dashboard" class="tab-content active">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="stat-card"><div class="label">💰 Total Revenue</div><div class="value" id="dashRevenue">Rs. 0</div></div>
+                    <div class="stat-card" style="border-left-color:#b91c1c;"><div class="label">🔴 Pending Credit</div><div class="value text-red-600" id="dashCredit">Rs. 0</div></div>
+                    <div class="stat-card" style="border-left-color:#0b6e4f;"><div class="label">✅ Total Invoices</div><div class="value" id="dashInvoices">0</div></div>
+                    <div class="stat-card" style="border-left-color:#b45309;"><div class="label">📦 Total Expenses</div><div class="value" id="dashExpenses">Rs. 0</div></div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm mt-3">
+                    <h4 class="font-semibold text-[#1e3a5f]">📌 Recent Activity</h4>
+                    <div id="recentActivity" class="text-sm text-gray-600 space-y-1 mt-2"></div>
+                </div>
+            </section>
+
+            <!-- ========== BILLING TAB (NEW BILL) ========== -->
+            <section id="tab-billing" class="tab-content">
+                <div class="bg-white p-5 rounded-xl shadow-sm">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-lg font-bold text-[#1e3a5f]">📝 Create Tax Invoice (<span id="invoiceNumberDisplay">G-001</span>)</h3>
+                        <button onclick="clearBillForm()" class="text-sm bg-gray-100 px-3 py-1 rounded-lg hover:bg-gray-200">🗑️ Clear</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                        <div><label class="text-xs font-semibold">Trans. Date</label><input type="date" id="transDate" class="w-full border rounded-lg p-2 text-sm" /></div>
+                        <div><label class="text-xs font-semibold">Bill Date</label><input type="date" id="billDate" class="w-full border rounded-lg p-2 text-sm" /></div>
+                        <div><label class="text-xs font-semibold">Payment Mode</label>
+                            <select id="paymentMode" class="w-full border rounded-lg p-2 text-sm">
+                                <option value="Cash">Cash (नगद)</option><option value="Credit">Credit (उधारो)</option>
+                                <option value="Cheque">Cheque</option><option value="Other">Other (QR/Online)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                        <div><label class="text-xs font-semibold">Buyer Name *</label><input type="text" id="buyerName" class="w-full border rounded-lg p-2 text-sm" /></div>
+                        <div><label class="text-xs font-semibold">Address</label><input type="text" id="buyerAddress" class="w-full border rounded-lg p-2 text-sm" /></div>
+                        <div><label class="text-xs font-semibold">PAN</label><input type="text" id="buyerPan" class="w-full border rounded-lg p-2 text-sm" /></div>
+                    </div>
+
+                    <!-- items table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm border">
+                            <thead class="bg-gray-50"><tr>
+                                <th class="p-2 border">S.N.</th><th class="p-2 border">H.S.</th>
+                                <th class="p-2 border">Particulars</th><th class="p-2 border">Qty</th>
+                                <th class="p-2 border">Rate</th><th class="p-2 border">VAT?</th>
+                                <th class="p-2 border">Total</th><th class="p-2 border">✕</th>
+                            </tr></thead>
+                            <tbody id="itemsBody">
+                                <tr>
+                                    <td class="p-1 border text-center">1</td>
+                                    <td class="p-1 border"><input type="text" class="hs-code w-14 border rounded p-1 text-xs" /></td>
+                                    <td class="p-1 border"><input type="text" class="particulars w-full border rounded p-1 text-xs" placeholder="Item" /></td>
+                                    <td class="p-1 border"><input type="number" class="qty w-12 border rounded p-1 text-xs" value="1" min="1" onchange="calcRow(this)" /></td>
+                                    <td class="p-1 border"><input type="number" class="rate w-16 border rounded p-1 text-xs" value="0" onchange="calcRow(this)" /></td>
+                                    <td class="p-1 border"><select class="is-vat border rounded p-1 text-xs" onchange="calcSummary()"><option value="Yes">Yes</option><option value="No">No</option></select></td>
+                                    <td class="p-1 border"><input type="text" class="row-total w-20 border rounded p-1 text-xs font-semibold" readonly /></td>
+                                    <td class="p-1 border text-center"><button onclick="removeRow(this)" class="text-red-500 text-xs">✕</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button onclick="addRow()" class="mt-2 text-sm bg-indigo-50 px-3 py-1 rounded-lg border border-indigo-200 hover:bg-indigo-100">➕ Add Item</button>
+
+                    <!-- summary -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3 bg-gray-50 p-3 rounded-lg">
+                        <div><label class="text-xs font-semibold">Taxable Value</label><input id="taxableValue" class="w-full border rounded p-1.5 text-sm" readonly /></div>
+                        <div><label class="text-xs font-semibold">VAT (13%)</label><input id="vatAmount" class="w-full border rounded p-1.5 text-sm" readonly /></div>
+                        <div><label class="text-xs font-semibold">Discount %</label><input type="number" id="discountPercent" value="0" min="0" onchange="calcSummary()" class="w-full border rounded p-1.5 text-sm" /></div>
+                        <div><label class="text-xs font-semibold">Total Amount</label><input id="totalAmount" class="w-full border rounded p-1.5 text-sm font-bold text-green-700" readonly /></div>
+                    </div>
+                    <div class="mt-2"><label class="text-xs font-semibold">Amount in Words</label><input id="amountWords" class="w-full border rounded p-1.5 text-sm bg-gray-50" readonly /></div>
+
+                    <button onclick="generateBill()" class="mt-3 bg-[#1e3a5f] text-white px-5 py-2 rounded-lg font-semibold hover:bg-[#15324f]">🧾 Generate & Save Invoice</button>
+                </div>
+            </section>
+
+            <!-- ========== CREDIT LIST TAB ========== -->
+            <section id="tab-credit" class="tab-content">
+                <div class="bg-white p-5 rounded-xl shadow-sm">
+                    <h3 class="text-lg font-bold text-red-600">🔴 Credit (उधारो) बाँकी रहेका ग्राहकहरू</h3>
+                    <div class="overflow-x-auto mt-3">
+                        <table class="w-full text-sm border">
+                            <thead class="bg-gray-50"><tr>
+                                <th class="p-2 border">Inv #</th><th class="p-2 border">Date</th>
+                                <th class="p-2 border">Buyer</th><th class="p-2 border">Amount</th>
+                                <th class="p-2 border">Status</th><th class="p-2 border">Action</th>
+                            </tr></thead>
+                            <tbody id="creditTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== HISTORY TAB ========== -->
+            <section id="tab-history" class="tab-content">
+                <div class="bg-white p-5 rounded-xl shadow-sm">
+                    <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+                        <h3 class="text-lg font-bold text-[#1e3a5f]">📋 Billing History</h3>
+                        <button onclick="exportCSV()" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm">📥 Export CSV</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-2 mb-3">
+                        <input type="text" id="searchKeyword" placeholder="🔍 Search customer / inv" onkeyup="filterHistory()" class="border rounded-lg p-2 text-sm" />
+                        <select id="filterMode" onchange="filterHistory()" class="border rounded-lg p-2 text-sm">
+                            <option value="ALL">All Modes</option>
+                            <option value="Cash">Cash</option><option value="Credit">Credit</option>
+                            <option value="Cheque">Cheque</option><option value="Other">Other</option>
+                        </select>
+                        <input type="date" id="filterDateFrom" onchange="filterHistory()" class="border rounded-lg p-2 text-sm" />
+                        <input type="date" id="filterDateTo" onchange="filterHistory()" class="border rounded-lg p-2 text-sm" />
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm border">
+                            <thead class="bg-gray-50"><tr>
+                                <th class="p-2 border">Inv #</th><th class="p-2 border">Date</th>
+                                <th class="p-2 border">Buyer</th><th class="p-2 border">Amount</th>
+                                <th class="p-2 border">Mode</th><th class="p-2 border">Status</th><th class="p-2 border">View</th>
+                            </tr></thead>
+                            <tbody id="historyTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== ACCOUNTING TAB ========== -->
+            <section id="tab-accounting" class="tab-content">
+                <div class="bg-white p-5 rounded-xl shadow-sm">
+                    <h3 class="text-lg font-bold text-[#1e3a5f]">💰 Accounting System (Journal & Ledger)</h3>
+
+                    <!-- mini accounting nav -->
+                    <div class="flex flex-wrap gap-2 my-3 border-b pb-2">
+                        <button onclick="switchAccTab('journal-form')" class="acc-nav-btn active text-sm px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 font-medium">📝 New Entry</button>
+                        <button onclick="switchAccTab('journal-register')" class="acc-nav-btn text-sm px-3 py-1.5 rounded-lg hover:bg-gray-50">📖 Journal Register</button>
+                        <button onclick="switchAccTab('ledger')" class="acc-nav-btn text-sm px-3 py-1.5 rounded-lg hover:bg-gray-50">📑 Ledger</button>
+                        <button onclick="switchAccTab('trial')" class="acc-nav-btn text-sm px-3 py-1.5 rounded-lg hover:bg-gray-50">⚖️ Trial Balance</button>
+                        <button onclick="switchAccTab('pl')" class="acc-nav-btn text-sm px-3 py-1.5 rounded-lg hover:bg-gray-50">📈 P&L</button>
+                        <button onclick="switchAccTab('bs')" class="acc-nav-btn text-sm px-3 py-1.5 rounded-lg hover:bg-gray-50">📊 Balance Sheet</button>
+                    </div>
+
+                    <!-- accounting sub-tabs -->
+                    <div id="acc-journal-form" class="acc-tab-content space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div><label class="text-xs font-semibold">Date</label><input type="date" id="accDate" class="w-full border rounded-lg p-2 text-sm" /></div>
+                            <div><label class="text-xs font-semibold">Amount (Rs.)</label><input type="number" id="accAmount" class="w-full border rounded-lg p-2 text-sm" /></div>
+                            <div><label class="text-xs font-semibold">Debit Account</label>
+                                <select id="accDebit" class="w-full border rounded-lg p-2 text-sm coa-select"></select>
+                            </div>
+                            <div><label class="text-xs font-semibold">Credit Account</label>
+                                <select id="accCredit" class="w-full border rounded-lg p-2 text-sm coa-select"></select>
+                            </div>
+                        </div>
+                        <div><label class="text-xs font-semibold">Narration</label><textarea id="accNarration" rows="2" class="w-full border rounded-lg p-2 text-sm"></textarea></div>
+                        <button onclick="saveAccountingEntry()" class="bg-[#1e3a5f] text-white px-5 py-2 rounded-lg font-semibold hover:bg-[#15324f]">💾 Save Entry</button>
+                    </div>
+
+                    <div id="acc-journal-register" class="acc-tab-content hidden overflow-x-auto">
+                        <table class="w-full text-sm border mt-2">
+                            <thead class="bg-gray-50"><tr>
+                                <th class="p-2 border">Date</th><th class="p-2 border">V.No</th>
+                                <th class="p-2 border">Particulars</th><th class="p-2 border text-right">Debit</th>
+                                <th class="p-2 border text-right">Credit</th>
+                            </tr></thead>
+                            <tbody id="journalRegisterBody"></tbody>
+                            <tfoot class="bg-gray-100 font-bold"><tr>
+                                <td colspan="3" class="p-2 border text-right">Total</td>
+                                <td class="p-2 border text-right" id="journalTotalDr">0</td>
+                                <td class="p-2 border text-right" id="journalTotalCr">0</td>
+                            </tr></tfoot>
+                        </table>
+                    </div>
+
+                    <div id="acc-ledger" class="acc-tab-content hidden">
+                        <div class="flex items-center gap-3 my-2">
+                            <label class="text-sm font-medium">Select Account:</label>
+                            <select id="ledgerSelect" onchange="renderLedger()" class="border rounded-lg p-2 text-sm coa-select"></select>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm border">
+                                <thead class="bg-gray-50"><tr>
+                                    <th class="p-2 border">Date</th><th class="p-2 border">Particulars</th>
+                                    <th class="p-2 border text-right">Debit</th><th class="p-2 border text-right">Credit</th>
+                                    <th class="p-2 border text-right">Balance</th>
+                                </tr></thead>
+                                <tbody id="ledgerBody"></tbody>
+                                <tfoot class="bg-gray-100 font-bold"><tr>
+                                    <td colspan="4" class="p-2 border text-right">Closing Balance</td>
+                                    <td class="p-2 border text-right" id="ledgerBalance">0</td>
+                                </tr></tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="acc-trial" class="acc-tab-content hidden overflow-x-auto">
+                        <table class="w-full text-sm border mt-2">
+                            <thead class="bg-gray-50"><tr>
+                                <th class="p-2 border">Account</th><th class="p-2 border text-right">Debit</th><th class="p-2 border text-right">Credit</th>
+                            </tr></thead>
+                            <tbody id="trialBody"></tbody>
+                            <tfoot class="bg-gray-100 font-bold"><tr>
+                                <td class="p-2 border text-right">Total</td>
+                                <td class="p-2 border text-right" id="trialDr">0</td>
+                                <td class="p-2 border text-right" id="trialCr">0</td>
+                            </tr></tfoot>
+                        </table>
+                    </div>
+
+                    <div id="acc-pl" class="acc-tab-content hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                            <div class="border rounded-lg p-3"><h4 class="font-bold text-red-600">Expenses</h4><div id="plExpenses"></div><div class="font-bold border-t pt-2 mt-2">Total: <span id="plTotalExp">0</span></div></div>
+                            <div class="border rounded-lg p-3"><h4 class="font-bold text-green-600">Revenue</h4><div id="plRevenue"></div><div class="font-bold border-t pt-2 mt-2">Total: <span id="plTotalRev">0</span></div></div>
+                        </div>
+                        <div class="bg-indigo-50 p-3 rounded-lg mt-3 font-bold text-lg flex justify-between">
+                            <span>Net Profit / (Loss)</span>
+                            <span id="plNetResult">Rs. 0</span>
+                        </div>
+                    </div>
+
+                    <div id="acc-bs" class="acc-tab-content hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                            <div class="border rounded-lg p-3"><h4 class="font-bold text-[#1e3a5f]">Liabilities & Equity</h4><div id="bsLiab"></div><div class="font-bold border-t pt-2 mt-2">Total: <span id="bsTotalLiab">0</span></div></div>
+                            <div class="border rounded-lg p-3"><h4 class="font-bold text-[#1e3a5f]">Assets</h4><div id="bsAssets"></div><div class="font-bold border-t pt-2 mt-2">Total: <span id="bsTotalAssets">0</span></div></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== INVOICE PREVIEW (hidden by default) ===== -->
+            <section id="invoicePreview" class="tab-content hidden">
+                <div id="invoicePrintArea" class="invoice-box"></div>
+                <div class="flex gap-3 mt-3 no-print">
+                    <button onclick="window.print()" class="bg-[#1e3a5f] text-white px-4 py-2 rounded-lg">🖨️ Print</button>
+                    <button onclick="downloadPDF()" class="bg-blue-600 text-white px-4 py-2 rounded-lg">📄 PDF</button>
+                    <button onclick="switchTab('billing')" class="bg-gray-200 px-4 py-2 rounded-lg">🔙 Back</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- JAVASCRIPT – Supabase + all logic -->
+<script>
+    // ====== SUPABASE INIT ======
+    const SUPABASE_URL = 'https://sxlbfwzvwapzlmmaockk.supabase.co';
+    const SUPABASE_ANON_KEY = 'ewDTGvssJMFMpRoiwwm5Mg_xWwaSDQI';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ====== GLOBAL STATE ======
+    let currentUser = null;
+    let billingInvoices = [];
+    let accountingEntries = [];
+
+    // Chart of Accounts (COA)
+    const COA = [
+        { code: 1001, name: "Cash in Hand", type: "Asset" },
+        { code: 1002, name: "Nabil Bank A/c", type: "Asset" },
+        { code: 1003, name: "Accounts Receivable", type: "Asset" },
+        { code: 1004, name: "Office Furniture", type: "Asset" },
+        { code: 2001, name: "Accounts Payable", type: "Liability" },
+        { code: 2002, name: "Salary Payable", type: "Liability" },
+        { code: 3001, name: "Owner Capital", type: "Equity" },
+        { code: 3002, name: "Owner Drawing", type: "Equity" },
+        { code: 4001, name: "Sales Revenue", type: "Revenue" },
+        { code: 4002, name: "Service Income", type: "Revenue" },
+        { code: 5001, name: "Purchases", type: "Expense" },
+        { code: 6001, name: "Salary Expense", type: "Expense" },
+        { code: 6002, name: "Rent Expense", type: "Expense" },
+        { code: 6003, name: "Stationery Expense", type: "Expense" }
+    ];
+
+    // ====== LOGIN ======
+    function handleLogin(e) {
+        e.preventDefault();
+        const user = document.getElementById('loginUser').value.trim();
+        const pass = document.getElementById('loginPass').value.trim();
+        if (user === 'admin' && pass === 'admin123') {
+            currentUser = { username: 'admin' };
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+            loadAllData();
+            showToast('✅ Login successful!');
+        } else {
+            showToast('❌ Invalid credentials', 'error');
+        }
+    }
+
+    function logout() {
+        currentUser = null;
+        document.getElementById('loginOverlay').classList.remove('hidden');
+        document.getElementById('app').classList.add('hidden');
+        showToast('🔒 Logged out');
+    }
+
+    // ====== DATA LOAD FROM SUPABASE ======
+    async function loadAllData() {
+        try {
+            // load invoices
+            const { data: invData, error: invErr } = await supabase.from('invoices').select('*');
+            if (invErr) throw invErr;
+            billingInvoices = invData || [];
+
+            // load accounting entries
+            const { data: accData, error: accErr } = await supabase.from('accounting_entries').select('*');
+            if (accErr) throw accErr;
+            accountingEntries = accData || [];
+
+            // if no data, seed some sample
+            if (billingInvoices.length === 0) {
+                const sample = [
+                    { invoice_no: 'G-001', date: '2026-08-18', buyer: 'Ram Sharma', amount: 25000, mode: 'Cash', status: 'paid' },
+                    { invoice_no: 'G-002', date: '2026-08-19', buyer: 'Sita Poudel', amount: 12000, mode: 'Credit', status: 'unpaid' },
+                ];
+                for (let s of sample) {
+                    await supabase.from('invoices').insert(s);
+                }
+                billingInvoices = sample;
+            }
+            if (accountingEntries.length === 0) {
+                const sampleAcc = [
+                    { date: '2026-08-18', debit: 'Cash in Hand', credit: 'Sales Revenue', amount: 25000, narration: 'Cash sale' },
+                    { date: '2026-08-19', debit: 'Purchases', credit: 'Accounts Payable', amount: 12000, narration: 'Credit purchase' },
+                ];
+                for (let s of sampleAcc) {
+                    await supabase.from('accounting_entries').insert(s);
+                }
+                accountingEntries = sampleAcc;
+            }
+
+            refreshAllUI();
+            setDefaultDates();
+            updateInvoiceNumber();
+
+        } catch (err) {
+            console.error('Load error:', err);
+            showToast('⚠️ Error loading data from server', 'error');
+        }
+    }
+
+    // ====== UI REFRESH ======
+    function refreshAllUI() {
+        updateDashboard();
+        renderCreditList();
+        filterHistory();
+        renderAccountingUI();
+        populateDropdowns();
+        renderLedger();
+    }
+
+    function updateDashboard() {
+        const totalRev = billingInvoices.reduce((s, i) => s + (i.amount || 0), 0);
+        const creditAmt = billingInvoices.filter(i => i.mode === 'Credit').reduce((s, i) => s + (i.amount || 0), 0);
+        const invCount = billingInvoices.length;
+
+        document.getElementById('dashRevenue').textContent = 'Rs. ' + totalRev.toFixed(2);
+        document.getElementById('dashCredit').textContent = 'Rs. ' + creditAmt.toFixed(2);
+        document.getElementById('dashInvoices').textContent = invCount;
+        document.getElementById('sideRevenue').textContent = 'Rs. ' + totalRev.toFixed(2);
+        document.getElementById('sideCredit').textContent = 'Rs. ' + creditAmt.toFixed(2);
+
+        // recent activity
+        const recent = document.getElementById('recentActivity');
+        recent.innerHTML = billingInvoices.slice(-4).reverse().map(i =>
+            `<div class="flex justify-between"><span>${i.buyer} (${i.invoice_no})</span><span class="font-medium">Rs. ${(i.amount||0).toFixed(2)}</span></div>`
+        ).join('');
+    }
+
+    // ====== BILLING FUNCTIONS ======
+    let rowCounter = 1;
+    function addRow() {
+        rowCounter++;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="p-1 border text-center">${rowCounter}</td>
+            <td class="p-1 border"><input type="text" class="hs-code w-14 border rounded p-1 text-xs" /></td>
+            <td class="p-1 border"><input type="text" class="particulars w-full border rounded p-1 text-xs" placeholder="Item" /></td>
+            <td class="p-1 border"><input type="number" class="qty w-12 border rounded p-1 text-xs" value="1" min="1" onchange="calcRow(this)" /></td>
+            <td class="p-1 border"><input type="number" class="rate w-16 border rounded p-1 text-xs" value="0" onchange="calcRow(this)" /></td>
+            <td class="p-1 border"><select class="is-vat border rounded p-1 text-xs" onchange="calcSummary()"><option value="Yes">Yes</option><option value="No">No</option></select></td>
+            <td class="p-1 border"><input type="text" class="row-total w-20 border rounded p-1 text-xs font-semibold" readonly /></td>
+            <td class="p-1 border text-center"><button onclick="removeRow(this)" class="text-red-500 text-xs">✕</button></td>
+        `;
+        document.getElementById('itemsBody').appendChild(tr);
+    }
+
+    function removeRow(btn) { btn.closest('tr').remove(); calcSummary(); }
+
+    function calcRow(input) {
+        const tr = input.closest('tr');
+        const qty = parseFloat(tr.querySelector('.qty').value) || 0;
+        const rate = parseFloat(tr.querySelector('.rate').value) || 0;
+        tr.querySelector('.row-total').value = (qty * rate).toFixed(2);
+        calcSummary();
+    }
+
+    function calcSummary() {
+        const rows = document.querySelectorAll('#itemsBody tr');
+        let taxable = 0, nonTaxable = 0;
+        rows.forEach(row => {
+            const total = parseFloat(row.querySelector('.row-total').value) || 0;
+            if (row.querySelector('.is-vat').value === 'Yes') taxable += total;
+            else nonTaxable += total;
+        });
+        const disc = parseFloat(document.getElementById('discountPercent').value) || 0;
+        const discTax = taxable - (taxable * disc / 100);
+        const discNon = nonTaxable - (nonTaxable * disc / 100);
+        const vat = discTax * 0.13;
+        const grand = discTax + discNon + vat;
+        document.getElementById('taxableValue').value = discTax.toFixed(2);
+        document.getElementById('vatAmount').value = vat.toFixed(2);
+        document.getElementById('totalAmount').value = grand.toFixed(2);
+        document.getElementById('amountWords').value = numberToWords(grand);
+    }
+
+    function numberToWords(amount) {
+        if (isNaN(amount) || amount === 0) return 'Zero Only';
+        const parts = amount.toFixed(2).split('.');
+        let rupees = parseInt(parts[0]);
+        let paisa = parseInt(parts[1]);
+        const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+        function convert(n) {
+            if (n < 20) return ones[n];
+            if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '');
+            if (n < 1000) return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' ' + convert(n % 100) : '');
+            if (n < 100000) return convert(Math.floor(n / 1000)) + ' Thousand' + (n % 1000 ? ' ' + convert(n % 1000) : '');
+            if (n < 10000000) return convert(Math.floor(n / 100000)) + ' Lakh' + (n % 100000 ? ' ' + convert(n % 100000) : '');
+            return convert(Math.floor(n / 10000000)) + ' Crore' + (n % 10000000 ? ' ' + convert(n % 10000000) : '');
+        }
+        let result = '';
+        if (rupees > 0) result += convert(rupees) + ' Rupees';
+        if (paisa > 0) { if (result) result += ' And '; result += convert(paisa) + ' Paisa'; }
+        return result + ' Only';
+    }
+
+    async function generateBill() {
+        const buyer = document.getElementById('buyerName').value.trim();
+        if (!buyer) { showToast('⚠️ Buyer Name required!', 'error'); return; }
+
+        const rows = document.querySelectorAll('#itemsBody tr');
+        let items = [];
+        rows.forEach((row, i) => {
+            const part = row.querySelector('.particulars').value.trim();
+            const qty = parseFloat(row.querySelector('.qty').value) || 0;
+            const rate = parseFloat(row.querySelector('.rate').value) || 0;
+            if (part && qty > 0) {
+                items.push({ sn: i + 1, hs: row.querySelector('.hs-code').value || '-', particulars: part, qty, rate, isVat: row
+                        .querySelector('.is-vat').value, total: qty * rate });
+            }
+        });
+        if (items.length === 0) { showToast('⚠️ Add at least 1 item!', 'error'); return; }
+
+        const invoiceNo = 'G-' + String(billingInvoices.length + 1).padStart(3, '0');
+        const invoice = {
+            invoice_no: invoiceNo,
+            date: document.getElementById('billDate').value,
+            buyer: buyer,
+            address: document.getElementById('buyerAddress').value.trim(),
+            pan: document.getElementById('buyerPan').value.trim(),
+            mode: document.getElementById('paymentMode').value,
+            amount: parseFloat(document.getElementById('totalAmount').value) || 0,
+            status: document.getElementById('paymentMode').value === 'Credit' ? 'unpaid' : 'paid',
+            items: JSON.stringify(items),
+            taxable: parseFloat(document.getElementById('taxableValue').value) || 0,
+            vat: parseFloat(document.getElementById('vatAmount').value) || 0,
+            words: document.getElementById('amountWords').value
+        };
+
+        // Save to Supabase
+        const { data, error } = await supabase.from('invoices').insert(invoice);
+        if (error) { showToast('❌ Error saving invoice', 'error'); console.error(error); return; }
+
+        billingInvoices.push(invoice);
+        refreshAllUI();
+        updateInvoiceNumber();
+        renderInvoice(invoice);
+        switchTab('invoicePreview');
+        showToast('✅ Invoice generated!');
+    }
+
+    function renderInvoice(inv) {
+        let items = [];
+        try { items = JSON.parse(inv.items); } catch (e) { items = []; }
+        let itemsHtml = items.map(item => `
+            <tr><td class="border p-1 text-center">${item.sn}</td><td class="border p-1">${item.particulars}</td>
+            <td class="border p-1 text-center">${item.qty}</td><td class="border p-1 text-right">${item.rate.toFixed(2)}</td>
+            <td class="border p-1 text-right">${item.total.toFixed(2)}</td></tr>
+        `).join('');
+
+        document.getElementById('invoicePrintArea').innerHTML = `
+            <div style="padding:20px;">
+                <h2 style="color:#1e3a5f;">ABC Pvt. Ltd.</h2>
+                <p>Kathmandu, Nepal | Tel: 04111111</p>
+                <h3 style="border:2px solid #1e3a5f;display:inline-block;padding:4px 16px;margin:10px 0;">TAX INVOICE</h3>
+                <div><strong>Invoice:</strong> ${inv.invoice_no} | <strong>Date:</strong> ${inv.date}</div>
+                <div><strong>Buyer:</strong> ${inv.buyer} | PAN: ${inv.pan || '-'}</div>
+                <table border="1" style="width:100%;margin:10px 0;border-collapse:collapse;">
+                    <thead><tr><th class="border p-1">S.N.</th><th class="border p-1">Particulars</th><th class="border p-1">Qty</th><th class="border p-1">Rate</th><th class="border p-1">Total</th></tr></thead>
+                    <tbody>${itemsHtml}</tbody>
+                </table>
+                <div style="text-align:right;"><strong>Total: Rs. ${(inv.amount||0).toFixed(2)}</strong></div>
+                <div><strong>In Words:</strong> ${inv.words || ''}</div>
+                <div style="margin-top:40px;display:flex;justify-content:space-between;">
+                    <span style="border-top:1px solid #999;padding-top:4px;width:160px;text-align:center;">Received By</span>
+                    <span style="border-top:1px solid #999;padding-top:4px;width:160px;text-align:center;">Authorized Sign</span>
+                </div>
+            </div>
+        `;
+    }
+
+    function updateInvoiceNumber() {
+        const num = String(billingInvoices.length + 1).padStart(3, '0');
+        document.getElementById('invoiceNumberDisplay').textContent = 'G-' + num;
+    }
+
+    function clearBillForm() {
+        document.getElementById('buyerName').value = '';
+        document.getElementById('buyerAddress').value = '';
+        document.getElementById('buyerPan').value = '';
+        document.getElementById('discountPercent').value = '0';
+        document.querySelectorAll('#itemsBody tr').forEach((tr, idx) => { if (idx > 0) tr.remove(); });
+        calcSummary();
+        document.getElementById('itemsBody').innerHTML = `
+            <tr>
+                <td class="p-1 border text-center">1</td>
+                <td class="p-1 border"><input type="text" class="hs-code w-14 border rounded p-1 text-xs" /></td>
+                <td class="p-1 border"><input type="text" class="particulars w-full border rounded p-1 text-xs" placeholder="Item" /></td>
+                <td class="p-1 border"><input type="number" class="qty w-12 border rounded p-1 text-xs" value="1" min="1" onchange="calcRow(this)" /></td>
+                <td class="p-1 border"><input type="number" class="rate w-16 border rounded p-1 text-xs" value="0" onchange="calcRow(this)" /></td>
+                <td class="p-1 border"><select class="is-vat border rounded p-1 text-xs" onchange="calcSummary()"><option value="Yes">Yes</option><option value="No">No</option></select></td>
+                <td class="p-1 border"><input type="text" class="row-total w-20 border rounded p-1 text-xs font-semibold" readonly /></td>
+                <td class="p-1 border text-center"><button onclick="removeRow(this)" class="text-red-500 text-xs">✕</button></td>
+            </tr>
+        `;
+        rowCounter = 1;
+        calcSummary();
+    }
+
+    function setDefaultDates() {
+        const today = new Date().toISOString().slice(0, 10);
+        document.getElementById('transDate').value = today;
+        document.getElementById('billDate').value = today;
+        document.getElementById('accDate').value = today;
+    }
+
+    // ====== CREDIT LIST ======
+    function renderCreditList() {
+        const tbody = document.getElementById('creditTableBody');
+        const credits = billingInvoices.filter(i => i.mode === 'Credit' && i.status !== 'paid');
+        if (credits.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500">✅ No pending credit</td></tr>';
+            return;
+        }
+        tbody.innerHTML = credits.map(inv => `
+            <tr>
+                <td class="p-2 border">${inv.invoice_no}</td>
+                <td class="p-2 border">${inv.date}</td>
+                <td class="p-2 border">${inv.buyer}</td>
+                <td class="p-2 border font-bold text-red-600">Rs. ${(inv.amount||0).toFixed(2)}</td>
+                <td class="p-2 border"><span class="badge-credit">UNPAID</span></td>
+                <td class="p-2 border"><button onclick="payCredit('${inv.invoice_no}')" class="bg-green-600 text-white px-3 py-1 rounded-lg text-xs">💳 Receive</button></td>
+            </tr>
+        `).join('');
+    }
+
+    async function payCredit(invNo) {
+        const mode = prompt('Receive payment via: Cash, Cheque, or Other', 'Cash');
+        if (!mode || !['Cash', 'Cheque', 'Other'].includes(mode)) { showToast('❌ Invalid mode', 'error'); return; }
+
+        const { error } = await supabase
+            .from('invoices')
+            .update({ mode: mode, status: 'paid' })
+            .eq('invoice_no', invNo);
+
+        if (error) { showToast('❌ Error updating', 'error'); return; }
+
+        const inv = billingInvoices.find(i => i.invoice_no === invNo);
+        if (inv) { inv.mode = mode;
+            inv.status = 'paid'; }
+        refreshAllUI();
+        showToast(`✅ Credit paid via ${mode}`);
+    }
+
+    // ====== HISTORY ======
+    function filterHistory() {
+        const keyword = document.getElementById('searchKeyword').value.toLowerCase().trim();
+        const mode = document.getElementById('filterMode').value;
+        const from = document.getElementById('filterDateFrom').value;
+        const to = document.getElementById('filterDateTo').value;
+
+        let filtered = billingInvoices.filter(inv => {
+            const matchKeyword = inv.buyer.toLowerCase().includes(keyword) || inv.invoice_no.toLowerCase().includes(
+            keyword);
+            const matchMode = (mode === 'ALL') || (inv.mode === mode);
+            const matchFrom = !from || (inv.date >= from);
+            const matchTo = !to || (inv.date <= to);
+            return matchKeyword && matchMode && matchFrom && matchTo;
+        });
+
+        const tbody = document.getElementById('historyTableBody');
+        if (filtered.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-gray-500">No records</td></tr>';
+            return;
+        }
+        tbody.innerHTML = filtered.map(inv => `
+            <tr>
+                <td class="p-2 border">${inv.invoice_no}</td>
+                <td class="p-2 border">${inv.date}</td>
+                <td class="p-2 border">${inv.buyer}</td>
+                <td class="p-2 border">Rs. ${(inv.amount||0).toFixed(2)}</td>
+                <td class="p-2 border">${inv.mode}</td>
+                <td class="p-2 border"><span class="${inv.status === 'unpaid' ? 'badge-credit' : 'badge-paid'}">${inv.status === 'unpaid' ? 'UNPAID' : 'PAID'}</span></td>
+                <td class="p-2 border"><button onclick="viewInvoice('${inv.invoice_no}')" class="bg-blue-600 text-white px-2 py-0.5 rounded text-xs">👁️</button></td>
+            </tr>
+        `).join('');
+    }
+
+    function viewInvoice(invNo) {
+        const inv = billingInvoices.find(i => i.invoice_no === invNo);
+        if (inv) { renderInvoice(inv);
+            switchTab('invoicePreview'); }
+    }
+
+    function exportCSV() {
+        const rows = document.querySelectorAll('#historyTableBody tr');
+        if (rows.length === 0 || rows[0].textContent.includes('No records')) {
+            showToast('⚠️ No data to export', 'error');
+            return;
+        }
+        let csv = 'Invoice No,Date,Buyer,Amount,Mode,Status\n';
+        billingInvoices.forEach(i => {
+            csv +=
+                `${i.invoice_no},${i.date},"${i.buyer}",${(i.amount||0).toFixed(2)},${i.mode},${i.status}\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'Billing_History.csv';
+        a.click();
+        showToast('📥 CSV exported');
+    }
+
+    // ====== ACCOUNTING ======
+    function populateDropdowns() {
+        const selects = document.querySelectorAll('.coa-select');
+        selects.forEach(select => {
+            select.innerHTML = '<option value="">-- Select --</option>';
+            COA.forEach(acc => {
+                select.innerHTML += `<option value="${acc.name}">${acc.name}</option>`;
+            });
+        });
+        // also ledger select
+        const ledgerSelect = document.getElementById('ledgerSelect');
+        if (ledgerSelect) {
+            ledgerSelect.innerHTML = '<option value="">-- Select --</option>';
+            COA.forEach(acc => {
+                ledgerSelect.innerHTML += `<option value="${acc.name}">${acc.name}</option>`;
+            });
+        }
+    }
+
+    async function saveAccountingEntry() {
+        const date = document.getElementById('accDate').value;
+        const amount = parseFloat(document.getElementById('accAmount').value);
+        const debit = document.getElementById('accDebit').value;
+        const credit = document.getElementById('accCredit').value;
+        const narration = document.getElementById('accNarration').value.trim();
+
+        if (!date || !amount || !debit || !credit) { showToast('⚠️ Fill all fields', 'error'); return; }
+        if (debit === credit) { showToast('⚠️ Debit & Credit cannot be same', 'error'); return; }
+
+        const entry = { date, debit, credit, amount, narration };
+        const { data, error } = await supabase.from('accounting_entries').insert(entry);
+        if (error) { showToast('❌ Error saving entry', 'error'); return; }
+
+        accountingEntries.push(entry);
+        renderAccountingUI();
+        showToast('✅ Accounting entry saved!');
+        document.getElementById('accAmount').value = '';
+        document.getElementById('accNarration').value = '';
+    }
+
+    function renderAccountingUI() {
+        renderJournalRegister();
+        renderTrialBalance();
+        renderPL();
+        renderBS();
+        if (document.getElementById('ledgerSelect').value) renderLedger();
+    }
+
+    function renderJournalRegister() {
+        const tbody = document.getElementById('journalRegisterBody');
+        let totalDr = 0,
+            totalCr = 0;
+        tbody.innerHTML = accountingEntries.map(e => {
+            totalDr += e.amount;
+            totalCr += e.amount;
+            return `<tr>
+                <td class="p-2 border">${e.date}</td>
+                <td class="p-2 border">#${e.id || 'V'}</td>
+                <td class="p-2 border">${e.debit} Dr / ${e.credit} Cr<br><span class="text-xs text-gray-500">${e.narration || ''}</span></td>
+                <td class="p-2 border text-right">${e.amount.toFixed(2)}</td>
+                <td class="p-2 border text-right">${e.amount.toFixed(2)}</td>
+            </tr>`;
+        }).join('');
+        document.getElementById('journalTotalDr').textContent = totalDr.toFixed(2);
+        document.getElementById('journalTotalCr').textContent = totalCr.toFixed(2);
+    }
+
+    function renderLedger() {
+        const account = document.getElementById('ledgerSelect').value;
+        if (!account) return;
+        const tbody = document.getElementById('ledgerBody');
+        let balance = 0;
+        let html = '';
+        accountingEntries.forEach(e => {
+            let dr = 0,
+                cr = 0;
+            if (e.debit === account) { dr = e.amount;
+                balance += e.amount; }
+            if (e.credit === account) { cr = e.amount;
+                balance -= e.amount; }
+            if (dr || cr) {
+                html += `<tr>
+                    <td class="p-2 border">${e.date}</td>
+                    <td class="p-2 border">${e.debit === account ? 'To ' + e.credit : 'By ' + e.debit}</td>
+                    <td class="p-2 border text-right">${dr || '-'}</td>
+                    <td class="p-2 border text-right">${cr || '-'}</td>
+                    <td class="p-2 border text-right">${balance.toFixed(2)}</td>
+                </tr>`;
+            }
+        });
+        tbody.innerHTML = html || '<tr><td colspan="5" class="text-center text-gray-500">No entries for this account</td></tr>';
+        document.getElementById('ledgerBalance').textContent = balance.toFixed(2);
+    }
+
+    function renderTrialBalance() {
+        const tbody = document.getElementById('trialBody');
+        let balances = {};
+        COA.forEach(a => balances[a.name] = 0);
+        accountingEntries.forEach(e => {
+            if (balances[e.debit] !== undefined) balances[e.debit] += e.amount;
+            if (balances[e.credit] !== undefined) balances[e.credit] -= e.amount;
+        });
+        let totalDr = 0,
+            totalCr = 0;
+        let html = '';
+        COA.forEach(acc => {
+            let bal = balances[acc.name] || 0;
+            let dr = 0,
+                cr = 0;
+            if (acc.type === 'Asset' || acc.type === 'Expense') {
+                if (bal >= 0) dr = bal;
+                else cr = Math.abs(bal);
+            } else {
+                if (bal <= 0) cr = Math.abs(bal);
+                else dr = bal;
+            }
+            if (dr || cr) {
+                totalDr += dr;
+                totalCr += cr;
+                html += `<tr><td class="p-2 border">${acc.name}</td><td class="p-2 border text-right">${dr.toFixed(2)}</td><td class="p-2 border text-right">${cr.toFixed(2)}</td></tr>`;
+            }
+        });
+        tbody.innerHTML = html;
+        document.getElementById('trialDr').textContent = totalDr.toFixed(2);
+        document.getElementById('trialCr').textContent = totalCr.toFixed(2);
+    }
+
+    function renderPL() {
+        let balances = {};
+        COA.forEach(a => balances[a.name] = 0);
+        accountingEntries.forEach(e => {
+            if (balances[e.debit] !== undefined) balances[e.debit] += e.amount;
+            if (balances[e.credit] !== undefined) balances[e.credit] -= e.amount;
+        });
+        let expHtml = '',
+            revHtml = '';
+        let totalExp = 0,
+            totalRev = 0;
+        COA.forEach(acc => {
+            let bal = balances[acc.name] || 0;
+            if (acc.type === 'Expense' && bal !== 0) {
+                totalExp += bal;
+                expHtml += `<div class="flex justify-between"><span>${acc.name}</span><span>${bal.toFixed(2)}</span></div>`;
+            }
+            if (acc.type === 'Revenue' && bal !== 0) {
+                let revAmt = Math.abs(bal);
+                totalRev += revAmt;
+                revHtml += `<div class="flex justify-between"><span>${acc.name}</span><span>${revAmt.toFixed(2)}</span></div>`;
+            }
+        });
+        document.getElementById('plExpenses').innerHTML = expHtml || '<div class="text-gray-500">No expenses</div>';
+        document.getElementById('plRevenue').innerHTML = revHtml || '<div class="text-gray-500">No revenue</div>';
+        document.getElementById('plTotalExp').textContent = totalExp.toFixed(2);
+        document.getElementById('plTotalRev').textContent = totalRev.toFixed(2);
+        document.getElementById('plNetResult').textContent = 'Rs. ' + (totalRev - totalExp).toFixed(2);
+    }
+
+    function renderBS() {
+        let balances = {};
+        COA.forEach(a => balances[a.name] = 0);
+        accountingEntries.forEach(e => {
+            if (balances[e.debit] !== undefined) balances[e.debit] += e.amount;
+            if (balances[e.credit] !== undefined) balances[e.credit] -= e.amount;
+        });
+        let assetHtml = '',
+            liabHtml = '';
+        let totalAssets = 0,
+            totalLiab = 0;
+        COA.forEach(acc => {
+            let bal = balances[acc.name] || 0;
+            if (acc.type === 'Asset' && bal !== 0) {
+                totalAssets += bal;
+                assetHtml += `<div class="flex justify-between"><span>${acc.name}</span><span>${bal.toFixed(2)}</span></div>`;
+            }
+            if ((acc.type === 'Liability' || acc.type === 'Equity') && bal !== 0) {
+                let liabAmt = Math.abs(bal);
+                totalLiab += liabAmt;
+                liabHtml +=
+                    `<div class="flex justify-between"><span>${acc.name}</span><span>${liabAmt.toFixed(2)}</span></div>`;
+            }
+        });
+        document.getElementById('bsAssets').innerHTML = assetHtml || '<div class="text-gray-500">No assets</div>';
+        document.getElementById('bsLiab').innerHTML = liabHtml || '<div class="text-gray-500">No liabilities</div>';
+        document.getElementById('bsTotalAssets').textContent = totalAssets.toFixed(2);
+        document.getElementById('bsTotalLiab').textContent = totalLiab.toFixed(2);
+    }
+
+    // ====== TAB SWITCHING ======
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        const target = document.getElementById('tab-' + tabId);
+        if (target) target.classList.add('active');
+        if (tabId === 'accounting') renderAccountingUI();
+        if (tabId === 'history') filterHistory();
+        if (tabId === 'credit') renderCreditList();
+        if (tabId === 'dashboard') updateDashboard();
+        // hide invoice preview unless specifically opened
+        if (tabId !== 'invoicePreview') {
+            document.getElementById('invoicePreview').classList.remove('active');
+        }
+    }
+
+    // accounting sub-tabs
+    function switchAccTab(tabId) {
+        document.querySelectorAll('.acc-tab-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.acc-nav-btn').forEach(el => {
+            el.classList.remove('bg-indigo-50', 'text-indigo-700');
+            el.classList.add('hover:bg-gray-50');
+        });
+        const target = document.getElementById('acc-' + tabId);
+        if (target) target.classList.remove('hidden');
+        const btn = document.querySelector(`[onclick="switchAccTab('${tabId}')"]`);
+        if (btn) { btn.classList.add('bg-indigo-50', 'text-indigo-700'); }
+        if (tabId === 'ledger') renderLedger();
+        if (tabId === 'journal-register') renderJournalRegister();
+        if (tabId === 'trial') renderTrialBalance();
+        if (tabId === 'pl') renderPL();
+        if (tabId === 'bs') renderBS();
+    }
+
+    // ====== PDF DOWNLOAD ======
+    function downloadPDF() {
+        const element = document.getElementById('invoicePrintArea');
+        html2pdf().from(element).save('Tax_Invoice.pdf');
+    }
+
+    // ====== TOAST ======
+    function showToast(msg, type = '') {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        if (type === 'error') toast.style.background = '#b91c1c';
+        else toast.style.background = '#1e3a5f';
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => { toast.style.display = 'none'; }, 3500);
+    }
+
+    // ====== INIT ======
+    window.onload = function() {
+        // set default dates
+        const today = new Date().toISOString().slice(0, 10);
+        document.getElementById('transDate').value = today;
+        document.getElementById('billDate').value = today;
+        document.getElementById('accDate').value = today;
+        // default tab
+        switchTab('dashboard');
+        // load data only after login
+    };
+</script>
+
+</body>
+</html>
