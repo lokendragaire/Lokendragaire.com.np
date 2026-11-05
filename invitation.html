@@ -33,7 +33,7 @@
             background-position: center;
             background-repeat: no-repeat;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            background-color: #fff; /* फोटो लोड हुन ढिलो भए सेतो देखिन */
+            background-color: #fff; 
         }
 
         /* फोटोको अनुपात कायम राख्न एउटा अदृश्य फोटो राखिएको */
@@ -46,22 +46,22 @@
         /* नाम राख्ने ठाउँ (श्री पछाडी) */
         #name-display {
             position: absolute;
-            top: 34.5%; /* तपाईंको फोटो अनुसार मिलाउनुहोस् */
+            top: 34.5%; /* नाम माथि "श्री" भएको ठाउँमा */
             left: 8%;
             width: 70%;
             font-size: 22px;
             font-weight: bold;
             color: #c00000; /* रातो रंग */
             font-family: 'Arial', sans-serif;
-            pointer-events: none; /* क्लिक गर्न नमिल्ने बनाउन */
-            white-space: nowrap; /* एकै लाइनमा राख्न */
+            pointer-events: none; 
+            white-space: nowrap; 
         }
         
-        /* ठेगाना राख्ने ठाउँ */
+        /* ठेगाना राख्ने ठाउँ (नामको ठीक तल) */
         #address-display {
             position: absolute;
-            top: 88%; /* तपाईंको फोटो अनुसार मिलाउनुहोस् */
-            left: 25%;
+            top: 38%; /* नामको तल, मुख्य बुँदा सुरु हुनु अगाडि */
+            left: 8%; /* नामसँगै मिलाउन */
             width: 70%;
             font-size: 18px;
             font-weight: bold;
@@ -124,8 +124,8 @@
 
         /* मोबाइलको लागि */
         @media (max-width: 600px) {
-            #name-display { font-size: 16px; top: 34%; }
-            #address-display { font-size: 13px; top: 87.5%; }
+            #name-display { font-size: 16px; top: 34.5%; left: 8%; }
+            #address-display { font-size: 13px; top: 37.5%; left: 8%; }
             .controls { padding: 15px; }
         }
     </style>
@@ -143,7 +143,7 @@
         <div id="name-display"></div>
         
         <!-- ठेगाना देखाउने ठाउँ -->
-        <div id="address-display">म.न.पा. ५ कल्याणपुर (दर्शन टोल)</div>
+        <div id="address-display"></div>
     </div>
 
     <!-- इनपुट बक्सहरू -->
@@ -151,8 +151,8 @@
         <label>नाम (श्री पछाडी):</label>
         <input type="text" id="input-name" placeholder="उदा: राम बहादुर श्रेष्ठ" oninput="updateText()">
         
-        <label>ठेगाना:</label>
-        <input type="text" id="input-address" placeholder="उदा: काठमाडौं" value="म.न.पा. ५ कल्याणपुर (दर्शन टोल)" oninput="updateText()">
+        <label>ठेगाना (नामको तल):</label>
+        <input type="text" id="input-address" placeholder="उदा: काठमाडौं" value="" oninput="updateText()">
 
         <button onclick="downloadImage()">फोटो डाउनलोड गर्नुहोस् (Download)</button>
     </div>
@@ -175,21 +175,24 @@
                 document.getElementById('name-display').innerText = nameVal;
             }
             
-            document.getElementById('address-display').innerText = addressVal;
+            // ठेगाना खाली भए केही नदेखाउने
+            if(addressVal.trim() !== ""){
+                document.getElementById('address-display').innerText = addressVal;
+            } else {
+                document.getElementById('address-display').innerText = "";
+            }
         }
 
         // कार्डलाई फोटोको रूपमा डाउनलोड गर्ने फंक्शन
         function downloadImage() {
             const card = document.getElementById('card-container');
             
-            // डाउनलोड गर्दा ब्याकग्राउन्ड फोटो लोड हुन समय लाग्न सक्छ, त्यसैले html2canvas प्रयोग
             html2canvas(card, {
                 scale: 2, // फोटोको क्वालिटी (HD)
-                useCORS: true, // बाहिरी फोटो लोड गर्न
+                useCORS: true, 
                 backgroundColor: null,
                 logging: false
             }).then(canvas => {
-                // फोटो डाउनलोड लिंक तयार गर्ने
                 const link = document.createElement('a');
                 link.download = 'Nimantran_Patra.png';
                 link.href = canvas.toDataURL('image/png');
