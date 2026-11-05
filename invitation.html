@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Invitation Card Generator</title>
+    <!-- html2canvas लाइब्रेरी डाउनलोडको लागि -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* कार्डको मुख्य कन्टेनर */
+        #card-container {
+            position: relative;
+            width: 800px; 
+            max-width: 100%;
+            /* यहाँ तपाईंको फोटोको नाम invitation.jpg राखिएको छ */
+            background-image: url('invitation.jpg'); 
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* फोटोको अनुपात कायम राख्न */
+        #card-container img {
+            width: 100%;
+            display: block;
+            visibility: hidden; 
+        }
+
+        /* नाम राख्ने ठाउँ (श्री पछाडी) */
+        #name-input {
+            position: absolute;
+            /* नाम माथि राखिएको छ */
+            top: 34.5%; 
+            left: 8%;
+            width: 60%;
+            font-size: 22px;
+            font-weight: bold;
+            color: #c00000; /* रातो रंग */
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        /* ठेगाना राख्ने ठाउँ (नामको तल) */
+        #address-input {
+            position: absolute;
+            /* ठेगाना तल राखिएको छ */
+            top: 88%; 
+            left: 30%;
+            width: 60%;
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* कन्ट्रोल प्यानल */
+        .controls {
+            margin-top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 800px;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .controls input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .controls button {
+            background-color: #25D366; 
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .controls button:hover {
+            background-color: #128C7E;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>निमन्त्रणा पत्रमा नाम र ठेगाना राख्नुहोस्</h2>
+
+    <!-- कार्डको भाग -->
+    <div id="card-container">
+        <!-- यो फोटोले कार्डको उचाइ र चौडाइ निर्धारण गर्छ, फाइलको नाम invitation.jpg राखिएको छ -->
+        <img src="invitation.jpg" alt="Invitation Background">
+        
+        <!-- यहाँ नाम राखिन्छ (श्री पछाडी) -->
+        <input type="text" id="name-input" value="">
+        
+        <!-- यहाँ ठेगाना राखिन्छ (नामको तल) -->
+        <input type="text" id="address-input" value="म.न.पा. ५ कल्याणपुर (दर्शन टोल)">
+    </div>
+
+    <!-- नियन्त्रण बटनहरू -->
+    <div class="controls">
+        <label>नाम (श्री पछाडी):</label>
+        <input type="text" id="input-name" placeholder="यहाँ नाम लेख्नुहोस्" oninput="updateText()">
+        
+        <label>ठेगाना (नामको तल):</label>
+        <input type="text" id="input-address" placeholder="यहाँ ठेगाना लेख्नुहोस्" oninput="updateText()">
+
+        <button onclick="downloadImage()">Download Image (फोटो डाउनलोड गर्नुहोस्)</button>
+    </div>
+
+    <script>
+        // इनपुट फिल्डको डाटा कार्डमा ट्रान्सफर गर्ने फंक्शन
+        function updateText() {
+            document.getElementById('name-input').value = document.getElementById('input-name').value;
+            document.getElementById('address-input').value = document.getElementById('input-address').value;
+        }
+
+        // कार्डलाई फोटोको रूपमा डाउनलोड गर्ने फंक्शन
+        function downloadImage() {
+            const card = document.getElementById('card-container');
+            
+            html2canvas(card, {
+                scale: 2, // फोटोको क्वालिटी बढाउन
+                useCORS: true,
+                backgroundColor: null
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'Mero_Nimantran_Patra.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+    </script>
+</body>
+</html>
