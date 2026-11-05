@@ -3,32 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Invitation Card Generator</title>
-    <!-- html2canvas लाइब्रेरी डाउनलोडको लागि -->
+    <title>निमन्त्रणा पत्र जेनेरेटर</title>
+    <!-- html2canvas लाइब्रेरी -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f0f2f5;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 20px;
+            margin: 0;
         }
 
-        /* कार्डको मुख्य कन्टेनर */
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* कार्डको मुख्य कन्टेनर (यसलाई मात्र डाउनलोड गरिन्छ) */
         #card-container {
             position: relative;
             width: 800px; 
             max-width: 100%;
-            /* यहाँ तपाईंको फोटोको नाम invitation.jpg राखिएको छ */
-            background-image: url('invitation.jpg'); 
-            background-size: cover;
+            background-image: url('invitation.jpg'); /* तपाईंको फोटोको नाम */
+            background-size: 100% 100%; /* फोटोलाई पूरै फिट गर्न */
             background-position: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            background-repeat: no-repeat;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            background-color: #fff; /* फोटो लोड हुन ढिलो भए सेतो देखिन */
         }
 
-        /* फोटोको अनुपात कायम राख्न */
+        /* फोटोको अनुपात कायम राख्न एउटा अदृश्य फोटो राखिएको */
         #card-container img {
             width: 100%;
             display: block;
@@ -36,65 +44,74 @@
         }
 
         /* नाम राख्ने ठाउँ (श्री पछाडी) */
-        #name-input {
+        #name-display {
             position: absolute;
-            /* नाम माथि राखिएको छ */
-            top: 34.5%; 
+            top: 34.5%; /* तपाईंको फोटो अनुसार मिलाउनुहोस् */
             left: 8%;
-            width: 60%;
+            width: 70%;
             font-size: 22px;
             font-weight: bold;
             color: #c00000; /* रातो रंग */
-            background: transparent;
-            border: none;
-            outline: none;
             font-family: 'Arial', sans-serif;
+            pointer-events: none; /* क्लिक गर्न नमिल्ने बनाउन */
+            white-space: nowrap; /* एकै लाइनमा राख्न */
         }
         
-        /* ठेगाना राख्ने ठाउँ (नामको तल) */
-        #address-input {
+        /* ठेगाना राख्ने ठाउँ */
+        #address-display {
             position: absolute;
-            /* ठेगाना तल राखिएको छ */
-            top: 88%; 
-            left: 30%;
-            width: 60%;
+            top: 88%; /* तपाईंको फोटो अनुसार मिलाउनुहोस् */
+            left: 25%;
+            width: 70%;
             font-size: 18px;
             font-weight: bold;
             color: #000;
-            background: transparent;
-            border: none;
-            outline: none;
             font-family: 'Arial', sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
         }
 
         /* कन्ट्रोल प्यानल */
         .controls {
-            margin-top: 20px;
+            margin-top: 30px;
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            width: 800px;
-            max-width: 100%;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
             box-sizing: border-box;
+        }
+
+        .controls label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #444;
         }
 
         .controls input[type="text"] {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .controls input[type="text"]:focus {
+            border-color: #25D366;
+            outline: none;
         }
 
         .controls button {
             background-color: #25D366; 
             color: white;
             border: none;
-            padding: 12px 20px;
-            font-size: 16px;
-            border-radius: 4px;
+            padding: 15px 20px;
+            font-size: 18px;
+            border-radius: 6px;
             cursor: pointer;
             width: 100%;
             font-weight: bold;
@@ -104,55 +121,84 @@
         .controls button:hover {
             background-color: #128C7E;
         }
+
+        /* मोबाइलको लागि */
+        @media (max-width: 600px) {
+            #name-display { font-size: 16px; top: 34%; }
+            #address-display { font-size: 13px; top: 87.5%; }
+            .controls { padding: 15px; }
+        }
     </style>
 </head>
 <body>
 
     <h2>निमन्त्रणा पत्रमा नाम र ठेगाना राख्नुहोस्</h2>
 
-    <!-- कार्डको भाग -->
+    <!-- यो भाग मात्र डाउनलोड हुन्छ -->
     <div id="card-container">
-        <!-- यो फोटोले कार्डको उचाइ र चौडाइ निर्धारण गर्छ, फाइलको नाम invitation.jpg राखिएको छ -->
-        <img src="invitation.jpg" alt="Invitation Background">
+        <!-- अदृश्य फोटो (उचाइ मिलाउन) -->
+        <img src="invitation.jpg" alt="Invitation Background" onerror="this.style.display='none'; document.getElementById('card-container').style.height='1130px';">
         
-        <!-- यहाँ नाम राखिन्छ (श्री पछाडी) -->
-        <input type="text" id="name-input" value="">
+        <!-- नाम देखाउने ठाउँ -->
+        <div id="name-display"></div>
         
-        <!-- यहाँ ठेगाना राखिन्छ (नामको तल) -->
-        <input type="text" id="address-input" value="म.न.पा. ५ कल्याणपुर (दर्शन टोल)">
+        <!-- ठेगाना देखाउने ठाउँ -->
+        <div id="address-display">म.न.पा. ५ कल्याणपुर (दर्शन टोल)</div>
     </div>
 
-    <!-- नियन्त्रण बटनहरू -->
+    <!-- इनपुट बक्सहरू -->
     <div class="controls">
         <label>नाम (श्री पछाडी):</label>
-        <input type="text" id="input-name" placeholder="यहाँ नाम लेख्नुहोस्" oninput="updateText()">
+        <input type="text" id="input-name" placeholder="उदा: राम बहादुर श्रेष्ठ" oninput="updateText()">
         
-        <label>ठेगाना (नामको तल):</label>
-        <input type="text" id="input-address" placeholder="यहाँ ठेगाना लेख्नुहोस्" oninput="updateText()">
+        <label>ठेगाना:</label>
+        <input type="text" id="input-address" placeholder="उदा: काठमाडौं" value="म.न.पा. ५ कल्याणपुर (दर्शन टोल)" oninput="updateText()">
 
-        <button onclick="downloadImage()">Download Image (फोटो डाउनलोड गर्नुहोस्)</button>
+        <button onclick="downloadImage()">फोटो डाउनलोड गर्नुहोस् (Download)</button>
     </div>
 
     <script>
+        // सुरुमा लोड हुँदा टेक्स्ट अपडेट गर्न
+        window.onload = function() {
+            updateText();
+        };
+
         // इनपुट फिल्डको डाटा कार्डमा ट्रान्सफर गर्ने फंक्शन
         function updateText() {
-            document.getElementById('name-input').value = document.getElementById('input-name').value;
-            document.getElementById('address-input').value = document.getElementById('input-address').value;
+            let nameVal = document.getElementById('input-name').value;
+            let addressVal = document.getElementById('input-address').value;
+            
+            // यदि नाम खाली छ भने डट (....) देखाउने
+            if(nameVal.trim() === "") {
+                document.getElementById('name-display').innerText = "..............................";
+            } else {
+                document.getElementById('name-display').innerText = nameVal;
+            }
+            
+            document.getElementById('address-display').innerText = addressVal;
         }
 
         // कार्डलाई फोटोको रूपमा डाउनलोड गर्ने फंक्शन
         function downloadImage() {
             const card = document.getElementById('card-container');
             
+            // डाउनलोड गर्दा ब्याकग्राउन्ड फोटो लोड हुन समय लाग्न सक्छ, त्यसैले html2canvas प्रयोग
             html2canvas(card, {
-                scale: 2, // फोटोको क्वालिटी बढाउन
-                useCORS: true,
-                backgroundColor: null
+                scale: 2, // फोटोको क्वालिटी (HD)
+                useCORS: true, // बाहिरी फोटो लोड गर्न
+                backgroundColor: null,
+                logging: false
             }).then(canvas => {
+                // फोटो डाउनलोड लिंक तयार गर्ने
                 const link = document.createElement('a');
-                link.download = 'Mero_Nimantran_Patra.png';
+                link.download = 'Nimantran_Patra.png';
                 link.href = canvas.toDataURL('image/png');
+                document.body.appendChild(link);
                 link.click();
+                document.body.removeChild(link);
+            }).catch(err => {
+                alert("फोटो डाउनलोड गर्न समस्या भयो। कृपया फेरि प्रयास गर्नुहोस्।");
+                console.error(err);
             });
         }
     </script>
