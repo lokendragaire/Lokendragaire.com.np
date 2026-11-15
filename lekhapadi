@@ -1011,27 +1011,35 @@ async function pdf(id,n){try{const c=await cap(el(id));const d=new jspdf.jsPDF('
 async function img(id,n){try{sv((await cap(el(id))).toDataURL('image/jpeg',.95),n+'.jpg')}catch(e){toast('बनेन','err')}}
 
 /* ---------- CV ---------- */
-const H={ne:{s:'परिचय',e:'अनुभव',d:'शैक्षिक योग्यता',k:'सीप / अन्य',c:'सम्पर्क'},en:{s:'Profile',e:'Experience',d:'Education',k:'Skills / Other',c:'Contact'}};
+const H={ne:{s:'परिचय',e:'अनुभव',t:'तालिम',d:'शैक्षिक योग्यता',k:'सीप',c:'सम्पर्क'},en:{s:'Profile',e:'Experience',t:'Training',d:'Qualification',k:'Skills',c:'Contact'}};
+const SEC=[['exp','अनुभव','पद / काम','संस्था / कम्पनी'],['trn','तालिम','तालिमको नाम','आयोजक संस्था'],['edu','शैक्षिक योग्यता','तह / डिग्री','विद्यालय / क्याम्पस / बोर्ड'],['skl','सीप','सीप (जस्तै: MS Office)','']];
+const blank=()=>({t:'',o:'',p:'',d:''}),CVD={exp:[blank()],trn:[blank()],edu:[blank()],skl:[blank()]};
+const NEP='०१२३४५६७८९',KH=['क','ख','ग','घ','ङ','च','छ','ज','झ','ञ'];
+const MK=(s,i)=>({bu:'•',dash:'–',chk:'✓',arr:'➤',no:'',n1:(i+1)+'.',np:String(i+1).replace(/\d/g,d=>NEP[d])+'.',al:String.fromCharCode(97+i%26)+')',kh:KH[i%10]+')'}[s]||'•');
 let cvPh='';
-const UL=t=>'<ul>'+t.split('\n').filter(x=>x.trim()).map(x=>'<li>'+E(x)+'</li>').join('')+'</ul>';
-function cv(){const h=H[g('c_l')||'ne'],t=g('c_t')||'1',im=cvPh?`<img src="${cvPh}">`:'';
+function lst(sec,st){const a=CVD[sec].filter(x=>(x.t+x.o+x.d).trim());if(!a.length)return '';
+ return '<ul style="padding:0;list-style:none">'+a.map((x,i)=>{const mk=MK(st,i),main=sec==='skl'?E(x.t):`<b>${E(x.t)}</b>${x.o?', '+E(x.o):''}${x.p?` <i>(${E(x.p)})</i>`:''}`;return `<li style="display:flex;gap:2mm;margin-bottom:1mm"><span style="flex:none;min-width:${mk?'4.5mm':'0'}">${mk}</span><span>${main}${x.d?'<br><span style="opacity:.85">'+E(x.d)+'</span>':''}</span></li>`}).join('')+'</ul>'}
+function cv(){const h=H[g('c_l')||'ne'],t=g('c_t')||'1',st=g('c_ls')||'bu',im=cvPh?`<img src="${cvPh}">`:'';
  const con=`<p>📞 ${E(g('c_ph'))}</p><p>✉ ${E(g('c_em'))}</p><p>📍 ${E(g('c_ad'))}</p>`,S=(a,b)=>b.replace(/<[^>]+>/g,'').trim()?`<h3>${a}</h3>${b}`:'';
- const sum=S(h.s,'<p>'+E(g('c_sum'))+'</p>'),ex=S(h.e,UL(g('c_exp'))),ed=S(h.d,UL(g('c_edu'))),sk=S(h.k,UL(g('c_skl')));let o;
- if(t==='1')o=`<div class="c1"><div class="h"><div><h1>${E(g('c_n'))}</h1><h2>${E(g('c_post'))}</h2>${con}</div>${im}</div>${sum}${ex}${ed}${sk}</div>`;
- else if(t==='2')o=`<div class="c2"><div class="s">${im}${S(h.c,con)}${sk}</div><div class="m"><h1>${E(g('c_n'))}</h1><h2>${E(g('c_post'))}</h2>${sum}${ex}${ed}</div></div>`;
- else o=`<div class="c3"><div class="t">${im}<div><h1>${E(g('c_n'))}</h1><h2>${E(g('c_post'))}</h2></div></div><div class="b"><div>${sum}${ex}${ed}</div><div>${S(h.c,con)}${sk}</div></div></div>`;
+ const sum=S(h.s,'<p>'+E(g('c_sum'))+'</p>'),ex=S(h.e,lst('exp',st)),tn=S(h.t,lst('trn',st)),ed=S(h.d,lst('edu',st)),sk=S(h.k,lst('skl',st));let o;
+ if(t==='1')o=`<div class="c1"><div class="h"><div><h1>${E(g('c_n'))}</h1><h2>${E(g('c_post'))}</h2>${con}</div>${im}</div>${sum}${ex}${tn}${ed}${sk}</div>`;
+ else if(t==='2')o=`<div class="c2"><div class="s">${im}${S(h.c,con)}${sk}</div><div class="m"><h1>${E(g('c_n'))}</h1><h2>${E(g('c_post'))}</h2>${sum}${ex}${tn}${ed}</div></div>`;
+ else o=`<div class="c3"><div class="t">${im}<div><h1>${E(g('c_n'))}</h1><h2>${E(g('c_post'))}</h2></div></div><div class="b"><div>${sum}${ex}${tn}${ed}</div><div>${S(h.c,con)}${sk}</div></div></div>`;
  const a=el('cvO');if(!a)return;a.style.setProperty('--a',g('c_a')||'#0b5ed7');a.style.setProperty('--fs',g('c_s')||1);a.innerHTML=o;fit()}
+function rows(sec){const c=el('c_r_'+sec);if(!c)return;const cfg=SEC.find(s=>s[0]===sec),sk=sec==='skl';
+ const f=(i,k,ph,v)=>`<input data-s="${sec}" data-i="${i}" data-k="${k}" placeholder="${ph}" value="${E(v)}">`;
+ c.innerHTML=CVD[sec].map((x,i)=>`<div style="border:1px solid var(--bd);border-radius:10px;padding:8px;margin:6px 0;background:#f8fafc"><div class="row" style="margin:0 0 4px"><b class="grow">${i+1}</b><button type="button" class="btn bs" onclick="DS.mv('${sec}',${i},-1)">↑</button><button type="button" class="btn bs" onclick="DS.mv('${sec}',${i},1)">↓</button><button type="button" class="btn bs bd" onclick="DS.rm('${sec}',${i})">✕</button></div>${f(i,'t',cfg[2],x.t)}${sk?'':`<div class="g2" style="margin-top:6px">${f(i,'o',cfg[3],x.o)}${f(i,'p','अवधि / वर्ष',x.p)}</div><div style="margin-top:6px">${f(i,'d','थप विवरण (ऐच्छिक)',x.d)}</div>`}</div>`).join('')}
 PAGES.dsCv={title:'CV / Resume बनाउने',partial(){},html(){return `<div class="dsgrid"><div class="card">
 <datalist id="dsCust">${list('customers').map(c=>`<option value="${esc(c.name)}">`).join('')}</datalist>
-<div class="g2"><div><label>ढाँचा</label><select id="c_t"><option value="1">१. क्लासिक</option><option value="2">२. साइडबार</option><option value="3">३. मोडर्न हेडर</option></select></div><div><label>शीर्षक भाषा</label><select id="c_l"><option value="ne">नेपाली</option><option value="en">English</option></select></div><div><label>रंग</label><input type="color" id="c_a" value="#0b5ed7"></div><div><label>अक्षर साइज</label><input type="range" id="c_s" min=".75" max="1.25" step=".05" value="1"></div></div>
+<div class="g2"><div><label>ढाँचा</label><select id="c_t"><option value="1">१. क्लासिक</option><option value="2">२. साइडबार</option><option value="3">३. मोडर्न हेडर</option></select></div><div><label>शीर्षक भाषा</label><select id="c_l"><option value="ne">नेपाली</option><option value="en">English</option></select></div>
+<div><label>लिस्ट शैली (बुलेट / नम्बर)</label><select id="c_ls"><option value="bu">• बुलेट</option><option value="n1">1. 2. 3.</option><option value="np">१. २. ३.</option><option value="kh">क) ख) ग)</option><option value="al">a) b) c)</option><option value="dash">– डस</option><option value="chk">✓ चेक</option><option value="arr">➤ तीर</option><option value="no">कुनै छैन</option></select></div><div><label>रंग</label><input type="color" id="c_a" value="#0b5ed7"></div><div><label>अक्षर साइज</label><input type="range" id="c_s" min=".7" max="1.25" step=".05" value="1"></div></div>
 <label>फोटो</label><input type="file" id="c_p" accept="image/*">
-<label>नाम</label><input id="c_n" list="dsCust" value="">
-<label>पद / Post</label><input id="c_post"><div class="g2"><div><label>फोन</label><input id="c_ph"></div><div><label>इमेल</label><input id="c_em"></div></div>
+<label>नाम</label><input id="c_n" list="dsCust"><label>पद / Post</label><input id="c_post"><div class="g2"><div><label>फोन</label><input id="c_ph"></div><div><label>इमेल</label><input id="c_em"></div></div>
 <label>ठेगाना</label><input id="c_ad"><label>परिचय</label><textarea id="c_sum"></textarea>
-<label>अनुभव (एक लाइनमा एक)</label><textarea id="c_exp"></textarea><label>शैक्षिक योग्यता</label><textarea id="c_edu"></textarea><label>सीप / अन्य</label><textarea id="c_skl"></textarea>
+${SEC.map(s=>`<label style="margin-top:14px;font-weight:700;color:var(--t)">${s[1]}</label><div id="c_r_${s[0]}"></div><button type="button" class="btn bs bp" onclick="DS.add('${s[0]}')">＋ ${s[1]} थप्नुस्</button>`).join('')}
 <div class="row"><button class="btn bp" onclick="DS.pr('cvO')">🖨️ प्रिन्ट</button><button class="btn bg" onclick="DS.pdf('cvO','cv')">⬇ PDF</button><button class="btn" onclick="DS.img('cvO','cv')">⬇ JPG</button></div></div>
 <div class="dspv"><div class="a4" id="cvO"></div></div></div>`},
-after(){mount(cv);el('c_p').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{cvPh=r.result;cv()};r.readAsDataURL(f)};cv()}};
+after(){mount(e=>{const d=e&&e.target&&e.target.dataset;if(d&&d.k){CVD[d.s][+d.i][d.k]=e.target.value}cv()});el('c_p').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{cvPh=r.result;cv()};r.readAsDataURL(f)};SEC.forEach(s=>rows(s[0]));cv()}};
 
 /* ---------- पत्र / प्रमाणपत्र ---------- */
 const TX={ne:{exp:['अनुभव प्रमाणपत्र','यो प्रमाणित गरिन्छ कि श्री {n} ले यस {o} मा {p} पदमा {f} देखि {t} सम्म इमान्दारीपूर्वक कार्य गर्नुभएको हो। उहाँको कार्य सन्तोषजनक तथा आचरण राम्रो रहेको छ।\n\nउहाँको उज्ज्वल भविष्यको कामना गर्दछु।'],cer:['प्रमाणपत्र','यो प्रमाणपत्र श्री {n} लाई {x} सफलतापूर्वक सम्पन्न गरेकोमा प्रदान गरिएको हो।'],apr:['प्रशंसापत्र','{o} तर्फबाट श्री {n} लाई {x} का लागि हार्दिक प्रशंसा तथा धन्यवाद सहित यो प्रशंसापत्र प्रदान गरिएको छ।'],d:'मिति',s:'ठाउँ'},
@@ -1108,7 +1116,7 @@ async function tr(){const s=g('t_f'),d=g('t_t'),L=g('t_i').split('\n'),inf=el('t
 PAGES.dsTr={title:'ऑनलाइन अनुवाद (सबै भाषा)',partial(){},html(){const o=LG.map(l=>`<option value="${l[0]}">${l[1]}</option>`).join('');return `<div class="dsgrid" style="grid-template-columns:1fr 1fr"><div class="card"><div class="g2"><div><label>बाट</label><select id="t_f"><option value="auto">स्वतः पहिचान</option>${o}</select></div><div><label>मा</label><select id="t_t">${o}</select></div></div><label>पाठ</label><textarea id="t_i" style="min-height:180px">मेरो नाम लोकेन्द्र गैरे</textarea><div class="row"><button class="btn bp" onclick="DS.tr()">🔤 अनुवाद</button><button class="btn" onclick="DS.swap()">⇄ अदला-बदली</button></div></div><div class="card"><label>नतिजा</label><textarea id="t_o" style="min-height:180px" readonly></textarea><div class="row"><button class="btn" onclick="navigator.clipboard.writeText(g_('t_o'))">📋 कपी</button></div><p class="mut" id="t_inf">इन्टरनेट चाहिन्छ (Google / MyMemory)</p></div></div>`},
 after(){if(!SV.t_f){SV.t_f='ne';SV.t_t='en'}mount()}};
 window.g_=g;
-window.DS={pr,pdf,img,gen:()=>{gen(1);lt()},ai,col,reset:()=>{P.cut=null;draw()},dlS:t=>{if(!P.img)return stt('पहिले फोटो छान्नुस्');const u=sheetC().toDataURL('image/jpeg',.95);if(t==='jpg')sv(u,'photo-sheet.jpg');else libs().then(()=>{const d=new jspdf.jsPDF('p','mm','a4');d.addImage(u,'JPEG',0,0,210,297);d.save('photo-sheet.pdf')})},dl1:()=>{if(!P.img)return stt('पहिले फोटो छान्नुस्');sv(one().toDataURL('image/jpeg',.95),'pp-photo.jpg')},tr,swap:()=>{const a=g('t_f'),b=g('t_t');if(a!=='auto'){el('t_t').value=a;SV.t_t=a}el('t_f').value=b;SV.t_f=b;const t=g('t_i');el('t_i').value=g('t_o');el('t_o').value=t;SV.t_i=el('t_i').value;SV.t_o=t}};
+window.DS={add:s=>{CVD[s].push(blank());rows(s);cv()},rm:(s,i)=>{CVD[s].splice(i,1);if(!CVD[s].length)CVD[s].push(blank());rows(s);cv()},mv:(s,i,d)=>{const a=CVD[s],j=i+d;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];rows(s);cv()},pr,pdf,img,gen:()=>{gen(1);lt()},ai,col,reset:()=>{P.cut=null;draw()},dlS:t=>{if(!P.img)return stt('पहिले फोटो छान्नुस्');const u=sheetC().toDataURL('image/jpeg',.95);if(t==='jpg')sv(u,'photo-sheet.jpg');else libs().then(()=>{const d=new jspdf.jsPDF('p','mm','a4');d.addImage(u,'JPEG',0,0,210,297);d.save('photo-sheet.pdf')})},dl1:()=>{if(!P.img)return stt('पहिले फोटो छान्नुस्');sv(one().toDataURL('image/jpeg',.95),'pp-photo.jpg')},tr,swap:()=>{const a=g('t_f'),b=g('t_t');if(a!=='auto'){el('t_t').value=a;SV.t_t=a}el('t_f').value=b;SV.t_f=b;const t=g('t_i');el('t_i').value=g('t_o');el('t_o').value=t;SV.t_i=el('t_i').value;SV.t_o=t}};
 })();
 
 /* boot */
